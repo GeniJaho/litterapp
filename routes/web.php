@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\UploadPhotosController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -36,4 +37,6 @@ Route::middleware([
     Route::get('/upload', function () {
         return Inertia::render('Upload');
     })->name('upload');
+
+    Route::post('/upload', [UploadPhotosController::class, 'store']);
 });

@@ -25,7 +25,7 @@ const FilePond = vueFilePond();
                         label-idle="Drop files here..."
                         v-bind:allow-multiple="true"
                         accepted-file-types="image/jpeg, image/png"
-                        server="/api"
+                        server="/upload"
                     />
                 </div>
             </div>
