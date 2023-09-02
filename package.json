@@ -19,7 +19,6 @@
         "vue": "^3.2.31"
     },
     "dependencies": {
-        "filepond": "^4.30.4",
-        "vue-filepond": "^7.0.3"
+        "vue3-dropzone": "^2.1.2"
     }
 }

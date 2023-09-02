@@ -1,9 +1,38 @@
 <script setup>
 import ApplicationLogo from '@/Components/ApplicationLogo.vue';
-import vueFilePond from "vue-filepond";
-import "filepond/dist/filepond.min.css";
+import { useDropzone } from "vue3-dropzone";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-const FilePond = vueFilePond();
+const url = "/upload"; // Your url on the server side
+const saveFiles = (files) => {
+    const formData = new FormData(); // pass data as a form
+    for (let x = 0; x < files.length; x++) {
+        // append files as array to the form, feel free to change the array name
+        formData.append("photos[]", files[x]);
+    }
+
+    // post the formData to your backend where storage is processed. In the backend, you will need to loop through the array and save each file through the loop.
+
+    axios
+        .post(url, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            },
+        })
+        .then((response) => {
+            console.info(response.data);
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+};
+
+function onDrop(acceptFiles, rejectReasons) {
+    saveFiles(acceptFiles); // saveFiles as callback
+    console.log(rejectReasons);
+}
+
+const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
 
 </script>
 
@@ -19,14 +48,11 @@ const FilePond = vueFilePond();
 
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
-                    <file-pond
-                        name="test"
-                        ref="pond"
-                        label-idle="Drop files here..."
-                        v-bind:allow-multiple="true"
-                        accepted-file-types="image/jpeg, image/png"
-                        server="/upload"
-                    />
+
+                    <PrimaryButton v-bind="getRootProps()">
+                        <input v-bind="getInputProps()" />
+                        Click to upload
+                    </PrimaryButton>
                 </div>
             </div>
         </div>
