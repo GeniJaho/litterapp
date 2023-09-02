@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PhotosController;
+use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -39,6 +40,9 @@ Route::middleware([
         return Inertia::render('Photos');
     });
     Route::get('/photos', [PhotosController::class, 'index']);
+    Route::get('/photos/{photo}', [PhotosController::class, 'show']);
+
+    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
 
     Route::get('/upload', function () {
         return Inertia::render('Upload');

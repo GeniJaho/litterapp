@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Photo;
+use App\Models\Tag;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class PhotosController extends Controller
 {
@@ -13,5 +15,15 @@ class PhotosController extends Controller
         $user = auth()->user();
 
         return $user->photos()->paginate();
+    }
+
+    public function show(Photo $photo)
+    {
+        $photo->load('tags');
+
+        return Inertia::render('ShowPhoto', [
+            'photo' => $photo,
+            'tags' => Tag::all(),
+        ]);
     }
 }
