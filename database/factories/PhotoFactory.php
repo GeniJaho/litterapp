@@ -17,7 +17,8 @@ class PhotoFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'path' => $this->faker->imageUrl(),
+            'user_id' => \App\Models\User::factory(),
         ];
     }
 }

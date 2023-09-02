@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -11,6 +12,9 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property Collection<Photo> $photos
+ */
 class User extends Authenticatable
 {
     use HasApiTokens;
@@ -19,15 +23,6 @@ class User extends Authenticatable
     use HasTeams;
     use Notifiable;
     use TwoFactorAuthenticatable;
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
-    ];
 
     /**
      * The attributes that should be hidden for serialization.
@@ -59,7 +54,10 @@ class User extends Authenticatable
         'profile_photo_url',
     ];
 
-    public function photos(): \Illuminate\Database\Eloquent\Relations\HasMany
+    /**
+     * @return HasMany<Photo>
+     */
+    public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
     }

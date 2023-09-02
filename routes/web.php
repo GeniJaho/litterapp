@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\UploadPhotosController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
@@ -33,6 +34,11 @@ Route::middleware([
     Route::get('/dashboard', function () {
         return Inertia::render('Dashboard');
     })->name('dashboard');
+
+    Route::get('/my-photos', function () {
+        return Inertia::render('Photos');
+    });
+    Route::get('/photos', [PhotosController::class, 'index']);
 
     Route::get('/upload', function () {
         return Inertia::render('Upload');

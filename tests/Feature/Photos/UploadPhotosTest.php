@@ -4,12 +4,14 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-test('a user can upload a photo', function () {
+test('a user can upload photos', function () {
     Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg'),
+        'photos' => [
+            UploadedFile::fake()->image('photo.jpg'),
+        ],
     ]);
 
     $response->assertOk();
