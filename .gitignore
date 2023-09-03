@@ -5,6 +5,7 @@
 /public/storage
 /storage/*.key
 /storage/pint.cache
+/storage/rector/cache
 /vendor
 .env
 .env.backup

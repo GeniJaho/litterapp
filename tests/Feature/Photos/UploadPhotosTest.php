@@ -15,6 +15,7 @@ test('a user can upload photos', function () {
     ]);
 
     $response->assertOk();
+
     expect($user->photos()->count())->toBeOne();
 
     $photo = $user->photos()->first();

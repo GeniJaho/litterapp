@@ -2,10 +2,12 @@
 
 namespace Database\Factories;
 
+use App\Models\Photo;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Photo>
+ * @extends Factory<Photo>
  */
 class PhotoFactory extends Factory
 {
@@ -18,7 +20,7 @@ class PhotoFactory extends Factory
     {
         return [
             'path' => $this->faker->imageUrl(),
-            'user_id' => \App\Models\User::factory(),
+            'user_id' => User::factory(),
         ];
     }
 }
