@@ -40,6 +40,7 @@ return static function (RectorConfig $rectorConfig): void {
         StaticArrowFunctionRector::class,
         StaticClosureRector::class,
         EncapsedStringsToSprintfRector::class,
+        __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',
     ]);
 
     // Ensure file system caching is used instead of in-memory.

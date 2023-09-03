@@ -23,6 +23,7 @@
         "nunomaduro/collision": "^7.0",
         "pestphp/pest": "^2.0",
         "pestphp/pest-plugin-laravel": "^2.0",
+        "pestphp/pest-plugin-watch": "^2.0",
         "rector/rector": "^0.18.1",
         "spatie/laravel-ignition": "^2.0"
     },
