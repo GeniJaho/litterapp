@@ -9,7 +9,7 @@ class PhotoTagsController extends Controller
 {
     public function store(Photo $photo, Request $request)
     {
-        $photo->tags()->attach([$request->tag_id]);
+        $photo->tags()->syncWithoutDetaching($request->tag_id);
 
         return [];
     }

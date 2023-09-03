@@ -14,7 +14,7 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        return $user->photos()->paginate();
+        return $user->photos()->latest()->paginate();
     }
 
     public function show(Photo $photo)

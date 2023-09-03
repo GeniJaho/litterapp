@@ -3,7 +3,6 @@ import ApplicationLogo from '@/Components/ApplicationLogo.vue';
 import { useDropzone } from "vue3-dropzone";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
-const url = "/upload"; // Your url on the server side
 const saveFiles = (files) => {
     const formData = new FormData(); // pass data as a form
     for (let x = 0; x < files.length; x++) {
@@ -11,16 +10,16 @@ const saveFiles = (files) => {
         formData.append("photos[]", files[x]);
     }
 
-    // post the formData to your backend where storage is processed. In the backend, you will need to loop through the array and save each file through the loop.
-
+    // post the formData to your backend where storage is processed.
+    // In the backend, you will need to loop through the array and save each file through the loop.
     axios
-        .post(url, formData, {
+        .post("/upload", formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
         })
-        .then((response) => {
-            console.info(response.data);
+        .then(() => {
+            window.location.href = route('my-photos');
         })
         .catch((err) => {
             console.error(err);
@@ -32,7 +31,7 @@ function onDrop(acceptFiles, rejectReasons) {
     console.log(rejectReasons);
 }
 
-const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
+const { getRootProps, getInputProps, isDragActive, ...rest } = useDropzone({ onDrop });
 
 </script>
 
@@ -49,7 +48,9 @@ const { getRootProps, getInputProps, ...rest } = useDropzone({ onDrop });
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
 
-                    <PrimaryButton v-bind="getRootProps()">
+                    <p v-if="isDragActive">Drop the files here ...</p>
+
+                    <PrimaryButton v-else v-bind="getRootProps()">
                         <input v-bind="getInputProps()" />
                         Click to upload
                     </PrimaryButton>
