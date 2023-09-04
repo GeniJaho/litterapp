@@ -4,11 +4,12 @@ import {onMounted, ref} from "vue";
 
 const props = defineProps({
     photoId: Number,
+    items: Array,
     tags: Array,
 });
 
 const photo = ref(null);
-const selectedTag = ref(props.tags[0].id);
+const selectedItem = ref(props.items[0].id);
 
 onMounted(() => {
     getPhoto();
@@ -24,16 +25,16 @@ const getPhoto = () => {
         })
 }
 
-const addTag = () => {
-    axios.post(`/photos/${photo.value.id}/tags`, {
-        tag_id: selectedTag.value,
+const addItem = () => {
+    axios.post(`/photos/${photo.value.id}/items`, {
+        item_id: selectedItem.value,
     }).then(() => {
         getPhoto();
     });
 };
 
-const removeTag = (tagId) => {
-    axios.delete(`/photos/${photo.value.id}/tags/${tagId}`)
+const removeItem = (itemId) => {
+    axios.delete(`/photos/${photo.value.id}/items/${itemId}`)
         .then(() => {
             getPhoto();
         });
@@ -61,27 +62,27 @@ const removeTag = (tagId) => {
 
                     <div>
                         <div>
-                            <label for="add-tag" class="block text-sm font-medium leading-6 text-gray-900">Add
-                                Tag</label>
+                            <label for="add-item" class="block text-sm font-medium leading-6 text-gray-900">Add
+                                Item</label>
                             <select
-                                id="add-tag"
-                                v-model="selectedTag"
-                                name="add-tag"
+                                id="add-item"
+                                v-model="selectedItem"
+                                name="add-item"
                                 class="mt-2 block w-full rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                 <option
-                                    v-for="tag in tags"
-                                    :value="tag.id"
-                                >{{ tag.name }}
+                                    v-for="item in items"
+                                    :value="item.id"
+                                >{{ item.name }}
                                 </option>
                             </select>
 
                             <button
                                 type="button"
                                 class="inline-flex items-center px-4 py-2 mt-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
-                                @click="addTag"
-                                :disabled="selectedTag === ''"
+                                @click="addItem"
+                                :disabled="selectedItem === ''"
                             >
-                                Add
+                                Add Item
                             </button>
                         </div>
 
@@ -89,17 +90,17 @@ const removeTag = (tagId) => {
 
                     <div class="mt-4">
                         <h3 class="text-lg leading-6 font-medium text-gray-900">
-                            Photo Tags
+                            Photo Items
                         </h3>
                         <div class="mt-2 max-w-xl text-sm text-gray-500 space-x-1">
                                 <span
-                                    v-for="tag in photo.tags"
-                                    :key="tag.id"
-                                    @click="removeTag(tag.id)"
+                                    v-for="item in photo.items"
+                                    :key="item.id"
+                                    @click="removeItem(item.id)"
                                     class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200"
                                 >
                                     <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
-                                    {{ tag.name }}
+                                    {{ item.name }}
                                 </span>
                         </div>
                     </div>

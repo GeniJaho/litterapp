@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\Photo;
 use App\Models\Tag;
 use App\Models\User;
@@ -30,11 +31,12 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             return Inertia::render('ShowPhoto', [
                 'photoId' => $photo->id,
+                'items' => Item::all(),
                 'tags' => Tag::all(),
             ]);
         }
 
-        $photo->load('tags');
+        $photo->load('items');
         $photo->append('full_path');
 
         return $photo;
