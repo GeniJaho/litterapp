@@ -31,7 +31,7 @@ const addTag = () => {
                 <div class="flex space-x-8">
                     <div>
                         <img
-                            :src="`/${photo.full_path}`"
+                            :src="photo.full_path"
                             :alt="photo.id"
                             class="w-full sm:max-w-2xl"
                         >
