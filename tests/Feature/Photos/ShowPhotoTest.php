@@ -19,6 +19,7 @@ test('a user can see the photo tagging page', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('ShowPhoto')
         ->where('photo.id', $photo->id)
+        ->where('photo.full_path', $photo->full_path)
         ->has('photo.tags', 2)
         ->has('tags', 4)
     );

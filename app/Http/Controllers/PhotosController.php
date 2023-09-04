@@ -28,6 +28,7 @@ class PhotosController extends Controller
     public function show(Photo $photo)
     {
         $photo->load('tags');
+        $photo->append('full_path');
 
         return Inertia::render('ShowPhoto', [
             'photo' => $photo,
