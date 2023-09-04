@@ -21,4 +21,9 @@ class Photo extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function getFullPathAttribute(): string
+    {
+        return '/storage/' . $this->path;
+    }
 }

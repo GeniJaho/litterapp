@@ -28,6 +28,7 @@ test('a user can see their photos', function () {
     $response->assertOk();
     $response->assertJson(fn (AssertableJson $json) => $json
         ->where('data.0.id', $photoB->id)
+        ->where('data.0.full_path', $photoB->full_path)
         ->where('data.1.id', $photoA->id)
         ->etc()
     );

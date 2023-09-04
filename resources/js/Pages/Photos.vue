@@ -37,7 +37,7 @@ onMounted(() => {
                             <div v-for="photo in photos.data" :key="photo.id">
 
                                 <a :href="`/photos/${photo.id}`">
-                                    <img :src="photo.path" :alt="photo.id" class="w-full h-64 object-cover">
+                                    <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover">
                                 </a>
 
                             </div>

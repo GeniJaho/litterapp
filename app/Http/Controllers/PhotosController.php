@@ -14,7 +14,15 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        return $user->photos()->latest()->paginate();
+        $photos = $user->photos()->latest()->paginate();
+
+        $photos->getCollection()->transform(function (Photo $photo) {
+            $photo->append('full_path');
+
+            return $photo;
+        });
+
+        return $photos;
     }
 
     public function show(Photo $photo)
