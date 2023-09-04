@@ -27,6 +27,9 @@ uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Unit');
 |
 */
 
+expect()->extend('toBeZero', function () {
+    return $this->toBe(0);
+});
 expect()->extend('toBeOne', function () {
     return $this->toBe(1);
 });

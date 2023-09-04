@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePhotosRequest;
 use App\Models\Photo;
 use Illuminate\Http\Request;
 
 class UploadPhotosController extends Controller
 {
-    public function store(Request $request)
+    public function store(StorePhotosRequest $request)
     {
         $user = auth()->user();
 
@@ -21,5 +22,7 @@ class UploadPhotosController extends Controller
                 'user_id' => $user->id,
             ]);
         }
+
+        return [];
     }
 }

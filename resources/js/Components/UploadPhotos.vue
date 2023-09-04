@@ -1,6 +1,9 @@
 <script setup>
 import { useDropzone } from "vue3-dropzone";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {ref} from "vue";
+
+const errors = ref({});
 
 const saveFiles = (files) => {
     const formData = new FormData(); // pass data as a form
@@ -21,7 +24,7 @@ const saveFiles = (files) => {
             window.location.href = route('my-photos');
         })
         .catch((err) => {
-            console.error(err);
+            errors.value = err.response.data.errors;
         });
 };
 
@@ -51,6 +54,14 @@ const { getRootProps, getInputProps, isDragActive, ...rest } = useDropzone({ onD
                         <input v-bind="getInputProps()" />
                         Click to upload
                     </PrimaryButton>
+
+                    <div v-if="Object.keys(errors).length" class="text-red-500 mt-2">
+                        <div v-for="error in errors">
+                            <div v-for="message in error">
+                                {{ message }}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
