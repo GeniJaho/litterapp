@@ -1,20 +1,42 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {ref} from "vue";
+import {onMounted, ref} from "vue";
 
 const props = defineProps({
-    photo: Object,
+    photoId: Number,
     tags: Array,
 });
 
+const photo = ref(null);
 const selectedTag = ref(props.tags[0].id);
 
+onMounted(() => {
+    getPhoto();
+});
+
+const getPhoto = () => {
+    axios.get(`/photos/${props.photoId}`)
+        .then(response => {
+            photo.value = response.data;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
+
 const addTag = () => {
-    axios.post(`/photos/${props.photo.id}/tags`, {
+    axios.post(`/photos/${photo.value.id}/tags`, {
         tag_id: selectedTag.value,
     }).then(() => {
-        window.location.reload();
+        getPhoto();
     });
+};
+
+const removeTag = (tagId) => {
+    axios.delete(`/photos/${photo.value.id}/tags/${tagId}`)
+        .then(() => {
+            getPhoto();
+        });
 };
 </script>
 
@@ -26,7 +48,7 @@ const addTag = () => {
             </h2>
         </template>
 
-        <div>
+        <div v-if="photo">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex space-x-8">
                     <div>
@@ -73,7 +95,9 @@ const addTag = () => {
                                 <span
                                     v-for="tag in photo.tags"
                                     :key="tag.id"
-                                    class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200">
+                                    @click="removeTag(tag.id)"
+                                    class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200"
+                                >
                                     <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6" aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
                                     {{ tag.name }}
                                 </span>

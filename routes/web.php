@@ -3,7 +3,6 @@
 use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,6 +33,10 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::get('/upload', function () {
+        return Inertia::render('Upload');
+    })->name('upload');
+
     Route::get('/my-photos', function () {
         return Inertia::render('Photos');
     })->name('my-photos');
@@ -42,10 +45,7 @@ Route::middleware([
     Route::get('/photos/{photo}', [PhotosController::class, 'show']);
 
     Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
-
-    Route::get('/upload', function () {
-        return Inertia::render('Upload');
-    })->name('upload');
+    Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 });

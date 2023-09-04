@@ -27,12 +27,16 @@ class PhotosController extends Controller
 
     public function show(Photo $photo)
     {
+        if (! request()->wantsJson()) {
+            return Inertia::render('ShowPhoto', [
+                'photoId' => $photo->id,
+                'tags' => Tag::all(),
+            ]);
+        }
+
         $photo->load('tags');
         $photo->append('full_path');
 
-        return Inertia::render('ShowPhoto', [
-            'photo' => $photo,
-            'tags' => Tag::all(),
-        ]);
+        return $photo;
     }
 }
