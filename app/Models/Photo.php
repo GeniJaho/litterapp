@@ -22,6 +22,11 @@ class Photo extends Model
         return $this->belongsToMany(Item::class, 'photo_item');
     }
 
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(Tag::class, 'photo_tag');
+    }
+
     protected function fullPath(): Attribute
     {
         return Attribute::make(get: fn () => '/storage/'.$this->path);

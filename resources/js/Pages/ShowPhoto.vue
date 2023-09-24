@@ -62,6 +62,9 @@ const removeItem = (itemId) => {
 
                     <div>
                         <div>
+                            <p class="text-gray-900 dark:text-gray-50">Start by identifying litter objects or items in the photo.</p>
+                        </div>
+                        <div>
                             <label for="add-item" class="block text-sm font-medium leading-6 text-gray-900">Add
                                 Item</label>
                             <select
@@ -89,10 +92,10 @@ const removeItem = (itemId) => {
                     </div>
 
                     <div class="mt-4">
-                        <h3 class="text-lg leading-6 font-medium text-gray-900">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50">
                             Photo Items
                         </h3>
-                        <div class="mt-2 max-w-xl text-sm text-gray-500 space-x-1">
+                        <div class="mt-2 max-w-xl space-x-1">
                                 <span
                                     v-for="item in photo.items"
                                     :key="item.id"
