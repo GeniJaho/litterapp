@@ -3,6 +3,7 @@
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
+use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -47,6 +48,9 @@ Route::middleware([
 
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
     Route::delete('/photos/{photo}/items/{item}', [PhotoItemsController::class, 'destroy']);
+
+    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
+    Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
     Route::post('/photos/{photo}/items/{item}/tags', [PhotoItemTagsController::class, 'store']);
     Route::delete('/photos/{photo}/items/{item}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
