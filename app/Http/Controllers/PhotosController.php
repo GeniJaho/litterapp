@@ -37,6 +37,7 @@ class PhotosController extends Controller
         }
 
         $photo->load('items');
+        $photo->items->each(fn (Item $item) => $item->pivot->load('tags'));
         $photo->append('full_path');
 
         return $photo;

@@ -1,7 +1,7 @@
 <?php
 
-use App\Models\Tag;
 use App\Models\Photo;
+use App\Models\Tag;
 use App\Models\User;
 
 test('a user can remove a tag from a photo', function () {

@@ -20,12 +20,4 @@ return new class extends Migration
             $table->unique(['photo_id', 'tag_id']);
         });
     }
-
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('photo_tag');
-    }
 };

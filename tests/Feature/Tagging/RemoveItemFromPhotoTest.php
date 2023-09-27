@@ -10,10 +10,10 @@ test('a user can remove an item from a photo', function () {
     $existingItem = Item::factory()->create();
     $photo->items()->attach($existingItem);
 
-    $this->assertDatabaseCount('photo_item', 1);
+    $this->assertDatabaseCount('photo_items', 1);
 
     $response = $this->actingAs($user)->deleteJson("/photos/{$photo->id}/items/{$existingItem->id}");
 
     $response->assertOk();
-    $this->assertDatabaseEmpty('photo_item');
+    $this->assertDatabaseEmpty('photo_items');
 });

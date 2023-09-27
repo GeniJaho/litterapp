@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Tag;
 use App\Models\Photo;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 
 class PhotoTagsController extends Controller

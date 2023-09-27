@@ -52,8 +52,8 @@ Route::middleware([
     Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
-    Route::post('/photos/{photo}/items/{item}/tags', [PhotoItemTagsController::class, 'store']);
-    Route::delete('/photos/{photo}/items/{item}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
+    Route::post('/photo-items/{photoItem}/tags', [PhotoItemTagsController::class, 'store']);
+    Route::delete('/photo-items/{photoItem}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
 
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 });

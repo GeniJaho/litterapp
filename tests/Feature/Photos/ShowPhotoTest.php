@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -28,8 +29,13 @@ test('a user can see the photo tagging page', function () {
 test('a user can see a photo', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
-    $photoItems = Item::factory()->count(2)->create();
-    $photo->items()->sync($photoItems);
+    $items = Item::factory()->count(2)->create();
+    $photo->items()->sync($items);
+    $tag = Tag::factory()->create();
+    PhotoItemTag::create([
+        'photo_item_id' => $photo->items()->first()->pivot->id,
+        'tag_id' => $tag->id,
+    ]);
 
     $response = $this->getJson("/photos/{$photo->id}");
 
@@ -38,6 +44,7 @@ test('a user can see a photo', function () {
         ->where('id', $photo->id)
         ->where('full_path', $photo->full_path)
         ->has('items', 2)
+        ->has('items.0.pivot.tags', 1)
         ->etc()
     );
 });

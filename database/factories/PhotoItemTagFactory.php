@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\PhotoItemTag;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\PhotoItemTag>
+ * @extends Factory<PhotoItemTag>
  */
 class PhotoItemTagFactory extends Factory
 {

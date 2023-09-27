@@ -16,8 +16,8 @@ test('a user can add an item to a photo', function () {
     ]);
 
     $response->assertOk();
-    $this->assertDatabaseCount('photo_item', 2);
-    $this->assertDatabaseHas('photo_item', [
+    $this->assertDatabaseCount('photo_items', 2);
+    $this->assertDatabaseHas('photo_items', [
         'photo_id' => $photo->id,
         'item_id' => $item->id,
     ]);

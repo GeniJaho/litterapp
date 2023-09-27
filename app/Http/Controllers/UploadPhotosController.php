@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StorePhotosRequest;
 use App\Models\Photo;
-use Illuminate\Http\Request;
 
 class UploadPhotosController extends Controller
 {

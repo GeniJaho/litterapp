@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
@@ -10,17 +11,32 @@ class PhotoItem extends Pivot
 {
     use HasFactory;
 
-    protected $table = 'photo_item';
+    protected $table = 'photo_items';
 
     public $incrementing = true;
 
-    public function item(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
-    public function photo(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function photo(): BelongsTo
     {
         return $this->belongsTo(Photo::class);
+    }
+
+    public function tags(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Tag::class,
+            'photo_item_tag',
+            'photo_item_id',
+            'tag_id',
+            'id',
+            'id',
+        )
+            ->withPivot('id')
+            ->using(PhotoItemTag::class)
+            ->withTimestamps();
     }
 }

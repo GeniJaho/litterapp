@@ -19,7 +19,10 @@ class Photo extends Model
 
     public function items(): BelongsToMany
     {
-        return $this->belongsToMany(Item::class, 'photo_item');
+        return $this->belongsToMany(Item::class, 'photo_items')
+            ->withPivot('id')
+            ->using(PhotoItem::class)
+            ->withTimestamps();
     }
 
     public function tags(): BelongsToMany
