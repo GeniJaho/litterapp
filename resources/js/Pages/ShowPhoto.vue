@@ -35,7 +35,6 @@ const addItem = () => {
 };
 
 const removeItem = (itemId) => {
-    return;
     axios.delete(`/photos/${photo.value.id}/items/${itemId}`)
         .then(() => {
             getPhoto();
@@ -117,11 +116,11 @@ const removeTagFromItem = (photoItem, tagId) => {
                                                 <h3 class="truncate text-sm font-bold text-gray-900 dark:text-gray-50">
                                                     {{ item.name }}
                                                 </h3>
-                                                <span
-                                                    class="inline-flex cursor-pointer items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800"
-                                                    @click="removeItem(item.id)">
-                                                    Remove Item
-                                                </span>
+                                                <button
+                                                    @click="removeItem(item.id)"
+                                                    type="button"
+                                                    class="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                                                >Remove Item</button>
                                             </div>
                                             <div class="mt-2">
                                                 <div class="flex flex-row">
