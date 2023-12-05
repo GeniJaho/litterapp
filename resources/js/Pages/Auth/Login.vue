@@ -14,9 +14,9 @@ defineProps({
 });
 
 const form = useForm({
-    email: '',
-    password: '',
-    remember: false,
+    email: 'wastewizard@litterhero.com',
+    password: 'password',
+    remember: true,
 });
 
 const submit = () => {

@@ -19,9 +19,20 @@ class UserSeeder extends Seeder
             'email' => 'jahogeni@gmail.com',
             'password' => Hash::make('password'),
         ]);
+
+        tap(User::factory()->create([
+            'name' => 'Waste Wizard',
+            'email' => 'wastewizard@litterhero.com',
+            'password' => Hash::make('password'),
+        ]), fn (User $user) => $user->ownedTeams()->save(Team::forceCreate([
+            'user_id' => $user->id,
+            'name' => "Wizard's Team",
+            'personal_team' => true,
+        ])));
+
         User::factory()->create([
-            'name' => 'Fred Steenbergen',
-            'email' => 'fred@littertagger.com',
+            'name' => 'Trash Killer',
+            'email' => 'trashkiller@litterhero.com',
             'password' => Hash::make('password'),
         ]);
 
