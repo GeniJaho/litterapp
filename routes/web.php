@@ -1,9 +1,10 @@
 <?php
 
+use App\Http\Controllers\PhotoItemsController;
+use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
-use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
@@ -34,6 +35,10 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 
+    Route::get('/upload', function () {
+        return Inertia::render('Upload');
+    })->name('upload');
+
     Route::get('/my-photos', function () {
         return Inertia::render('Photos');
     })->name('my-photos');
@@ -41,11 +46,14 @@ Route::middleware([
     Route::get('/photos', [PhotosController::class, 'index']);
     Route::get('/photos/{photo}', [PhotosController::class, 'show']);
 
-    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
+    Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
+    Route::delete('/photos/{photo}/items/{item}', [PhotoItemsController::class, 'destroy']);
 
-    Route::get('/upload', function () {
-        return Inertia::render('Upload');
-    })->name('upload');
+    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
+    Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
+
+    Route::post('/photo-items/{photoItem}/tags', [PhotoItemTagsController::class, 'store']);
+    Route::delete('/photo-items/{photoItem}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
 
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 });

@@ -1,16 +1,18 @@
 <?php
 
+use App\Models\Item;
 use App\Models\Photo;
+use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
 test('a user can see the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
+    $items = Item::factory()->count(2)->create();
     $tags = Tag::factory()->count(2)->create();
-    $photoTags = Tag::factory()->count(2)->create();
-    $photo->tags()->sync($photoTags);
 
     $response = $this->get("/photos/{$photo->id}");
 
@@ -18,9 +20,31 @@ test('a user can see the photo tagging page', function () {
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('ShowPhoto')
-        ->where('photo.id', $photo->id)
-        ->where('photo.full_path', $photo->full_path)
-        ->has('photo.tags', 2)
-        ->has('tags', 4)
+        ->where('photoId', $photo->id)
+        ->has('tags', 2)
+        ->has('items', 2)
+    );
+});
+
+test('a user can see a photo', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $items = Item::factory()->count(2)->create();
+    $photo->items()->sync($items);
+    $tag = Tag::factory()->create();
+    PhotoItemTag::create([
+        'photo_item_id' => $photo->items()->first()->pivot->id,
+        'tag_id' => $tag->id,
+    ]);
+
+    $response = $this->getJson("/photos/{$photo->id}");
+
+    $response->assertOk();
+    $response->assertJson(fn (AssertableJson $json) => $json
+        ->where('id', $photo->id)
+        ->where('full_path', $photo->full_path)
+        ->has('items', 2)
+        ->has('items.0.pivot.tags', 1)
+        ->etc()
     );
 });

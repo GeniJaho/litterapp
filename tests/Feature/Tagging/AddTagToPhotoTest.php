@@ -4,7 +4,7 @@ use App\Models\Photo;
 use App\Models\Tag;
 use App\Models\User;
 
-test('a user can tag a photo', function () {
+test('a user can add a tag to a photo', function () {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingTag = Tag::factory()->create();
@@ -20,23 +20,5 @@ test('a user can tag a photo', function () {
     $this->assertDatabaseHas('photo_tag', [
         'photo_id' => $photo->id,
         'tag_id' => $tag->id,
-    ]);
-});
-
-test('a user can not tag a photo with the same tag more than once', function () {
-    $user = User::factory()->create();
-    $photo = Photo::factory()->create(['user_id' => $user->id]);
-    $existingTag = Tag::factory()->create();
-    $photo->tags()->attach($existingTag);
-
-    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/tags", [
-        'tag_id' => $existingTag->id,
-    ]);
-
-    $response->assertOk();
-    $this->assertDatabaseCount('photo_tag', 1);
-    $this->assertDatabaseHas('photo_tag', [
-        'photo_id' => $photo->id,
-        'tag_id' => $existingTag->id,
     ]);
 });

@@ -11,21 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('photo_tag', function (Blueprint $table) {
+        Schema::create('photo_item_tag', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('photo_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('photo_item_id');
             $table->foreignId('tag_id')->constrained()->cascadeOnDelete();
             $table->timestamps();
 
-            $table->unique(['photo_id', 'tag_id']);
-        });
-    }
+            $table->foreign('photo_item_id')->references('id')->on('photo_items')->cascadeOnDelete();
 
-    /**
-     * Reverse the migrations.
-     */
-    public function down(): void
-    {
-        Schema::dropIfExists('photo_tag');
+            $table->unique(['photo_item_id', 'tag_id']);
+        });
     }
 };

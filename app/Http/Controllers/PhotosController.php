@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Item;
 use App\Models\Photo;
 use App\Models\Tag;
 use App\Models\User;
@@ -27,12 +28,18 @@ class PhotosController extends Controller
 
     public function show(Photo $photo)
     {
-        $photo->load('tags');
+        if (! request()->wantsJson()) {
+            return Inertia::render('ShowPhoto', [
+                'photoId' => $photo->id,
+                'items' => Item::all(),
+                'tags' => Tag::all(),
+            ]);
+        }
+
+        $photo->load('items');
+        $photo->items->each(fn (Item $item) => $item->pivot->load('tags'));
         $photo->append('full_path');
 
-        return Inertia::render('ShowPhoto', [
-            'photo' => $photo,
-            'tags' => Tag::all(),
-        ]);
+        return $photo;
     }
 }
