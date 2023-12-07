@@ -58,24 +58,23 @@ const acceptedFileTypes = [
 ];
 
 const customFileValidation = (source, type) => new Promise((resolve, reject) => {
-    console.log('customFileValidation', source, type);
-    if (! type) {
-        // Unrecognized mime type, looking for a file extension
-        const uploadedFileExtension = source.name.split('.').pop()?.toLowerCase();
-
-        // Checking if the file extension is accepted
-        const isAllowed = acceptedFileTypes.find(fileType => fileType.split('.').pop() === uploadedFileExtension) !== undefined;
-
-        if (isAllowed) {
-            // Resolve with our "false" mime type
-            resolve('.' + uploadedFileExtension);
-        } else {
-            // Even the extension is not accepted, reject
-            reject('.' + uploadedFileExtension);
-        }
+    if (type) {
+        return resolve(type);
     }
 
-    resolve(type);
+    // Unrecognized mime type, looking for a file extension
+    const uploadedFileExtension = source.name.split('.').pop()?.toLowerCase();
+
+    // Checking if the file extension is accepted
+    const isAllowed = acceptedFileTypes.find(fileType => fileType.split('.').pop() === uploadedFileExtension) !== undefined;
+
+    if (isAllowed) {
+        // Resolve with our "false" mime type
+        resolve('.' + uploadedFileExtension);
+    } else {
+        // Even the extension is not accepted, reject
+        reject('.' + uploadedFileExtension);
+    }
 });
 
 </script>
