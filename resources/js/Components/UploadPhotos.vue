@@ -8,9 +8,12 @@ const page = usePage();
 import vueFilePond from 'vue-filepond';
 
 // Import plugins
-import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type';
 import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview';
+import FilePondPluginImageTransform from 'filepond-plugin-image-transform';
+import FilePondPluginImageResize from 'filepond-plugin-image-resize';
 import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type';
+import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 
 // Import styles
 import 'filepond/dist/filepond.min.css';
@@ -18,7 +21,14 @@ import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 // Create FilePond component
-const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
+const FilePond = vueFilePond(
+    FilePondPluginImagePreview,
+    FilePondPluginImageTransform,
+    FilePondPluginImageResize,
+    FilePondPluginImageExifOrientation,
+    FilePondPluginFileValidateType,
+    FilePondPluginFileValidateSize,
+);
 
 const server = {
     url: '.', // current host
@@ -54,9 +64,17 @@ const server = {
                     <file-pond
                         name="photo"
                         ref="pond"
-                        label-idle="Drop photos here..."
                         allow-multiple="true"
-                        accepted-file-types="image/jpeg, image/png"
+                        allow-revert="false"
+                        accepted-file-types="image/*"
+                        file-validate-type-label-expected-types="Only images are allowed"
+                        max-file-size="20MB"
+                        image-transform-output-strip-image-head="false"
+                        image-transform-output-quality="75"
+                        image-resize-target-width="1024"
+                        image-resize-target-height="1024"
+                        image-resize-mode="contain"
+                        image-resize-upscale="false"
                         :server="server"
                     />
 

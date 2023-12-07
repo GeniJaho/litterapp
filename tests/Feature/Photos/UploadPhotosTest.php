@@ -22,12 +22,12 @@ test('a user can upload photos', function () {
     Storage::disk('public')->assertExists('photos/photo.jpg');
 });
 
-test('a photo can not be larger than 2MB', function () {
+test('a photo can not be larger than 20MB', function () {
     Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg')->size(4097),
+        'photo' => UploadedFile::fake()->image('photo.jpg')->size(20481),
     ]);
 
     $response->assertSessionHasErrors('photo');
