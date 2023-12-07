@@ -23,7 +23,9 @@ class PhotosController extends Controller
             return $photo;
         });
 
-        return $photos;
+        return Inertia::render('Photos', [
+            'photos' => $photos,
+        ]);
     }
 
     public function show(Photo $photo)

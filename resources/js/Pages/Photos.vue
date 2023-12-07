@@ -1,23 +1,10 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, ref} from "vue";
+import { ref } from "vue";
+import { usePage, Link } from '@inertiajs/vue3';
 
-const photos = ref({});
-
-const getPhotos = () => {
-    axios
-        .get("/photos")
-        .then((response) => {
-            photos.value = response.data;
-        })
-        .catch((err) => {
-            console.error(err);
-        });
-};
-
-onMounted(() => {
-    getPhotos();
-});
+const { props } = usePage();
+const photos = ref(props.photos);
 </script>
 
 <template>
@@ -40,6 +27,18 @@ onMounted(() => {
                                     <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover">
                                 </a>
 
+                            </div>
+                        </div>
+
+                        <div v-if="photos.links?.length" class="flex justify-center space-x-2 my-4">
+                            <div v-for="link in photos.links" :key="link.url">
+                                <Link
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    v-html="link.label"
+                                    :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"
+                                ></Link>
+                                <span v-else v-html="link.label" :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"></span>
                             </div>
                         </div>
 
