@@ -15,7 +15,11 @@ class StorePhotosRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'photo' => ['required', 'image', 'max:20480'], // 20MB, but we do minimization on the frontend
+            'photo' => [
+                'required',
+                'mimes:jpg,jpeg,png,webp,heic,heif',
+                'max:20480',
+            ],
         ];
     }
 }

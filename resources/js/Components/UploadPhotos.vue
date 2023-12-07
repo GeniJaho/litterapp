@@ -48,6 +48,36 @@ const server = {
     revert: null,
 };
 
+const acceptedFileTypes = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/webp',
+    '.heic',
+    '.heif',
+];
+
+const customFileValidation = (source, type) => new Promise((resolve, reject) => {
+    console.log('customFileValidation', source, type);
+    if (! type) {
+        // Unrecognized mime type, looking for a file extension
+        const uploadedFileExtension = source.name.split('.').pop()?.toLowerCase();
+
+        // Checking if the file extension is accepted
+        const isAllowed = acceptedFileTypes.find(fileType => fileType.split('.').pop() === uploadedFileExtension) !== undefined;
+
+        if (isAllowed) {
+            // Resolve with our "false" mime type
+            resolve('.' + uploadedFileExtension);
+        } else {
+            // Even the extension is not accepted, reject
+            reject('.' + uploadedFileExtension);
+        }
+    }
+
+    resolve(type);
+});
+
 </script>
 
 <template>
@@ -66,7 +96,8 @@ const server = {
                         ref="pond"
                         allow-multiple="true"
                         allow-revert="false"
-                        accepted-file-types="image/*"
+                        :accepted-file-types="acceptedFileTypes"
+                        :file-validate-type-detect-type="customFileValidation"
                         file-validate-type-label-expected-types="Only images are allowed"
                         max-file-size="20MB"
                         image-transform-output-strip-image-head="false"
