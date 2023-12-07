@@ -9,9 +9,7 @@ test('a user can upload photos', function () {
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->post('/upload', [
-        'photos' => [
-            UploadedFile::fake()->image('photo.jpg'),
-        ],
+        'photo' => UploadedFile::fake()->image('photo.jpg'),
     ]);
 
     $response->assertOk();
@@ -24,17 +22,15 @@ test('a user can upload photos', function () {
     Storage::disk('public')->assertExists('photos/photo.jpg');
 });
 
-test('a photo can not be larger than 2MB', function () {
+test('a photo can not be larger than 20MB', function () {
     Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->post('/upload', [
-        'photos' => [
-            UploadedFile::fake()->image('photo.jpg')->size(2049),
-        ],
+        'photo' => UploadedFile::fake()->image('photo.jpg')->size(20481),
     ]);
 
-    $response->assertSessionHasErrors('photos.0');
+    $response->assertSessionHasErrors('photo');
 
     expect($user->photos()->count())->toBeZero();
 });
@@ -44,12 +40,10 @@ test('only images can be uploaded', function () {
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->post('/upload', [
-        'photos' => [
-            UploadedFile::fake()->create('document.pdf'),
-        ],
+        'photo' => UploadedFile::fake()->create('document.pdf'),
     ]);
 
-    $response->assertSessionHasErrors('photos.0');
+    $response->assertSessionHasErrors('photo');
 
     expect($user->photos()->count())->toBeZero();
 });
