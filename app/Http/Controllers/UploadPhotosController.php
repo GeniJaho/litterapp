@@ -11,16 +11,14 @@ class UploadPhotosController extends Controller
     {
         $user = auth()->user();
 
-        $photos = $request->file('photos');
+        $photo = $request->file('photo');
 
-        foreach ($photos as $photo) {
-            $originalFileName = $photo->getClientOriginalName();
+        $originalFileName = $photo->getClientOriginalName();
 
-            Photo::create([
-                'path' => $photo->storeAs('photos', $originalFileName, 'public'),
-                'user_id' => $user->id,
-            ]);
-        }
+        Photo::create([
+            'path' => $photo->storeAs('photos', $originalFileName, 'public'),
+            'user_id' => $user->id,
+        ]);
 
         return [];
     }

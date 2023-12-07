@@ -1,39 +1,42 @@
 <script setup>
-import { useDropzone } from "vue3-dropzone";
+import { usePage } from '@inertiajs/vue3'
+import { Link } from '@inertiajs/vue3'
+
+const page = usePage();
+
+// Import FilePond
+import vueFilePond from 'vue-filepond';
+
+// Import plugins
+import FilePondPluginFileValidateType from 'filepond-plugin-file-validate-type/dist/filepond-plugin-file-validate-type';
+import FilePondPluginImagePreview from 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview';
+import FilePondPluginImageExifOrientation from 'filepond-plugin-image-exif-orientation';
+
+// Import styles
+import 'filepond/dist/filepond.min.css';
+import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {ref} from "vue";
 
-const errors = ref({});
+// Create FilePond component
+const FilePond = vueFilePond(FilePondPluginFileValidateType, FilePondPluginImagePreview, FilePondPluginImageExifOrientation);
 
-const saveFiles = (files) => {
-    const formData = new FormData(); // pass data as a form
-    for (let x = 0; x < files.length; x++) {
-        // append files as array to the form, feel free to change the array name
-        formData.append("photos[]", files[x]);
-    }
-
-    // post the formData to your backend where storage is processed.
-    // In the backend, you will need to loop through the array and save each file through the loop.
-    axios
-        .post("/upload", formData, {
-            headers: {
-                "Content-Type": "multipart/form-data",
-            },
-        })
-        .then(() => {
-            window.location.href = route('my-photos');
-        })
-        .catch((err) => {
-            errors.value = err.response.data.errors;
-        });
+const server = {
+    url: '.', // current host
+    process: {
+        url: '/upload',
+        method: 'POST',
+        withCredentials: false,
+        headers: {
+            'X-CSRF-TOKEN': page.props.csrf_token,
+        },
+        timeout: 20000,
+        onload: null,
+        onerror: null,
+        ondata: null,
+    },
+    fetch: null,
+    revert: null,
 };
-
-function onDrop(acceptFiles, rejectReasons) {
-    saveFiles(acceptFiles); // saveFiles as callback
-    console.log(rejectReasons);
-}
-
-const { getRootProps, getInputProps, isDragActive, ...rest } = useDropzone({ onDrop });
 
 </script>
 
@@ -48,19 +51,19 @@ const { getRootProps, getInputProps, isDragActive, ...rest } = useDropzone({ onD
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
 
-                    <p v-if="isDragActive">Drop the files here ...</p>
+                    <file-pond
+                        name="photo"
+                        ref="pond"
+                        label-idle="Drop photos here..."
+                        allow-multiple="true"
+                        accepted-file-types="image/jpeg, image/png"
+                        :server="server"
+                    />
 
-                    <PrimaryButton v-else v-bind="getRootProps()">
-                        <input v-bind="getInputProps()" />
-                        Click to upload
-                    </PrimaryButton>
-
-                    <div v-if="Object.keys(errors).length" class="text-red-500 mt-2">
-                        <div v-for="error in errors">
-                            <div v-for="message in error">
-                                {{ message }}
-                            </div>
-                        </div>
+                    <div class="flex justify-center">
+                        <Link :href="route('my-photos')">
+                            <PrimaryButton>My Photos</PrimaryButton>
+                        </Link>
                     </div>
                 </div>
             </div>
