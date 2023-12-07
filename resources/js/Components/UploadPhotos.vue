@@ -39,7 +39,7 @@ const server = {
         headers: {
             'X-CSRF-TOKEN': page.props.csrf_token,
         },
-        timeout: 20000,
+        timeout: 120000, // 2 minutes
         onload: null,
         onerror: null,
         ondata: null,
