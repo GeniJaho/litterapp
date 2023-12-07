@@ -11,11 +11,10 @@ services:
     container_name: ${APP_NAME}-web
     restart: unless-stopped
     ports:
-      - 8000:9000
+      - 9000:9000
     working_dir: /app
     depends_on:
       - db
-      - photo-storage
   docs:
     # build:
     #   context: ./docs
@@ -64,7 +63,6 @@ services:
     volumes:
       - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
-      - photo-storage
       - web
 
 networks:

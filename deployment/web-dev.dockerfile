@@ -42,12 +42,11 @@ RUN mkdir -p /home/$user/.composer \
 
 COPY --chown=$user . /app
 
-USER $user
+#USER $user
 
 RUN composer install --optimize-autoloader --no-dev
 RUN php artisan config:clear && php artisan cache:clear
-RUN php artisan horizon:publish
 RUN php artisan key:generate
 
 #EXPOSE 9000
-#CMD php artisan serve --host=0.0.0.0 --port=9000
+CMD php artisan serve --host=0.0.0.0 --port=9000
