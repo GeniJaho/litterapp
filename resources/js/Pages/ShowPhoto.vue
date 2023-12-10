@@ -96,23 +96,23 @@ const removeTagFromItem = (photoItem, tagId) => {
                                 @click="addItem"
                                 :disabled="selectedItem === ''"
                             >
-                                Add Item
+                                Add Object
                             </button>
                         </div>
 
                         <div class="mt-4">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50">
-                                Photo Items
+                                Litter Objects
                             </h3>
                             <div class="mt-2">
-                                <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+                                <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <li
                                         v-for="item in photo.items"
                                         :key="item.id"
                                         class="col-span-1 divide-y divide-gray-200 rounded-lg bg-white dark:bg-gray-800 shadow"
                                     >
                                         <div class="p-6 truncate">
-                                            <div class="flex items-center space-x-3">
+                                            <div class="flex items-center justify-between space-x-3">
                                                 <h3 class="truncate text-sm font-bold text-gray-900 dark:text-gray-50">
                                                     {{ item.name }}
                                                 </h3>
@@ -120,10 +120,10 @@ const removeTagFromItem = (photoItem, tagId) => {
                                                     @click="removeItem(item.id)"
                                                     type="button"
                                                     class="rounded-full bg-indigo-600 px-2.5 py-1 text-xs font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-                                                >Remove Item</button>
+                                                >Remove Object</button>
                                             </div>
                                             <div class="mt-2">
-                                                <div class="flex flex-row">
+                                                <div class="flex flex-row justify-between">
                                                     <select
                                                         id="add-tag"
                                                         v-model="selectedTag"
@@ -146,12 +146,12 @@ const removeTagFromItem = (photoItem, tagId) => {
                                                     </button>
                                                 </div>
 
-                                                <div class="mt-2 text-sm text-gray-500 space-x-1">
+                                                <div class="mt-2 text-sm text-gray-500 flex flex-wrap space-x-1">
                                                         <span
                                                             v-for="tag in item.pivot.tags"
                                                             :key="tag.id"
                                                             @click="removeTagFromItem(item.pivot, tag.id)"
-                                                            class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200"
+                                                            class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 mb-2 mr-2 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200"
                                                         >
                                                             <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                                                                  aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
