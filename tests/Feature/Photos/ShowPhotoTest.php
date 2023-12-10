@@ -5,6 +5,7 @@ use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
@@ -12,7 +13,10 @@ test('a user can see the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $items = Item::factory()->count(2)->create();
-    $tags = Tag::factory()->count(2)->create();
+    $brand = \App\Models\TagType::factory()->create(['name' => 'Brand']);
+    $material = \App\Models\TagType::factory()->create(['name' => 'Material']);
+    $brandTags = Tag::factory()->count(2)->create(['tag_type_id' => $brand->id]);
+    $materialTags = Tag::factory()->count(3)->create(['tag_type_id' => $material->id]);
 
     $response = $this->get("/photos/{$photo->id}");
 
@@ -21,7 +25,10 @@ test('a user can see the photo tagging page', function () {
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('ShowPhoto')
         ->where('photoId', $photo->id)
-        ->has('tags', 2)
+        ->where('tags', [
+            $brand->name => $brandTags->toArray(),
+            $material->name => $materialTags->toArray(),
+        ])
         ->has('items', 2)
     );
 });

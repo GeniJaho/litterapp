@@ -15,7 +15,7 @@ const photos = ref(props.photos);
             </h2>
         </template>
 
-        <div class="py-12">
+        <div v-if="photos.data.length" class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
                 <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
@@ -30,7 +30,7 @@ const photos = ref(props.photos);
                             </div>
                         </div>
 
-                        <div v-if="photos.links?.length" class="flex justify-center space-x-2 my-4">
+                        <div v-if="photos.links?.length && photos.last_page > 1" class="flex justify-center space-x-2 my-4">
                             <div v-for="link in photos.links" :key="link.url">
                                 <Link
                                     v-if="link.url"

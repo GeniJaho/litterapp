@@ -130,7 +130,7 @@ const removeTagFromItem = (photoItem, tagId) => {
                                                         name="add-tag"
                                                         class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                                                         <option
-                                                            v-for="tag in tags"
+                                                            v-for="material in tags.Material"
                                                             :value="tag.id"
                                                         >{{ tag.name }}
                                                         </option>
