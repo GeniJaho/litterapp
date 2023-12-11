@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\TagType;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\TagType>
+ * @extends Factory<TagType>
  */
 class TagTypeFactory extends Factory
 {
@@ -18,6 +19,7 @@ class TagTypeFactory extends Factory
     {
         return [
             'name' => $this->faker->word,
+            'slug' => $this->faker->unique()->slug,
         ];
     }
 }

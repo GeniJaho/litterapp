@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\TagType;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
@@ -13,8 +14,8 @@ test('a user can see the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $items = Item::factory()->count(2)->create();
-    $brand = \App\Models\TagType::factory()->create(['name' => 'Brand']);
-    $material = \App\Models\TagType::factory()->create(['name' => 'Material']);
+    $brand = TagType::factory()->create(['name' => 'Brand']);
+    $material = TagType::factory()->create(['name' => 'Material']);
     $brandTags = Tag::factory()->count(2)->create(['tag_type_id' => $brand->id]);
     $materialTags = Tag::factory()->count(3)->create(['tag_type_id' => $material->id]);
 
@@ -23,11 +24,11 @@ test('a user can see the photo tagging page', function () {
     $response->assertOk();
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('ShowPhoto')
+        ->component('Photo/Show')
         ->where('photoId', $photo->id)
         ->where('tags', [
-            $brand->name => $brandTags->toArray(),
-            $material->name => $materialTags->toArray(),
+            $brand->slug => $brandTags->toArray(),
+            $material->slug => $materialTags->toArray(),
         ])
         ->has('items', 2)
     );

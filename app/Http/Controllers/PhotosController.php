@@ -35,11 +35,11 @@ class PhotosController extends Controller
         $tags = Tag::query()->get()
             ->groupBy('tag_type_id')
             ->mapWithKeys(function ($values, $key) use ($tagTypes) {
-                return [$tagTypes->find($key)->name => $values];
+                return [$tagTypes->find($key)->slug => $values];
             });
 
         if (! request()->wantsJson()) {
-            return Inertia::render('ShowPhoto', [
+            return Inertia::render('Photo/Show', [
                 'photoId' => $photo->id,
                 'items' => Item::all(),
                 'tags' => $tags,

@@ -12,8 +12,8 @@ class TagSeeder extends Seeder
     {
         $now = now();
 
-        $brand = TagType::query()->create(['name' => 'Brand']);
-        $material = TagType::query()->create(['name' => 'Material']);
+        $brand = TagType::query()->create(['name' => 'Brand', 'slug' => 'brand']);
+        $material = TagType::query()->create(['name' => 'Material', 'slug' => 'material']);
 
         Tag::query()->insert([
             //brands
