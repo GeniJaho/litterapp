@@ -1,6 +1,9 @@
 <?php
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Pest\Arch\Expectations\Targeted;
+use Pest\Arch\Support\FileLineFinder;
+use PHPUnit\Architecture\Elements\ObjectDescription;
 use Tests\TestCase;
 
 /*
@@ -30,8 +33,17 @@ uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Unit');
 expect()->extend('toBeZero', function () {
     return $this->toBe(0);
 });
-expect()->extend('toBeOne', function () {
-    return $this->toBe(1);
+
+expect()->extend('toNotEagerLoadByDefault', function () {
+    return Targeted::make(
+        $this,
+        fn (ObjectDescription $object): bool => $object
+                ->reflectionClass
+                ->getProperty('with')
+                ->getDefaultValue() === [],
+        'to not eager load by default',
+        FileLineFinder::where(fn (string $line): bool => str_contains($line, '$with')),
+    );
 });
 
 /*
