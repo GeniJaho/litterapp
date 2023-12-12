@@ -1,10 +1,12 @@
 <?php
 
+use App\Models\TagType;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
@@ -12,16 +14,22 @@ test('a user can see the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $items = Item::factory()->count(2)->create();
-    $tags = Tag::factory()->count(2)->create();
+    $brand = TagType::factory()->create(['name' => 'Brand']);
+    $material = TagType::factory()->create(['name' => 'Material']);
+    $brandTags = Tag::factory()->count(2)->create(['tag_type_id' => $brand->id]);
+    $materialTags = Tag::factory()->count(3)->create(['tag_type_id' => $material->id]);
 
     $response = $this->get("/photos/{$photo->id}");
 
     $response->assertOk();
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('ShowPhoto')
+        ->component('Photo/Show')
         ->where('photoId', $photo->id)
-        ->has('tags', 2)
+        ->where('tags', [
+            $brand->slug => $brandTags->toArray(),
+            $material->slug => $materialTags->toArray(),
+        ])
         ->has('items', 2)
     );
 });

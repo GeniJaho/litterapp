@@ -2,15 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\Tag;
 use App\Models\TagType;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
- * @extends Factory<Tag>
+ * @extends Factory<TagType>
  */
-class TagFactory extends Factory
+class TagTypeFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -19,12 +17,9 @@ class TagFactory extends Factory
      */
     public function definition(): array
     {
-        $word = $this->faker->unique()->word();
-
         return [
-            'tag_type_id' => TagType::factory(),
-            'name' => $word,
-            'slug' => Str::slug($word),
+            'name' => $this->faker->word,
+            'slug' => $this->faker->unique()->slug,
         ];
     }
 }

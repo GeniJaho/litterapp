@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\User;
 use Inertia\Inertia;
 
@@ -23,16 +24,25 @@ class PhotosController extends Controller
             return $photo;
         });
 
-        return $photos;
+        return Inertia::render('Photos', [
+            'photos' => $photos,
+        ]);
     }
 
     public function show(Photo $photo)
     {
+        $tagTypes = TagType::query()->get();
+        $tags = Tag::query()->get()
+            ->groupBy('tag_type_id')
+            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
+                return [$tagTypes->find($key)->slug => $values];
+            });
+
         if (! request()->wantsJson()) {
-            return Inertia::render('ShowPhoto', [
+            return Inertia::render('Photo/Show', [
                 'photoId' => $photo->id,
                 'items' => Item::all(),
-                'tags' => Tag::all(),
+                'tags' => $tags,
             ]);
         }
 

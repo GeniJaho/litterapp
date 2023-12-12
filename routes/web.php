@@ -39,11 +39,7 @@ Route::middleware([
         return Inertia::render('Upload');
     })->name('upload');
 
-    Route::get('/my-photos', function () {
-        return Inertia::render('Photos');
-    })->name('my-photos');
-
-    Route::get('/photos', [PhotosController::class, 'index']);
+    Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show']);
 
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
