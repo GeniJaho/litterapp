@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\TagType;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
