@@ -6,6 +6,7 @@ use App\Filament\Resources\TagResource\Pages\CreateTag;
 use App\Filament\Resources\TagResource\Pages\EditTag;
 use App\Filament\Resources\TagResource\Pages\ListTags;
 use App\Models\Tag;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -25,9 +26,9 @@ class TagResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('tag_type_id')
+                Select::make('tag_type_id')
                     ->required()
-                    ->numeric(),
+                    ->relationship(name: 'type', titleAttribute: 'name'),
                 TextInput::make('name')
                     ->required()
                     ->maxLength(191),
@@ -41,12 +42,14 @@ class TagResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('tag_type_id')
-                    ->numeric()
-                    ->sortable(),
                 TextColumn::make('name')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('slug')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('type.name')
+                    ->sortable()
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
@@ -67,7 +70,8 @@ class TagResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('name');
     }
 
     public static function getRelations(): array

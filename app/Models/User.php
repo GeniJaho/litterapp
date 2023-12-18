@@ -18,7 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property Collection<Photo> $photos
  */
-class User extends Authenticatable implements MustVerifyEmail, FilamentUser
+class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
     use HasApiTokens;
     use HasFactory;
