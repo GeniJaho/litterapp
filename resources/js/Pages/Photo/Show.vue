@@ -10,6 +10,7 @@ const props = defineProps({
 });
 
 const photo = ref(null);
+const photoItems = ref([]);
 const selectedItem = ref(props.items[0].id);
 
 onMounted(() => {
@@ -19,7 +20,8 @@ onMounted(() => {
 const getPhoto = () => {
     axios.get(`/photos/${props.photoId}`)
         .then(response => {
-            photo.value = response.data;
+            photo.value = response.data.photo;
+            photoItems.value = response.data.items;
         })
         .catch(error => {
             console.log(error);
@@ -105,17 +107,17 @@ const removeTagFromItem = (photoItem, tagId) => {
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
-                                <ul role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
                                     <PhotoItem
-                                        v-for="item in photo.items"
-                                        :key="item.id"
+                                        v-for="item in photoItems"
+                                        :key="item.pivot.id"
                                         :item="item"
                                         :tags="tags"
                                         @remove-item="removeItem"
                                         @add-tag-to-item="addTagToItem"
                                         @remove-tag-from-item="removeTagFromItem"
                                     />
-                                </ul>
+                                </TransitionGroup>
                             </div>
                         </div>
                     </div>
@@ -125,3 +127,23 @@ const removeTagFromItem = (photoItem, tagId) => {
         </div>
     </AppLayout>
 </template>
+
+<style scoped>
+.items-move, /* apply transition to moving elements */
+.items-enter-active,
+.items-leave-active {
+    transition: all 0.5s ease;
+}
+
+.items-enter-from,
+.items-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.items-leave-active {
+    position: absolute;
+}
+</style>
