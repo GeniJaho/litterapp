@@ -7,7 +7,7 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-RUN apt-get update && apt-get install -y \
+RUN apt-get upgrade && apt-get update && apt-get install -y \
     git \
     curl \
     libpng-dev \
@@ -25,7 +25,14 @@ RUN apt-get update && apt-get install -y \
     vim
 
 # Clear cache
-RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Newer Node Version
+RUN apt-get update && apt-get install -y ca-certificates curl gnupg
+RUN mkdir -p /etc/apt/keyrings && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+ENV NODE_MAJOR=20
+RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
+RUN apt-get update && apt-get install -y nodejs
 
 # Install PHP extensions
 RUN docker-php-ext-configure gd --with-jpeg --with-freetype
@@ -45,16 +52,13 @@ COPY --chown=$user . /app
 #USER $user
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-#RUN composer require laravel/breeze:* --dev
-#RUN php artisan breeze:install vue
-#RUN npm install && npm run dev 
-
 RUN composer update
 RUN composer install --optimize-autoloader --no-dev
-RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache
-RUN php artisan key:generate && php artisan migrate
+RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache && php artisan key:generate
 
+RUN npm install && npm run build
 
 #EXPOSE 9000
+#RUN php artisan migrate
 #php artisan migrate:fresh --seed
 CMD php artisan serve --host=0.0.0.0 --port=9000
