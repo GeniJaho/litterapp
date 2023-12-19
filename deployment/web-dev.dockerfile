@@ -43,10 +43,18 @@ RUN mkdir -p /home/$user/.composer \
 COPY --chown=$user . /app
 
 #USER $user
+ENV COMPOSER_ALLOW_SUPERUSER=1
 
+#RUN composer require laravel/breeze:* --dev
+#RUN php artisan breeze:install vue
+#RUN npm install && npm run dev 
+
+RUN composer update
 RUN composer install --optimize-autoloader --no-dev
-RUN php artisan config:clear && php artisan cache:clear
-RUN php artisan key:generate
+RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache
+RUN php artisan key:generate && php artisan migrate
+
 
 #EXPOSE 9000
+#php artisan migrate:fresh --seed
 CMD php artisan serve --host=0.0.0.0 --port=9000
