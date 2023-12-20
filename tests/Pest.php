@@ -38,9 +38,9 @@ expect()->extend('toNotEagerLoadByDefault', function () {
     return Targeted::make(
         $this,
         fn (ObjectDescription $object): bool => $object
-                ->reflectionClass
-                ->getProperty('with')
-                ->getDefaultValue() === [],
+            ->reflectionClass
+            ->getProperty('with')
+            ->getDefaultValue() === [],
         'to not eager load by default',
         FileLineFinder::where(fn (string $line): bool => str_contains($line, '$with')),
     );

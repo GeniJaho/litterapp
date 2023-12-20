@@ -32,7 +32,9 @@ class PhotosController extends Controller
     public function show(Photo $photo)
     {
         $tagTypes = TagType::query()->get();
-        $tags = Tag::query()->get()
+        $tags = Tag::query()
+            ->orderBy('name')
+            ->get()
             ->groupBy('tag_type_id')
             ->mapWithKeys(function ($values, $key) use ($tagTypes) {
                 return [$tagTypes->find($key)->slug => $values];
@@ -41,15 +43,22 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             return Inertia::render('Photo/Show', [
                 'photoId' => $photo->id,
-                'items' => Item::all(),
+                'items' => Item::query()->orderBy('name')->get(),
                 'tags' => $tags,
             ]);
         }
 
-        $photo->load('items');
-        $photo->items->each(fn (Item $item) => $item->pivot->load('tags'));
+        $items = $photo
+            ->items()
+            ->orderByDesc('photo_items.id')
+            ->get()
+            ->each(fn (Item $item) => $item->pivot->load('tags'));
+
         $photo->append('full_path');
 
-        return $photo;
+        return [
+            'photo' => $photo,
+            'items' => $items,
+        ];
     }
 }

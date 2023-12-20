@@ -1,12 +1,11 @@
 <?php
 
-use App\Models\TagType;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\User;
-use Illuminate\Support\Collection;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
@@ -16,8 +15,15 @@ test('a user can see the photo tagging page', function () {
     $items = Item::factory()->count(2)->create();
     $brand = TagType::factory()->create(['name' => 'Brand']);
     $material = TagType::factory()->create(['name' => 'Material']);
-    $brandTags = Tag::factory()->count(2)->create(['tag_type_id' => $brand->id]);
-    $materialTags = Tag::factory()->count(3)->create(['tag_type_id' => $material->id]);
+    $brandTags = Tag::factory()->count(2)->sequence(
+        ['name' => 'A brand'],
+        ['name' => 'B brand'],
+    )->create(['tag_type_id' => $brand->id]);
+    $materialTags = Tag::factory()->count(3)->sequence(
+        ['name' => 'B material'],
+        ['name' => 'A material'],
+        ['name' => 'C material'],
+    )->create(['tag_type_id' => $material->id]);
 
     $response = $this->get("/photos/{$photo->id}");
 
@@ -27,8 +33,8 @@ test('a user can see the photo tagging page', function () {
         ->component('Photo/Show')
         ->where('photoId', $photo->id)
         ->where('tags', [
-            $brand->slug => $brandTags->toArray(),
-            $material->slug => $materialTags->toArray(),
+            $brand->slug => $brandTags->sortBy('name')->values()->toArray(),
+            $material->slug => $materialTags->sortBy('name')->values()->toArray(),
         ])
         ->has('items', 2)
     );
@@ -41,7 +47,7 @@ test('a user can see a photo', function () {
     $photo->items()->sync($items);
     $tag = Tag::factory()->create();
     PhotoItemTag::create([
-        'photo_item_id' => $photo->items()->first()->pivot->id,
+        'photo_item_id' => $photo->items()->orderByDesc('photo_items.id')->first()->pivot->id,
         'tag_id' => $tag->id,
     ]);
 
@@ -49,8 +55,8 @@ test('a user can see a photo', function () {
 
     $response->assertOk();
     $response->assertJson(fn (AssertableJson $json) => $json
-        ->where('id', $photo->id)
-        ->where('full_path', $photo->full_path)
+        ->where('photo.id', $photo->id)
+        ->where('photo.full_path', $photo->full_path)
         ->has('items', 2)
         ->has('items.0.pivot.tags', 1)
         ->etc()
