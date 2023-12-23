@@ -2,7 +2,6 @@
 
 use App\Models\Photo;
 use App\Models\User;
-use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
 test('a user can see their photos', function () {
