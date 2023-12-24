@@ -34,9 +34,34 @@ ENV NODE_MAJOR=20
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install -y nodejs
 
+# memcached
+#RUN pecl install memcached && docker-php-ext-enable memcached
+# mcrypt
+#RUN pecl install mcrypt && docker-php-ext-enable mcrypt
+# install xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+# install imagick
+#RUN pecl install imagick && docker-php-ext-enable imagick
+
 # Install PHP extensions
-RUN docker-php-ext-configure gd --with-jpeg --with-freetype
-RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip
+#RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+#RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
+
+# configure, install and enable all php packages
+RUN set -eux; \
+	docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
+	docker-php-ext-configure intl; \
+	docker-php-ext-configure mysqli --with-mysqli=mysqlnd; \
+	docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd; \
+	docker-php-ext-configure zip; \
+	docker-php-ext-install -j "$(nproc)" \
+		gd \
+		intl \
+		mysqli \
+		opcache \
+		pdo_mysql \
+		zip
+
 
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -52,9 +77,10 @@ COPY --chown=$user . /app
 #USER $user
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer update
-RUN composer install --optimize-autoloader --no-dev
-RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache && php artisan key:generate
+RUN composer update --with-all-dependencies
+#RUN composer install --optimize-autoloader --no-dev
+RUN composer install --optimize-autoloader
+RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache && php artisan key:generate && php artisan storage:link
 
 RUN npm install && npm run build
 

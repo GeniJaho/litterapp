@@ -12,6 +12,9 @@ services:
     restart: unless-stopped
     ports:
       - 9000:9000
+    volumes:
+      - ./data/storage/app:/app/storage/app
+      #- ./data/storage/logs:/app/storage/logs
     working_dir: /app
     depends_on:
       - db
@@ -51,8 +54,8 @@ services:
     container_name: phpmyadmin
     environment:
       PMA_ARBITRARY: 1
-    # ports:
-    #   - 8087:80
+    ports:
+      - 8087:80
     restart: unless-stopped
   nginx:
     image: nginx:stable-alpine-slim
