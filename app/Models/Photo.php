@@ -24,7 +24,7 @@ class Photo extends Model
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'photo_items')
-            ->withPivot('id')
+            ->withPivot(['id', 'picked_up'])
             ->using(PhotoItem::class)
             ->withTimestamps();
     }

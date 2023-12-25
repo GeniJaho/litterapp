@@ -36,8 +36,8 @@ const addItem = () => {
     });
 };
 
-const removeItem = (itemId) => {
-    axios.delete(`/photos/${photo.value.id}/items/${itemId}`)
+const removeItem = (photoItemId) => {
+    axios.delete(`/photo-items/${photoItemId}`)
         .then(() => {
             getPhoto();
         });
@@ -53,6 +53,13 @@ const addTagToItem = (photoItem, tagId) => {
 
 const removeTagFromItem = (photoItem, tagId) => {
     axios.delete(`/photo-items/${photoItem.id}/tags/${tagId}`)
+        .then(() => {
+            getPhoto();
+        });
+};
+
+const toggleItemPickedUp = (photoItemId) => {
+    axios.post(`/photo-items/${photoItemId}/picked-up`)
         .then(() => {
             getPhoto();
         });
@@ -116,6 +123,7 @@ const removeTagFromItem = (photoItem, tagId) => {
                                         @remove-item="removeItem"
                                         @add-tag-to-item="addTagToItem"
                                         @remove-tag-from-item="removeTagFromItem"
+                                        @toggle-picked-up="toggleItemPickedUp"
                                     />
                                 </TransitionGroup>
                             </div>
