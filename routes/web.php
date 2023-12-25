@@ -40,6 +40,10 @@ Route::middleware([
         return Inertia::render('Upload');
     })->name('upload');
 
+    Route::get('/docs', function () {
+        return Inertia::render('Docs');
+    })->name('docs');
+
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show']);
 
