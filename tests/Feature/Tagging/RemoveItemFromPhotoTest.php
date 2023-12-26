@@ -12,7 +12,7 @@ test('a user can remove an item from a photo', function () {
 
     $this->assertDatabaseCount('photo_items', 1);
 
-    $response = $this->actingAs($user)->deleteJson("/photos/{$photo->id}/items/{$existingItem->id}");
+    $response = $this->actingAs($user)->deleteJson("/photo-items/{$photo->items()->first()->pivot->id}");
 
     $response->assertOk();
     $this->assertDatabaseEmpty('photo_items');

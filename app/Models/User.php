@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\DTO\UserSettings;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -17,6 +18,7 @@ use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @property Collection<Photo> $photos
+ * @property UserSettings $settings
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -46,6 +48,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'settings' => UserSettings::class.':default',
     ];
 
     /**

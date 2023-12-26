@@ -15,6 +15,10 @@ class PhotoItem extends Pivot
 
     public $incrementing = true;
 
+    protected $casts = [
+        'picked_up' => 'boolean',
+    ];
+
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
