@@ -4,13 +4,10 @@ import { useForm } from '@inertiajs/vue3';
 import ActionMessage from '@/Components/ActionMessage.vue';
 import FormSection from '@/Components/FormSection.vue';
 import InputError from '@/Components/InputError.vue';
-import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
-import TextInput from '@/Components/TextInput.vue';
 import ToggleInput from "@/Components/ToggleInput.vue";
 
 const passwordInput = ref(null);
-const currentPasswordInput = ref(null);
 
 const props = defineProps({
     user: Object,
@@ -21,9 +18,8 @@ const form = useForm({
 });
 
 const save = () => {
-    form.put(route('user-settings.update'), {
+    form.post(route('user-settings.update'), {
         preserveScroll: true,
-        onSuccess: () => form.reset(),
     });
 };
 </script>
@@ -46,8 +42,12 @@ const save = () => {
                     v-model="form.picked_up_by_default"
                     class="mt-1 block w-full"
                 >
-                    <template #title>
-                        <span>Picked up by default</span>
+                    <template #label>
+                        Litter is picked up by default
+                    </template>
+                    <template #description>
+                        When enabled, litter objects in your photos will be marked as picked up by default.
+                        You can always change the status of each object individually.
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.picked_up_by_default" class="mt-2" />

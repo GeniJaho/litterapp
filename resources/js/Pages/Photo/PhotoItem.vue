@@ -14,7 +14,7 @@ const selectedBrandTag = ref(props.tags.brand[0].id);
     <li class="col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
         <div class="px-4 py-5 sm:p-6 flex-1">
             <div class="flex items-center justify-between space-x-3">
-                <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-50">
+                <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
                     {{ item.name }}
                 </h3>
                 <button
@@ -77,7 +77,7 @@ const selectedBrandTag = ref(props.tags.brand[0].id);
                         v-for="tag in item.pivot.tags"
                         :key="tag.id"
                         @click="$emit('remove-tag-from-item', item.pivot, tag.id)"
-                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 mb-2 mr-2 text-xs font-medium text-gray-900 dark:text-gray-50 ring-1 ring-inset ring-gray-200"
+                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 mb-2 mr-2 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
@@ -100,7 +100,7 @@ const selectedBrandTag = ref(props.tags.brand[0].id);
                 >
                     <span aria-hidden="true" :class="[item.pivot.picked_up ? 'translate-x-5' : 'translate-x-0', 'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out']" />
                 </button>
-                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-50" id="picked-up-label">
+                <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-100" id="picked-up-label">
                     Picked Up
                 </span>
             </div>

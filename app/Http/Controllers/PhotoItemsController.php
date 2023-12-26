@@ -2,16 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class PhotoItemsController extends Controller
 {
     public function store(Photo $photo, Request $request)
     {
-        $photo->items()->attach($request->item_id);
+        /** @var User $user */
+        $user = auth()->user();
+
+        $photo->items()->attach($request->item_id, [
+            'picked_up' => $user->settings->picked_up_by_default,
+        ]);
 
         return [];
     }

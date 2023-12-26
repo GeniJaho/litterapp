@@ -2,15 +2,15 @@
 
 namespace App\DTO;
 
-use Spatie\LaravelData\Attributes\MapOutputName;
+use Spatie\LaravelData\Attributes\Validation\BooleanType;
+use Spatie\LaravelData\Attributes\Validation\Required;
 use Spatie\LaravelData\Data;
-use Spatie\LaravelData\Mappers\SnakeCaseMapper;
 
-#[MapOutputName(SnakeCaseMapper::class)]
 class UserSettings extends Data
 {
     public function __construct(
-        public bool $pickedUpByDefault = false,
+        #[Required, BooleanType]
+        public bool $picked_up_by_default = false,
     ) {
     }
 }

@@ -19,8 +19,15 @@ defineEmits(['update:modelValue']);
         >
             <span aria-hidden="true" :class="[modelValue ? 'translate-x-5' : 'translate-x-0', 'pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out']" />
         </button>
-        <span class="ml-3 text-sm font-medium text-gray-900 dark:text-gray-50">
-            <slot name="title" />
+        <span class="ml-3">
+            <span class="flex flex-col">
+                <span class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
+                    <slot name="label" />
+                </span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">
+                    <slot name="description" />
+                </span>
+            </span>
         </span>
     </div>
 </template>

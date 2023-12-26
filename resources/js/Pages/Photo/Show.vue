@@ -110,7 +110,7 @@ const toggleItemPickedUp = (photoItemId) => {
                         </div>
 
                         <div class="mt-4">
-                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-50">
+                            <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
