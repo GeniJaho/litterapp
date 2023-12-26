@@ -17,15 +17,15 @@ services:
       #- ./data/storage/logs:/app/storage/logs
     depends_on:
       - db
-  docs:
+#  docs:
     # build:
     #   context: ./docs
     #   dockerfile: deployment/docs.dockerfile
-    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-docs:${DOCKER_APP_VERSION}
-    container_name: ${DOCKER_APP_NAME}-docs
-    restart: unless-stopped
-    environment:
-      - DOCKER_ENVIRONMENT
+#    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-docs:${DOCKER_APP_VERSION}
+#    container_name: ${DOCKER_APP_NAME}-docs
+#    restart: unless-stopped
+#    environment:
+#      - DOCKER_ENVIRONMENT
   db:
     image: mysql:8.0
     container_name: ${DOCKER_APP_NAME}-db
