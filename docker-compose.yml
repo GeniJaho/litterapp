@@ -7,29 +7,28 @@ services:
         uid: 1000
       context: ./
       dockerfile: deployment/web-dev.dockerfile
-    image: ${REGISTRY_USER}/${APP_NAME}-web:${APP_VERSION}
-    container_name: ${APP_NAME}-web
+    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-web:${DOCKER_APP_VERSION}
+    container_name: ${DOCKER_APP_NAME}-web
     restart: unless-stopped
     ports:
-      - 9000:9000
+      - "9000:9000"
     volumes:
       - ./data/storage/app:/app/storage/app
       #- ./data/storage/logs:/app/storage/logs
-    working_dir: /app
     depends_on:
       - db
   docs:
     # build:
     #   context: ./docs
     #   dockerfile: deployment/docs.dockerfile
-    image: ${REGISTRY_USER}/${APP_NAME}-docs:${APP_VERSION}
-    container_name: ${APP_NAME}-docs
+    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-docs:${DOCKER_APP_VERSION}
+    container_name: ${DOCKER_APP_NAME}-docs
     restart: unless-stopped
     environment:
-      - ENVIRONMENT
+      - DOCKER_ENVIRONMENT
   db:
     image: mysql:8.0
-    container_name: ${APP_NAME}-db
+    container_name: ${DOCKER_APP_NAME}-db
     restart: unless-stopped
     environment:
       MYSQL_DATABASE: ${DB_DATABASE}
@@ -43,11 +42,10 @@ services:
     volumes:
       - ./data/mysql/db:/var/lib/mysql
   db-init:
-    image: ${REGISTRY_USER}/${APP_NAME}-web:${APP_VERSION}
-    container_name: ${APP_NAME}-web-init
+    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-web:${DOCKER_APP_VERSION}
+    container_name: ${DOCKER_APP_NAME}-web-init
     depends_on:
       - db
-    working_dir: /app
     command: ["php artisan migrate"]
   phpmyadmin:
     image: phpmyadmin/phpmyadmin:latest
@@ -55,14 +53,14 @@ services:
     environment:
       PMA_ARBITRARY: 1
     ports:
-      - 8087:80
+      - "8087:80"
     restart: unless-stopped
   nginx:
     image: nginx:stable-alpine-slim
-    container_name: ${APP_NAME}-proxy
+    container_name: ${DOCKER_APP_NAME}-proxy
     restart: unless-stopped
     ports:
-      - 8080:80
+      - "8080:80"
     volumes:
       - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
     depends_on:
@@ -70,5 +68,5 @@ services:
 
 networks:
   network:
-    name: ${ENVIRONMENT}
+    name: ${DOCKER_ENVIRONMENT}
     driver: bridge

@@ -1,4 +1,4 @@
-FROM php:8.1.10-fpm
+FROM php:8.2.13-fpm
 
 WORKDIR /app
 
@@ -77,7 +77,6 @@ COPY --chown=$user . /app
 #USER $user
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer update --with-all-dependencies
 #RUN composer install --optimize-autoloader --no-dev
 RUN composer install --optimize-autoloader
 RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache && php artisan key:generate && php artisan storage:link
