@@ -1,0 +1,72 @@
+version: "3.8"
+services:
+  web:
+    build:
+      args:
+        user: laravel
+        uid: 1000
+      context: ./
+      dockerfile: deployment/web-dev.dockerfile
+    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-web:${DOCKER_APP_VERSION}
+    container_name: ${DOCKER_APP_NAME}-web
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    volumes:
+      - ./data/storage/app:/app/storage/app
+      #- ./data/storage/logs:/app/storage/logs
+    depends_on:
+      - db
+#  docs:
+    # build:
+    #   context: ./docs
+    #   dockerfile: deployment/docs.dockerfile
+#    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-docs:${DOCKER_APP_VERSION}
+#    container_name: ${DOCKER_APP_NAME}-docs
+#    restart: unless-stopped
+#    environment:
+#      - DOCKER_ENVIRONMENT
+  db:
+    image: mysql:8.0
+    container_name: ${DOCKER_APP_NAME}-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    # ports:
+    #   - 3306:3306
+    volumes:
+      - ./data/mysql/db:/var/lib/mysql
+  db-init:
+    image: ${DOCKER_REGISTRY_USER}/${DOCKER_APP_NAME}-web:${DOCKER_APP_VERSION}
+    container_name: ${DOCKER_APP_NAME}-web-init
+    depends_on:
+      - db
+    command: ["php artisan migrate"]
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - "8087:80"
+    restart: unless-stopped
+  nginx:
+    image: nginx:stable-alpine-slim
+    container_name: ${DOCKER_APP_NAME}-proxy
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - web
+
+networks:
+  network:
+    name: ${DOCKER_ENVIRONMENT}
+    driver: bridge
