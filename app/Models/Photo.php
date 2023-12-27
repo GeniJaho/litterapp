@@ -16,6 +16,9 @@ class Photo extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<User, \App\Models\Photo>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -29,6 +32,9 @@ class Photo extends Model
             ->withTimestamps();
     }
 
+    /**
+     * @return BelongsToMany<Tag>
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class, 'photo_tag');

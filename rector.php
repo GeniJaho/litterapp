@@ -10,6 +10,7 @@ use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
 use Rector\Set\ValueObject\SetList;
+use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\ClassMethod\MigrateToSimplifiedAttributeRector;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -36,7 +37,10 @@ return static function (RectorConfig $rectorConfig): void {
         PHPUnitSetList::PHPUNIT_CODE_QUALITY,
     ]);
 
-    $rectorConfig->rule(MigrateToSimplifiedAttributeRector::class);
+    $rectorConfig->rules([
+        MigrateToSimplifiedAttributeRector::class,
+        AddGenericReturnTypeToRelationsRector::class,
+    ]);
 
     $rectorConfig->skip([
         AddLiteralSeparatorToNumberRector::class,

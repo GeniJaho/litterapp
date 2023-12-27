@@ -10,6 +10,9 @@ class Item extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsToMany<Tag>
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(Tag::class);

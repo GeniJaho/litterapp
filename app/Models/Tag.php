@@ -12,6 +12,9 @@ class Tag extends Model
 
     protected $guarded = [];
 
+    /**
+     * @return BelongsTo<TagType, \App\Models\Tag>
+     */
     public function type(): BelongsTo
     {
         return $this->belongsTo(TagType::class, 'tag_type_id');
