@@ -564,6 +564,7 @@ class TagSeeder extends Seeder
             ['name' => 'Tikkels', 'slug' => 'tikkels', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Tikkie', 'slug' => 'tikkie', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Timeout', 'slug' => 'timeout', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Tim Hortons', 'slug' => 'timhortons', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Tinq', 'slug' => 'tinq', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Toblerone', 'slug' => 'toblerone', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Toffifee', 'slug' => 'toffifee', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
