@@ -253,6 +253,7 @@ class TagSeeder extends Seeder
             ['name' => 'Gordons', 'slug' => 'gordons', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Goreme', 'slug' => 'goreme', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Grazzano', 'slug' => 'grazzano', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
+            ['name' => 'Greggs', 'slug' => 'greggs', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'GreyGoose', 'slug' => 'greygoose', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Grolsch', 'slug' => 'grolsch', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Guarana', 'slug' => 'guarana', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
