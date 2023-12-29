@@ -14,8 +14,12 @@ class TagSeeder extends Seeder
 
         $brand = TagType::query()->create(['name' => 'Brand', 'slug' => 'brand']);
         $material = TagType::query()->create(['name' => 'Material', 'slug' => 'material']);
+        $event = TagType::query()->create(['name' => 'Event', 'slug' => 'event']);
 
         Tag::query()->insert([
+            // events
+            ['name' => 'WorldCleanupDay', 'slug' => 'worldcleanupday', 'tag_type_id' => $event->id, 'created_at' => $now, 'updated_at' => $now],
+
             //brands
             ['name' => 'Applegreen', 'slug' => 'applegreen', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Asahi', 'slug' => 'asahi', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
@@ -32,9 +36,9 @@ class TagSeeder extends Seeder
             ['name' => 'Absolut', 'slug' => 'absolut', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Ace', 'slug' => 'ace', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Active02', 'slug' => 'active02', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Actimel', 'slug' => 'actimel', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now], 
+            ['name' => 'Actimel', 'slug' => 'actimel', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Activa', 'slug' => 'activa', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Adnams', 'slug' => 'adnams', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],     
+            ['name' => 'Adnams', 'slug' => 'adnams', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Affligem', 'slug' => 'affligem', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'AHVitaminDrink', 'slug' => 'ahvitamindrink', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Akhtamar', 'slug' => 'akhtamar', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
@@ -42,11 +46,11 @@ class TagSeeder extends Seeder
             ['name' => 'Alexmeijer', 'slug' => 'alexmeijer', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Alfa', 'slug' => 'alfa', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Almhof', 'slug' => 'almhof', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Amber Leaf', 'slug' => 'amberleaf', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],                   
+            ['name' => 'Amber Leaf', 'slug' => 'amberleaf', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Amicelli', 'slug' => 'amicelli', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Amigo', 'slug' => 'amigo', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Amstel', 'slug' => 'amstel', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Anadin', 'slug' => 'anadin', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],  
+            ['name' => 'Anadin', 'slug' => 'anadin', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Anchor', 'slug' => 'anchor', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Andalooz', 'slug' => 'andalooz', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Antaflu', 'slug' => 'antaflu', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
@@ -66,7 +70,7 @@ class TagSeeder extends Seeder
             ['name' => 'Ayran', 'slug' => 'ayran', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Bacardi', 'slug' => 'bacardi', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Baha', 'slug' => 'baha', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Bahlsen', 'slug' => 'bahlsen', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],              
+            ['name' => 'Bahlsen', 'slug' => 'bahlsen', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Balconi', 'slug' => 'balconi', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Balisto', 'slug' => 'balisto', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Bang', 'slug' => 'bang', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
@@ -74,7 +78,7 @@ class TagSeeder extends Seeder
             ['name' => 'Barnies Foods', 'slug' => 'barniesfoods', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Barr', 'slug' => 'barr', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Barratt', 'slug' => 'barratt', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'BASF', 'slug' => 'basf', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],              
+            ['name' => 'BASF', 'slug' => 'basf', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'BasilSeed', 'slug' => 'basilseed', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Bastogne', 'slug' => 'bastogne', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Bavaria', 'slug' => 'bavaria', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
@@ -147,7 +151,7 @@ class TagSeeder extends Seeder
             ['name' => 'Captainmorgan', 'slug' => 'captainmorgan', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Carabao', 'slug' => 'carabao', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Carlsberg', 'slug' => 'carlsberg', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
-            ['name' => 'Carling', 'slug' => 'carling', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],      
+            ['name' => 'Carling', 'slug' => 'carling', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Celebrations', 'slug' => 'celebrations', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Charlies', 'slug' => 'charlies', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
             ['name' => 'Chaudfontaine', 'slug' => 'chaudfontaine', 'tag_type_id' => $brand->id, 'created_at' => $now, 'updated_at' => $now],
