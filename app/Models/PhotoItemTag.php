@@ -14,11 +14,17 @@ class PhotoItemTag extends Pivot
 
     public $incrementing = true;
 
+    /**
+     * @return BelongsTo<PhotoItem, \App\Models\PhotoItemTag>
+     */
     public function photoItem(): BelongsTo
     {
         return $this->belongsTo(PhotoItem::class);
     }
 
+    /**
+     * @return BelongsTo<Tag, \App\Models\PhotoItemTag>
+     */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);

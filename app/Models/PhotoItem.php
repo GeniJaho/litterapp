@@ -19,11 +19,17 @@ class PhotoItem extends Pivot
         'picked_up' => 'boolean',
     ];
 
+    /**
+     * @return BelongsTo<Item, \App\Models\PhotoItem>
+     */
     public function item(): BelongsTo
     {
         return $this->belongsTo(Item::class);
     }
 
+    /**
+     * @return BelongsTo<Photo, \App\Models\PhotoItem>
+     */
     public function photo(): BelongsTo
     {
         return $this->belongsTo(Photo::class);
