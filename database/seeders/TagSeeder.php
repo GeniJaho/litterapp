@@ -101,6 +101,8 @@ class TagSeeder extends Seeder
             'Plastic (PS)',
             'Plastic (PVC)',
             'Plastic (PVDC)',
+            'Plexyglass',
+            'Styrofoam',
             'Wood',
         ];
     }
