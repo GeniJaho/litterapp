@@ -72,6 +72,8 @@ class TagSeeder extends Seeder
             'ShowYourImpact_ZwerfieRotterdam',
             'WorldCleanupDay',
             'WorldCleanupDay2024',
+            'Zaandewandel',
+            'Zaandewandel2024',
         ];
     }
 
