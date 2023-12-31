@@ -202,7 +202,7 @@ class TagSeeder extends Seeder
             'Belin',
             'Belkin',
             'Belvedere',
-            'Ben & Jerry's',
+            'Ben & Jerry\'s',
             'Ben Shaws',
             'Benecol',
             'Benson & Hedges',
