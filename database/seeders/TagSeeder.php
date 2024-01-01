@@ -671,10 +671,10 @@ class TagSeeder extends Seeder
             'Gofrik',
             'Gogosqueez',
             'Gold',
-            'Gold Bar'
+            'Gold Bar',
             'Goldenpower',
             'Golden Wonder',
-            'Golden Virginia'
+            'Golden Virginia',
             'Goldfield',
             'Goldfish',
             'Goldpeak',
@@ -684,7 +684,7 @@ class TagSeeder extends Seeder
             'Goreme',
             'Grace',
             'Grahams Family Dairy',
-            'Graze'
+            'Graze',
             'Grazzano',
             'Great Value',
             'Greggs',
@@ -734,7 +734,7 @@ class TagSeeder extends Seeder
             'Highland Spring',
             'Highspeed',
             'Highway',
-            'Hingham Bakery'
+            'Hingham Bakery',
             'Hipro',
             'Hires',
             'Hm',
@@ -752,7 +752,7 @@ class TagSeeder extends Seeder
             'HP',
             'Huer',
             'Hugo',
-            'Hula Hoops'
+            'Hula Hoops',
             'Huls',
             'Hypermalt',
             'Hyundai',
@@ -917,7 +917,7 @@ class TagSeeder extends Seeder
             'Listerine',
             'LM',
             'Locklock',
-            'Loctite'
+            'Loctite',
             'Loise',
             'Lomza',
             'London Drugs',
@@ -964,7 +964,7 @@ class TagSeeder extends Seeder
             'Mastroianni',
             'Maurten',
             'Maxim',
-            'Maynards-Bassetts'
+            'Maynards-Bassetts',
             'Mazzetto',
             'McCoy\'s',
             'McDonalds',
@@ -995,7 +995,7 @@ class TagSeeder extends Seeder
             'Moersleutel',
             'Mogumogu',
             'Monster',
-            'Monster Munch'
+            'Monster Munch',
             'Moods',
             'Morrisons'
             'Most Wanted',
@@ -1118,7 +1118,7 @@ class TagSeeder extends Seeder
             'Pombar',
             'Poms',
             'Popchips',
-            'Pot Noodle'
+            'Pot Noodle',
             'Power',
             'Powerade',
             'Powerbooster',
@@ -1129,7 +1129,7 @@ class TagSeeder extends Seeder
             'Prevalin',
             'Prime',
             'Prince',
-            'Princes Gate'
+            'Princes Gate',
             'Princess',
             'Pringles',
             'Profile',
@@ -1217,7 +1217,7 @@ class TagSeeder extends Seeder
             'Schwartzkopf',
             'Schweppes',
             'Scotchman',
-            'Scrumpy Jack'
+            'Scrumpy Jack',
             'Seabrook',
             'Segafredo',
             'Selpak',
@@ -1263,7 +1263,7 @@ class TagSeeder extends Seeder
             'Smart Water',
             'Smint',
             'Smirnoff',
-            'Smiths'
+            'Smiths',
             'Smoeltjes',
             'Smok',
             'Smoking',
@@ -1410,7 +1410,7 @@ class TagSeeder extends Seeder
             'Vangilse',
             'Vanmelle',
             'Vannelle',
-            'Vape Spot'
+            'Vape Spot',
             'Varta',
             'Vega Libre',
             'Veltins',
@@ -1454,7 +1454,7 @@ class TagSeeder extends Seeder
             'Wall\'s (meat)',
             'Warheads',
             'Warka',
-            'Warrior'
+            'Warrior',
             'Warsteiner',
             'Wasa',
             'Weduwe Visser',
