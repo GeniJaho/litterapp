@@ -2,11 +2,14 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, ref} from "vue";
 import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
+import {Link} from "@inertiajs/vue3";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     photoId: Number,
     items: Array,
-    tags: Array,
+    tags: Object,
+    nextPhotoUrl: String,
 });
 
 const photo = ref(null);
@@ -81,8 +84,16 @@ const toggleItemPickedUp = (photoItemId) => {
                         <img
                             :src="photo.full_path"
                             :alt="photo.id"
-                            class="w-full sm:max-w-2xl"
+                            class="w-full sm:max-w-2xl sm:mx-auto sm:rounded-lg sm:overflow-hidden"
                         >
+                        <div class="flex justify-center mt-6">
+                            <Link v-if="nextPhotoUrl" :href="nextPhotoUrl">
+                                <PrimaryButton>Next Photo</PrimaryButton>
+                            </Link>
+                            <Link v-else :href="route('my-photos')">
+                                <PrimaryButton>All Photos</PrimaryButton>
+                            </Link>
+                        </div>
                     </div>
 
                     <div class="w-full sm:w-1/2 md:w-2/3">

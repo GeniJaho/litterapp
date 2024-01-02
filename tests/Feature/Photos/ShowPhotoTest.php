@@ -25,7 +25,7 @@ test('a user can see the photo tagging page', function () {
         ['name' => 'C material'],
     )->create(['tag_type_id' => $material->id]);
 
-    $response = $this->get("/photos/{$photo->id}");
+    $response = $this->get(route('photos.show', $photo));
 
     $response->assertOk();
 
@@ -40,6 +40,32 @@ test('a user can see the photo tagging page', function () {
     );
 });
 
+test('a user can see the next untagged photo link', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $untaggedPhoto = Photo::factory()->for($user)->create();
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->where('nextPhotoUrl', route('photos.show', $untaggedPhoto))
+    );
+});
+
+test('a user can not see the next untagged photo link if there are no more untagged photos', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $taggedPhoto = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $taggedPhoto->items()->sync($item);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page->where('nextPhotoUrl', null));
+});
+
 test('a user can see a photo', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
@@ -51,7 +77,7 @@ test('a user can see a photo', function () {
         'tag_id' => $tag->id,
     ]);
 
-    $response = $this->getJson("/photos/{$photo->id}");
+    $response = $this->getJson(route('photos.show', $photo));
 
     $response->assertOk();
     $response->assertJson(fn (AssertableJson $json) => $json

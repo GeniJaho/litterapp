@@ -16,7 +16,7 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $photos = $user->photos()->latest()->paginate();
+        $photos = $user->photos()->latest('id')->paginate(12);
 
         $photos->getCollection()->transform(function (Photo $photo) {
             $photo->append('full_path');
@@ -45,6 +45,7 @@ class PhotosController extends Controller
                 'photoId' => $photo->id,
                 'items' => Item::query()->orderBy('name')->get(),
                 'tags' => $tags,
+                'nextPhotoUrl' => $this->getNextPhotoUrl($photo),
             ]);
         }
 
@@ -60,5 +61,21 @@ class PhotosController extends Controller
             'photo' => $photo,
             'items' => $items,
         ];
+    }
+
+    private function getNextPhotoUrl(Photo $photo): ?string
+    {
+        $nextPhoto = Photo::query()
+            ->where('user_id', $photo->user_id)
+            ->whereDoesntHave('items')
+            ->where('id', '<', $photo->id)
+            ->orderByDesc('id')
+            ->first();
+
+        if (! $nextPhoto) {
+            return null;
+        }
+
+        return route('photos.show', $nextPhoto);
     }
 }
