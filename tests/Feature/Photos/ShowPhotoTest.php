@@ -42,8 +42,8 @@ test('a user can see the photo tagging page', function () {
 
 test('a user can see the next untagged photo link', function () {
     $this->actingAs($user = User::factory()->create());
-    $photo = Photo::factory()->for($user)->create();
     $untaggedPhoto = Photo::factory()->for($user)->create();
+    $photo = Photo::factory()->for($user)->create();
 
     $response = $this->get(route('photos.show', $photo));
 
