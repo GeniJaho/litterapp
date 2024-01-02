@@ -15,7 +15,7 @@ class PhotoResource extends Resource
 {
     protected static ?string $model = Photo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-photo';
 
     public static function table(Table $table): Table
     {
@@ -23,8 +23,10 @@ class PhotoResource extends Resource
             ->columns([
                 TextColumn::make('user.name')
                     ->numeric()
+                    ->searchable()
                     ->sortable(),
                 ImageColumn::make('path')
+                    ->label('Photo')
                     ->searchable(),
                 TextColumn::make('created_at')
                     ->dateTime()
