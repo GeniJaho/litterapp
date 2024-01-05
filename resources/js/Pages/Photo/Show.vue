@@ -110,14 +110,13 @@ const toggleItemPickedUp = (photoItemId) => {
                                 </option>
                             </select>
 
-                            <button
-                                type="button"
-                                class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none"
+                            <PrimaryButton
+                                class="ml-4"
                                 @click="addItem"
                                 :disabled="selectedItem === ''"
                             >
                                 Add Object
-                            </button>
+                            </PrimaryButton>
                         </div>
 
                         <div class="mt-4">
