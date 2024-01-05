@@ -50,6 +50,7 @@ class PhotosController extends Controller
                 'items' => Item::query()->orderBy('name')->get(),
                 'tags' => $tags,
                 'nextPhotoUrl' => $this->getNextPhotoUrl($photo),
+                'previousPhotoUrl' => $this->getPreviousPhotoUrl($photo),
             ]);
         }
 
@@ -81,5 +82,21 @@ class PhotosController extends Controller
         }
 
         return route('photos.show', $nextPhoto);
+    }
+
+    private function getPreviousPhotoUrl(Photo $photo): ?string
+    {
+        $previousPhoto = Photo::query()
+            ->where('user_id', $photo->user_id)
+            ->whereDoesntHave('items')
+            ->where('id', '>', $photo->id)
+            ->orderBy('id')
+            ->first();
+
+        if (! $previousPhoto) {
+            return null;
+        }
+
+        return route('photos.show', $previousPhoto);
     }
 }

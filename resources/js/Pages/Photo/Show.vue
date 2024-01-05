@@ -10,6 +10,7 @@ const props = defineProps({
     items: Array,
     tags: Object,
     nextPhotoUrl: String,
+    previousPhotoUrl: String,
 });
 
 const photo = ref(null);
@@ -86,12 +87,12 @@ const toggleItemPickedUp = (photoItemId) => {
                             :alt="photo.id"
                             class="w-full sm:max-w-2xl sm:mx-auto sm:rounded-lg sm:overflow-hidden"
                         >
-                        <div class="flex justify-center mt-6">
-                            <Link v-if="nextPhotoUrl" :href="nextPhotoUrl">
-                                <PrimaryButton>Next Photo</PrimaryButton>
+                        <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
+                            <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
+                                <PrimaryButton>Previous</PrimaryButton>
                             </Link>
-                            <Link v-else :href="route('my-photos')">
-                                <PrimaryButton>All Photos</PrimaryButton>
+                            <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
+                                <PrimaryButton>Next</PrimaryButton>
                             </Link>
                         </div>
                     </div>

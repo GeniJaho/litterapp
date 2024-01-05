@@ -66,6 +66,32 @@ test('a user can not see the next untagged photo link if there are no more untag
     $response->assertInertia(fn (AssertableInertia $page) => $page->where('nextPhotoUrl', null));
 });
 
+test('a user can see the previous untagged photo link', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $untaggedPhoto = Photo::factory()->for($user)->create();
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->where('previousPhotoUrl', route('photos.show', $untaggedPhoto))
+    );
+});
+
+test('a user can not see the previous untagged photo link if there are no more untagged photos', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $taggedPhoto = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $taggedPhoto->items()->sync($item);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page->where('previousPhotoUrl', null));
+});
+
 test('a user can see a photo', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
