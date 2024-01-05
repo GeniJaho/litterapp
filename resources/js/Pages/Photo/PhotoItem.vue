@@ -28,12 +28,12 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 </IconPrimaryButton>
             </div>
             <div class="mt-6">
-                <div class="flex flex-row justify-between">
+                <div class="flex flex-row justify-between space-x-2">
                     <select
                         id="add-material-tag"
                         v-model="selectedMaterialTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="material in tags.material"
                             :value="material.id"
@@ -42,6 +42,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedMaterialTag)"
                         :disabled="!selectedMaterialTag"
                     >
@@ -49,12 +50,12 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-2 flex flex-row justify-between">
+                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <select
                         id="add-brand-tag"
                         v-model="selectedBrandTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="brand in tags.brand"
                             :value="brand.id"
@@ -63,6 +64,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedBrandTag)"
                         :disabled="!selectedBrandTag"
                     >
@@ -70,12 +72,12 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-2 flex flex-row justify-between">
+                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <select
                         id="add-event-tag"
                         v-model="selectedEventTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="event in tags.event"
                             :value="event.id"
@@ -84,6 +86,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedEventTag)"
                         :disabled="!selectedEventTag"
                     >

@@ -80,12 +80,12 @@ const toggleItemPickedUp = (photoItemId) => {
 
         <div v-if="photo">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div class="flex flex-col sm:flex-row space-x-8">
-                    <div class="w-full sm:w-1/2 md:w-1/3">
+                <div class="flex flex-col md:flex-row md:space-x-8">
+                    <div class="w-full md:w-1/2 xl:w-1/3 px-4">
                         <img
                             :src="photo.full_path"
                             :alt="photo.id"
-                            class="w-full sm:max-w-2xl sm:mx-auto sm:rounded-lg sm:overflow-hidden"
+                            class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                         >
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
@@ -97,8 +97,8 @@ const toggleItemPickedUp = (photoItemId) => {
                         </div>
                     </div>
 
-                    <div class="w-full sm:w-1/2 md:w-2/3">
-                        <div class="flex flex-row">
+                    <div class="w-full md:w-1/2 xl:w-2/3 px-4">
+                        <div class="flex flex-row mt-6 md:mt-0">
                             <select
                                 id="add-item"
                                 v-model="selectedItem"
@@ -112,7 +112,7 @@ const toggleItemPickedUp = (photoItemId) => {
                             </select>
 
                             <PrimaryButton
-                                class="ml-4"
+                                class="whitespace-nowrap ml-4"
                                 @click="addItem"
                                 :disabled="selectedItem === ''"
                             >
@@ -125,7 +125,7 @@ const toggleItemPickedUp = (photoItemId) => {
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
-                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 xl:grid-cols-2">
                                     <PhotoItem
                                         v-for="item in photoItems"
                                         :key="item.pivot.id"
