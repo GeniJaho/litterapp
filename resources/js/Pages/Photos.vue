@@ -21,11 +21,19 @@ const photos = ref(props.photos);
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
 
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-                            <div v-for="photo in photos.data" :key="photo.id">
+                            <div
+                                v-for="photo in photos.data"
+                                :key="photo.id"
+                                class="relative"
+                            >
 
                                 <a :href="`/photos/${photo.id}`">
-                                    <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover">
+                                    <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
                                 </a>
+
+                                <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50/30 w-8 h-8 rounded-full">
+                                    <i class="fas fa-tags text-green-500  mt-0.5 ml-0.5"></i>
+                                </span>
 
                             </div>
                         </div>

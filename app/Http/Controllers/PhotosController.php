@@ -16,7 +16,11 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $photos = $user->photos()->latest('id')->paginate(12);
+        $photos = $user
+            ->photos()
+            ->withExists('items')
+            ->latest('id')
+            ->paginate(12);
 
         $photos->getCollection()->transform(function (Photo $photo) {
             $photo->append('full_path');
