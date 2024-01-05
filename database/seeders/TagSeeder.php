@@ -1103,7 +1103,6 @@ class TagSeeder extends Seeder
             'OralB',
             'Orange',
             'Orangina',
-            'Oreo',
             'Orange Julius',
             'Oreo',
             'Organics By Redbull',
