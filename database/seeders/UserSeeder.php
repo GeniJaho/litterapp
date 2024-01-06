@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 
 class UserSeeder extends Seeder
@@ -30,11 +31,20 @@ class UserSeeder extends Seeder
             'name' => 'Waste Wizard',
             'email' => 'wastewizard@litterhero.com',
             'password' => Hash::make('password'),
-        ]), fn (User $user) => $user->ownedTeams()->save(Team::forceCreate([
-            'user_id' => $user->id,
-            'name' => "Wizard's Team",
-            'personal_team' => true,
-        ])));
+        ]), function (User $user) {
+            $user->ownedTeams()->save(Team::forceCreate([
+                'user_id' => $user->id,
+                'name' => "Wizard's Team",
+                'personal_team' => true,
+            ]));
+            $user->photos()->create([
+                'path' => 'photos/default.jpg',
+            ]);
+            File::copy(
+                storage_path('app/default.jpg'),
+                public_path('storage/photos/default.jpg')
+            );
+        });
 
         User::factory()->create([
             'name' => 'Trash Killer',
