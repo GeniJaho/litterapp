@@ -39,6 +39,9 @@ class ItemResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
