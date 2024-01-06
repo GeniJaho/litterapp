@@ -41,7 +41,7 @@ Route::middleware([
         return Inertia::render('Upload');
     })->name('upload');
 
-    Route::get('/docs', function () {
+    Route::get('/docs/en/', function () {
         return Inertia::render('Docs');
     })->name('docs');
 
