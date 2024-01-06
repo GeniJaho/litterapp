@@ -3,6 +3,7 @@ import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
+import IconDangerButton from "@/Components/IconDangerButton.vue";
 
 const props = defineProps({
     item: Object,
@@ -21,11 +22,11 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
                     {{ item.name }}
                 </h3>
-                <IconPrimaryButton
+                <IconDangerButton
                     @click="$emit('remove-item', item.pivot.id)"
                 >
                     <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                </IconPrimaryButton>
+                </IconDangerButton>
             </div>
             <div class="mt-6">
                 <div class="flex flex-row justify-between space-x-2">
@@ -108,14 +109,22 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 </div>
             </div>
         </div>
-        <div class="px-4 py-5 sm:p-6">
-            <ToggleInput
-                v-model="item.pivot.picked_up"
-                @update:modelValue="$emit('toggle-picked-up', item.pivot.id)"
-                class="block w-full"
+        <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">
+            <div class="flex flex-col justify-center">
+                <ToggleInput
+                    v-model="item.pivot.picked_up"
+                    @update:modelValue="$emit('toggle-picked-up', item.pivot.id)"
+                    class="block w-full"
+                >
+                    <template #label>Picked Up</template>
+                </ToggleInput>
+            </div>
+
+            <IconPrimaryButton
+                @click="$emit('copy-item', item.pivot.id)"
             >
-                <template #label>Picked Up</template>
-            </ToggleInput>
+                <i class="far fa-fw fa-copy text-xs"></i>
+            </IconPrimaryButton>
         </div>
     </li>
 </template>

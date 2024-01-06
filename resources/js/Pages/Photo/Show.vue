@@ -47,6 +47,13 @@ const removeItem = (photoItemId) => {
         });
 };
 
+const copyItem = (photoItemId) => {
+    axios.post(`/photo-items/${photoItemId}/copy`)
+        .then(() => {
+            getPhoto();
+        });
+};
+
 const addTagToItem = (photoItem, tagId) => {
     axios.post(`/photo-items/${photoItem.id}/tags`, {
         tag_id: tagId,
@@ -120,7 +127,7 @@ const toggleItemPickedUp = (photoItemId) => {
                             </PrimaryButton>
                         </div>
 
-                        <div class="mt-4">
+                        <div class="mt-8" v-if="photoItems.length">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
@@ -134,6 +141,7 @@ const toggleItemPickedUp = (photoItemId) => {
                                         @remove-item="removeItem"
                                         @add-tag-to-item="addTagToItem"
                                         @remove-tag-from-item="removeTagFromItem"
+                                        @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
                                     />
                                 </TransitionGroup>
