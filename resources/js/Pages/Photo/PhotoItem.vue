@@ -4,6 +4,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import IconDangerButton from "@/Components/IconDangerButton.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 const props = defineProps({
     item: Object,
@@ -20,6 +21,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
         <div class="px-4 py-5 sm:p-6 flex-1">
             <div class="flex items-center justify-between space-x-3">
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
+                    {{ item.pivot.quantity }}
                     {{ item.name }}
                 </h3>
                 <IconDangerButton
@@ -110,21 +112,39 @@ const selectedEventTag = ref(props.tags.event[0].id);
             </div>
         </div>
         <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">
-            <div class="flex flex-col justify-center">
+            <div class="flex flex-col justify-center space-y-3">
+                <div class="flex flex-row items-center">
+                    <TextInput
+                        id="quantity"
+                        type="number"
+                        :model-value="item.pivot.quantity"
+                        class="w-12 mr-2"
+                        required
+                        min="1"
+                        max="1000"
+                        @input="$emit('update-quantity', item.pivot.id, $event.target.value)"
+                    />
+                    <label for="quantity" class="block font-medium text-sm text-gray-900 dark:text-gray-100">
+                        Quantity
+                    </label>
+                </div>
+
                 <ToggleInput
                     v-model="item.pivot.picked_up"
-                    @update:modelValue="$emit('toggle-picked-up', item.pivot.id)"
+                    @update:modelValue="$emit('toggle-picked-up', item.pivot.id, item.pivot.picked_up)"
                     class="block w-full"
                 >
                     <template #label>Picked Up</template>
                 </ToggleInput>
             </div>
 
-            <IconPrimaryButton
-                @click="$emit('copy-item', item.pivot.id)"
-            >
-                <i class="far fa-fw fa-copy text-xs"></i>
-            </IconPrimaryButton>
+            <div class="flex flex-col justify-end">
+                <IconPrimaryButton
+                    @click="$emit('copy-item', item.pivot.id)"
+                >
+                    <i class="far fa-fw fa-copy text-xs"></i>
+                </IconPrimaryButton>
+            </div>
         </div>
     </li>
 </template>

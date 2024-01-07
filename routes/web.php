@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\CopyPhotoItemController;
-use App\Http\Controllers\PhotoItemPickedUpController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
@@ -53,13 +52,12 @@ Route::middleware([
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
+    Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);
     Route::delete('/photo-items/{photoItem}', [PhotoItemsController::class, 'destroy']);
     Route::post('/photo-items/{photoItem}/tags', [PhotoItemTagsController::class, 'store']);
     Route::delete('/photo-items/{photoItem}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
 
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
-
-    Route::post('/photo-items/{photoItem}/picked-up', [PhotoItemPickedUpController::class, 'store']);
 
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 

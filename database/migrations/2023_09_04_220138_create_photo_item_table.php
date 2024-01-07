@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('photo_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->boolean('picked_up')->default(false);
+            $table->integer('quantity')->default(1);
             $table->timestamps();
         });
     }

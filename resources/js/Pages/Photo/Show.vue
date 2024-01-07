@@ -4,6 +4,7 @@ import {onMounted, ref} from "vue";
 import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import debounce from 'lodash.debounce'
 
 const props = defineProps({
     photoId: Number,
@@ -69,12 +70,21 @@ const removeTagFromItem = (photoItem, tagId) => {
         });
 };
 
-const toggleItemPickedUp = (photoItemId) => {
-    axios.post(`/photo-items/${photoItemId}/picked-up`)
-        .then(() => {
-            getPhoto();
-        });
-};
+const toggleItemPickedUp = debounce((photoItemId, pickedUp) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        picked_up: pickedUp,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
+const updateItemQuantity = debounce((photoItemId, quantity) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        quantity: quantity,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
 </script>
 
 <template>
@@ -143,6 +153,7 @@ const toggleItemPickedUp = (photoItemId) => {
                                         @remove-tag-from-item="removeTagFromItem"
                                         @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
+                                        @update-quantity="updateItemQuantity"
                                     />
                                 </TransitionGroup>
                             </div>
