@@ -5,6 +5,8 @@ import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
+import { router } from '@inertiajs/vue3'
+import IconDangerButton from "@/Components/IconDangerButton.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -32,6 +34,10 @@ const getPhoto = () => {
             console.log(error);
         })
 }
+
+const deletePhoto = () => {
+    router.delete(`/photos/${photo.value.id}`);
+};
 
 const addItem = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
@@ -99,11 +105,20 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">
                     <div class="w-full md:w-1/2 xl:w-1/3 px-4">
-                        <img
-                            :src="photo.full_path"
-                            :alt="photo.id"
-                            class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
-                        >
+                        <div class="relative">
+                            <img
+                                :src="photo.full_path"
+                                :alt="photo.id"
+                                class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
+                            >
+
+                            <IconDangerButton
+                                class="absolute top-4 right-4"
+                                @click="deletePhoto"
+                            >
+                                <i class="fas fa-fw fa-trash-alt text-xs"></i>
+                            </IconDangerButton>
+                        </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
                                 <PrimaryButton>Previous</PrimaryButton>

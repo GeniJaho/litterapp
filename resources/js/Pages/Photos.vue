@@ -1,10 +1,18 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import { ref } from "vue";
-import { usePage, Link } from '@inertiajs/vue3';
+import {usePage, Link, router} from '@inertiajs/vue3';
+import IconDangerButton from "@/Components/IconDangerButton.vue";
 
 const { props } = usePage();
 const photos = ref(props.photos);
+
+const deletePhoto = (photoId) => {
+    router.delete(`/photos/${photoId}`, {
+        preserveScroll: true,
+        preserveState: false,
+    });
+};
 </script>
 
 <template>
@@ -34,6 +42,13 @@ const photos = ref(props.photos);
                                 <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50/30 w-8 h-8 rounded-full">
                                     <i class="fas fa-tags text-green-500  mt-0.5 ml-0.5"></i>
                                 </span>
+
+                                <IconDangerButton
+                                    class="absolute bottom-2 right-2"
+                                    @click="deletePhoto(photo.id)"
+                                >
+                                    <i class="fas fa-fw fa-trash-alt text-xs"></i>
+                                </IconDangerButton>
 
                             </div>
                         </div>

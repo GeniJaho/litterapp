@@ -47,6 +47,7 @@ Route::middleware([
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
+    Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
 
     Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
