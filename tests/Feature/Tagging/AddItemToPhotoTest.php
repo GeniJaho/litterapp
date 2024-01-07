@@ -58,3 +58,21 @@ test('if the user has enabled settings to pick up by default the item should be 
         'picked_up' => true,
     ]);
 });
+
+test('if the user has enabled settings to recycle by default the item should be added as recycled', function () {
+    $user = User::factory()->create(['settings' => ['recycled_by_default' => true]]);
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_id' => $item->id,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseCount('photo_items', 1);
+    $this->assertDatabaseHas('photo_items', [
+        'photo_id' => $photo->id,
+        'item_id' => $item->id,
+        'recycled' => true,
+    ]);
+});
