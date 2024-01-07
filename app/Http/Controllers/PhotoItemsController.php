@@ -17,11 +17,8 @@ class PhotoItemsController extends Controller
 
         $photo->items()->attach($request->item_id, [
             'picked_up' => $user->settings->picked_up_by_default,
+            'recycled' => $user->settings->recycled_by_default,
         ]);
-
-//        $photo->items()->attach($request->item_id, [
-//            'recycled' => $user->settings->recycled_by_default,
-//        ]);
 
         return [];
     }
