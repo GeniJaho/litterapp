@@ -15,11 +15,13 @@ test('a user can update the data of an item on a photo', function () {
         'item_id' => $existingItem->id,
         'quantity' => 1,
         'picked_up' => false,
+        'recycled' => false,
     ]);
 
     $response = $this->actingAs($user)->postJson("/photo-items/{$photo->items()->first()->pivot->id}", [
         'quantity' => 5,
         'picked_up' => true,
+        'recycled' => true,
     ]);
 
     $response->assertOk();
@@ -28,6 +30,7 @@ test('a user can update the data of an item on a photo', function () {
         'item_id' => $existingItem->id,
         'quantity' => 5,
         'picked_up' => true,
+        'recycled' => true,
     ]);
 });
 
@@ -47,4 +50,5 @@ test('the request is validated', function ($data, $error) {
     'quantity zero' => [['quantity' => 0], 'quantity'],
     'quantity 1001' => [['quantity' => 1001], 'quantity'],
     'picked_up not a boolean' => [['picked_up' => 'not-a-boolean'], 'picked_up'],
+    'recycled not a boolean' => [['recycled' => 'not-a-boolean'], 'recycled'],
 ]);

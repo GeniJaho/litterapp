@@ -19,6 +19,10 @@ class PhotoItemsController extends Controller
             'picked_up' => $user->settings->picked_up_by_default,
         ]);
 
+//        $photo->items()->attach($request->item_id, [
+//            'recycled' => $user->settings->recycled_by_default,
+//        ]);
+
         return [];
     }
 
@@ -30,6 +34,10 @@ class PhotoItemsController extends Controller
 
         if ($request->filled('picked_up')) {
             $photoItem->picked_up = $request->picked_up;
+        }
+
+        if ($request->filled('recycled')) {
+            $photoItem->recycled = $request->recycled;
         }
 
         $photoItem->save();

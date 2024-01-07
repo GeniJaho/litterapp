@@ -136,6 +136,13 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 >
                     <template #label>Picked Up</template>
                 </ToggleInput>
+                <ToggleInput
+                    v-model="item.pivot.recycled"
+                    @update:modelValue="$emit('toggle-recycled', item.pivot.id, item.pivot.recycled)"
+                    class="block w-full"
+                >
+                    <template #label>Recycled</template>
+                </ToggleInput>
             </div>
 
             <div class="flex flex-col justify-end">

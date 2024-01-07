@@ -84,6 +84,14 @@ const toggleItemPickedUp = debounce((photoItemId, pickedUp) => {
     });
 }, 1000, {leading: true, trailing: true});
 
+const toggleItemRecycled = debounce((photoItemId, recycled) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        recycled: recycled,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
 const updateItemQuantity = debounce((photoItemId, quantity) => {
     axios.post(`/photo-items/${photoItemId}`, {
         quantity: quantity,
@@ -168,6 +176,7 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
                                         @remove-tag-from-item="removeTagFromItem"
                                         @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
+                                        @toggle-recycled="toggleItemRecycled"
                                         @update-quantity="updateItemQuantity"
                                     />
                                 </TransitionGroup>
