@@ -4,6 +4,9 @@ import {onMounted, ref} from "vue";
 import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import debounce from 'lodash.debounce'
+import { router } from '@inertiajs/vue3'
+import IconDangerButton from "@/Components/IconDangerButton.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -32,6 +35,10 @@ const getPhoto = () => {
         })
 }
 
+const deletePhoto = () => {
+    router.delete(`/photos/${photo.value.id}`);
+};
+
 const addItem = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
         item_id: selectedItem.value,
@@ -42,6 +49,13 @@ const addItem = () => {
 
 const removeItem = (photoItemId) => {
     axios.delete(`/photo-items/${photoItemId}`)
+        .then(() => {
+            getPhoto();
+        });
+};
+
+const copyItem = (photoItemId) => {
+    axios.post(`/photo-items/${photoItemId}/copy`)
         .then(() => {
             getPhoto();
         });
@@ -62,12 +76,29 @@ const removeTagFromItem = (photoItem, tagId) => {
         });
 };
 
-const toggleItemPickedUp = (photoItemId) => {
-    axios.post(`/photo-items/${photoItemId}/picked-up`)
-        .then(() => {
-            getPhoto();
-        });
-};
+const toggleItemPickedUp = debounce((photoItemId, pickedUp) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        picked_up: pickedUp,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
+const toggleItemRecycled = debounce((photoItemId, recycled) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        recycled: recycled,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
+const updateItemQuantity = debounce((photoItemId, quantity) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        quantity: quantity,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
 </script>
 
 <template>
@@ -80,13 +111,22 @@ const toggleItemPickedUp = (photoItemId) => {
 
         <div v-if="photo">
             <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
-                <div class="flex flex-col sm:flex-row space-x-8">
-                    <div class="w-full sm:w-1/2 md:w-1/3">
-                        <img
-                            :src="photo.full_path"
-                            :alt="photo.id"
-                            class="w-full sm:max-w-2xl sm:mx-auto sm:rounded-lg sm:overflow-hidden"
-                        >
+                <div class="flex flex-col md:flex-row md:space-x-8">
+                    <div class="w-full md:w-1/2 xl:w-1/3 px-4">
+                        <div class="relative">
+                            <img
+                                :src="photo.full_path"
+                                :alt="photo.id"
+                                class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
+                            >
+
+                            <IconDangerButton
+                                class="absolute top-4 right-4"
+                                @click="deletePhoto"
+                            >
+                                <i class="fas fa-fw fa-trash-alt text-xs"></i>
+                            </IconDangerButton>
+                        </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
                                 <PrimaryButton>Previous</PrimaryButton>
@@ -97,8 +137,8 @@ const toggleItemPickedUp = (photoItemId) => {
                         </div>
                     </div>
 
-                    <div class="w-full sm:w-1/2 md:w-2/3">
-                        <div class="flex flex-row">
+                    <div class="w-full md:w-1/2 xl:w-2/3 px-4">
+                        <div class="flex flex-row mt-6 md:mt-0">
                             <select
                                 id="add-item"
                                 v-model="selectedItem"
@@ -112,7 +152,7 @@ const toggleItemPickedUp = (photoItemId) => {
                             </select>
 
                             <PrimaryButton
-                                class="ml-4"
+                                class="whitespace-nowrap ml-4"
                                 @click="addItem"
                                 :disabled="selectedItem === ''"
                             >
@@ -120,12 +160,12 @@ const toggleItemPickedUp = (photoItemId) => {
                             </PrimaryButton>
                         </div>
 
-                        <div class="mt-4">
+                        <div class="mt-8" v-if="photoItems.length">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
-                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 sm:grid-cols-2">
+                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 xl:grid-cols-2">
                                     <PhotoItem
                                         v-for="item in photoItems"
                                         :key="item.pivot.id"
@@ -134,7 +174,10 @@ const toggleItemPickedUp = (photoItemId) => {
                                         @remove-item="removeItem"
                                         @add-tag-to-item="addTagToItem"
                                         @remove-tag-from-item="removeTagFromItem"
+                                        @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
+                                        @toggle-recycled="toggleItemRecycled"
+                                        @update-quantity="updateItemQuantity"
                                     />
                                 </TransitionGroup>
                             </div>

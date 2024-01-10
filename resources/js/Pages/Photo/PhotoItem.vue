@@ -3,6 +3,8 @@ import { ref } from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
+import IconDangerButton from "@/Components/IconDangerButton.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 const props = defineProps({
     item: Object,
@@ -19,21 +21,22 @@ const selectedEventTag = ref(props.tags.event[0].id);
         <div class="px-4 py-5 sm:p-6 flex-1">
             <div class="flex items-center justify-between space-x-3">
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
+                    {{ item.pivot.quantity }}
                     {{ item.name }}
                 </h3>
-                <IconPrimaryButton
+                <IconDangerButton
                     @click="$emit('remove-item', item.pivot.id)"
                 >
                     <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                </IconPrimaryButton>
+                </IconDangerButton>
             </div>
             <div class="mt-6">
-                <div class="flex flex-row justify-between">
+                <div class="flex flex-row justify-between space-x-2">
                     <select
                         id="add-material-tag"
                         v-model="selectedMaterialTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="material in tags.material"
                             :value="material.id"
@@ -42,6 +45,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedMaterialTag)"
                         :disabled="!selectedMaterialTag"
                     >
@@ -49,12 +53,12 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-2 flex flex-row justify-between">
+                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <select
                         id="add-brand-tag"
                         v-model="selectedBrandTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="brand in tags.brand"
                             :value="brand.id"
@@ -63,6 +67,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedBrandTag)"
                         :disabled="!selectedBrandTag"
                     >
@@ -70,12 +75,12 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-2 flex flex-row justify-between">
+                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <select
                         id="add-event-tag"
                         v-model="selectedEventTag"
                         name="add-tag"
-                        class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
+                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
                         <option
                             v-for="event in tags.event"
                             :value="event.id"
@@ -84,6 +89,7 @@ const selectedEventTag = ref(props.tags.event[0].id);
                     </select>
 
                     <PrimaryButton
+                        class="whitespace-nowrap"
                         @click="$emit('add-tag-to-item', item.pivot, selectedEventTag)"
                         :disabled="!selectedEventTag"
                     >
@@ -105,14 +111,47 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 </div>
             </div>
         </div>
-        <div class="px-4 py-5 sm:p-6">
-            <ToggleInput
-                v-model="item.pivot.picked_up"
-                @update:modelValue="$emit('toggle-picked-up', item.pivot.id)"
-                class="block w-full"
-            >
-                <template #label>Picked Up</template>
-            </ToggleInput>
+        <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">
+            <div class="flex flex-col justify-center space-y-3">
+                <div class="flex flex-row items-center">
+                    <TextInput
+                        id="quantity"
+                        type="number"
+                        :model-value="item.pivot.quantity"
+                        class="w-12 mr-2"
+                        required
+                        min="1"
+                        max="1000"
+                        @input="$emit('update-quantity', item.pivot.id, $event.target.value)"
+                    />
+                    <label for="quantity" class="block font-medium text-sm text-gray-900 dark:text-gray-100">
+                        Quantity
+                    </label>
+                </div>
+
+                <ToggleInput
+                    v-model="item.pivot.picked_up"
+                    @update:modelValue="$emit('toggle-picked-up', item.pivot.id, item.pivot.picked_up)"
+                    class="block w-full"
+                >
+                    <template #label>Picked Up</template>
+                </ToggleInput>
+                <ToggleInput
+                    v-model="item.pivot.recycled"
+                    @update:modelValue="$emit('toggle-recycled', item.pivot.id, item.pivot.recycled)"
+                    class="block w-full"
+                >
+                    <template #label>Recycled</template>
+                </ToggleInput>
+            </div>
+
+            <div class="flex flex-col justify-end">
+                <IconPrimaryButton
+                    @click="$emit('copy-item', item.pivot.id)"
+                >
+                    <i class="far fa-fw fa-copy text-xs"></i>
+                </IconPrimaryButton>
+            </div>
         </div>
     </li>
 </template>

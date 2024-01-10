@@ -15,7 +15,9 @@ const props = defineProps({
 
 const form = useForm({
     picked_up_by_default: props.user.settings.picked_up_by_default,
+    recycled_by_default: props.user.settings.recycled_by_default,
 });
+
 
 const save = () => {
     form.post(route('user-settings.update'), {
@@ -38,7 +40,6 @@ const save = () => {
             <div class="col-span-6 sm:col-span-4">
                 <ToggleInput
                     id="picked_up_by_default"
-                    ref="pickedUpByDefault"
                     v-model="form.picked_up_by_default"
                     class="mt-1 block w-full"
                 >
@@ -51,6 +52,21 @@ const save = () => {
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.picked_up_by_default" class="mt-2" />
+
+                <ToggleInput
+                    id="recycled_by_default"
+                    v-model="form.recycled_by_default"
+                    class="mt-4 block w-full"
+                >
+                    <template #label>
+                        Litter is recycled by default
+                    </template>
+                    <template #description>
+                        When enabled, litter objects in your photos will be marked as recycled by default.
+                        You can always change the status of each object individually.
+                    </template>
+                </ToggleInput>
+                <InputError :message="form.errors.recycled_by_default" class="mt-2" />
             </div>
         </template>
 

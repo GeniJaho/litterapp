@@ -77,13 +77,15 @@ COPY --chown=$user . /app
 #USER $user
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+RUN composer update --with-all-dependencies
 #RUN composer install --optimize-autoloader --no-dev
 RUN composer install --optimize-autoloader
-RUN php artisan config:clear && php artisan cache:clear && php artisan config:cache && php artisan key:generate && php artisan storage:link
+RUN php artisan config:clear && php artisan cache:clear && php artisan storage:link
 
 RUN npm install && npm run build
 
 #EXPOSE 9000
-#RUN php artisan migrate
+#php artisan migrate
+#php artisan key:generate | we actually only need that line the first time we do the deployment, it's the app's encryption key that is used for all passwords and other tokens, it must not change. 
 #php artisan migrate:fresh --seed
 CMD php artisan serve --host=0.0.0.0 --port=9000

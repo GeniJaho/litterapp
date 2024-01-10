@@ -111,6 +111,9 @@ test('a user can see a photo', function () {
         ->where('photo.full_path', $photo->full_path)
         ->has('items', 2)
         ->has('items.0.pivot.tags', 1)
+        ->has('items.0.pivot.picked_up')
+        ->has('items.0.pivot.recycled')
+        ->has('items.0.pivot.quantity')
         ->etc()
     );
 });

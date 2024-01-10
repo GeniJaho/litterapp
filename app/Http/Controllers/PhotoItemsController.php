@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UpdatePhotoItemRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;
@@ -16,7 +17,27 @@ class PhotoItemsController extends Controller
 
         $photo->items()->attach($request->item_id, [
             'picked_up' => $user->settings->picked_up_by_default,
+            'recycled' => $user->settings->recycled_by_default,
         ]);
+
+        return [];
+    }
+
+    public function update(PhotoItem $photoItem, UpdatePhotoItemRequest $request): array
+    {
+        if ($request->filled('quantity')) {
+            $photoItem->quantity = $request->quantity;
+        }
+
+        if ($request->filled('picked_up')) {
+            $photoItem->picked_up = $request->picked_up;
+        }
+
+        if ($request->filled('recycled')) {
+            $photoItem->recycled = $request->recycled;
+        }
+
+        $photoItem->save();
 
         return [];
     }

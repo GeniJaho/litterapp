@@ -7,6 +7,8 @@ use App\Models\Photo;
 use App\Models\Tag;
 use App\Models\TagType;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 
 class PhotosController extends Controller
@@ -66,6 +68,15 @@ class PhotosController extends Controller
             'photo' => $photo,
             'items' => $items,
         ];
+    }
+
+    public function destroy(Photo $photo): RedirectResponse
+    {
+        $photo->delete();
+
+        Storage::disk('public')->delete($photo->path);
+
+        return redirect()->route('my-photos');
     }
 
     private function getNextPhotoUrl(Photo $photo): ?string
