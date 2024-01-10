@@ -12,54 +12,74 @@ class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
     {
         $manager = new ImageManager(new Driver());
         $image = $manager->read($photo);
-        $all = $image->exif('GPS');
+        $exif = $image->exif('GPS');
 
-        if (! $all) {
+        if ($this->isExifInvalid($exif)) {
             return [];
         }
 
-        return $this->convertArrayToLatLng($all);
+        $result = $this->convertArrayToLatLng((array) $exif);
+
+        if ($result['latitude'] === 0.0 && $result['longitude'] === 0.0) {
+            return [];
+        }
+
+        return $result;
     }
 
-    private function convertArrayToLatLng($gpsData)
+    private function convertArrayToLatLng(array $exif): array
     {
-        $GPSLatitudeRef = $gpsData['GPSLatitudeRef'];
-        $GPSLatitude = $gpsData['GPSLatitude'];
-        $GPSLongitudeRef = $gpsData['GPSLongitudeRef'];
-        $GPSLongitude = $gpsData['GPSLongitude'];
+        $GPSLatitudeRef = $exif['GPSLatitudeRef'];
+        $GPSLatitude = $exif['GPSLatitude'];
+        $GPSLongitudeRef = $exif['GPSLongitudeRef'];
+        $GPSLongitude = $exif['GPSLongitude'];
 
-        $lat_degrees = $this->gps2Num($GPSLatitude[0] ?? null);
-        $lat_minutes = $this->gps2Num($GPSLatitude[1] ?? null);
-        $lat_seconds = $this->gps2Num($GPSLatitude[2] ?? null);
+        $latDegrees = $this->gpsToNumeric($GPSLatitude[0] ?? null);
+        $latMinutes = $this->gpsToNumeric($GPSLatitude[1] ?? null);
+        $latSeconds = $this->gpsToNumeric($GPSLatitude[2] ?? null);
 
-        $lon_degrees = $this->gps2Num($GPSLongitude[0] ?? null);
-        $lon_minutes = $this->gps2Num($GPSLongitude[1] ?? null);
-        $lon_seconds = $this->gps2Num($GPSLongitude[2] ?? null);
+        $lonDegrees = $this->gpsToNumeric($GPSLongitude[0] ?? null);
+        $lonMinutes = $this->gpsToNumeric($GPSLongitude[1] ?? null);
+        $lonSeconds = $this->gpsToNumeric($GPSLongitude[2] ?? null);
 
-        $lat_direction = ($GPSLatitudeRef == 'W' || $GPSLatitudeRef == 'S') ? -1 : 1;
-        $lon_direction = ($GPSLongitudeRef == 'W' || $GPSLongitudeRef == 'S') ? -1 : 1;
+        $latDirection = ($GPSLatitudeRef === 'W' || $GPSLatitudeRef === 'S') ? -1 : 1;
+        $lonDirection = ($GPSLongitudeRef === 'W' || $GPSLongitudeRef === 'S') ? -1 : 1;
 
-        $latitude = $lat_direction * ($lat_degrees + ($lat_minutes / 60) + ($lat_seconds / (60 * 60)));
-        $longitude = $lon_direction * ($lon_degrees + ($lon_minutes / 60) + ($lon_seconds / (60 * 60)));
+        $latitude = $latDirection * ($latDegrees + ($latMinutes / 60) + ($latSeconds / (60 * 60)));
+        $longitude = $lonDirection * ($lonDegrees + ($lonMinutes / 60) + ($lonSeconds / (60 * 60)));
 
         return ['latitude' => $latitude, 'longitude' => $longitude];
     }
 
-    private function gps2Num($coordPart)
+    private function gpsToNumeric(?string $coordinates): float
     {
-        if (! $coordPart) {
-            return 0;
+        if (! $coordinates) {
+            return 0.0;
         }
 
-        $parts = explode('/', $coordPart);
-        if (count($parts) <= 0) {
-            return 0;
+        $parts = explode('/', $coordinates);
+
+        if ($parts === []) {
+            return 0.0;
         }
 
-        if (count($parts) == 1) {
-            return $parts[0];
+        if (count($parts) === 1) {
+            return (float) $parts[0];
+        }
+
+        if ((float) $parts[1] === 0.0) {
+            return 0.0;
         }
 
         return (float) $parts[0] / (float) $parts[1];
+    }
+
+    private function isExifInvalid(mixed $exif): bool
+    {
+        return ! $exif ||
+            ! isset($exif['GPSLatitudeRef']) ||
+            ! isset($exif['GPSLatitude']) ||
+            ! isset($exif['GPSLongitudeRef']) ||
+            ! isset($exif['GPSLongitude']);
     }
 }
