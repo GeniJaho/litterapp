@@ -27,6 +27,14 @@ class UserSeeder extends Seeder
             'password' => Hash::make('password'),
         ]);
 
+        $team = Team::factory()->create([
+            'name' => 'Team A',
+            'user_id' => $userA->id,
+            'personal_team' => true,
+        ]);
+
+        $userA->teams()->attach($team);
+
         tap(User::factory()->create([
             'name' => 'Waste Wizard',
             'email' => 'wastewizard@litterhero.com',
@@ -51,13 +59,5 @@ class UserSeeder extends Seeder
             'email' => 'trashkiller@litterhero.com',
             'password' => Hash::make('password'),
         ]);
-
-        $team = Team::factory()->create([
-            'name' => 'Team A',
-            'user_id' => $userA->id,
-            'personal_team' => true,
-        ]);
-
-        $userA->teams()->attach($team);
     }
 }
