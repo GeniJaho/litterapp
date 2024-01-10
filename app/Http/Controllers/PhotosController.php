@@ -7,13 +7,15 @@ use App\Models\Photo;
 use App\Models\Tag;
 use App\Models\TagType;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
+use Inertia\Response;
 
 class PhotosController extends Controller
 {
-    public function index()
+    public function index(): Response
     {
         /** @var User $user */
         $user = auth()->user();
@@ -35,7 +37,7 @@ class PhotosController extends Controller
         ]);
     }
 
-    public function show(Photo $photo)
+    public function show(Photo $photo): Response|JsonResponse
     {
         $tagTypes = TagType::query()->get();
         $tags = Tag::query()
@@ -43,7 +45,10 @@ class PhotosController extends Controller
             ->get()
             ->groupBy('tag_type_id')
             ->mapWithKeys(function ($values, $key) use ($tagTypes) {
-                return [$tagTypes->find($key)->slug => $values];
+                /** @var TagType $tagType */
+                $tagType = $tagTypes->find($key);
+
+                return [$tagType->slug => $values];
             });
 
         if (! request()->wantsJson()) {
@@ -60,14 +65,14 @@ class PhotosController extends Controller
             ->items()
             ->orderByDesc('photo_items.id')
             ->get()
-            ->each(fn (Item $item) => $item->pivot->load('tags'));
+            ->each(fn (Item $item) => $item->pivot?->load('tags'));
 
         $photo->append('full_path');
 
-        return [
+        return response()->json([
             'photo' => $photo,
             'items' => $items,
-        ];
+        ]);
     }
 
     public function destroy(Photo $photo): RedirectResponse

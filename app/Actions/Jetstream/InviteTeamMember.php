@@ -29,6 +29,7 @@ class InviteTeamMember implements InvitesTeamMembers
 
         InvitingTeamMember::dispatch($team, $email, $role);
 
+        /** @var \App\Models\TeamInvitation $invitation */
         $invitation = $team->teamInvitations()->create([
             'email' => $email,
             'role' => $role,
@@ -55,7 +56,7 @@ class InviteTeamMember implements InvitesTeamMembers
     /**
      * Get the validation rules for inviting a team member.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\Rule|array|string>
+     * @return array<string, \Illuminate\Contracts\Validation\Rule|array<int, mixed>|string>
      */
     protected function rules(Team $team): array
     {

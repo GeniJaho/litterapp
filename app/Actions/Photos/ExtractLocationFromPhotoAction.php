@@ -18,7 +18,7 @@ class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
             return [];
         }
 
-        $result = $this->convertArrayToLatLng((array) $exif);
+        $result = $this->convertExifToLatLng((array) $exif);
 
         if ($result['latitude'] === 0.0 && $result['longitude'] === 0.0) {
             return [];
@@ -27,7 +27,11 @@ class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
         return $result;
     }
 
-    private function convertArrayToLatLng(array $exif): array
+    /**
+     * @param  array<string, mixed>  $exif
+     * @return float[]
+     */
+    private function convertExifToLatLng(array $exif): array
     {
         $GPSLatitudeRef = $exif['GPSLatitudeRef'];
         $GPSLatitude = $exif['GPSLatitude'];
@@ -59,7 +63,7 @@ class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
 
         $parts = explode('/', $coordinates);
 
-        if ($parts === []) {
+        if ($parts == []) {
             return 0.0;
         }
 

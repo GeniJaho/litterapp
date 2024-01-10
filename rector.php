@@ -6,6 +6,7 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
 use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
+use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
 use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use Rector\PHPUnit\Set\PHPUnitSetList;
@@ -44,6 +45,7 @@ return static function (RectorConfig $rectorConfig): void {
 
     $rectorConfig->skip([
         AddLiteralSeparatorToNumberRector::class,
+        PostIncDecToPreIncDecRector::class,
         StaticArrowFunctionRector::class,
         StaticClosureRector::class,
         EncapsedStringsToSprintfRector::class,

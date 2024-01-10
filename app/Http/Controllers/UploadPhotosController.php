@@ -5,15 +5,20 @@ namespace App\Http\Controllers;
 use App\Actions\Photos\ExtractsLocationFromPhoto;
 use App\Http\Requests\StorePhotosRequest;
 use App\Models\Photo;
+use App\Models\User;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\UploadedFile;
 
 class UploadPhotosController extends Controller
 {
     public function store(
         StorePhotosRequest $request,
         ExtractsLocationFromPhoto $extractLocation,
-    ): array {
+    ): JsonResponse {
+        /** @var User $user */
         $user = auth()->user();
 
+        /** @var UploadedFile $photo */
         $photo = $request->file('photo');
 
         $location = $extractLocation->run($photo);
@@ -27,6 +32,6 @@ class UploadPhotosController extends Controller
             'longitude' => $location['longitude'] ?? null,
         ]);
 
-        return [];
+        return response()->json();
     }
 }

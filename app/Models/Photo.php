@@ -17,13 +17,16 @@ class Photo extends Model
     use HasFactory;
 
     /**
-     * @return BelongsTo<User, \App\Models\Photo>
+     * @return BelongsTo<User, Photo>
      */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return BelongsToMany<Item>
+     */
     public function items(): BelongsToMany
     {
         return $this->belongsToMany(Item::class, 'photo_items')
@@ -40,6 +43,9 @@ class Photo extends Model
         return $this->belongsToMany(Tag::class, 'photo_tag');
     }
 
+    /**
+     * @return Attribute<callable, callable>
+     */
     protected function fullPath(): Attribute
     {
         return Attribute::make(get: fn () => '/storage/'.$this->path);

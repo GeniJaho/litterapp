@@ -6,11 +6,12 @@ use App\Http\Requests\UpdatePhotoItemRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class PhotoItemsController extends Controller
 {
-    public function store(Photo $photo, Request $request)
+    public function store(Photo $photo, Request $request): JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -20,10 +21,10 @@ class PhotoItemsController extends Controller
             'recycled' => $user->settings->recycled_by_default,
         ]);
 
-        return [];
+        return response()->json();
     }
 
-    public function update(PhotoItem $photoItem, UpdatePhotoItemRequest $request): array
+    public function update(PhotoItem $photoItem, UpdatePhotoItemRequest $request): JsonResponse
     {
         if ($request->filled('quantity')) {
             $photoItem->quantity = $request->quantity;
@@ -39,13 +40,13 @@ class PhotoItemsController extends Controller
 
         $photoItem->save();
 
-        return [];
+        return response()->json();
     }
 
-    public function destroy(PhotoItem $photoItem)
+    public function destroy(PhotoItem $photoItem): JsonResponse
     {
         $photoItem->delete();
 
-        return [];
+        return response()->json();
     }
 }

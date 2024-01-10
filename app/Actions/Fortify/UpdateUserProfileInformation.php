@@ -4,16 +4,18 @@ namespace App\Actions\Fortify;
 
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
 use Laravel\Fortify\Contracts\UpdatesUserProfileInformation;
 
 class UpdateUserProfileInformation implements UpdatesUserProfileInformation
 {
     /**
-     * Validate and update the given user's profile information.
-     *
      * @param  array<string, string>  $input
+     *
+     * @throws ValidationException
      */
     public function update(User $user, array $input): void
     {
@@ -24,7 +26,9 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
-            $user->updateProfilePhoto($input['photo']);
+            /** @var UploadedFile $photo */
+            $photo = $input['photo'];
+            $user->updateProfilePhoto($photo);
         }
 
         if ($input['email'] !== $user->email &&

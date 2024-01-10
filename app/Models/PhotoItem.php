@@ -25,7 +25,7 @@ class PhotoItem extends Pivot
     ];
 
     /**
-     * @return BelongsTo<Item, \App\Models\PhotoItem>
+     * @return BelongsTo<Item, PhotoItem>
      */
     public function item(): BelongsTo
     {
@@ -33,13 +33,16 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Photo, \App\Models\PhotoItem>
+     * @return BelongsTo<Photo, PhotoItem>
      */
     public function photo(): BelongsTo
     {
         return $this->belongsTo(Photo::class);
     }
 
+    /**
+     * @return BelongsToMany<Tag>
+     */
     public function tags(): BelongsToMany
     {
         return $this->belongsToMany(

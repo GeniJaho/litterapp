@@ -19,6 +19,7 @@ use Laravel\Sanctum\HasApiTokens;
 /**
  * @property Collection<Photo> $photos
  * @property UserSettings $settings
+ * @property Collection<Team> $ownedTeams
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {

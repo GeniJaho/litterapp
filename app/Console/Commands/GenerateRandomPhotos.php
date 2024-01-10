@@ -14,6 +14,7 @@ class GenerateRandomPhotos extends Command
 
     public function handle(): void
     {
+        /** @var User $user */
         $user = User::query()
             ->where('email', 'trashkiller@litterhero.com')
             ->first();
