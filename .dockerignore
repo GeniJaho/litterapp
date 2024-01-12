@@ -1,5 +1,4 @@
 .*
 .*/
-/deployment/
 
 !package-lock.json

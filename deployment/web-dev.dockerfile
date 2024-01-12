@@ -69,7 +69,7 @@ RUN php artisan config:clear && php artisan cache:clear && php artisan storage:l
 RUN npm install && npm run build
 
 # Copy the entry script
-COPY deployment/web-dev-entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./deployment/web-dev.entrypoint.sh /usr/local/bin/entrypoint.sh
 # Give the script execute permissions
 RUN chmod +x /usr/local/bin/entrypoint.sh
 # Use the entry script as the default command
