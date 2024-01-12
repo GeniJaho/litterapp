@@ -117,3 +117,13 @@ test('a user can see a photo', function () {
         ->etc()
     );
 });
+
+test('a user can not see another users photo', function () {
+    $this->actingAs($user = User::factory()->create());
+    $otherUser = User::factory()->create();
+    $photo = Photo::factory()->for($otherUser)->create();
+
+    $response = $this->getJson(route('photos.show', $photo));
+
+    $response->assertNotFound();
+});

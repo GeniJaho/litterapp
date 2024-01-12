@@ -20,3 +20,17 @@ test('a user can remove a tag from an item of a photo', function () {
     $response->assertOk();
     $this->assertDatabaseEmpty('photo_item_tag');
 });
+
+test('a user can not remove a tag from an item of a photo of another user', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create();
+    $item = Item::factory()->create();
+    $photoItem = PhotoItem::factory()->for($item)->for($photo)->create();
+    $tag = Tag::factory()->create();
+    PhotoItemTag::factory()->for($photoItem)->for($tag)->create();
+
+    $response = $this->actingAs($user)->deleteJson("/photo-items/{$photoItem->id}/tags/{$tag->id}");
+
+    $response->assertNotFound();
+    $this->assertDatabaseCount('photo_item_tag', 1);
+});

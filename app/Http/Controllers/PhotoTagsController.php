@@ -11,6 +11,14 @@ class PhotoTagsController extends Controller
 {
     public function store(Photo $photo, Request $request): JsonResponse
     {
+        $request->validate([
+            'tag_id' => 'required|exists:tags,id',
+        ]);
+
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
         $photo->tags()->syncWithoutDetaching($request->tag_id);
 
         return response()->json();
@@ -18,6 +26,10 @@ class PhotoTagsController extends Controller
 
     public function destroy(Photo $photo, Tag $tag): JsonResponse
     {
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
         $photo->tags()->detach($tag);
 
         return response()->json();

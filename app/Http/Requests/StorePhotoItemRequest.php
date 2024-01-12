@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdatePhotoItemRequest extends FormRequest
+class StorePhotoItemRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,9 +15,7 @@ class UpdatePhotoItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'picked_up' => 'nullable|boolean',
-            'recycled' => 'nullable|boolean',
-            'quantity' => 'nullable|integer|min:1|max:1000',
+            'item_id' => 'required|exists:items,id',
         ];
     }
 }

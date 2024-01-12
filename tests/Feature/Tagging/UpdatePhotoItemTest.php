@@ -52,3 +52,18 @@ test('the request is validated', function ($data, $error) {
     'picked_up not a boolean' => [['picked_up' => 'not-a-boolean'], 'picked_up'],
     'recycled not a boolean' => [['recycled' => 'not-a-boolean'], 'recycled'],
 ]);
+
+test('a user can not update an item on a photo of another user', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create();
+    $existingItem = Item::factory()->create();
+    $photo->items()->attach($existingItem);
+
+    $response = $this->actingAs($user)->postJson("/photo-items/{$photo->items()->first()->pivot->id}", [
+        'quantity' => 5,
+        'picked_up' => true,
+        'recycled' => true,
+    ]);
+
+    $response->assertNotFound();
+});
