@@ -19,6 +19,7 @@
         "vue": "^3.3.4"
     },
     "dependencies": {
+        "@headlessui/vue": "^1.7.17",
         "filepond": "^4.30.4",
         "filepond-plugin-file-validate-size": "^2.2.8",
         "filepond-plugin-file-validate-type": "^1.2.8",

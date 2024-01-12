@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 
 class PhotoItemsController extends Controller
 {
+    // todo validate the item_id exists
     public function store(Photo $photo, Request $request): JsonResponse
     {
         /** @var User $user */
