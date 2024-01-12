@@ -1,4 +1,5 @@
 #!/bin/sh
+#set -xv 
 
 #Check if there is a key, if not, create one
 # We actually only need the first time we do the deployment,
