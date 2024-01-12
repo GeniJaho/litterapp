@@ -18,16 +18,18 @@ defineEmits(['update:modelValue']);
 
 let query = ref('')
 
-let filteredItems = computed(() =>
-    query.value === ''
+let filteredItems = computed(() => {
+    const items = query.value === ''
         ? props.items
         : props.items.filter((item) =>
             item.name
                 .toLowerCase()
                 .replace(/\s+/g, '')
                 .includes(query.value.toLowerCase().replace(/\s+/g, ''))
-        )
-)
+        );
+
+    return items.slice(0, 100)
+})
 </script>
 
 <template>
@@ -60,7 +62,7 @@ let filteredItems = computed(() =>
                     @after-leave="query = ''"
                 >
                     <ComboboxOptions
-                        class="absolute mt-1 max-h-96 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
+                        class="absolute z-10 mt-1 max-h-96 w-full md:w-96 right-0 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                     >
                         <div
                             v-if="filteredItems.length === 0 && query !== ''"

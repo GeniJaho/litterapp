@@ -5,15 +5,16 @@ import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TextInput from "@/Components/TextInput.vue";
+import TagBox from "@/Components/TagBox.vue";
 
 const props = defineProps({
     item: Object,
     tags: Object,
 });
 
-const selectedMaterialTag = ref(props.tags.material[0].id);
-const selectedBrandTag = ref(props.tags.brand[0].id);
-const selectedEventTag = ref(props.tags.event[0].id);
+const selectedMaterialTag = ref(props.tags.material[0]);
+const selectedBrandTag = ref(props.tags.brand[0]);
+const selectedEventTag = ref(props.tags.event[0]);
 </script>
 
 <template>
@@ -32,21 +33,15 @@ const selectedEventTag = ref(props.tags.event[0].id);
             </div>
             <div class="mt-6">
                 <div class="flex flex-row justify-between space-x-2">
-                    <select
-                        id="add-material-tag"
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.material"
                         v-model="selectedMaterialTag"
-                        name="add-tag"
-                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option
-                            v-for="material in tags.material"
-                            :value="material.id"
-                        >{{ material.name }}
-                        </option>
-                    </select>
+                    ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedMaterialTag)"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedMaterialTag.id)"
                         :disabled="!selectedMaterialTag"
                     >
                         Add Material
@@ -54,21 +49,15 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 </div>
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <select
-                        id="add-brand-tag"
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.brand"
                         v-model="selectedBrandTag"
-                        name="add-tag"
-                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option
-                            v-for="brand in tags.brand"
-                            :value="brand.id"
-                        >{{ brand.name }}
-                        </option>
-                    </select>
+                    ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedBrandTag)"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedBrandTag.id)"
                         :disabled="!selectedBrandTag"
                     >
                         Add Brand
@@ -76,21 +65,15 @@ const selectedEventTag = ref(props.tags.event[0].id);
                 </div>
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <select
-                        id="add-event-tag"
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.event"
                         v-model="selectedEventTag"
-                        name="add-tag"
-                        class="block w-full lg:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                        <option
-                            v-for="event in tags.event"
-                            :value="event.id"
-                        >{{ event.name }}
-                        </option>
-                    </select>
+                    ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedEventTag)"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedEventTag.id)"
                         :disabled="!selectedEventTag"
                     >
                         Add Event
