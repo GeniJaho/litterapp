@@ -34,6 +34,19 @@ ENV NODE_MAJOR=20
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
 RUN apt-get update && apt-get install -y nodejs
 
+# memcached
+#RUN pecl install memcached && docker-php-ext-enable memcached
+# mcrypt
+#RUN pecl install mcrypt && docker-php-ext-enable mcrypt
+# install xdebug
+#RUN pecl install xdebug && docker-php-ext-enable xdebug
+# install imagick
+#RUN pecl install imagick && docker-php-ext-enable imagick
+
+# Install PHP extensions
+#RUN docker-php-ext-configure gd --with-jpeg --with-freetype
+#RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd zip intl
+
 # configure, install and enable all php packages
 RUN set -eux; \
 	docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
@@ -49,6 +62,7 @@ RUN set -eux; \
 		pdo_mysql \
 		zip
 
+
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
@@ -63,14 +77,10 @@ COPY --chown=$user . /app
 #USER $user
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN composer install --optimize-autoloader
+RUN composer install --optimize-autoloader --no-dev
 RUN php artisan config:clear && php artisan cache:clear && php artisan storage:link
 
 RUN npm install && npm run build
 
-# Copy the entry script
-COPY ./deployment/web-dev.entrypoint.sh /usr/local/bin/entrypoint.sh
-# Give the script execute permissions
-RUN chmod +x /usr/local/bin/entrypoint.sh
-# Use the entry script as the default command
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+#EXPOSE 9000
+CMD php artisan serve --host=0.0.0.0 --port=9000
