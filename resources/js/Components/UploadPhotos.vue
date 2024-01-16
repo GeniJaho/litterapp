@@ -1,9 +1,5 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3'
-import { Link } from '@inertiajs/vue3'
-
-const page = usePage();
-
+import {Link, usePage} from '@inertiajs/vue3'
 // Import FilePond
 import vueFilePond from 'vue-filepond';
 
@@ -19,6 +15,9 @@ import FilePondPluginFileValidateSize from 'filepond-plugin-file-validate-size';
 import 'filepond/dist/filepond.min.css';
 import 'filepond-plugin-image-preview/dist/filepond-plugin-image-preview.min.css';
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {ref} from "vue";
+
+const page = usePage();
 
 // Create FilePond component
 const FilePond = vueFilePond(
@@ -77,19 +76,49 @@ const customFileValidation = (source, type) => new Promise((resolve, reject) => 
     }
 });
 
+const isIdle = ref(true);
+const uploadProgress = ref(0);
+const pond = ref(null);
+
+const updateProgress = () => {
+    const files = pond.value.getFiles();
+
+    // https://pqina.nl/filepond/docs/api/exports/#filestatus
+    const processedFiles = files.filter(file => file.status === 5); // PROCESSING_COMPLETE
+
+    uploadProgress.value = files.length
+        ? (processedFiles.length / files.length) * 100
+        : 0;
+}
+
+// Stupid solution, but it works for now
+// The Vue filepond does not currently expose the status property
+// https://github.com/pqina/vue-filepond/issues/139
+setInterval(() => {
+    if (pond.value) {
+        isIdle.value = [0, 1, 4].includes(pond.value._pond?.status); // EMPTY, IDLE, READY
+    }
+}, 1000);
+
 </script>
 
 <template>
     <div>
         <div
             class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
-            <h1 class="text-2xl font-medium text-gray-900 dark:text-white">
-                Drag and drop your photos here
+            <h1 class="text-2xl font-medium text-gray-900 dark:text-white flex flex-row justify-between">
+                <span>Drag and drop your photos here</span>
+                <span v-if="uploadProgress > 0">{{ uploadProgress.toFixed() }}%</span>
             </h1>
 
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
-
+                    <div class="mb-4 flex justify-center">
+                        <Link
+                            :href="route('my-photos')">
+                            <PrimaryButton :disabled="uploadProgress < 100 && ! isIdle">My Photos</PrimaryButton>
+                        </Link>
+                    </div>
                     <file-pond
                         name="photo"
                         ref="pond"
@@ -106,13 +135,9 @@ const customFileValidation = (source, type) => new Promise((resolve, reject) => 
                         image-resize-mode="contain"
                         image-resize-upscale="false"
                         :server="server"
+                        @processfile="updateProgress"
+                        @error="updateProgress"
                     />
-
-                    <div class="flex justify-center">
-                        <Link :href="route('my-photos')">
-                            <PrimaryButton>My Photos</PrimaryButton>
-                        </Link>
-                    </div>
                 </div>
             </div>
         </div>
