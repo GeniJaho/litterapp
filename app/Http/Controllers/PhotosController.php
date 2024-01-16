@@ -39,6 +39,10 @@ class PhotosController extends Controller
 
     public function show(Photo $photo): Response|JsonResponse
     {
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
         $tagTypes = TagType::query()->get();
         $tags = Tag::query()
             ->orderBy('name')
@@ -77,6 +81,10 @@ class PhotosController extends Controller
 
     public function destroy(Photo $photo): RedirectResponse
     {
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
         $photo->delete();
 
         Storage::disk('public')->delete($photo->path);

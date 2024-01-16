@@ -76,3 +76,27 @@ test('if the user has enabled settings to recycle by default the item should be 
         'recycled' => true,
     ]);
 });
+
+test('the request is validated', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_id' => '1',
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('item_id');
+});
+
+test('a user can not add an item to another users photo', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create();
+    $item = Item::factory()->create();
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_id' => $item->id,
+    ]);
+
+    $response->assertNotFound();
+});

@@ -28,3 +28,19 @@ test('a user can see their photos', function () {
         ->etc()
     );
 });
+
+test('a user can not see another users photos', function () {
+    $this->actingAs(User::factory()->create());
+    $otherUser = User::factory()->create();
+
+    Photo::factory()->for($otherUser)->create();
+
+    $response = $this->get('/my-photos');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->where('photos.data', [])
+        ->etc()
+    );
+});

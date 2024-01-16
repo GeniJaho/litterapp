@@ -7,6 +7,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
 import { router } from '@inertiajs/vue3'
 import IconDangerButton from "@/Components/IconDangerButton.vue";
+import TagBox from "@/Components/TagBox.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -18,7 +19,7 @@ const props = defineProps({
 
 const photo = ref(null);
 const photoItems = ref([]);
-const selectedItem = ref(props.items[0].id);
+const selectedItem = ref(props.items[0]);
 
 onMounted(() => {
     getPhoto();
@@ -41,7 +42,7 @@ const deletePhoto = () => {
 
 const addItem = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_id: selectedItem.value,
+        item_id: selectedItem.value.id,
     }).then(() => {
         getPhoto();
     });
@@ -139,22 +140,15 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
 
                     <div class="w-full md:w-1/2 xl:w-2/3 px-4">
                         <div class="flex flex-row mt-6 md:mt-0">
-                            <select
-                                id="add-item"
+                            <TagBox
+                                class="w-full sm:w-96"
+                                :items="items"
                                 v-model="selectedItem"
-                                name="add-item"
-                                class="block w-full sm:w-48 rounded-md border-0 py-1.5 pl-3 pr-10 text-gray-900 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-indigo-600 sm:text-sm sm:leading-6">
-                                <option
-                                    v-for="item in items"
-                                    :value="item.id"
-                                >{{ item.name }}
-                                </option>
-                            </select>
-
+                            ></TagBox>
                             <PrimaryButton
                                 class="whitespace-nowrap ml-4"
                                 @click="addItem"
-                                :disabled="selectedItem === ''"
+                                :disabled="!selectedItem"
                             >
                                 Add Object
                             </PrimaryButton>

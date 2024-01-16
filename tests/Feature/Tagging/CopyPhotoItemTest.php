@@ -29,3 +29,18 @@ test('a user can duplicate an item and its tags on a photo', function () {
     $this->assertEquals($latestPhotoItem->id, $latestPhotoItemTag->photo_item_id);
     $this->assertEquals($tag->id, $latestPhotoItemTag->tag_id);
 });
+
+test('a user can not duplicate an item and its tags on a photo of another user', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create();
+    $item = Item::factory()->create();
+    $photoItem = PhotoItem::factory()->for($item)->for($photo)->create();
+    $tag = Tag::factory()->create();
+    PhotoItemTag::factory()->for($photoItem)->for($tag)->create();
+
+    $response = $this->actingAs($user)->postJson("/photo-items/{$photoItem->id}/copy");
+
+    $response->assertNotFound();
+    $this->assertDatabaseCount('photo_items', 1);
+    $this->assertDatabaseCount('photo_item_tag', 1);
+});

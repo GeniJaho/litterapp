@@ -26,3 +26,16 @@ test('a user can delete a photo', function () {
     $this->assertDatabaseMissing('photo_item_tag', ['id' => $photoItemTag->id]);
     Storage::disk('public')->assertMissing('photos/1.jpg');
 });
+
+test('a user can not delete another users photo', function () {
+    Storage::fake();
+    $user = User::factory()->create();
+    $photo = Photo::factory()->for($user)->create(['path' => 'photos/1.jpg']);
+    Storage::disk('public')->put('photos/1.jpg', 'test');
+
+    $response = $this->actingAs(User::factory()->create())->delete(route('photos.destroy', $photo));
+
+    $response->assertNotFound();
+    $this->assertDatabaseHas('photos', ['id' => $photo->id]);
+    Storage::disk('public')->assertExists('photos/1.jpg');
+});

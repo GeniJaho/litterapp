@@ -2,19 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StorePhotoItemRequest;
 use App\Http\Requests\UpdatePhotoItemRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class PhotoItemsController extends Controller
 {
-    public function store(Photo $photo, Request $request): JsonResponse
+    public function store(Photo $photo, StorePhotoItemRequest $request): JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
+
+        if ($user->id !== $photo->user_id) {
+            abort(404);
+        }
 
         $photo->items()->attach($request->item_id, [
             'picked_up' => $user->settings->picked_up_by_default,
@@ -26,6 +30,10 @@ class PhotoItemsController extends Controller
 
     public function update(PhotoItem $photoItem, UpdatePhotoItemRequest $request): JsonResponse
     {
+        if (auth()->id() !== $photoItem->photo->user_id) {
+            abort(404);
+        }
+
         if ($request->filled('quantity')) {
             $photoItem->quantity = $request->quantity;
         }
@@ -45,6 +53,10 @@ class PhotoItemsController extends Controller
 
     public function destroy(PhotoItem $photoItem): JsonResponse
     {
+        if (auth()->id() !== $photoItem->photo->user_id) {
+            abort(404);
+        }
+
         $photoItem->delete();
 
         return response()->json();

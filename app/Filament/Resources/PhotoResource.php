@@ -28,6 +28,12 @@ class PhotoResource extends Resource
                 ImageColumn::make('path')
                     ->label('Photo')
                     ->searchable(),
+                TextColumn::make('gps')
+                    ->label('GPS')
+                    ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
+                        ? "{$photo->latitude}, {$photo->longitude}"
+                        : null
+                    ),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

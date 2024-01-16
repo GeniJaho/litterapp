@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property Collection<Tag> $tags
+ * @property Photo $photo
  */
 class PhotoItem extends Pivot
 {
