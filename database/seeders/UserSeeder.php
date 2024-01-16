@@ -50,7 +50,7 @@ class UserSeeder extends Seeder
             ]);
             File::copy(
                 storage_path('app/default.jpg'),
-                public_path('storage/photos/default.jpg')
+                storage_path('app/public/photos/default.jpg')
             );
         });
 
