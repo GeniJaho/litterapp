@@ -150,7 +150,7 @@ const onKeyDown = (event) => {
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
                                 <PrimaryButton class="group relative">
                                     <Tooltip>
-                                        <span class="whitespace-nowrap">Ctrl (⌘) + &larr;</span>
+                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &larr;</span>
                                     </Tooltip>
                                     Previous
                                 </PrimaryButton>
@@ -158,7 +158,7 @@ const onKeyDown = (event) => {
                             <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
                                 <PrimaryButton class="group relative">
                                     <Tooltip>
-                                        <span class="whitespace-nowrap">Ctrl (⌘) + &rarr;</span>
+                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</span>
                                     </Tooltip>
                                     Next
                                 </PrimaryButton>
