@@ -16,6 +16,10 @@ class Photo extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'user_id' => 'integer',
+    ];
+
     /**
      * @return BelongsTo<User, Photo>
      */
