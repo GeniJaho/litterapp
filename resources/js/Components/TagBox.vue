@@ -12,6 +12,7 @@ import {
 const props = defineProps({
     items: Array,
     modelValue: Object,
+    autofocus: Boolean,
 });
 
 defineEmits(['update:modelValue']);
@@ -44,8 +45,10 @@ let filteredItems = computed(() => {
                 >
                     <ComboboxInput
                         class="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
-                        :displayValue="(item) => item.name"
+                        :displayValue="(item) => item?.name"
                         @change="query = $event.target.value"
+                        @focus="$event.target.select()"
+                        :autofocus="autofocus"
                     />
                     <ComboboxButton
                         class="absolute inset-y-0 right-0 flex items-center pr-2"

@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, ref} from "vue";
+import {onMounted, onUnmounted, ref} from "vue";
 import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -8,6 +8,7 @@ import debounce from 'lodash.debounce'
 import { router } from '@inertiajs/vue3'
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TagBox from "@/Components/TagBox.vue";
+import Tooltip from "@/Components/Tooltip.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -19,10 +20,16 @@ const props = defineProps({
 
 const photo = ref(null);
 const photoItems = ref([]);
-const selectedItem = ref(props.items[0]);
+const selectedItem = ref(null);
 
 onMounted(() => {
     getPhoto();
+
+    window.addEventListener('keydown', onKeyDown);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeyDown);
 });
 
 const getPhoto = () => {
@@ -100,6 +107,17 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
         getPhoto();
     });
 }, 1000, {leading: true, trailing: true});
+
+const onKeyDown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.code === "ArrowLeft" && props.previousPhotoUrl) {
+        event.preventDefault();
+        router.visit(props.previousPhotoUrl);
+    } else if ((event.ctrlKey || event.metaKey) && event.code === "ArrowRight" && props.nextPhotoUrl) {
+        event.preventDefault();
+        router.visit(props.nextPhotoUrl);
+    }
+};
+
 </script>
 
 <template>
@@ -130,10 +148,20 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
                         </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
-                                <PrimaryButton>Previous</PrimaryButton>
+                                <PrimaryButton class="group relative">
+                                    <Tooltip>
+                                        <span class="whitespace-nowrap">Ctrl (⌘) + &larr;</span>
+                                    </Tooltip>
+                                    Previous
+                                </PrimaryButton>
                             </Link>
                             <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
-                                <PrimaryButton>Next</PrimaryButton>
+                                <PrimaryButton class="group relative">
+                                    <Tooltip>
+                                        <span class="whitespace-nowrap">Ctrl (⌘) + &rarr;</span>
+                                    </Tooltip>
+                                    Next
+                                </PrimaryButton>
                             </Link>
                         </div>
                     </div>
@@ -141,6 +169,7 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
                     <div class="w-full md:w-1/2 xl:w-2/3 px-4">
                         <div class="flex flex-row mt-6 md:mt-0">
                             <TagBox
+                                :autofocus="true"
                                 class="w-full sm:w-96"
                                 :items="items"
                                 v-model="selectedItem"
