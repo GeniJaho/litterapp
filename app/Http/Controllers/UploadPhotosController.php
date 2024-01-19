@@ -23,11 +23,12 @@ class UploadPhotosController extends Controller
 
         $location = $extractLocation->run($photo);
 
-        $originalFileName = $photo->getClientOriginalName();
+        $path = $photo->store('photos', 'public');
 
         Photo::create([
             'user_id' => $user->id,
-            'path' => $photo->storeAs('photos', $originalFileName, 'public'),
+            'path' => $path,
+            'original_file_name' => $photo->getClientOriginalName(),
             'latitude' => $location['latitude'] ?? null,
             'longitude' => $location['longitude'] ?? null,
         ]);

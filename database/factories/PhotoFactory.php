@@ -20,6 +20,7 @@ class PhotoFactory extends Factory
     {
         return [
             'path' => $this->faker->imageUrl(),
+            'original_file_name' => "{$this->faker->word}.jpg",
             'user_id' => User::factory(),
         ];
     }
