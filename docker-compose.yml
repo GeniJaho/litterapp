@@ -84,7 +84,7 @@ services:
     container_name: grafana
     restart: unless-stopped
     environment:
-     - GF_SERVER_ROOT_URL=https://3.249.130.46/grafana
+     - GF_SERVER_ROOT_URL=http://localhost/grafana #future usage
      - GF_INSTALL_PLUGINS=grafana-clock-panel
     ports:
      - 3000:3000
