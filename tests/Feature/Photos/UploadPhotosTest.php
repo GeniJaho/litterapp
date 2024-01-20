@@ -45,7 +45,7 @@ test('a user can upload photos with location data', function () {
     $photo = $user->photos()->first();
     expect($photo->latitude)->toBe(40.053030045789)
         ->and($photo->longitude)->toBe(-77.15449870066);
-});
+})->group('slow');
 
 test('a photo can not be larger than 20MB', function () {
     Storage::fake('public');

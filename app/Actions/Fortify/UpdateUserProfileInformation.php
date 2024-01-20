@@ -2,6 +2,7 @@
 
 namespace App\Actions\Fortify;
 
+use App\Jobs\MinifyProfilePhoto;
 use App\Models\User;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\UploadedFile;
@@ -22,13 +23,15 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
         Validator::make($input, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'email', 'max:255', Rule::unique('users')->ignore($user->id)],
-            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:1024'],
+            'photo' => ['nullable', 'mimes:jpg,jpeg,png', 'max:15360'], // 15MB
         ])->validateWithBag('updateProfileInformation');
 
         if (isset($input['photo'])) {
             /** @var UploadedFile $photo */
             $photo = $input['photo'];
             $user->updateProfilePhoto($photo);
+
+            MinifyProfilePhoto::dispatch($user);
         }
 
         if ($input['email'] !== $user->email &&

@@ -3,15 +3,14 @@
 namespace App\Actions\Photos;
 
 use Illuminate\Http\UploadedFile;
-use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 
 class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
 {
     public function run(UploadedFile $photo): array
     {
-        $manager = new ImageManager(new Driver());
-        $image = $manager->read($photo);
+        $image = ImageManager::gd()->read($photo);
+
         $exif = $image->exif('GPS');
 
         if ($this->isExifInvalid($exif)) {
