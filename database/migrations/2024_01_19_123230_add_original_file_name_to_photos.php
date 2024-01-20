@@ -10,6 +10,8 @@ return new class extends Migration
     {
         Schema::table('photos', function (Blueprint $table) {
             $table->string('original_file_name')->after('path');
+
+            $table->unique(['user_id', 'original_file_name']);
         });
     }
 };

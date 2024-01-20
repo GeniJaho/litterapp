@@ -47,6 +47,7 @@ class UserSeeder extends Seeder
             ]));
             $user->photos()->create([
                 'path' => 'photos/default.jpg',
+                'original_file_name' => 'default.jpg',
             ]);
             File::copy(
                 storage_path('app/default.jpg'),
