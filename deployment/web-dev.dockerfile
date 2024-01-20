@@ -47,7 +47,8 @@ RUN set -eux; \
 		mysqli \
 		opcache \
 		pdo_mysql \
-		zip
+		zip \
+        exif 
 
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
