@@ -1,6 +1,5 @@
 <?php
 
-use App\Console\Commands\FillOriginalFileNames;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Artisan;
@@ -14,6 +13,6 @@ return new class extends Migration
             $table->string('original_file_name')->after('path');
         });
 
-        Artisan::call(FillOriginalFileNames::class);
+        Artisan::call('app:fill-original-file-names');
     }
 };
