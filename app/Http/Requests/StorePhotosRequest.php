@@ -26,12 +26,15 @@ class StorePhotosRequest extends FormRequest
         ];
     }
 
+    /**
+     * @return array<int, callable>
+     */
     public function after(): array
     {
         return [
             function (Validator $validator) {
                 $photoExists = auth()->user()
-                    ->photos()
+                    ?->photos()
                     ->where('original_file_name', $this->photo->getClientOriginalName())
                     ->exists();
 
