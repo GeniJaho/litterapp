@@ -14,6 +14,7 @@ class FillOriginalFileNames extends Command
     {
         Photo::query()
             ->whereNull('original_file_name')
+            ->orWhere('original_file_name', '')
             ->update([
                 'original_file_name' => DB::raw('replace(path, "photos/", "")'),
             ]);
