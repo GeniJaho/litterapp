@@ -21,6 +21,9 @@ class PhotoResource extends Resource
     {
         return $table
             ->columns([
+                TextColumn::make('id')
+                    ->label('ID')
+                    ->sortable(),
                 TextColumn::make('user.name')
                     ->numeric()
                     ->searchable()
@@ -34,6 +37,10 @@ class PhotoResource extends Resource
                         ? "{$photo->latitude}, {$photo->longitude}"
                         : null
                     ),
+                TextColumn::make('original_file_name')
+                    ->sortable()
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
@@ -50,7 +57,8 @@ class PhotoResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->defaultSort('id', 'desc');
     }
 
     public static function getRelations(): array
