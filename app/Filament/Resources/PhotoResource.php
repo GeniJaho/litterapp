@@ -9,7 +9,10 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PhotoResource extends Resource
 {
@@ -20,6 +23,8 @@ class PhotoResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->persistFiltersInSession()
+            ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
@@ -51,7 +56,15 @@ class PhotoResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                SelectFilter::make('user')
+                    ->relationship('user', 'name')
+                    ->multiple()
+                    ->searchable()
+                    ->preload(),
+                Filter::make('has_gps')
+                    ->label('Show only photos with GPS')
+                    ->toggle()
+                    ->query(fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude')),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

@@ -3,6 +3,7 @@
 namespace App\Filament\Resources\TagResource\Pages;
 
 use App\Filament\Resources\TagResource;
+use App\Models\Tag;
 use App\Models\TagType;
 use Filament\Actions\CreateAction;
 use Filament\Resources\Components\Tab;
@@ -26,11 +27,12 @@ class ListTags extends ListRecords
             ->mapWithKeys(fn (TagType $tagType) => [
                 $tagType->slug => Tab::make($tagType->name)
                     ->modifyQueryUsing(fn (Builder $query) => $query->where('tag_type_id', $tagType->id))
+                    ->badge(Tag::query()->where('tag_type_id', $tagType->id)->count())
             ])
             ->toArray();
 
         return [
-            'all' => Tab::make(),
+            'all' => Tab::make()->badge(Tag::query()->count()),
             ...$tagTypes,
         ];
     }

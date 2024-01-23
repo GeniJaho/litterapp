@@ -14,6 +14,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -41,7 +42,15 @@ class UserResource extends Resource
     public static function table(Table $table): Table
     {
         return $table
+            ->persistFiltersInSession()
+            ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
             ->columns([
+                ImageColumn::make('profile_photo_path')
+                    ->label('Avatar')
+                    ->circular()
+                    ->defaultImageUrl(function (User $user) {
+                        return 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.urlencode($user->name);
+                    }),
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
@@ -51,9 +60,6 @@ class UserResource extends Resource
                 TextColumn::make('currentTeam.name')
                     ->searchable()
                     ->sortable(),
-                ImageColumn::make('profile_photo_path')
-                    ->label(__('Profile photo'))
-                    ->searchable(),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
@@ -69,7 +75,10 @@ class UserResource extends Resource
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->with(['currentTeam', 'ownedTeams']))
             ->filters([
-                //
+                SelectFilter::make('team')
+                    ->relationship('currentTeam', 'name')
+                    ->searchable()
+                    ->preload(),
             ])
             ->actions([
                 EditAction::make(),

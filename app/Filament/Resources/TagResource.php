@@ -2,8 +2,6 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\TagResource\Pages\CreateTag;
-use App\Filament\Resources\TagResource\Pages\EditTag;
 use App\Filament\Resources\TagResource\Pages\ListTags;
 use App\Models\Tag;
 use Filament\Forms\Components\Select;
@@ -11,6 +9,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -69,6 +68,7 @@ class TagResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -89,8 +89,6 @@ class TagResource extends Resource
     {
         return [
             'index' => ListTags::route('/'),
-            'create' => CreateTag::route('/create'),
-            'edit' => EditTag::route('/{record}/edit'),
         ];
     }
 }

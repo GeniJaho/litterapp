@@ -2,14 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ItemResource\Pages\CreateItem;
-use App\Filament\Resources\ItemResource\Pages\EditItem;
 use App\Filament\Resources\ItemResource\Pages\ListItems;
 use App\Models\Item;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteAction;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
@@ -62,6 +61,7 @@ class ItemResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -82,8 +82,6 @@ class ItemResource extends Resource
     {
         return [
             'index' => ListItems::route('/'),
-            'create' => CreateItem::route('/create'),
-            'edit' => EditItem::route('/{record}/edit'),
         ];
     }
 }
