@@ -49,6 +49,7 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt2024-06',
             'OTHER (For an Event that is not in the picklist)',
             'PeukMeuk2024',
+            'PlasticAvengers - #Bakzeil',
             'RedBullLitter',
             'ShowYourImpact',
             'ShowYourImpact_DeAfvalraperBladel',
@@ -99,12 +100,12 @@ class TagSeeder extends Seeder
     private function getBrands(): array
     {
         return [
-            '9',
-            '86',
-            '555',
             '100% Smoothie',
-            '7UP',
+            '555',
             '71 Brewing',
+            '7UP',
+            '86',
+            '9',
             'A&W',
             'AaDrink',
             'Abant',
