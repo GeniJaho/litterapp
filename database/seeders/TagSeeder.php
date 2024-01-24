@@ -49,6 +49,7 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt2024-06',
             'OTHER (For an Event that is not in the picklist)',
             'PeukMeuk2024',
+            'PlasticAvengers - #Bakzeil',
             'RedBullLitter',
             'ShowYourImpact',
             'ShowYourImpact_DeAfvalraperBladel',
