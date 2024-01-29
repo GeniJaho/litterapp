@@ -9,8 +9,8 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -41,7 +41,12 @@ class PhotoResource extends Resource
                     ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
                         ? "{$photo->latitude}, {$photo->longitude}"
                         : null
-                    ),
+                    )
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query
+                            ->where('latitude', 'like', "%{$search}%")
+                            ->orWhere('longitude', 'like', "%{$search}%");
+                    }),
                 TextColumn::make('original_file_name')
                     ->sortable()
                     ->searchable()
@@ -61,10 +66,13 @@ class PhotoResource extends Resource
                     ->multiple()
                     ->searchable()
                     ->preload(),
-                Filter::make('has_gps')
-                    ->label('Show only photos with GPS')
-                    ->toggle()
-                    ->query(fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude')),
+                TernaryFilter::make('has_gps')
+                    ->label('Has GPS')
+                    ->queries(
+                        true: fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude'),
+                        false: fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude'),
+                        blank: fn (Builder $query) => $query
+                    )
             ])
             ->bulkActions([
                 BulkActionGroup::make([
