@@ -9,6 +9,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Encoders\AutoEncoder;
 use Intervention\Image\ImageManager;
 
 class MinifyProfilePhoto implements ShouldQueue
@@ -28,10 +29,12 @@ class MinifyProfilePhoto implements ShouldQueue
             return;
         }
 
-        $photo = Storage::disk('public')->path($this->user->profile_photo_path);
+        $photo = Storage::disk('s3')->get($this->user->profile_photo_path);
 
         $image = ImageManager::gd()->read($photo);
         $image->scaleDown(height: 500);
-        $image->save(quality: 50);
+        $minified = $image->encode(new AutoEncoder(quality: 50));
+
+        Storage::disk('s3')->put($this->user->profile_photo_path, $minified);
     }
 }

@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * @property Collection<Item> $items
@@ -52,6 +53,6 @@ class Photo extends Model
      */
     protected function fullPath(): Attribute
     {
-        return Attribute::make(get: fn () => '/storage/'.$this->path);
+        return Attribute::make(get: fn () => Storage::disk('s3')->url($this->path));
     }
 }

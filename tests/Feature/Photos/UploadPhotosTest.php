@@ -7,8 +7,11 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
+beforeEach(function () {
+    Storage::fake('s3');
+});
+
 test('a user can upload photos', function () {
-    Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
     $file = UploadedFile::fake()->image('photo.jpg');
 
@@ -23,11 +26,10 @@ test('a user can upload photos', function () {
     $photo = $user->photos()->first();
     expect($photo->path)->toBe('photos/'.$file->hashName());
 
-    Storage::disk('public')->assertExists('photos/'.$file->hashName());
+    Storage::disk('s3')->assertExists('photos/'.$file->hashName());
 });
 
 test('a user can upload photos with location data', function () {
-    Storage::fake('public');
     $this->swap(ExtractsLocationFromPhoto::class, new ExtractLocationFromPhotoAction());
     $this->actingAs($user = User::factory()->create());
 
@@ -48,9 +50,7 @@ test('a user can upload photos with location data', function () {
 })->group('slow');
 
 test('a photo can not be larger than 20MB', function () {
-    Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
-
     $response = $this->post('/upload', [
         'photo' => UploadedFile::fake()->image('photo.jpg')->size(20481),
     ]);
@@ -61,9 +61,7 @@ test('a photo can not be larger than 20MB', function () {
 });
 
 test('only images can be uploaded', function () {
-    Storage::fake('public');
     $this->actingAs($user = User::factory()->create());
-
     $response = $this->post('/upload', [
         'photo' => UploadedFile::fake()->create('document.pdf'),
     ]);
@@ -74,7 +72,6 @@ test('only images can be uploaded', function () {
 });
 
 test('a user can not upload the same photo twice', function () {
-    Storage::fake('public');
     $user = User::factory()->create();
     Photo::factory()->for($user)->create([
         'original_file_name' => 'photo.jpg',
@@ -90,7 +87,6 @@ test('a user can not upload the same photo twice', function () {
 });
 
 test('a user can upload a photo with the same name as another users photo', function () {
-    Storage::fake('public');
     Photo::factory()->create([
         'original_file_name' => 'photo.jpg',
     ]);
