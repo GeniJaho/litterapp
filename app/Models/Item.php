@@ -20,4 +20,9 @@ class Item extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function photos()
+    {
+        return $this->belongsToMany(Photo::class);
+    }
 }

@@ -17,11 +17,14 @@ class PhotosController extends Controller
 {
     public function index(): Response
     {
+
         /** @var User $user */
         $user = auth()->user();
+        $itemFilter = request()->input('item');
 
-        $photos = $user
-            ->photos()
+
+
+        $photos = $user->photos()
             ->withExists('items')
             ->latest('id')
             ->paginate(12);
@@ -32,8 +35,22 @@ class PhotosController extends Controller
             return $photo;
         });
 
+        $tagTypes = TagType::query()->get();
+        $tags = Tag::query()
+            ->orderBy('name')
+            ->get()
+            ->groupBy('tag_type_id')
+            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
+                /** @var TagType $tagType */
+                $tagType = $tagTypes->find($key);
+
+                return [$tagType->slug => $values];
+            });
+
         return Inertia::render('Photos', [
             'photos' => $photos,
+            'items' => Item::query()->orderBy('name')->get(),
+            'tags' => $tags,
         ]);
     }
 
