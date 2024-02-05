@@ -2,22 +2,19 @@
 
 namespace App\Actions\Photos;
 
-use Illuminate\Http\UploadedFile;
-use Intervention\Image\ImageManager;
+use Intervention\Image\Collection;
 
-class ExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
+class ExtractLocationFromPhotoAction
 {
-    public function run(UploadedFile $photo): array
+    public function run(Collection $exif): array
     {
-        $image = ImageManager::gd()->read($photo);
+        $gps = $exif->get('GPS');
 
-        $exif = $image->exif('GPS');
-
-        if ($this->isExifInvalid($exif)) {
+        if ($this->isExifInvalid($gps)) {
             return [];
         }
 
-        $result = $this->convertExifToLatLng((array) $exif);
+        $result = $this->convertExifToLatLng((array) $gps);
 
         if ($result['latitude'] === 0.0 && $result['longitude'] === 0.0) {
             return [];

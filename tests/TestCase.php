@@ -2,9 +2,9 @@
 
 namespace Tests;
 
-use App\Actions\Photos\ExtractsLocationFromPhoto;
+use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
-use Tests\Doubles\FakeExtractLocationFromPhotoAction;
+use Tests\Doubles\FakeExtractExifFromPhotoAction;
 
 abstract class TestCase extends BaseTestCase
 {
@@ -16,6 +16,6 @@ abstract class TestCase extends BaseTestCase
 
         $this->withoutVite();
 
-        $this->swap(ExtractsLocationFromPhoto::class, new FakeExtractLocationFromPhotoAction());
+        $this->swap(ExtractsExifFromPhoto::class, new FakeExtractExifFromPhotoAction());
     }
 }

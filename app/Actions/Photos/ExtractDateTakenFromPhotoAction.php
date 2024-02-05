@@ -1,0 +1,33 @@
+<?php
+
+namespace App\Actions\Photos;
+
+use Illuminate\Support\Carbon;
+use Intervention\Image\Collection;
+
+class ExtractDateTakenFromPhotoAction
+{
+    public function run(Collection $exif): ?Carbon
+    {
+//        dd($exif->toArray());
+        $dateTimeOriginal = $exif->get('EXIF.DateTimeOriginal');
+
+        if ($dateTimeOriginal) {
+            return Carbon::parse($dateTimeOriginal);
+        }
+
+        $dateTimeDigitized = $exif->get('EXIF.DateTimeDigitized');
+
+        if ($dateTimeDigitized) {
+            return Carbon::parse($dateTimeDigitized);
+        }
+
+        $dateTime = $exif->get('IDF0.DateTime');
+
+        if ($dateTime) {
+            return Carbon::parse($dateTime);
+        }
+
+        return null;
+    }
+}
