@@ -4,7 +4,7 @@ namespace App\Actions\Photos;
 
 use Illuminate\Http\UploadedFile;
 
-interface ExtractsLocationFromPhoto
+interface ExtractsExifFromPhoto
 {
     /**
      * @return array<string, float>

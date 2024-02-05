@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Photos\ExtractsLocationFromPhoto;
+use App\Actions\Photos\ExtractsExifFromPhoto;
 use App\Http\Requests\StorePhotosRequest;
 use App\Models\Photo;
 use App\Models\User;
@@ -13,7 +13,7 @@ class UploadPhotosController extends Controller
 {
     public function store(
         StorePhotosRequest $request,
-        ExtractsLocationFromPhoto $extractLocation,
+        ExtractsExifFromPhoto $extractExif,
     ): JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -21,7 +21,7 @@ class UploadPhotosController extends Controller
         /** @var UploadedFile $photo */
         $photo = $request->file('photo');
 
-        $location = $extractLocation->run($photo);
+        $exif = $extractExif->run($photo);
 
         $path = $photo->store('photos', 's3');
 
@@ -29,8 +29,9 @@ class UploadPhotosController extends Controller
             'user_id' => $user->id,
             'path' => $path,
             'original_file_name' => $photo->getClientOriginalName(),
-            'latitude' => $location['latitude'] ?? null,
-            'longitude' => $location['longitude'] ?? null,
+            'latitude' => $exif['latitude'] ?? null,
+            'longitude' => $exif['longitude'] ?? null,
+            'taken_at' => $exif['taken_at'] ?? null,
         ]);
 
         return response()->json();
