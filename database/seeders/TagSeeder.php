@@ -50,8 +50,8 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt-2024-05',
             'CornishSplicedTreasureHunt-2024-06',
             'NoordzeeKanaal-IJ-2024',
-            'Ospar 100m',
-            'Ospar 1000m',
+            'Ospar-100m',
+            'Ospar-1000m',
             'OTHER (For an Event that is not in the picklist)',
             'PeukMeuk-2024',
             'PlasticAvengers-Bakzeil',
@@ -73,6 +73,7 @@ class TagSeeder extends Seeder
         return [
             'Aluminium',
             'Bronze',
+            'Burlap',
             'Cardboard',
             'Cellulose Acetate Fiber'
             'Ceramic',
