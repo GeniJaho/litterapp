@@ -72,7 +72,7 @@ class PhotoResource extends Resource
                         true: fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude'),
                         false: fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude'),
                         blank: fn (Builder $query) => $query
-                    )
+                    ),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

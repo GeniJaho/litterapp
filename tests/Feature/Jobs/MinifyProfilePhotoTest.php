@@ -3,7 +3,6 @@
 use App\Jobs\MinifyProfilePhoto;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Drivers\Gd\Driver;
 
 test('it minifies the profile photo', function () {
     Storage::fake(config('filesystems.default'));

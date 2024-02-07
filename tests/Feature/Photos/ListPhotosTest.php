@@ -6,6 +6,7 @@ use App\Models\PhotoItem;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
+
 beforeEach(function () {
     Storage::fake(config('filesystems.default'));
 });

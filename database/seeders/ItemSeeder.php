@@ -83,7 +83,7 @@ class ItemSeeder extends Seeder
             'Can (Alcohol)',
             'Can (Beer)',
             'Can (Coffee)',
-            'Can (Dairy)',                                
+            'Can (Dairy)',
             'Can (Deposit: No)',
             'Can (Deposit: Yes)',
             'Can (Energy Drink)',

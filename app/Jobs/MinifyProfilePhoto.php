@@ -33,6 +33,7 @@ class MinifyProfilePhoto implements ShouldQueue
 
         $image = ImageManager::gd()->read($photo);
         $image->scaleDown(height: 500);
+
         $minified = $image->encode(new AutoEncoder(quality: 50));
 
         Storage::put($this->user->profile_photo_path, $minified);
