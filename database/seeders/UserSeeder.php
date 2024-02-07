@@ -18,7 +18,7 @@ class UserSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@litterhero.com',
+            'email' => 'admin@litterapp.com',
             'password' => Hash::make('password'),
         ]);
 
@@ -38,7 +38,7 @@ class UserSeeder extends Seeder
 
         tap(User::factory()->create([
             'name' => 'Waste Wizard',
-            'email' => 'wastewizard@litterhero.com',
+            'email' => 'wastewizard@litterapp.com',
             'password' => Hash::make('password'),
         ]), function (User $user) {
             $user->ownedTeams()->save(Team::forceCreate([
@@ -50,12 +50,15 @@ class UserSeeder extends Seeder
                 'path' => 'photos/default.jpg',
                 'original_file_name' => 'default.jpg',
             ]);
-            Storage::put('photos/default.jpg', Storage::disk('local')->get('default.jpg'));
+            Storage::put(
+                'photos/default.jpg',
+                Storage::disk('local')->readStream('default.jpg'),
+            );
         });
 
         User::factory()->create([
             'name' => 'Trash Killer',
-            'email' => 'trashkiller@litterhero.com',
+            'email' => 'trashkiller@litterapp.com',
             'password' => Hash::make('password'),
         ]);
     }
