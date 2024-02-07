@@ -75,7 +75,7 @@ class TagSeeder extends Seeder
             'Bronze',
             'Burlap',
             'Cardboard',
-            'Cellulose Acetate Fiber'
+            'Cellulose Acetate Fiber',
             'Ceramic',
             'Copper',
             'Fiberglass',
