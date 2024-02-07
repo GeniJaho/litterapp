@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserSeeder extends Seeder
 {
@@ -49,10 +50,7 @@ class UserSeeder extends Seeder
                 'path' => 'photos/default.jpg',
                 'original_file_name' => 'default.jpg',
             ]);
-            File::copy(
-                storage_path('app/default.jpg'),
-                storage_path('app/public/photos/default.jpg')
-            );
+            Storage::put('photos/default.jpg', Storage::disk('local')->get('default.jpg'));
         });
 
         User::factory()->create([

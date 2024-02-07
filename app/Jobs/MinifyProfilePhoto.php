@@ -29,12 +29,12 @@ class MinifyProfilePhoto implements ShouldQueue
             return;
         }
 
-        $photo = Storage::disk('s3')->get($this->user->profile_photo_path);
+        $photo = Storage::get($this->user->profile_photo_path);
 
         $image = ImageManager::gd()->read($photo);
         $image->scaleDown(height: 500);
         $minified = $image->encode(new AutoEncoder(quality: 50));
 
-        Storage::disk('s3')->put($this->user->profile_photo_path, $minified);
+        Storage::put($this->user->profile_photo_path, $minified);
     }
 }

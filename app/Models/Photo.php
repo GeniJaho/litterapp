@@ -53,6 +53,6 @@ class Photo extends Model
      */
     protected function fullPath(): Attribute
     {
-        return Attribute::make(get: fn () => Storage::disk('s3')->url($this->path));
+        return Attribute::make(get: fn () => Storage::url($this->path));
     }
 }

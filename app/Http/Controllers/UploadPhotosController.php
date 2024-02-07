@@ -23,7 +23,7 @@ class UploadPhotosController extends Controller
 
         $location = $extractLocation->run($photo);
 
-        $path = $photo->store('photos', 's3');
+        $path = $photo->store('photos');
 
         Photo::create([
             'user_id' => $user->id,
