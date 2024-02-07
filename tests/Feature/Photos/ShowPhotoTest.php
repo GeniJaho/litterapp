@@ -11,7 +11,7 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
 beforeEach(function () {
-    Storage::fake('s3');
+    Storage::fake(config('filesystems.default'));
 });
 
 test('a user can see the photo tagging page', function () {

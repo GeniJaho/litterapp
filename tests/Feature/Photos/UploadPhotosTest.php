@@ -8,7 +8,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 beforeEach(function () {
-    Storage::fake('s3');
+    Storage::fake(config('filesystems.default'));
 });
 
 test('a user can upload photos', function () {
@@ -26,7 +26,7 @@ test('a user can upload photos', function () {
     $photo = $user->photos()->first();
     expect($photo->path)->toBe('photos/'.$file->hashName());
 
-    Storage::disk('s3')->assertExists('photos/'.$file->hashName());
+    Storage::assertExists('photos/'.$file->hashName());
 });
 
 test('a user can upload photos with location data', function () {

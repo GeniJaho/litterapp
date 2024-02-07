@@ -7,7 +7,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
 beforeEach(function () {
-    Storage::fake('s3');
+    Storage::fake(config('filesystems.default'));
 });
 
 test('a user can see their photos', function () {

@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 test('profile information can be updated', function () {
     Queue::fake();
-    Storage::fake('s3');
+    Storage::fake(config('filesystems.default'));
     $this->actingAs($user = User::factory()->create());
 
     $response = $this->put('/user/profile-information', [
@@ -23,6 +23,6 @@ test('profile information can be updated', function () {
         ->email->toEqual('test@example.com')
         ->profile_photo_path->not()->toBeNull();
 
-    Storage::disk('s3')->assertExists($user->fresh()->profile_photo_path);
+    Storage::assertExists($user->fresh()->profile_photo_path);
     Queue::assertPushed(MinifyProfilePhoto::class);
 });
