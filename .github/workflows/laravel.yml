@@ -17,7 +17,7 @@ jobs:
 
       - name: Cache Vendor
         id: cache-vendor
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor
           key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
@@ -26,7 +26,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Cache PHPStan
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ./storage/phpstan
           key: "result-cache-${{ github.run_id }}" # always unique key - always writes a new cache
@@ -50,7 +50,7 @@ jobs:
 
       - name: Cache Vendor
         id: cache-vendor
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: vendor
           key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
@@ -59,7 +59,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Cache Rector
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ./storage/rector/cache
           key: ${{ runner.os }}-rector-${{ hashFiles('**/composer.lock') }}
@@ -68,7 +68,7 @@ jobs:
         run: vendor/bin/rector --ansi
 
       - name: Cache Pint
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: ./storage/pint.cache
           key: ${{ runner.os }}-pint-${{ hashFiles('**/composer.lock') }}
@@ -95,7 +95,7 @@ jobs:
 
     - name: Cache Vendor
       id: cache-vendor
-      uses: actions/cache@v3
+      uses: actions/cache@v4
       with:
         path: vendor
         key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
