@@ -69,6 +69,9 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return $this->email === 'admin@litterhero.com';
     }
 
+    /**
+     * @return Attribute<string|null, never>
+     */
     public function profilePhotoUrl(): Attribute
     {
         return Attribute::get(function () {

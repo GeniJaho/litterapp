@@ -7,14 +7,16 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Laravel\Socialite\Facades\Socialite;
+use Laravel\Socialite\Two\GithubProvider;
 
 class GitHubController extends Controller
 {
-    public function redirect()
+    public function redirect(): RedirectResponse
     {
-        return Socialite::driver('github')
-            ->scopes(['read:user'])
-            ->redirect();
+        /** @var GithubProvider $provider */
+        $provider = Socialite::driver('github');
+
+        return $provider->scopes(['read:user'])->redirect();
     }
 
     public function callback(GetOrCreateUserFromSocialProviderAction $action): RedirectResponse
