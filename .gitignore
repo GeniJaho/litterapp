@@ -6,6 +6,7 @@
 /storage/*.key
 /storage/pint.cache
 /storage/rector/cache
+/storage/phpstan
 /vendor
 .env
 .env.backup
