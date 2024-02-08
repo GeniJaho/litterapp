@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
