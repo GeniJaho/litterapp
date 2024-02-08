@@ -5,8 +5,8 @@ namespace Database\Seeders;
 use App\Models\Team;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class UserSeeder extends Seeder
 {
@@ -17,7 +17,7 @@ class UserSeeder extends Seeder
     {
         User::factory()->create([
             'name' => 'Admin',
-            'email' => 'admin@litterhero.com',
+            'email' => 'admin@litterapp.com',
             'password' => Hash::make('password'),
         ]);
 
@@ -37,7 +37,7 @@ class UserSeeder extends Seeder
 
         tap(User::factory()->create([
             'name' => 'Waste Wizard',
-            'email' => 'wastewizard@litterhero.com',
+            'email' => 'wastewizard@litterapp.com',
             'password' => Hash::make('password'),
         ]), function (User $user) {
             $user->ownedTeams()->save(Team::forceCreate([
@@ -49,15 +49,15 @@ class UserSeeder extends Seeder
                 'path' => 'photos/default.jpg',
                 'original_file_name' => 'default.jpg',
             ]);
-            File::copy(
-                storage_path('app/default.jpg'),
-                storage_path('app/public/photos/default.jpg')
+            Storage::put(
+                'photos/default.jpg',
+                Storage::disk('local')->readStream('default.jpg'),
             );
         });
 
         User::factory()->create([
             'name' => 'Trash Killer',
-            'email' => 'trashkiller@litterhero.com',
+            'email' => 'trashkiller@litterapp.com',
             'password' => Hash::make('password'),
         ]);
     }

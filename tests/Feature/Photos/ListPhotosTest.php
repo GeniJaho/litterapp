@@ -4,7 +4,12 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia;
+
+beforeEach(function () {
+    Storage::fake(config('filesystems.default'));
+});
 
 test('a user can see their photos', function () {
     $this->actingAs($user = User::factory()->create());
