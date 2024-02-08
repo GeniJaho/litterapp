@@ -108,7 +108,7 @@ class ItemSeeder extends Seeder
             'Brush (Paint)',
             'Brush (Paint) (100m-Ospar-73)',
             'Bucket',
-            'Bucket (100m-Ospar-38)', 
+            'Bucket (100m-Ospar-38)',
             'Building Insulation',
             'Bullet',
             'Bullet (Casing)',
@@ -121,7 +121,7 @@ class ItemSeeder extends Seeder
             'Can (Alcohol)',
             'Can (Beer)',
             'Can (Coffee)',
-            'Can (Dairy)',                                
+            'Can (Dairy)',
             'Can (Deposit: No)',
             'Can (Deposit: Yes)',
             'Can (Energy Drink)',
@@ -291,7 +291,7 @@ class ItemSeeder extends Seeder
             'Light Bulb/tube',
             'Light Bulb/tube (100m-Ospar-92)',
             'Light Stick',
-            'Light Stick (100m-Ospar-36)',                                            
+            'Light Stick (100m-Ospar-36)',
             'Lobster and fish tags (100m-Ospar-114)',
             'Lego',
             'Lid',
@@ -540,7 +540,7 @@ class ItemSeeder extends Seeder
     {
         return array_map(fn (string $item) => [
             'name' => $item,
-            'slug' => Str::slug($item),
+            'slug' => Str::slug($item, dictionary: ['<' => 'lt', '>' => 'gt']),
             'created_at' => now(),
             'updated_at' => now(),
         ], $items);

@@ -7,8 +7,12 @@ use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
 use App\Http\Controllers\UserSettingsController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 use Inertia\Inertia;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +30,27 @@ Route::get('/', function () {
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
     ]);
+});
+
+Route::get('/auth/github/redirect', function () {
+    return Socialite::driver('github')->redirect();
+});
+
+Route::get('/auth/github/callback', function () {
+    $githubUser = Socialite::driver('github')->user();
+
+    $user = User::updateOrCreate([
+        'email' => $githubUser->getEmail(),
+    ], [
+        'name' => $githubUser->getName(),
+        'email_verified_at' => now(),
+        'password' => Hash::make(Str::random(20)),
+        'profile_photo_path' => $githubUser->getAvatar(),
+    ]);
+
+    Auth::login($user);
+
+    return redirect('/dashboard');
 });
 
 Route::middleware([
