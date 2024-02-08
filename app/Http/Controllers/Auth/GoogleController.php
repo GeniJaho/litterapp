@@ -10,11 +10,9 @@ use Laravel\Socialite\Facades\Socialite;
 
 class GoogleController extends Controller
 {
-    public function redirect()
+    public function redirect(): RedirectResponse
     {
-        return Socialite::driver('google')
-            ->scopes(['read:user'])
-            ->redirect();
+        return Socialite::driver('google')->redirect();
     }
 
     public function callback(GetOrCreateUserFromSocialProviderAction $action): RedirectResponse

@@ -30,9 +30,9 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/auth/google/redirect', [GoogleController::class, 'redirect']);
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
-Route::get('/auth/github/redirect', [GitHubController::class, 'redirect']);
+Route::get('/auth/github/redirect', [GitHubController::class, 'redirect'])->name('auth.github.redirect');
 Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 
 Route::middleware([
