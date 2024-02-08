@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\GitHubController;
+use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
@@ -8,13 +9,8 @@ use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
 use App\Http\Controllers\UserSettingsController;
-use App\Models\User;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 use Inertia\Inertia;
-use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,6 +30,8 @@ Route::get('/', function () {
     ]);
 });
 
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirect']);
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
 Route::get('/auth/github/redirect', [GitHubController::class, 'redirect']);
 Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 
