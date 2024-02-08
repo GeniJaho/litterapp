@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
@@ -33,28 +34,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::get('/auth/github/redirect', function () {
-    return Socialite::driver('github')
-        ->scopes(['read:user'])
-        ->redirect();
-});
-
-Route::get('/auth/github/callback', function () {
-    $githubUser = Socialite::driver('github')->user();
-
-    $user = User::updateOrCreate([
-        'email' => $githubUser->getEmail(),
-    ], [
-        'name' => $githubUser->getName(),
-        'email_verified_at' => now(),
-        'password' => Hash::make(Str::random(20)),
-        'profile_photo_path' => $githubUser->getAvatar(),
-    ]);
-
-    Auth::login($user);
-
-    return redirect('/dashboard');
-});
+Route::get('/auth/github/redirect', [GitHubController::class, 'redirect']);
+Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 
 Route::middleware([
     'auth:sanctum',
