@@ -34,7 +34,9 @@ Route::get('/', function () {
 });
 
 Route::get('/auth/github/redirect', function () {
-    return Socialite::driver('github')->redirect();
+    return Socialite::driver('github')
+        ->scopes(['read:user'])
+        ->redirect();
 });
 
 Route::get('/auth/github/callback', function () {
