@@ -31,7 +31,7 @@ class UploadPhotosController extends Controller
             'original_file_name' => $photo->getClientOriginalName(),
             'latitude' => $exif['latitude'] ?? null,
             'longitude' => $exif['longitude'] ?? null,
-            'taken_at' => $exif['taken_at'] ?? null,
+            'taken_at_local' => $exif['taken_at_local'] ?? null,
         ]);
 
         return response()->json();
