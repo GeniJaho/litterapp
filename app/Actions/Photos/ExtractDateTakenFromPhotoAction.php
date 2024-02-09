@@ -7,6 +7,9 @@ use Intervention\Image\Collection;
 
 class ExtractDateTakenFromPhotoAction
 {
+    /**
+     * @param Collection<mixed> $exif
+     */
     public function run(Collection $exif): ?Carbon
     {
         $dateTimeOriginal = $exif->get('EXIF.DateTimeOriginal');

@@ -9,7 +9,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('photos', function (Blueprint $table) {
-            $table->dateTime('taken_at_local')->nullable()->after('longitude');
+            $table->dateTime('taken_at_local')->nullable()->after('original_file_name');
         });
     }
 };
