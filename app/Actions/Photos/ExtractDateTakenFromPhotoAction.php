@@ -9,7 +9,6 @@ class ExtractDateTakenFromPhotoAction
 {
     public function run(Collection $exif): ?Carbon
     {
-//        dd($exif->toArray());
         $dateTimeOriginal = $exif->get('EXIF.DateTimeOriginal');
 
         if ($dateTimeOriginal) {
