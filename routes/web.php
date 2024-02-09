@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Auth\GitHubController;
+use App\Http\Controllers\Auth\GoogleController;
+use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
@@ -27,6 +30,13 @@ Route::get('/', function () {
         'canRegister' => Route::has('register'),
     ]);
 });
+
+Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
+Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
+Route::get('/auth/github/redirect', [GitHubController::class, 'redirect'])->name('auth.github.redirect');
+Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
+Route::get('/auth/twitter/redirect', [TwitterController::class, 'redirect'])->name('auth.twitter.redirect');
+Route::get('/auth/twitter/callback', [TwitterController::class, 'callback']);
 
 Route::middleware([
     'auth:sanctum',

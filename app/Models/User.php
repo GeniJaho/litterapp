@@ -6,11 +6,14 @@ use App\DTO\UserSettings;
 use Filament\Models\Contracts\FilamentUser;
 use Filament\Panel;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -64,6 +67,23 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function canAccessPanel(Panel $panel): bool
     {
         return $this->email === 'admin@litterhero.com';
+    }
+
+    /**
+     * @return Attribute<string|null, never>
+     */
+    public function profilePhotoUrl(): Attribute
+    {
+        return Attribute::get(function () {
+            // path can sometimes be a full URL from Google or Facebook
+            if (Str::isUrl($this->profile_photo_path)) {
+                return $this->profile_photo_path;
+            }
+
+            return $this->profile_photo_path
+                ? Storage::disk($this->profilePhotoDisk())->url($this->profile_photo_path)
+                : $this->defaultProfilePhotoUrl();
+        });
     }
 
     /**

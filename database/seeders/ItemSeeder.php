@@ -540,7 +540,7 @@ class ItemSeeder extends Seeder
     {
         return array_map(fn (string $item) => [
             'name' => $item,
-            'slug' => Str::slug($item),
+            'slug' => Str::slug($item, dictionary: ['<' => 'lt', '>' => 'gt']),
             'created_at' => now(),
             'updated_at' => now(),
         ], $items);
