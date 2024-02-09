@@ -7,7 +7,7 @@ use Intervention\Image\Collection;
 class ExtractLocationFromPhotoAction
 {
     /**
-     * @param Collection<mixed> $exif
+     * @param  Collection<mixed>  $exif
      * @return float[]
      */
     public function run(Collection $exif): array

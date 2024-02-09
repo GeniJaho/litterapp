@@ -112,7 +112,7 @@ class PhotoResource extends Resource
                                 $data['created_at_until'],
                                 fn (Builder $query, $date): Builder => $query->where('created_at', '<=', $date),
                             );
-                    })
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

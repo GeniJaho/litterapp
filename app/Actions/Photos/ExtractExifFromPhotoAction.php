@@ -10,7 +10,8 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
     public function __construct(
         private readonly ExtractLocationFromPhotoAction $extractLocation,
         private readonly ExtractDateTakenFromPhotoAction $extractDateTaken,
-    ) {}
+    ) {
+    }
 
     public function run(UploadedFile $photo): array
     {
@@ -20,7 +21,7 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
 
         $location = $this->extractLocation->run($exif);
 
-       return [
+        return [
             'latitude' => $location['latitude'],
             'longitude' => $location['longitude'],
             'taken_at_local' => $this->extractDateTaken->run($exif),
