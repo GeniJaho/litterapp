@@ -215,6 +215,8 @@ class TagSeeder extends Seeder
             'Basic-fit',
             'Basil Seed',
             'Bastogne',
+            'Batata',
+            'Batata2',
             'Bavaria',
             'Bazooka',
             'BCLC',
