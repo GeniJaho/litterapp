@@ -48,6 +48,7 @@ class UserSeeder extends Seeder
             $user->photos()->create([
                 'path' => 'photos/default.jpg',
                 'original_file_name' => 'default.jpg',
+                'taken_at_local' => now(),
             ]);
             Storage::put(
                 'photos/default.jpg',

@@ -1,7 +1,7 @@
 <?php
 
-use App\Actions\Photos\ExtractLocationFromPhotoAction;
-use App\Actions\Photos\ExtractsLocationFromPhoto;
+use App\Actions\Photos\ExtractExifFromPhotoAction;
+use App\Actions\Photos\ExtractsExifFromPhoto;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
@@ -30,7 +30,7 @@ test('a user can upload photos', function () {
 });
 
 test('a user can upload photos with location data', function () {
-    $this->swap(ExtractsLocationFromPhoto::class, new ExtractLocationFromPhotoAction());
+    $this->swap(ExtractsExifFromPhoto::class, app(ExtractExifFromPhotoAction::class));
     $this->actingAs($user = User::factory()->create());
 
     $file = UploadedFile::fake()->createWithContent(
@@ -48,6 +48,26 @@ test('a user can upload photos with location data', function () {
     expect($photo->latitude)->toBe(40.053030045789)
         ->and($photo->longitude)->toBe(-77.15449870066);
 })->group('slow');
+
+test('a user can upload photos with the date the photo is taken', function () {
+    Storage::fake('public');
+    $this->swap(ExtractsExifFromPhoto::class, app(ExtractExifFromPhotoAction::class));
+    $this->actingAs($user = User::factory()->create());
+
+    $file = UploadedFile::fake()->createWithContent(
+        'photo.jpg',
+        file_get_contents(storage_path('app/photo-with-gps.jpg')),
+    );
+
+    $response = $this->post('/upload', ['photo' => $file]);
+
+    $response->assertOk();
+
+    expect($user->photos()->count())->toBe(1);
+
+    $photo = $user->photos()->first();
+    expect($photo->taken_at_local)->toBe('2019-10-10 12:00:00');
+})->group('slow')->skip('Properly implement this');
 
 test('a photo can not be larger than 20MB', function () {
     $this->actingAs($user = User::factory()->create());

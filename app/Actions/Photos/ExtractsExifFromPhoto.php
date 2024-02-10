@@ -4,10 +4,10 @@ namespace App\Actions\Photos;
 
 use Illuminate\Http\UploadedFile;
 
-interface ExtractsLocationFromPhoto
+interface ExtractsExifFromPhoto
 {
     /**
-     * @return array<string, float>
+     * @return array<string, mixed>
      */
     public function run(UploadedFile $photo): array;
 }

@@ -4,11 +4,14 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PhotoResource\Pages\ListPhotos;
 use App\Models\Photo;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
@@ -33,7 +36,7 @@ class PhotoResource extends Resource
                     ->numeric()
                     ->searchable()
                     ->sortable(),
-                ImageColumn::make('path')
+                ImageColumn::make('full_path')
                     ->label('Photo')
                     ->searchable(),
                 TextColumn::make('gps')
@@ -51,7 +54,12 @@ class PhotoResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
+                TextColumn::make('taken_at_local')
+                    ->dateTime()
+                    ->label('Date taken (Local time)')
+                    ->sortable(),
                 TextColumn::make('created_at')
+                    ->label('Uploaded at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -73,6 +81,38 @@ class PhotoResource extends Resource
                         false: fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude'),
                         blank: fn (Builder $query) => $query
                     ),
+                Filter::make('taken_at_local')
+                    ->form([
+                        DatePicker::make('local_date_taken_from')->label('Date taken from (Local time)'),
+                        DatePicker::make('local_date_taken_until')->label('Date taken until (Local time)'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['local_date_taken_from'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '>=', $date),
+                            )
+                            ->when(
+                                $data['local_date_taken_until'],
+                                fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
+                            );
+                    }),
+                Filter::make('created_at')
+                    ->form([
+                        DateTimePicker::make('created_at_from')->label('Uploaded from'),
+                        DateTimePicker::make('created_at_until')->label('Uploaded until'),
+                    ])
+                    ->query(function (Builder $query, array $data): Builder {
+                        return $query
+                            ->when(
+                                $data['created_at_from'],
+                                fn (Builder $query, $date): Builder => $query->where('created_at', '>=', $date),
+                            )
+                            ->when(
+                                $data['created_at_until'],
+                                fn (Builder $query, $date): Builder => $query->where('created_at', '<=', $date),
+                            );
+                    }),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

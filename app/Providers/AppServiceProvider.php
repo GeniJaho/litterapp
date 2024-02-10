@@ -2,8 +2,8 @@
 
 namespace App\Providers;
 
-use App\Actions\Photos\ExtractLocationFromPhotoAction;
-use App\Actions\Photos\ExtractsLocationFromPhoto;
+use App\Actions\Photos\ExtractExifFromPhotoAction;
+use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
@@ -29,6 +29,6 @@ class AppServiceProvider extends ServiceProvider
 
         Model::shouldBeStrict();
 
-        $this->app->bind(ExtractsLocationFromPhoto::class, ExtractLocationFromPhotoAction::class);
+        $this->app->bind(ExtractsExifFromPhoto::class, ExtractExifFromPhotoAction::class);
     }
 }

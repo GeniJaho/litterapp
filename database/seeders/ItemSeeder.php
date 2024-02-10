@@ -261,7 +261,6 @@ class ItemSeeder extends Seeder
             'Glove (industrial/professional gloves)',
             'Glove (industrial/professional gloves) (100m-Ospar-113)',
             'Glove (industrial/professional gloves) (1000m-Ospar-22)',
-            'Glove',
             'Golf Ball',
             'Gum',
             'Hair Tie',
