@@ -49,6 +49,7 @@ let filteredItems = computed(() => {
                         @change="query = $event.target.value"
                         @focus="$event.target.select()"
                         :autofocus="autofocus"
+                        autocomplete="off"
                     />
                     <ComboboxButton
                         class="absolute inset-y-0 right-0 flex items-center pr-2"

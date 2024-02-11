@@ -7,6 +7,7 @@ import InputError from '@/Components/InputError.vue';
 import InputLabel from '@/Components/InputLabel.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import TextInput from '@/Components/TextInput.vue';
+import SocialLogin from "@/Components/Auth/SocialLogin.vue";
 
 const form = useForm({
     name: '',
@@ -108,5 +109,8 @@ const submit = () => {
                 </PrimaryButton>
             </div>
         </form>
+
+        <SocialLogin/>
+
     </AuthenticationCard>
 </template>
