@@ -22,8 +22,8 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
         $location = $this->extractLocation->run($exif);
 
         return [
-            'latitude' => $location['latitude'],
-            'longitude' => $location['longitude'],
+            'latitude' => $location['latitude'] ?? null,
+            'longitude' => $location['longitude'] ?? null,
             'taken_at_local' => $this->extractDateTaken->run($exif),
         ];
     }
