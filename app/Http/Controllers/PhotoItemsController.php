@@ -20,7 +20,7 @@ class PhotoItemsController extends Controller
             abort(404);
         }
 
-        $photo->items()->attach($request->item_id, [
+        $photo->items()->attach($request->item_ids, [
             'picked_up' => $user->settings->picked_up_by_default,
             'recycled' => $user->settings->recycled_by_default,
         ]);

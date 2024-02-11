@@ -13,6 +13,10 @@ const props = defineProps({
     items: Array,
     modelValue: Object,
     autofocus: Boolean,
+    multiple: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 defineEmits(['update:modelValue']);
@@ -37,6 +41,7 @@ let filteredItems = computed(() => {
     <Combobox
         :modelValue="modelValue"
         @update:modelValue="value => $emit('update:modelValue', value)"
+        :multiple="multiple"
         by="id"
     >
             <div class="relative">
@@ -58,6 +63,15 @@ let filteredItems = computed(() => {
                             <path fill-rule="evenodd" d="M10 3a.75.75 0 01.55.24l3.25 3.5a.75.75 0 11-1.1 1.02L10 4.852 7.3 7.76a.75.75 0 01-1.1-1.02l3.25-3.5A.75.75 0 0110 3zm-3.76 9.2a.75.75 0 011.06.04l2.7 2.908 2.7-2.908a.75.75 0 111.1 1.02l-3.25 3.5a.75.75 0 01-1.1 0l-3.25-3.5a.75.75 0 01.04-1.06z" clip-rule="evenodd" />
                         </svg>
                     </ComboboxButton>
+                </div>
+                <div v-if="multiple && modelValue.length" class="my-2 text-sm text-gray-500 flex flex-wrap gap-1">
+                    <span
+                        v-for="item in modelValue"
+                        :key="item.id"
+                        class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-400"
+                    >
+                        {{ item.name }}
+                    </span>
                 </div>
                 <TransitionRoot
                     leave="transition ease-in duration-100"

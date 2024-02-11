@@ -20,11 +20,9 @@ class PhotosController extends Controller
 
         /** @var User $user */
         $user = auth()->user();
-        $itemFilter = request()->input('item');
 
-
-
-        $photos = $user->photos()
+        $photos = $user
+            ->photos()
             ->withExists('items')
             ->latest('id')
             ->paginate(12);

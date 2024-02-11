@@ -20,7 +20,7 @@ const props = defineProps({
 
 const photo = ref(null);
 const photoItems = ref([]);
-const selectedItem = ref(null);
+const selectedItems = ref([]);
 
 onMounted(() => {
     getPhoto();
@@ -47,10 +47,11 @@ const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
 };
 
-const addItem = () => {
+const addItems = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_id: selectedItem.value.id,
+        item_ids: selectedItems.value.map(item => item.id),
     }).then(() => {
+        selectedItems.value = [];
         getPhoto();
     });
 };
@@ -172,15 +173,18 @@ const onKeyDown = (event) => {
                                 :autofocus="true"
                                 class="w-full sm:w-96"
                                 :items="items"
-                                v-model="selectedItem"
+                                v-model="selectedItems"
+                                :multiple="true"
                             ></TagBox>
-                            <PrimaryButton
-                                class="whitespace-nowrap ml-4"
-                                @click="addItem"
-                                :disabled="!selectedItem"
-                            >
-                                Add Object
-                            </PrimaryButton>
+                            <div class="ml-4 mt-0.5">
+                                <PrimaryButton
+                                    class="whitespace-nowrap"
+                                    @click="addItems"
+                                    :disabled="!selectedItems.length"
+                                >
+                                    Add Object(s)
+                                </PrimaryButton>
+                            </div>
                         </div>
 
                         <div class="mt-8" v-if="photoItems.length">
