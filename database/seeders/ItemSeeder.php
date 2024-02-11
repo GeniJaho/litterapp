@@ -13,7 +13,7 @@ class ItemSeeder extends Seeder
      */
     public function run(): void
     {
-        Item::query()->insert($this->format([
+        Item::query()->insertOrIgnore($this->format([
             '4/6-pack yokes',
             '4/6-pack yokes (100m-Ospar-1)',
             'Aluminium Foil',
