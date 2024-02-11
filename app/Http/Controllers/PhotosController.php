@@ -9,14 +9,31 @@ use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PhotosController extends Controller
 {
-    public function index(): Response
+    public function index(Request $request): Response
     {
+        $filters = $request->all();
+        $filterItemIds = $filters['item_ids'] ?? [];
+        $filterMaterialIds = $filters['material_ids'] ?? [];
+        $filterBrandIds = $filters['brand_ids'] ?? [];
+        $filterEventIds = $filters['event_ids'] ?? [];
+        $filterTagIds = [...$filterMaterialIds, ...$filterBrandIds, ...$filterEventIds];
+        $uploadedFrom = $filters['uploaded_from'] ?? null;
+        $uploadedUntil = $filters['uploaded_until'] ?? null;
+        $allFilters = [
+            'item_ids' => $filterItemIds,
+            'material_ids' => $filterMaterialIds,
+            'brand_ids' => $filterBrandIds,
+            'event_ids' => $filterEventIds,
+            'uploaded_from' => $uploadedFrom,
+            'uploaded_until' => $uploadedUntil,
+        ];
 
         /** @var User $user */
         $user = auth()->user();
@@ -24,6 +41,10 @@ class PhotosController extends Controller
         $photos = $user
             ->photos()
             ->withExists('items')
+            ->when($filterItemIds !== [], fn ($query) => $query->whereHas('items', fn ($query) => $query->whereIn('item_id', $filterItemIds)))
+//            ->when($filterTagIds !== [], fn ($query) => $query->whereHas('items', fn ($query) => $query->whereHas('tags', fn ($query) => $query->whereIn('tag_id', $filterTagIds))))
+            ->when($uploadedFrom, fn ($query) => $query->where('created_at', '>=', $uploadedFrom))
+            ->when($uploadedUntil, fn ($query) => $query->where('created_at', '<=', $uploadedUntil))
             ->latest('id')
             ->paginate(12);
 
@@ -49,6 +70,7 @@ class PhotosController extends Controller
             'photos' => $photos,
             'items' => Item::query()->orderBy('name')->get(),
             'tags' => $tags,
+            'filters' => $allFilters,
         ]);
     }
 

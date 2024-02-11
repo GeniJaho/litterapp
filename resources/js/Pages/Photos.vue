@@ -1,21 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref } from "vue";
-import {usePage, Link, router} from '@inertiajs/vue3';
+import {Link, router} from '@inertiajs/vue3';
 import IconDangerButton from "@/Components/IconDangerButton.vue";
-import TagBox from "@/Components/TagBox.vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
+import Filters from "@/Components/Filters.vue";
 
 const props = defineProps({
     photos: Object,
     tags: Object,
     items: Array,
+    filters: Object,
 });
-
-const filterItem = ref(null);
-const selectedMaterialTag = ref(null);
-const selectedBrandTag = ref(null);
-const selectedEventTag = ref(null);
 
 const deletePhoto = (photoId) => {
     router.delete(`/photos/${photoId}`, {
@@ -23,6 +17,10 @@ const deletePhoto = (photoId) => {
         preserveState: false,
     });
 };
+
+const filter = (filters) => {
+    router.get(window.location.pathname, filters);
+}
 </script>
 
 <template>
@@ -33,88 +31,19 @@ const deletePhoto = (photoId) => {
             </h2>
         </template>
 
-        <div v-if="photos.data.length" class="py-12">
+        <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="mb-8">
-                    <div class="flex flex-col sm:flex-row space-x-4">
-                        <div class="mb-4">
-                            <label for="filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                                Filter by item
-                            </label>
-                            <TagBox
-                                class="w-full lg:w-48"
-                                :items="items"
-                                v-model="filterItem"
-                            ></TagBox>
 
-                            <PrimaryButton
-                                class="mt-2"
-                                @click="filterItem = null"
-                            >
-                                Clear
-                            </PrimaryButton>
-                        </div>
-                        <div class="mb-4">
-                            <label for="filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                                Filter by material
-                            </label>
-                            <TagBox
-                                class="w-full lg:w-48"
-                                :items="tags.material"
-                                v-model="selectedMaterialTag"
-                            ></TagBox>
-
-                            <PrimaryButton
-                                class="mt-2"
-                                @click="selectedMaterialTag = null"
-                            >
-                                Clear
-                            </PrimaryButton>
-                        </div>
-                        <div class="mb-4">
-                            <label for="filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                                Filter by  brand
-                            </label>
-                            <TagBox
-                                class="w-full lg:w-48"
-                                :items="tags.brand"
-                                v-model="selectedBrandTag"
-                            ></TagBox>
-
-                            <PrimaryButton
-                                class="mt-2"
-                                @click="selectedBrandTag = null"
-                            >
-                                Clear
-                            </PrimaryButton>
-                        </div>
-                        <div class="mb-4">
-                            <label for="filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                                Filter by event
-                            </label>
-                            <TagBox
-                                class="w-full lg:w-48"
-                                :items="tags.event"
-                                v-model="selectedEventTag"
-                            ></TagBox>
-
-                            <PrimaryButton
-                                class="mt-2"
-                                @click="selectedEventTag = null"
-                            >
-                                Clear
-                            </PrimaryButton>
-                        </div>
-                    </div>
-                    <PrimaryButton
-                        class="mt-2"
-                        @click="router.replace({ query: { tag: filterItem?.id } })"
-                    >
-                        <i class="fa-solid fa-filter mr-2 "></i>
-                        Filter
-                    </PrimaryButton>
+                <div class="my-8">
+                    <Filters
+                        @change="filter"
+                        :tags="tags"
+                        :items="items"
+                        :default-filters="filters"
+                    />
                 </div>
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+
+                <div v-if="photos.data.length" class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             <div
