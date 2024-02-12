@@ -5,9 +5,7 @@ namespace App\Http\Controllers;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\Tag;
 use App\Models\User;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -43,13 +41,13 @@ class PhotosController extends Controller
         $photos = $user
             ->photos()
             ->withExists('items')
-            ->when($filterItemIds !== [], fn (Builder $query) => $query
-                ->whereHas('items', fn (Builder $query) => $query
+            ->when($filterItemIds !== [], fn ($query) => $query
+                ->whereHas('items', fn ($query) => $query
                     ->whereIn('item_id', $filterItemIds)
                 )
             )
-            ->when($filterTagIds !== [], fn (Builder $query) => $query
-                ->whereHas('items', fn (Builder $query) => $query
+            ->when($filterTagIds !== [], fn ($query) => $query
+                ->whereHas('items', fn ($query) => $query
                     ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
                     ->whereIn('photo_item_tag.tag_id', $filterTagIds)
                 )

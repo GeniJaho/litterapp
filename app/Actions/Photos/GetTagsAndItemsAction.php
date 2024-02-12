@@ -8,6 +8,9 @@ use App\Models\TagType;
 
 class GetTagsAndItemsAction
 {
+    /**
+     * @return array<string, mixed>
+     */
     public function run(): array
     {
         $tagTypes = TagType::query()->get();
