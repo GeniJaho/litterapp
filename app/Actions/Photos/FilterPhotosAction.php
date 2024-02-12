@@ -8,6 +8,7 @@ use App\Models\User;
 class FilterPhotosAction
 {
     /**
+     * @param array<string, string> $filters
      * @return array<string, mixed>
      */
     public function run(User $user, array $filters, ?bool $hasGPS, ?bool $isTagged): array
