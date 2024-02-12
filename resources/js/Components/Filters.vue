@@ -3,6 +3,8 @@
 import {ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
+import InputLabel from "@/Components/InputLabel.vue";
+import TextInput from "@/Components/TextInput.vue";
 
 const props = defineProps({
     tags: Object,
@@ -57,86 +59,76 @@ const clear = () => {
 </script>
 
 <template>
-    <div class="flex flex-col lg:flex-row lg:space-x-4 w-full p-4 lg:p-0">
-        <div class="mb-8 w-full">
+    <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 lg:p-0">
+        <div class="w-full">
             <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
                 <div class="col-span-1 lg:col-span-2">
-                    <label for="item-filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Items
-                    </label>
+                    <InputLabel for="item-filter" value="Items" />
                     <TagBox
                         id="item-filter"
                         v-model="selectedItems"
                         :items="items"
                         :multiple="true"
-                        @update:model-value="filter"
+                        class="mt-1 block w-full"
                     ></TagBox>
                 </div>
                 <div>
-                    <label for="material-filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Materials
-                    </label>
+                    <InputLabel for="material-filter" value="Materials" />
                     <TagBox
                         id="material-filter"
                         v-model="selectedMaterials"
                         :items="tags.material"
                         :multiple="true"
-                        @update:model-value="filter"
+                        class="mt-1 block w-full"
                     ></TagBox>
                 </div>
                 <div>
-                    <label for="brand-filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Brands
-                    </label>
+                    <InputLabel for="brand-filter" value="Brands" />
                     <TagBox
                         id="brand-filter"
                         v-model="selectedBrands"
                         :items="tags.brand"
                         :multiple="true"
-                        @update:model-value="filter"
+                        class="mt-1 block w-full"
                     ></TagBox>
                 </div>
                 <div>
-                    <label for="event-filter" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Events
-                    </label>
+                    <InputLabel for="event-filter" value="Events" />
                     <TagBox
                         id="event-filter"
                         v-model="selectedEvents"
                         :items="tags.event"
                         :multiple="true"
-                        @update:model-value="filter"
+                        class="mt-1 block w-full"
                     ></TagBox>
                 </div>
                 <div>
-                    <label for="uploaded-from" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Uploaded From
-                    </label>
-                    <input
+                    <InputLabel for="uploaded-from" value="Uploaded From" />
+                    <TextInput
                         v-model="filters.uploaded_from"
-                        @change="filter"
                         type="datetime-local"
-                        name="uploaded_from" id="uploaded-from"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        id="uploaded-from"
+                        class="mt-1 block w-full"
                     />
                 </div>
                 <div>
-                    <label for="uploaded-until" class="block mb-2 text-sm font-medium text-gray-600 dark:text-gray-200">
-                        Uploaded Until
-                    </label>
-                    <input
+                    <InputLabel for="uploaded-until" value="Uploaded Until" />
+                    <TextInput
                         v-model="filters.uploaded_until"
-                        @change="filter"
                         type="datetime-local"
-                        name="uploaded_until" id="uploaded-until"
-                        class="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                        id="uploaded-until"
+                        class="mt-1 block w-full"
                     />
                 </div>
             </div>
         </div>
 
-        <div class="flex-1 flex items-center justify-center">
+        <div class="mt-4 lg:mt-0 flex flex-row lg:flex-col gap-4 items-center justify-center">
             <PrimaryButton @click="clear">Clear</PrimaryButton>
+            <PrimaryButton @click="filter">
+                <i class="fa-solid fa-filter mr-2 "></i>
+                Filter
+            </PrimaryButton>
         </div>
     </div>
 </template>
