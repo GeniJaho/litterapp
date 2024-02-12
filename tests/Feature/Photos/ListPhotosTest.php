@@ -201,3 +201,40 @@ test('a user can filter their photos by having GPS data or not', function () {
     );
 });
 
+test('a user can filter their photos by having tags or not', function () {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    PhotoItem::factory()->for($item)->for($photoB)->create();
+
+    $response = $this->get('/my-photos?is_tagged=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?is_tagged=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?is_tagged=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});

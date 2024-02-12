@@ -30,6 +30,7 @@ const filters = ref({
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
     taken_until_local: props.defaultFilters?.taken_until_local ?? null,
     has_gps: props.defaultFilters?.has_gps ?? null,
+    is_tagged: props.defaultFilters?.is_tagged ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -37,6 +38,7 @@ const selectedMaterials = ref(props.tags.material.filter(material => filters.val
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
 const hasGPS = ref(yesOrNoOptions.find(option => option.value === filters.value.has_gps));
+const isTagged = ref(yesOrNoOptions.find(option => option.value === filters.value.is_tagged));
 
 const emit = defineEmits(['change']);
 
@@ -48,6 +50,7 @@ const filter = () => {
         ...selectedEvents.value.map(event => event.id),
     ];
     filters.value.has_gps = hasGPS.value.value;
+    filters.value.is_tagged = isTagged.value.value;
     emit('change', filters.value);
 }
 
@@ -57,6 +60,7 @@ const clear = () => {
     selectedBrands.value = [];
     selectedEvents.value = [];
     hasGPS.value = yesOrNoOptions[0];
+    isTagged.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -66,6 +70,7 @@ const clear = () => {
         taken_from_local: null,
         taken_until_local: null,
         has_gps: null,
+        is_tagged: null,
     };
 
     emit('change', filters.value);
@@ -158,6 +163,15 @@ const clear = () => {
                         v-model="hasGPS"
                         :options="yesOrNoOptions"
                         id="has-gps"
+                        class="block w-full"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="is-tagged" value="Is Tagged" />
+                    <SelectInput
+                        v-model="isTagged"
+                        :options="yesOrNoOptions"
+                        id="is-tagged"
                         class="block w-full"
                     ></SelectInput>
                 </div>

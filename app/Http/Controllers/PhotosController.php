@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Models\Item;
 use App\Models\Photo;
@@ -18,65 +19,25 @@ class PhotosController extends Controller
     public function index(
         Request $request,
         GetTagsAndItemsAction $getTagsAndItemsAction,
+        FilterPhotosAction $filterPhotosAction,
     ): Response {
-        $filters = $request->all();
-        $filterItemIds = $filters['item_ids'] ?? [];
-        $filterTagIds = array_map(fn ($id) => (int) $id, $filters['tag_ids'] ?? []);
-        $uploadedFrom = $filters['uploaded_from'] ?? null;
-        $uploadedUntil = $filters['uploaded_until'] ?? null;
-        $takenFromLocal = $filters['taken_from_local'] ?? null;
-        $takenUntilLocal = $filters['taken_until_local'] ?? null;
-        $hasGPS = $request->filled('has_gps') ? (int) $request->get('has_gps') : null;
-
-        $allFilters = [
-            'item_ids' => $filterItemIds,
-            'tag_ids' => $filterTagIds,
-            'uploaded_from' => $uploadedFrom,
-            'uploaded_until' => $uploadedUntil,
-            'taken_from_local' => $takenFromLocal,
-            'taken_until_local' => $takenUntilLocal,
-            'has_gps' => $hasGPS,
-        ];
-
         /** @var User $user */
         $user = auth()->user();
 
-        $photos = $user
-            ->photos()
-            ->withExists('items')
-            ->when($filterItemIds !== [], fn ($query) => $query
-                ->whereHas('items', fn ($query) => $query
-                    ->whereIn('item_id', $filterItemIds)
-                )
-            )
-            ->when($filterTagIds !== [], fn ($query) => $query
-                ->whereHas('items', fn ($query) => $query
-                    ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
-                    ->whereIn('photo_item_tag.tag_id', $filterTagIds)
-                )
-            )
-            ->when($uploadedFrom, fn ($query) => $query->where('created_at', '>=', $uploadedFrom))
-            ->when($uploadedUntil, fn ($query) => $query->where('created_at', '<=', $uploadedUntil))
-            ->when($takenFromLocal, fn ($query) => $query->whereDate('taken_at_local', '>=', $takenFromLocal))
-            ->when($takenUntilLocal, fn ($query) => $query->whereDate('taken_at_local', '<=', $takenUntilLocal))
-            ->when($hasGPS === 1, fn ($query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
-            ->when($hasGPS === 0, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
-            ->latest('id')
-            ->paginate(12);
-
-        $photos->getCollection()->transform(function (Photo $photo) {
-            $photo->append('full_path');
-
-            return $photo;
-        });
+        $result = $filterPhotosAction->run(
+            $user,
+            $request->all(),
+            hasGPS: $request->filled('has_gps') ? $request->boolean('has_gps') : null,
+            isTagged: $request->filled('is_tagged') ? $request->boolean('is_tagged') : null,
+        );
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
         return Inertia::render('Photos', [
-            'photos' => $photos,
+            'photos' => $result['photos'],
+            'filters' => $result['filters'],
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
-            'filters' => $allFilters,
         ]);
     }
 
