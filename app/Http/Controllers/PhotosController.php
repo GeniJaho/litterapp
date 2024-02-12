@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\Tag;
-use App\Models\TagType;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -16,23 +17,24 @@ use Inertia\Response;
 
 class PhotosController extends Controller
 {
-    public function index(Request $request): Response
-    {
+    public function index(
+        Request $request,
+        GetTagsAndItemsAction $getTagsAndItemsAction,
+    ): Response {
         $filters = $request->all();
         $filterItemIds = $filters['item_ids'] ?? [];
-        $filterMaterialIds = $filters['material_ids'] ?? [];
-        $filterBrandIds = $filters['brand_ids'] ?? [];
-        $filterEventIds = $filters['event_ids'] ?? [];
-        $filterTagIds = [...$filterMaterialIds, ...$filterBrandIds, ...$filterEventIds];
+        $filterTagIds = array_map(fn ($id) => (int) $id, $filters['tag_ids'] ?? []);
         $uploadedFrom = $filters['uploaded_from'] ?? null;
         $uploadedUntil = $filters['uploaded_until'] ?? null;
+        $takenFromLocal = $filters['taken_from_local'] ?? null;
+        $takenUntilLocal = $filters['taken_until_local'] ?? null;
         $allFilters = [
             'item_ids' => $filterItemIds,
-            'material_ids' => $filterMaterialIds,
-            'brand_ids' => $filterBrandIds,
-            'event_ids' => $filterEventIds,
+            'tag_ids' => $filterTagIds,
             'uploaded_from' => $uploadedFrom,
             'uploaded_until' => $uploadedUntil,
+            'taken_from_local' => $takenFromLocal,
+            'taken_until_local' => $takenUntilLocal,
         ];
 
         /** @var User $user */
@@ -41,10 +43,21 @@ class PhotosController extends Controller
         $photos = $user
             ->photos()
             ->withExists('items')
-            ->when($filterItemIds !== [], fn ($query) => $query->whereHas('items', fn ($query) => $query->whereIn('item_id', $filterItemIds)))
-//            ->when($filterTagIds !== [], fn ($query) => $query->whereHas('items', fn ($query) => $query->whereHas('tags', fn ($query) => $query->whereIn('tag_id', $filterTagIds))))
+            ->when($filterItemIds !== [], fn (Builder $query) => $query
+                ->whereHas('items', fn (Builder $query) => $query
+                    ->whereIn('item_id', $filterItemIds)
+                )
+            )
+            ->when($filterTagIds !== [], fn (Builder $query) => $query
+                ->whereHas('items', fn (Builder $query) => $query
+                    ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
+                    ->whereIn('photo_item_tag.tag_id', $filterTagIds)
+                )
+            )
             ->when($uploadedFrom, fn ($query) => $query->where('created_at', '>=', $uploadedFrom))
             ->when($uploadedUntil, fn ($query) => $query->where('created_at', '<=', $uploadedUntil))
+            ->when($takenFromLocal, fn ($query) => $query->whereDate('taken_at_local', '>=', $takenFromLocal))
+            ->when($takenUntilLocal, fn ($query) => $query->whereDate('taken_at_local', '<=', $takenUntilLocal))
             ->latest('id')
             ->paginate(12);
 
@@ -54,49 +67,31 @@ class PhotosController extends Controller
             return $photo;
         });
 
-        $tagTypes = TagType::query()->get();
-        $tags = Tag::query()
-            ->orderBy('name')
-            ->get()
-            ->groupBy('tag_type_id')
-            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
-                /** @var TagType $tagType */
-                $tagType = $tagTypes->find($key);
-
-                return [$tagType->slug => $values];
-            });
+        $tagsAndItems = $getTagsAndItemsAction->run();
 
         return Inertia::render('Photos', [
             'photos' => $photos,
-            'items' => Item::query()->orderBy('name')->get(),
-            'tags' => $tags,
+            'items' => $tagsAndItems['items'],
+            'tags' => $tagsAndItems['tags'],
             'filters' => $allFilters,
         ]);
     }
 
-    public function show(Photo $photo): Response|JsonResponse
-    {
+    public function show(
+        Photo $photo,
+        GetTagsAndItemsAction $getTagsAndItemsAction,
+    ): Response|JsonResponse {
         if (auth()->id() !== $photo->user_id) {
             abort(404);
         }
 
-        $tagTypes = TagType::query()->get();
-        $tags = Tag::query()
-            ->orderBy('name')
-            ->get()
-            ->groupBy('tag_type_id')
-            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
-                /** @var TagType $tagType */
-                $tagType = $tagTypes->find($key);
-
-                return [$tagType->slug => $values];
-            });
-
         if (! request()->wantsJson()) {
+            $tagsAndItems = $getTagsAndItemsAction->run();
+
             return Inertia::render('Photo/Show', [
                 'photoId' => $photo->id,
-                'items' => Item::query()->orderBy('name')->get(),
-                'tags' => $tags,
+                'items' => $tagsAndItems['items'],
+                'tags' => $tagsAndItems['tags'],
                 'nextPhotoUrl' => $this->getNextPhotoUrl($photo),
                 'previousPhotoUrl' => $this->getPreviousPhotoUrl($photo),
             ]);

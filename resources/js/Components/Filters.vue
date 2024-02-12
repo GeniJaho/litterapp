@@ -17,25 +17,27 @@ const props = defineProps({
 
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
-    material_ids: props.defaultFilters?.material_ids ?? [],
-    brand_ids: props.defaultFilters?.brand_ids ?? [],
-    event_ids: props.defaultFilters?.event_ids ?? [],
+    tag_ids: props.defaultFilters?.tag_ids ?? [],
     uploaded_from: props.defaultFilters?.uploaded_from ?? null,
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
+    taken_from_local: props.defaultFilters?.taken_from_local ?? null,
+    taken_until_local: props.defaultFilters?.taken_until_local ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
-const selectedMaterials = ref(props.defaultFilters?.material_ids.map(id => props.tags.material.find(material => material.id === parseInt(id))) ?? []);
-const selectedBrands = ref(props.defaultFilters?.brand_ids.map(id => props.tags.brand.find(brand => brand.id === parseInt(id))) ?? []);
-const selectedEvents = ref(props.defaultFilters?.event_ids.map(id => props.tags.event.find(event => event.id === parseInt(id))) ?? []);
+const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
+const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
+const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
 
 const emit = defineEmits(['change']);
 
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
-    filters.value.material_ids = selectedMaterials.value.map(material => material.id);
-    filters.value.brand_ids = selectedBrands.value.map(brand => brand.id);
-    filters.value.event_ids = selectedEvents.value.map(event => event.id);
+    filters.value.tag_ids = [
+        ...selectedMaterials.value.map(material => material.id),
+        ...selectedBrands.value.map(brand => brand.id),
+        ...selectedEvents.value.map(event => event.id),
+    ];
     emit('change', filters.value);
 }
 
@@ -47,11 +49,11 @@ const clear = () => {
 
     filters.value = {
         item_ids: [],
-        material_ids: [],
-        brand_ids: [],
-        event_ids: [],
+        tag_ids: [],
         uploaded_from: null,
         uploaded_until: null,
+        taken_from_local: null,
+        taken_until_local: null,
     };
 
     emit('change', filters.value);
@@ -117,6 +119,24 @@ const clear = () => {
                         v-model="filters.uploaded_until"
                         type="datetime-local"
                         id="uploaded-until"
+                        class="mt-1 block w-full"
+                    />
+                </div>
+                <div>
+                    <InputLabel for="taken-from-local" value="Date taken from (local)" />
+                    <TextInput
+                        v-model="filters.taken_from_local"
+                        type="date"
+                        id="taken-from-local"
+                        class="mt-1 block w-full"
+                    />
+                </div>
+                <div>
+                    <InputLabel for="taken-until-local" value="Date taken until (local)" />
+                    <TextInput
+                        v-model="filters.taken_until_local"
+                        type="date"
+                        id="taken-until-local"
                         class="mt-1 block w-full"
                     />
                 </div>
