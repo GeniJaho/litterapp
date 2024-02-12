@@ -5,6 +5,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
+import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
 
 const props = defineProps({
     tags: Object,
@@ -22,6 +23,7 @@ const filters = ref({
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
     taken_until_local: props.defaultFilters?.taken_until_local ?? null,
+    has_gps: props.defaultFilters?.has_gps ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -54,6 +56,7 @@ const clear = () => {
         uploaded_until: null,
         taken_from_local: null,
         taken_until_local: null,
+        has_gps: null,
     };
 
     emit('change', filters.value);
@@ -139,6 +142,16 @@ const clear = () => {
                         id="taken-until-local"
                         class="mt-1 block w-full"
                     />
+                </div>
+                <div>
+                    <InputLabel for="has-gps" value="Has GPS" />
+                    <Listbox v-model="filters.has_gps" class="mt-1 block w-full" id="has-gps">
+                        <ListboxOptions>
+                            <ListboxOption :value="null">-</ListboxOption>
+                            <ListboxOption :value="true">Yes</ListboxOption>
+                            <ListboxOption :value="false">No</ListboxOption>
+                        </ListboxOptions>
+                    </Listbox>
                 </div>
             </div>
         </div>
