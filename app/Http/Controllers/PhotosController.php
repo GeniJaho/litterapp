@@ -26,6 +26,8 @@ class PhotosController extends Controller
         $uploadedUntil = $filters['uploaded_until'] ?? null;
         $takenFromLocal = $filters['taken_from_local'] ?? null;
         $takenUntilLocal = $filters['taken_until_local'] ?? null;
+        $hasGPS = $request->filled('has_gps') ? (int) $request->get('has_gps') : null;
+
         $allFilters = [
             'item_ids' => $filterItemIds,
             'tag_ids' => $filterTagIds,
@@ -33,6 +35,7 @@ class PhotosController extends Controller
             'uploaded_until' => $uploadedUntil,
             'taken_from_local' => $takenFromLocal,
             'taken_until_local' => $takenUntilLocal,
+            'has_gps' => $hasGPS,
         ];
 
         /** @var User $user */
@@ -56,6 +59,8 @@ class PhotosController extends Controller
             ->when($uploadedUntil, fn ($query) => $query->where('created_at', '<=', $uploadedUntil))
             ->when($takenFromLocal, fn ($query) => $query->whereDate('taken_at_local', '>=', $takenFromLocal))
             ->when($takenUntilLocal, fn ($query) => $query->whereDate('taken_at_local', '<=', $takenUntilLocal))
+            ->when($hasGPS === 1, fn ($query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
+            ->when($hasGPS === 0, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->latest('id')
             ->paginate(12);
 

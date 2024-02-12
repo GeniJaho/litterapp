@@ -5,7 +5,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
-import {Listbox, ListboxButton, ListboxOption, ListboxOptions} from "@headlessui/vue";
+import SelectInput from "@/Components/SelectInput.vue";
 
 const props = defineProps({
     tags: Object,
@@ -15,6 +15,12 @@ const props = defineProps({
         required: false,
     }
 });
+
+const yesOrNoOptions = [
+    {label: '-', value: null},
+    {label: 'Yes', value: 1},
+    {label: 'No', value: 0},
+];
 
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
@@ -30,6 +36,7 @@ const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.f
 const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
+const hasGPS = ref(yesOrNoOptions.find(option => option.value === filters.value.has_gps));
 
 const emit = defineEmits(['change']);
 
@@ -40,6 +47,7 @@ const filter = () => {
         ...selectedBrands.value.map(brand => brand.id),
         ...selectedEvents.value.map(event => event.id),
     ];
+    filters.value.has_gps = hasGPS.value.value;
     emit('change', filters.value);
 }
 
@@ -48,6 +56,7 @@ const clear = () => {
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
+    hasGPS.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -145,13 +154,12 @@ const clear = () => {
                 </div>
                 <div>
                     <InputLabel for="has-gps" value="Has GPS" />
-                    <Listbox v-model="filters.has_gps" class="mt-1 block w-full" id="has-gps">
-                        <ListboxOptions>
-                            <ListboxOption :value="null">-</ListboxOption>
-                            <ListboxOption :value="true">Yes</ListboxOption>
-                            <ListboxOption :value="false">No</ListboxOption>
-                        </ListboxOptions>
-                    </Listbox>
+                    <SelectInput
+                        v-model="hasGPS"
+                        :options="yesOrNoOptions"
+                        id="has-gps"
+                        class="block w-full"
+                    ></SelectInput>
                 </div>
             </div>
         </div>

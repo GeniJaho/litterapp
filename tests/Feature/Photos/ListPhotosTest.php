@@ -164,3 +164,40 @@ test('a user can filter their photos by the date the photo is taken until', func
         ->etc()
     );
 });
+
+test('a user can filter their photos by having GPS data or not', function () {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create(['latitude' => 1, 'longitude' => 1]);
+    $photoB = Photo::factory()->for($user)->create(['latitude' => null, 'longitude' => null]);
+
+    $response = $this->get('/my-photos?has_gps=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?has_gps=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?has_gps=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
