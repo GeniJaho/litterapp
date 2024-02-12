@@ -12,13 +12,13 @@ class TagSeeder extends Seeder
 {
     public function run(): void
     {
-        $brand = TagType::query()->create(['name' => 'Brand', 'slug' => 'brand']);
-        $material = TagType::query()->create(['name' => 'Material', 'slug' => 'material']);
-        $event = TagType::query()->create(['name' => 'Event', 'slug' => 'event']);
+        $brand = TagType::query()->firstOrCreate(['name' => 'Brand', 'slug' => 'brand']);
+        $material = TagType::query()->firstOrCreate(['name' => 'Material', 'slug' => 'material']);
+        $event = TagType::query()->firstOrCreate(['name' => 'Event', 'slug' => 'event']);
 
-        Tag::query()->insert($this->format($this->getEvents(), $event));
-        Tag::query()->insert($this->format($this->getBrands(), $brand));
-        Tag::query()->insert($this->format($this->getMaterials(), $material));
+        Tag::query()->insertOrIgnore($this->format($this->getEvents(), $event));
+        Tag::query()->insertOrIgnore($this->format($this->getBrands(), $brand));
+        Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
     }
 
     private function format(array $tags, Model $type): array
@@ -39,6 +39,7 @@ class TagSeeder extends Seeder
             'BeforeAndAfter_After',
             'BeforeAndAfter_Before',
             'BigPlasticCount-2024',
+            'BlueNoseMarathon-2024',
             'Canuary-2024',
             'Cleanup4Sarah-2024',
             'CornishSplicedTreasureHunt-SpecialFind',
@@ -48,9 +49,12 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt-2024-04',
             'CornishSplicedTreasureHunt-2024-05',
             'CornishSplicedTreasureHunt-2024-06',
+            'NoordzeeKanaal-IJ-2024',
+            'Ospar-100m',
+            'Ospar-1000m',
             'OTHER (For an Event that is not in the picklist)',
             'PeukMeuk-2024',
-            'PlasticAvengers - #Bakzeil',
+            'PlasticAvengers-Bakzeil',
             'RedBullLitter',
             'ShowYourImpact',
             'ShowYourImpact_DeAfvalraperBladel',
@@ -58,7 +62,7 @@ class TagSeeder extends Seeder
             'ShowYourImpact_DeZwerfafvalRuimers',
             'ShowYourImpact_ZaanseZwerfvuilEstafette',
             'ShowYourImpact_ZwerfieRotterdam',
-            'StichtingDeNoordzee-2024',
+            'StichtingDeNoordzee-MeetMee-2024',
             'WorldCleanupDay-2024',
             'ZaanDeWandel-2024',
         ];
@@ -69,12 +73,16 @@ class TagSeeder extends Seeder
         return [
             'Aluminium',
             'Bronze',
+            'Burlap',
+            'Cardboard',
+            'Cellulose Acetate Fiber',
             'Ceramic',
             'Copper',
             'Fiberglass',
             'Glass',
             'Iron or Steel',
             'Latex',
+            'Leather',
             'Lithium',
             'Metal',
             'Nylon',
@@ -93,6 +101,7 @@ class TagSeeder extends Seeder
             'Plastic (PVC)',
             'Plastic (PVDC)',
             'Plexyglass',
+            'Rubber',
             'Styrofoam',
             'Textile',
             'Unknown',
@@ -109,7 +118,7 @@ class TagSeeder extends Seeder
             '7UP',
             '86',
             '9',
-            'A&W',
+            'A&W (AW)',
             'AaDrink',
             'Abant',
             'Absolut',
@@ -219,12 +228,12 @@ class TagSeeder extends Seeder
             'Beemster',
             'Belin',
             'Belkin',
-            'Bella & Duke',
+            'Bella & Duke (BellaDuke)',
             'Belvedere',
-            "Ben & Jerry's",
+            "Ben & Jerry's (BenJerrys)",
             'Ben Shaws',
             'Benecol',
-            'Benson & Hedges',
+            'Benson & Hedges (BensonHedges)',
             'Bentasil',
             'Berentzen',
             'Best',
@@ -302,7 +311,7 @@ class TagSeeder extends Seeder
             'Buxton',
             'Buys',
             'Buzz Bar',
-            'C&A',
+            'C&A (CA)',
             'Cable Car',
             'Cadbury',
             'Cafe Bonjour',
@@ -453,6 +462,7 @@ class TagSeeder extends Seeder
             'Deliciously Ella',
             'Delmonte',
             'Dempsters',
+            'Den Eelder',
             'Den Leeuw',
             'Dentalcare',
             'Dentalclinics',
@@ -632,7 +642,7 @@ class TagSeeder extends Seeder
             'FuzeTea',
             'Gaasbeek',
             'Galereux',
-            'Gall&gall',
+            'Gall&gall (GallGall)',
             'Galpharm',
             'Gamma',
             'Gardinia',
@@ -794,7 +804,7 @@ class TagSeeder extends Seeder
             'John Smiths',
             'John West',
             'Johnnie Walker',
-            'Johnson&Johnson',
+            'Johnson&Johnson (JohnsonJohnson)',
             'Jolly Rancher',
             'Jordans',
             'Joseph Guy',
@@ -827,6 +837,7 @@ class TagSeeder extends Seeder
             'Kettle',
             'Keystone',
             'KFC',
+            'KFC (Kooger Football Club)',
             'Kiddylicious',
             'Killa',
             'Kimberly Clark',
@@ -875,7 +886,8 @@ class TagSeeder extends Seeder
             'La Versoie',
             'Labatt',
             'Labello',
-            'Lambert & Butler',
+            'Lactantia',
+            'Lambert & Butler (LambertButler)',
             'Lager',
             'Landerbrau',
             'Langenekken',
@@ -909,7 +921,7 @@ class TagSeeder extends Seeder
             'Lion',
             'Lipton',
             'Listerine',
-            'LM',
+            'L&M (LM)',
             'Locklock',
             'Loctite',
             'Loise',
@@ -936,7 +948,7 @@ class TagSeeder extends Seeder
             'Lynx (beer)',
             'Lynx (deodorant)',
             'Lysol',
-            'M&Ms',
+            'M&Ms (MMS)',
             'Maaza',
             'MacDonald',
             'Madri',
@@ -1409,7 +1421,7 @@ class TagSeeder extends Seeder
             'Strathrowan',
             'Strepsils',
             'Strike',
-            'Strings & Things',
+            'Strings & Things (StringsThings)',
             'Strongbow',
             'Stuyvesant',
             'Subway',
@@ -1479,6 +1491,7 @@ class TagSeeder extends Seeder
             "Tunnock's",
             'Turner',
             'Tutku',
+            'TwistedTea',
             'Twix',
             'Two Chefs Brewing',
             'Two To One',

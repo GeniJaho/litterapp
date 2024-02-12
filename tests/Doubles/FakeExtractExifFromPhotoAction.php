@@ -2,10 +2,10 @@
 
 namespace Tests\Doubles;
 
-use App\Actions\Photos\ExtractsLocationFromPhoto;
+use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Http\UploadedFile;
 
-class FakeExtractLocationFromPhotoAction implements ExtractsLocationFromPhoto
+class FakeExtractExifFromPhotoAction implements ExtractsExifFromPhoto
 {
     public function run(UploadedFile $photo): array
     {

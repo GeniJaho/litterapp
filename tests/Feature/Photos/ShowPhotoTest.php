@@ -6,8 +6,13 @@ use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\TagType;
 use App\Models\User;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
+
+beforeEach(function () {
+    Storage::fake(config('filesystems.default'));
+});
 
 test('a user can see the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
