@@ -17,7 +17,13 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Figtree', ...defaultTheme.fontFamily.sans],
+                sans: ['Arial', ...defaultTheme.fontFamily.sans],
+
+            },
+            colors: {
+                'mainWhite': '#FDFFFC',
+                'darkBlue': '#1F2937',
+                'turqoFocus': '#03DCCD',
             },
         },
     },
