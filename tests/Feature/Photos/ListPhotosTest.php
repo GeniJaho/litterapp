@@ -134,9 +134,9 @@ test('a user can filter their photos by the date the photo is taken from', funct
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
-    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?taken_from_local='.now()->addDay()->toDateString());
+    $response = $this->get('/my-photos?taken_from_local='.now()->addSecond()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -152,9 +152,9 @@ test('a user can filter their photos by the date the photo is taken until', func
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
-    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?taken_until_local='.now()->toDateString());
+    $response = $this->get('/my-photos?taken_until_local='.now()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page

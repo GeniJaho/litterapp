@@ -143,7 +143,7 @@ const clear = () => {
                     <InputLabel for="taken-from-local" value="Date taken from (local)" />
                     <TextInput
                         v-model="filters.taken_from_local"
-                        type="date"
+                        type="datetime-local"
                         id="taken-from-local"
                         class="mt-1 block w-full"
                     />
@@ -152,7 +152,7 @@ const clear = () => {
                     <InputLabel for="taken-until-local" value="Date taken until (local)" />
                     <TextInput
                         v-model="filters.taken_until_local"
-                        type="date"
+                        type="datetime-local"
                         id="taken-until-local"
                         class="mt-1 block w-full"
                     />
