@@ -35,6 +35,11 @@ let filteredItems = computed(() => {
 
     return items.slice(0, 100)
 })
+
+const removeItem = (id) => {
+    const index = props.modelValue.findIndex((item) => item.id === id);
+    props.modelValue.splice(index, 1);
+}
 </script>
 
 <template>
@@ -68,7 +73,8 @@ let filteredItems = computed(() => {
                     <span
                         v-for="item in modelValue"
                         :key="item.id"
-                        class="inline-flex items-center rounded-md px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-400"
+                        @click="removeItem(item.id)"
+                        class="inline-flex items-center cursor-pointer rounded-md px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-400"
                     >
                         {{ item.name }}
                     </span>
