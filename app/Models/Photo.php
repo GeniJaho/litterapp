@@ -62,8 +62,12 @@ class Photo extends Model
     /**
      * @param  Builder<Photo>  $query
      */
-    public function scopeFilter(Builder $query, PhotoFilters $filters): void
+    public function scopeFilter(Builder $query, ?PhotoFilters $filters): void
     {
+        if (! $filters instanceof PhotoFilters) {
+            return;
+        }
+
         $query
             ->when($filters->item_ids !== [], fn ($query) => $query
                 ->whereHas('items', fn ($query) => $query

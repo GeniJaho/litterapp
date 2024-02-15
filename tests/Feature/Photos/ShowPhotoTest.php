@@ -1,5 +1,6 @@
 <?php
 
+use App\DTO\PhotoFilters;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
@@ -47,6 +48,9 @@ test('a user can see the photo tagging page', function () {
 
 test('a user can see the next untagged photo link', function () {
     $this->actingAs($user = User::factory()->create());
+    $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
+    $user->save();
+
     $untaggedPhoto = Photo::factory()->for($user)->create();
     $photo = Photo::factory()->for($user)->create();
 
@@ -60,6 +64,9 @@ test('a user can see the next untagged photo link', function () {
 
 test('a user can not see the next untagged photo link if there are no more untagged photos', function () {
     $this->actingAs($user = User::factory()->create());
+    $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
+    $user->save();
+
     $photo = Photo::factory()->for($user)->create();
     $taggedPhoto = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -73,6 +80,9 @@ test('a user can not see the next untagged photo link if there are no more untag
 
 test('a user can see the previous untagged photo link', function () {
     $this->actingAs($user = User::factory()->create());
+    $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
+    $user->save();
+
     $photo = Photo::factory()->for($user)->create();
     $untaggedPhoto = Photo::factory()->for($user)->create();
 
@@ -86,6 +96,9 @@ test('a user can see the previous untagged photo link', function () {
 
 test('a user can not see the previous untagged photo link if there are no more untagged photos', function () {
     $this->actingAs($user = User::factory()->create());
+    $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
+    $user->save();
+
     $photo = Photo::factory()->for($user)->create();
     $taggedPhoto = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();

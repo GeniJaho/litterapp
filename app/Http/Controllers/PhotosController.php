@@ -50,7 +50,10 @@ class PhotosController extends Controller
         Photo $photo,
         GetTagsAndItemsAction $getTagsAndItemsAction,
     ): Response|JsonResponse {
-        if (auth()->id() !== $photo->user_id) {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->id !== $photo->user_id) {
             abort(404);
         }
 
@@ -61,8 +64,8 @@ class PhotosController extends Controller
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
-                'nextPhotoUrl' => $this->getNextPhotoUrl($photo),
-                'previousPhotoUrl' => $this->getPreviousPhotoUrl($photo),
+                'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
+                'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
             ]);
         }
 
@@ -93,11 +96,11 @@ class PhotosController extends Controller
         return redirect()->route('my-photos');
     }
 
-    private function getNextPhotoUrl(Photo $photo): ?string
+    private function getNextPhotoUrl(User $user, Photo $photo): ?string
     {
-        $nextPhoto = Photo::query()
-            ->where('user_id', $photo->user_id)
-            ->whereDoesntHave('items')
+        $nextPhoto = $user
+            ->photos()
+            ->filter($user->settings->photo_filters)
             ->where('id', '<', $photo->id)
             ->orderByDesc('id')
             ->first();
@@ -109,11 +112,11 @@ class PhotosController extends Controller
         return route('photos.show', $nextPhoto);
     }
 
-    private function getPreviousPhotoUrl(Photo $photo): ?string
+    private function getPreviousPhotoUrl(User $user, Photo $photo): ?string
     {
-        $previousPhoto = Photo::query()
-            ->where('user_id', $photo->user_id)
-            ->whereDoesntHave('items')
+        $previousPhoto = $user
+            ->photos()
+            ->filter($user->settings->photo_filters)
             ->where('id', '>', $photo->id)
             ->orderBy('id')
             ->first();

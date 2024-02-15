@@ -14,11 +14,9 @@ class FilterPhotosAction
      */
     public function run(User $user): LengthAwarePaginator
     {
-        $filters = $user->settings->photo_filters ?? new PhotoFilters();
-
         $photos = $user
             ->photos()
-            ->filter($filters)
+            ->filter($user->settings->photo_filters)
             ->withExists('items')
             ->latest('id')
             ->paginate(12);
