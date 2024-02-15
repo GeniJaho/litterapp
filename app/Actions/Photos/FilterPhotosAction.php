@@ -2,7 +2,6 @@
 
 namespace App\Actions\Photos;
 
-use App\DTO\PhotoFilters;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
