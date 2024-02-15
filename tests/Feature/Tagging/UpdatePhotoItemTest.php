@@ -16,12 +16,14 @@ test('a user can update the data of an item on a photo', function () {
         'quantity' => 1,
         'picked_up' => false,
         'recycled' => false,
+        'deposit' => false,
     ]);
 
     $response = $this->actingAs($user)->postJson("/photo-items/{$photo->items()->first()->pivot->id}", [
         'quantity' => 5,
         'picked_up' => true,
         'recycled' => true,
+        'deposit' => true,
     ]);
 
     $response->assertOk();
@@ -31,6 +33,7 @@ test('a user can update the data of an item on a photo', function () {
         'quantity' => 5,
         'picked_up' => true,
         'recycled' => true,
+        'deposit' => true,
     ]);
 });
 
@@ -51,6 +54,7 @@ test('the request is validated', function ($data, $error) {
     'quantity 1001' => [['quantity' => 1001], 'quantity'],
     'picked_up not a boolean' => [['picked_up' => 'not-a-boolean'], 'picked_up'],
     'recycled not a boolean' => [['recycled' => 'not-a-boolean'], 'recycled'],
+    'deposit not a boolean' => [['deposit' => 'not-a-boolean'], 'deposit'],
 ]);
 
 test('a user can not update an item on a photo of another user', function () {
@@ -63,6 +67,7 @@ test('a user can not update an item on a photo of another user', function () {
         'quantity' => 5,
         'picked_up' => true,
         'recycled' => true,
+        'deposit' => true,
     ]);
 
     $response->assertNotFound();
