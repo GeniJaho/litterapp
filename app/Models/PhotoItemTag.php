@@ -15,7 +15,7 @@ class PhotoItemTag extends Pivot
     public $incrementing = true;
 
     /**
-     * @return BelongsTo<PhotoItem, \App\Models\PhotoItemTag>
+     * @return BelongsTo<PhotoItem, PhotoItemTag>
      */
     public function photoItem(): BelongsTo
     {
@@ -23,7 +23,7 @@ class PhotoItemTag extends Pivot
     }
 
     /**
-     * @return BelongsTo<Tag, \App\Models\PhotoItemTag>
+     * @return BelongsTo<Tag, PhotoItemTag>
      */
     public function tag(): BelongsTo
     {

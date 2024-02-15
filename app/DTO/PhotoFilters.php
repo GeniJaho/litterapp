@@ -4,12 +4,12 @@ namespace App\DTO;
 
 use Spatie\LaravelData\Data;
 
-/**
- * @property int[] $item_ids
- * @property int[] $tag_ids
- */
 class PhotoFilters extends Data
 {
+    /**
+     * @param int[] $item_ids
+     * @param int[] $tag_ids
+     */
     public function __construct(
         public array $item_ids = [],
         public array $tag_ids = [],
@@ -20,10 +20,13 @@ class PhotoFilters extends Data
         public ?bool $is_tagged = null,
         public ?bool $has_gps = null,
     ) {
-        $this->item_ids = array_map(fn ($id) => (int) $id, $this->item_ids);
-        $this->tag_ids = array_map(fn ($id) => (int) $id, $this->tag_ids);
+        $this->item_ids = array_map(fn (int|string $id) => (int) $id, $this->item_ids);
+        $this->tag_ids = array_map(fn (int|string $id) => (int) $id, $this->tag_ids);
     }
 
+    /**
+     * @return array<string, string[]>
+     */
     public static function rules(): array
     {
         return [
