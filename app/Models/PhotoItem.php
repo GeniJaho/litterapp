@@ -23,6 +23,7 @@ class PhotoItem extends Pivot
     protected $casts = [
         'picked_up' => 'boolean',
         'recycled' => 'boolean',
+        'deposit' => 'boolean',
     ];
 
     /**
