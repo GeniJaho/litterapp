@@ -29,7 +29,7 @@ class PhotosController extends Controller
         if ($request->boolean('store_filters')) {
             $user->settings->photo_filters = $photoFilters;
             $user->save();
-        } else if ($request->boolean('clear_filters')) {
+        } elseif ($request->boolean('clear_filters')) {
             $user->settings->photo_filters = null;
             $user->save();
         }

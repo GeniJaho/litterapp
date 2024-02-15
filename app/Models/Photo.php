@@ -60,7 +60,7 @@ class Photo extends Model
     }
 
     /**
-     * @param Builder<Photo> $query
+     * @param  Builder<Photo>  $query
      */
     public function scopeFilter(Builder $query, PhotoFilters $filters): void
     {

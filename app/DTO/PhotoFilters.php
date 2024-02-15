@@ -7,8 +7,8 @@ use Spatie\LaravelData\Data;
 class PhotoFilters extends Data
 {
     /**
-     * @param int[] $item_ids
-     * @param int[] $tag_ids
+     * @param  int[]  $item_ids
+     * @param  int[]  $tag_ids
      */
     public function __construct(
         public array $item_ids = [],
