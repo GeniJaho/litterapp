@@ -16,6 +16,7 @@ const props = defineProps({
 const form = useForm({
     picked_up_by_default: props.user.settings.picked_up_by_default,
     recycled_by_default: props.user.settings.recycled_by_default,
+    deposit_by_default: props.user.settings.deposit_by_default,
 });
 
 
@@ -67,6 +68,22 @@ const save = () => {
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.recycled_by_default" class="mt-2" />
+
+                <ToggleInput
+                    id="deposit_by_default"
+                    v-model="form.deposit_by_default"
+                    class="mt-4 block w-full"
+                >
+                    <template #label>
+                        Litter has deposit by default
+                    </template>
+                    <template #description>
+                        When enabled, litter objects in your photos will be marked as having deposit by default.
+                        You can always change the status of each object individually.
+                    </template>
+                </ToggleInput>
+                <InputError :message="form.errors.deposit_by_default" class="mt-2" />
+
             </div>
         </template>
 
