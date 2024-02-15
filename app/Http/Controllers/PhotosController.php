@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
+use App\DTO\PhotoFilters;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
@@ -18,24 +19,28 @@ class PhotosController extends Controller
 {
     public function index(
         Request $request,
+        PhotoFilters $photoFilters,
         GetTagsAndItemsAction $getTagsAndItemsAction,
         FilterPhotosAction $filterPhotosAction,
     ): Response {
         /** @var User $user */
         $user = auth()->user();
 
-        $result = $filterPhotosAction->run(
-            $user,
-            $request->all(),
-            hasGPS: $request->filled('has_gps') ? $request->boolean('has_gps') : null,
-            isTagged: $request->filled('is_tagged') ? $request->boolean('is_tagged') : null,
-        );
+        if ($request->boolean('store_filters')) {
+            $user->settings->photo_filters = $photoFilters;
+            $user->save();
+        } else if ($request->boolean('clear_filters')) {
+            $user->settings->photo_filters = null;
+            $user->save();
+        }
+
+        $photos = $filterPhotosAction->run($user);
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
         return Inertia::render('Photos', [
-            'photos' => $result['photos'],
-            'filters' => $result['filters'],
+            'photos' => $photos,
+            'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
         ]);

@@ -2,46 +2,39 @@
 
 namespace App\Actions\Photos;
 
+use App\DTO\PhotoFilters;
 use App\Models\Photo;
 use App\Models\User;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class FilterPhotosAction
 {
-    /**
-     * @param  array<string, mixed>  $filters
-     * @return array<string, mixed>
-     */
-    public function run(User $user, array $filters, ?bool $hasGPS, ?bool $isTagged): array
+    public function run(User $user): LengthAwarePaginator
     {
-        $filterItemIds = $filters['item_ids'] ?? [];
-        $filterTagIds = array_map(fn ($id) => (int) $id, $filters['tag_ids'] ?? []);
-        $uploadedFrom = $filters['uploaded_from'] ?? null;
-        $uploadedUntil = $filters['uploaded_until'] ?? null;
-        $takenFromLocal = $filters['taken_from_local'] ?? null;
-        $takenUntilLocal = $filters['taken_until_local'] ?? null;
+        $filters = $user->settings->photo_filters ?? new PhotoFilters();
 
         $photos = $user
             ->photos()
             ->withExists('items')
-            ->when($filterItemIds !== [], fn ($query) => $query
+            ->when($filters->item_ids !== [], fn ($query) => $query
                 ->whereHas('items', fn ($query) => $query
-                    ->whereIn('item_id', $filterItemIds)
+                    ->whereIn('item_id', $filters->item_ids)
                 )
             )
-            ->when($filterTagIds !== [], fn ($query) => $query
+            ->when($filters->tag_ids !== [], fn ($query) => $query
                 ->whereHas('items', fn ($query) => $query
                     ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
-                    ->whereIn('photo_item_tag.tag_id', $filterTagIds)
+                    ->whereIn('photo_item_tag.tag_id', $filters->tag_ids)
                 )
             )
-            ->when($uploadedFrom, fn ($query) => $query->where('created_at', '>=', $uploadedFrom))
-            ->when($uploadedUntil, fn ($query) => $query->where('created_at', '<=', $uploadedUntil))
-            ->when($takenFromLocal, fn ($query) => $query->where('taken_at_local', '>=', $takenFromLocal))
-            ->when($takenUntilLocal, fn ($query) => $query->where('taken_at_local', '<=', $takenUntilLocal))
-            ->when($hasGPS === true, fn ($query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
-            ->when($hasGPS === false, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
-            ->when($isTagged === true, fn ($query) => $query->whereHas('items'))
-            ->when($isTagged === false, fn ($query) => $query->whereDoesntHave('items'))
+            ->when($filters->uploaded_from, fn ($query) => $query->where('created_at', '>=', $filters->uploaded_from))
+            ->when($filters->uploaded_until, fn ($query) => $query->where('created_at', '<=', $filters->uploaded_until))
+            ->when($filters->taken_from_local, fn ($query) => $query->where('taken_at_local', '>=', $filters->taken_from_local))
+            ->when($filters->taken_until_local, fn ($query) => $query->where('taken_at_local', '<=', $filters->taken_until_local))
+            ->when($filters->has_gps === true, fn ($query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
+            ->when($filters->has_gps === false, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
+            ->when($filters->is_tagged === true, fn ($query) => $query->whereHas('items'))
+            ->when($filters->is_tagged === false, fn ($query) => $query->whereDoesntHave('items'))
             ->latest('id')
             ->paginate(12);
 
@@ -51,18 +44,6 @@ class FilterPhotosAction
             return $photo;
         });
 
-        return [
-            'photos' => $photos,
-            'filters' => [
-                'item_ids' => $filterItemIds,
-                'tag_ids' => $filterTagIds,
-                'uploaded_from' => $uploadedFrom,
-                'uploaded_until' => $uploadedUntil,
-                'taken_from_local' => $takenFromLocal,
-                'taken_until_local' => $takenUntilLocal,
-                'has_gps' => $hasGPS !== null ? (int) $hasGPS : null,
-                'is_tagged' => $isTagged !== null ? (int) $isTagged : null,
-            ],
-        ];
+        return $photos;
     }
 }

@@ -13,6 +13,7 @@ class UserSettings extends Data
         public bool $picked_up_by_default = false,
         #[Required, BooleanType]
         public bool $recycled_by_default = false,
+        public ?PhotoFilters $photo_filters = null,
     ) {
     }
 }

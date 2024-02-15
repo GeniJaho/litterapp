@@ -18,8 +18,8 @@ const props = defineProps({
 
 const yesOrNoOptions = [
     {label: '-', value: null},
-    {label: 'Yes', value: 1},
-    {label: 'No', value: 0},
+    {label: 'Yes', value: true},
+    {label: 'No', value: false},
 ];
 
 const filters = ref({
@@ -49,9 +49,9 @@ const filter = () => {
         ...selectedBrands.value.map(brand => brand.id),
         ...selectedEvents.value.map(event => event.id),
     ];
-    filters.value.has_gps = hasGPS.value.value;
-    filters.value.is_tagged = isTagged.value.value;
-    emit('change', filters.value);
+    filters.value.has_gps = hasGPS.value.value !== null ? (hasGPS.value.value === true ? 1 : 0) : null;
+    filters.value.is_tagged = isTagged.value.value !== null ? (isTagged.value.value === true ? 1 : 0) : null;
+    emit('change', {...filters.value, store_filters: 1});
 }
 
 const clear = () => {
@@ -73,7 +73,7 @@ const clear = () => {
         is_tagged: null,
     };
 
-    emit('change', filters.value);
+    emit('change', {...filters.value, clear_filters: 1});
 }
 </script>
 

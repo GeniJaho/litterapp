@@ -19,7 +19,7 @@
         "laravel/socialite": "^5.11",
         "laravel/tinker": "^2.8",
         "league/flysystem-aws-s3-v3": "^3.0",
-        "spatie/laravel-data": "^3.11",
+        "spatie/laravel-data": "^4.0",
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {

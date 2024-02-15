@@ -1,5 +1,7 @@
 <?php
 
+use App\DTO\PhotoFilters;
+use App\DTO\UserSettings;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
@@ -59,7 +61,7 @@ test('a user can filter their photos by items on the photos', function () {
     $item = Item::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
 
-    $response = $this->get('/my-photos?item_ids[]='.$item->id);
+    $response = $this->get('/my-photos?store_filters=1&item_ids[]='.$item->id);
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -69,6 +71,31 @@ test('a user can filter their photos by items on the photos', function () {
         ->where('photos.data.0.items_exists', true)
         ->etc()
     );
+});
+
+test('when the user is filtering the photos the filters are stored in their settings', function () {
+    $this->actingAs($user = User::factory()->create());
+    $item = Item::factory()->create();
+
+    $this->get('/my-photos?store_filters=0&item_ids[]='.$item->id)->assertOk();
+
+    expect($user->fresh()->settings->photo_filters)->toBeNull();
+
+    $this->get('/my-photos?store_filters=1&item_ids[]='.$item->id)->assertOk();
+
+    expect($user->fresh()->settings->photo_filters)->toEqual(new PhotoFilters(
+        item_ids: [$item->id],
+    ));
+});
+
+test('when the user is clearing the filters they are removed in their settings', function () {
+    $this->actingAs($user = User::factory()->create([
+        'settings' => new UserSettings(photo_filters: new PhotoFilters(item_ids: [1])),
+    ]));
+
+    $this->get('/my-photos?clear_filters=1')->assertOk();
+
+    expect($user->fresh()->settings->photo_filters)->toBeNull();
 });
 
 test('a user can filter their photos by tags on the photo items', function () {
@@ -81,7 +108,7 @@ test('a user can filter their photos by tags on the photo items', function () {
     $photoItem = PhotoItem::factory()->for($item)->for($photoB)->create();
     $photoItem->tags()->attach($tag);
 
-    $response = $this->get('/my-photos?tag_ids[]='.$tag->id);
+    $response = $this->get('/my-photos?store_filters=1&tag_ids[]='.$tag->id);
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -100,7 +127,7 @@ test('a user can filter their photos by date uploaded from', function () {
     $photoA = Photo::factory()->for($user)->create(['created_at' => now()]);
     $photoB = Photo::factory()->for($user)->create(['created_at' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?uploaded_from='.now()->addSecond()->toDateTimeString());
+    $response = $this->get('/my-photos?store_filters=1&uploaded_from='.now()->addSecond()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -118,7 +145,7 @@ test('a user can filter their photos by date uploaded until', function () {
     $photoA = Photo::factory()->for($user)->create(['created_at' => now()]);
     $photoB = Photo::factory()->for($user)->create(['created_at' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?uploaded_until='.now()->toDateTimeString());
+    $response = $this->get('/my-photos?store_filters=1&uploaded_until='.now()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -136,7 +163,7 @@ test('a user can filter their photos by the date the photo is taken from', funct
     $photoA = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
     $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?taken_from_local='.now()->addSecond()->toDateTimeString());
+    $response = $this->get('/my-photos?store_filters=1&taken_from_local='.now()->addSecond()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -154,7 +181,7 @@ test('a user can filter their photos by the date the photo is taken until', func
     $photoA = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
     $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinute()]);
 
-    $response = $this->get('/my-photos?taken_until_local='.now()->toDateTimeString());
+    $response = $this->get('/my-photos?store_filters=1&taken_until_local='.now()->toDateTimeString());
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -171,7 +198,7 @@ test('a user can filter their photos by having GPS data or not', function () {
     $photoA = Photo::factory()->for($user)->create(['latitude' => 1, 'longitude' => 1]);
     $photoB = Photo::factory()->for($user)->create(['latitude' => null, 'longitude' => null]);
 
-    $response = $this->get('/my-photos?has_gps=1');
+    $response = $this->get('/my-photos?store_filters=1&has_gps=1');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -181,7 +208,7 @@ test('a user can filter their photos by having GPS data or not', function () {
         ->etc()
     );
 
-    $response = $this->get('/my-photos?has_gps=0');
+    $response = $this->get('/my-photos?store_filters=1&has_gps=0');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -191,7 +218,7 @@ test('a user can filter their photos by having GPS data or not', function () {
         ->etc()
     );
 
-    $response = $this->get('/my-photos?has_gps=');
+    $response = $this->get('/my-photos?store_filters=1&has_gps=');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -209,7 +236,7 @@ test('a user can filter their photos by having tags or not', function () {
     $item = Item::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
 
-    $response = $this->get('/my-photos?is_tagged=1');
+    $response = $this->get('/my-photos?store_filters=1&is_tagged=1');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -219,7 +246,7 @@ test('a user can filter their photos by having tags or not', function () {
         ->etc()
     );
 
-    $response = $this->get('/my-photos?is_tagged=0');
+    $response = $this->get('/my-photos?store_filters=1&is_tagged=0');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
@@ -229,7 +256,7 @@ test('a user can filter their photos by having tags or not', function () {
         ->etc()
     );
 
-    $response = $this->get('/my-photos?is_tagged=');
+    $response = $this->get('/my-photos?store_filters=1&is_tagged=');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
