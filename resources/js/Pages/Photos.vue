@@ -1,11 +1,15 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import { ref } from "vue";
-import {usePage, Link, router} from '@inertiajs/vue3';
+import {Link, router} from '@inertiajs/vue3';
 import IconDangerButton from "@/Components/IconDangerButton.vue";
+import Filters from "@/Components/Filters.vue";
 
-const { props } = usePage();
-const photos = ref(props.photos);
+const props = defineProps({
+    photos: Object,
+    tags: Object,
+    items: Array,
+    filters: Object,
+});
 
 const deletePhoto = (photoId) => {
     router.delete(`/photos/${photoId}`, {
@@ -13,6 +17,10 @@ const deletePhoto = (photoId) => {
         preserveState: false,
     });
 };
+
+const filter = (filters) => {
+    router.get(window.location.pathname, filters);
+}
 </script>
 
 <template>
@@ -23,11 +31,20 @@ const deletePhoto = (photoId) => {
             </h2>
         </template>
 
-        <div v-if="photos.data.length" class="py-12">
+        <div class="py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-                <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
-                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
 
+                <div>
+                    <Filters
+                        @change="filter"
+                        :tags="tags"
+                        :items="items"
+                        :default-filters="filters"
+                    />
+                </div>
+
+                <div v-if="photos.data.length" class="mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             <div
                                 v-for="photo in photos.data"

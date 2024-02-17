@@ -2,66 +2,70 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\Photos\FilterPhotosAction;
+use App\Actions\Photos\GetTagsAndItemsAction;
+use App\DTO\PhotoFilters;
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\Tag;
-use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
 class PhotosController extends Controller
 {
-    public function index(): Response
-    {
+    public function index(
+        Request $request,
+        PhotoFilters $photoFilters,
+        GetTagsAndItemsAction $getTagsAndItemsAction,
+        FilterPhotosAction $filterPhotosAction,
+    ): Response {
         /** @var User $user */
         $user = auth()->user();
 
-        $photos = $user
-            ->photos()
-            ->withExists('items')
-            ->latest('id')
-            ->paginate(12);
+        if ($request->boolean('store_filters')) {
+            $user->settings->photo_filters = $photoFilters;
+            $user->save();
+        } elseif ($request->boolean('clear_filters')) {
+            $user->settings->photo_filters = null;
+            $user->save();
+        }
 
-        $photos->getCollection()->transform(function (Photo $photo) {
-            $photo->append('full_path');
+        $photos = $filterPhotosAction->run($user);
 
-            return $photo;
-        });
+        $tagsAndItems = $getTagsAndItemsAction->run();
 
         return Inertia::render('Photos', [
             'photos' => $photos,
+            'filters' => $user->settings->photo_filters,
+            'items' => $tagsAndItems['items'],
+            'tags' => $tagsAndItems['tags'],
         ]);
     }
 
-    public function show(Photo $photo): Response|JsonResponse
-    {
-        if (auth()->id() !== $photo->user_id) {
+    public function show(
+        Photo $photo,
+        GetTagsAndItemsAction $getTagsAndItemsAction,
+    ): Response|JsonResponse {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->id !== $photo->user_id) {
             abort(404);
         }
 
-        $tagTypes = TagType::query()->get();
-        $tags = Tag::query()
-            ->orderBy('name')
-            ->get()
-            ->groupBy('tag_type_id')
-            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
-                /** @var TagType $tagType */
-                $tagType = $tagTypes->find($key);
-
-                return [$tagType->slug => $values];
-            });
-
         if (! request()->wantsJson()) {
+            $tagsAndItems = $getTagsAndItemsAction->run();
+
             return Inertia::render('Photo/Show', [
                 'photoId' => $photo->id,
-                'items' => Item::query()->orderBy('name')->get(),
-                'tags' => $tags,
-                'nextPhotoUrl' => $this->getNextPhotoUrl($photo),
-                'previousPhotoUrl' => $this->getPreviousPhotoUrl($photo),
+                'items' => $tagsAndItems['items'],
+                'tags' => $tagsAndItems['tags'],
+                'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
+                'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
             ]);
         }
 
@@ -92,11 +96,11 @@ class PhotosController extends Controller
         return redirect()->route('my-photos');
     }
 
-    private function getNextPhotoUrl(Photo $photo): ?string
+    private function getNextPhotoUrl(User $user, Photo $photo): ?string
     {
-        $nextPhoto = Photo::query()
-            ->where('user_id', $photo->user_id)
-            ->whereDoesntHave('items')
+        $nextPhoto = $user
+            ->photos()
+            ->filter($user->settings->photo_filters)
             ->where('id', '<', $photo->id)
             ->orderByDesc('id')
             ->first();
@@ -108,11 +112,11 @@ class PhotosController extends Controller
         return route('photos.show', $nextPhoto);
     }
 
-    private function getPreviousPhotoUrl(Photo $photo): ?string
+    private function getPreviousPhotoUrl(User $user, Photo $photo): ?string
     {
-        $previousPhoto = Photo::query()
-            ->where('user_id', $photo->user_id)
-            ->whereDoesntHave('items')
+        $previousPhoto = $user
+            ->photos()
+            ->filter($user->settings->photo_filters)
             ->where('id', '>', $photo->id)
             ->orderBy('id')
             ->first();

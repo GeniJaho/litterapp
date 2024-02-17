@@ -47,10 +47,11 @@ const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
 };
 
-const addItem = () => {
+const addItems = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_id: selectedItem.value.id,
+        item_ids: [selectedItem.value.id],
     }).then(() => {
+        selectedItem.value = null;
         getPhoto();
     });
 };
@@ -174,13 +175,15 @@ const onKeyDown = (event) => {
                                 :items="items"
                                 v-model="selectedItem"
                             ></TagBox>
-                            <PrimaryButton
-                                class="whitespace-nowrap ml-4"
-                                @click="addItem"
-                                :disabled="!selectedItem"
-                            >
-                                Add Object
-                            </PrimaryButton>
+                            <div class="ml-4 mt-0.5">
+                                <PrimaryButton
+                                    class="whitespace-nowrap"
+                                    @click="addItems"
+                                    :disabled="!selectedItem"
+                                >
+                                    Add Object
+                                </PrimaryButton>
+                            </div>
                         </div>
 
                         <div class="mt-8" v-if="photoItems.length">

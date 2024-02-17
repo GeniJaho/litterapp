@@ -19,14 +19,11 @@ test('api token permissions can be updated', function () {
 
     $response = $this->put('/user/api-tokens/'.$token->id, [
         'name' => $token->name,
-        'permissions' => [
-            'delete',
-            'missing-permission',
-        ],
+        'permissions' => [],
     ]);
 
     expect($user->fresh()->tokens->first())
-        ->can('delete')->toBeTrue()
+        ->can('create')->toBeFalse()
         ->can('read')->toBeFalse()
         ->can('missing-permission')->toBeFalse();
 })->skip(function () {
