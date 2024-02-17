@@ -12,13 +12,13 @@ class TagSeeder extends Seeder
 {
     public function run(): void
     {
-        $brand = TagType::query()->create(['name' => 'Brand', 'slug' => 'brand']);
-        $material = TagType::query()->create(['name' => 'Material', 'slug' => 'material']);
-        $event = TagType::query()->create(['name' => 'Event', 'slug' => 'event']);
+        $brand = TagType::query()->firstOrCreate(['name' => 'Brand', 'slug' => 'brand']);
+        $material = TagType::query()->firstOrCreate(['name' => 'Material', 'slug' => 'material']);
+        $event = TagType::query()->firstOrCreate(['name' => 'Event', 'slug' => 'event']);
 
-        Tag::query()->insert($this->format($this->getEvents(), $event));
-        Tag::query()->insert($this->format($this->getBrands(), $brand));
-        Tag::query()->insert($this->format($this->getMaterials(), $material));
+        Tag::query()->insertOrIgnore($this->format($this->getEvents(), $event));
+        Tag::query()->insertOrIgnore($this->format($this->getBrands(), $brand));
+        Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
     }
 
     private function format(array $tags, Model $type): array
