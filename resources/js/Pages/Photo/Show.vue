@@ -181,7 +181,7 @@ const onKeyDown = (event) => {
                                     @click="addItems"
                                     :disabled="!selectedItem"
                                 >
-                                    Add Object(s)
+                                    Add Object
                                 </PrimaryButton>
                             </div>
                         </div>

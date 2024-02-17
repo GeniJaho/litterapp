@@ -127,7 +127,7 @@ const clear = () => {
                         v-model="filters.uploaded_from"
                         type="datetime-local"
                         id="uploaded-from"
-                        class="mt-1 block w-full"
+                        class="mt-1 block w-full dark:[color-scheme:dark]"
                     />
                 </div>
                 <div>
@@ -136,7 +136,7 @@ const clear = () => {
                         v-model="filters.uploaded_until"
                         type="datetime-local"
                         id="uploaded-until"
-                        class="mt-1 block w-full"
+                        class="mt-1 block w-full dark:[color-scheme:dark]"
                     />
                 </div>
                 <div>
@@ -145,7 +145,7 @@ const clear = () => {
                         v-model="filters.taken_from_local"
                         type="datetime-local"
                         id="taken-from-local"
-                        class="mt-1 block w-full"
+                        class="mt-1 block w-full dark:[color-scheme:dark]"
                     />
                 </div>
                 <div>
@@ -154,7 +154,7 @@ const clear = () => {
                         v-model="filters.taken_until_local"
                         type="datetime-local"
                         id="taken-until-local"
-                        class="mt-1 block w-full"
+                        class="mt-1 block w-full dark:[color-scheme:dark]"
                     />
                 </div>
                 <div>
@@ -180,10 +180,7 @@ const clear = () => {
 
         <div class="mt-4 lg:mt-0 flex flex-row lg:flex-col gap-4 items-center justify-center">
             <PrimaryButton @click="clear">Clear</PrimaryButton>
-            <PrimaryButton @click="filter">
-                <i class="fa-solid fa-filter mr-2 "></i>
-                Filter
-            </PrimaryButton>
+            <PrimaryButton @click="filter">Filter</PrimaryButton>
         </div>
     </div>
 </template>
