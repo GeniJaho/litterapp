@@ -101,6 +101,14 @@ const toggleItemRecycled = debounce((photoItemId, recycled) => {
     });
 }, 1000, {leading: true, trailing: true});
 
+const toggleItemDeposit = debounce((photoItemId, deposit) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        deposit: deposit,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
 const updateItemQuantity = debounce((photoItemId, quantity) => {
     axios.post(`/photo-items/${photoItemId}`, {
         quantity: quantity,
@@ -203,6 +211,7 @@ const onKeyDown = (event) => {
                                         @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
                                         @toggle-recycled="toggleItemRecycled"
+                                        @toggle-deposit="toggleItemDeposit"
                                         @update-quantity="updateItemQuantity"
                                     />
                                 </TransitionGroup>

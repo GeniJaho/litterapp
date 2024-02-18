@@ -126,6 +126,13 @@ const selectedEventTag = ref(props.tags.event[0]);
                 >
                     <template #label>Recycled</template>
                 </ToggleInput>
+                <ToggleInput
+                    v-model="item.pivot.deposit"
+                    @update:modelValue="$emit('toggle-deposit', item.pivot.id, item.pivot.deposit)"
+                    class="block w-full"
+                >
+                    <template #label>Deposit</template>
+                </ToggleInput>
             </div>
 
             <div class="flex flex-col justify-end">

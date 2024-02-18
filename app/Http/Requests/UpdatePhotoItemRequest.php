@@ -17,6 +17,7 @@ class UpdatePhotoItemRequest extends FormRequest
         return [
             'picked_up' => 'nullable|boolean',
             'recycled' => 'nullable|boolean',
+            'deposit' => 'nullable|boolean',
             'quantity' => 'nullable|integer|min:1|max:1000',
         ];
     }
