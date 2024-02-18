@@ -88,7 +88,7 @@ test('if the user has enabled settings to deposit by default the item should be 
     $item = Item::factory()->create();
 
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
-        'item_id' => $item->id,
+        'item_ids' => [$item->id],
     ]);
 
     $response->assertOk();

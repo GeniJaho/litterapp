@@ -42,7 +42,7 @@ const save = () => {
                 <ToggleInput
                     id="picked_up_by_default"
                     v-model="form.picked_up_by_default"
-                    class="mt-1 block w-full"
+                    class="block w-full"
                 >
                     <template #label>
                         Litter is picked up by default
