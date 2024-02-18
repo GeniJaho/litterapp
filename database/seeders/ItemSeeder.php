@@ -56,6 +56,8 @@ class ItemSeeder extends Seeder
             'Book',
             'Boot',
             'Bottle',
+            'Bottle (0 - 0,5 liter)',
+            'Bottle (> 0,5 liter)',
             'Bottle (Alcohol)',
             'Bottle (Beer)',
             'Bottle (Cleaner)',
