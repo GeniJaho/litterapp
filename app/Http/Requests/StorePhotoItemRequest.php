@@ -15,7 +15,8 @@ class StorePhotoItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_id' => 'required|exists:items,id',
+            'item_ids' => ['required', 'array'],
+            'item_ids.*' => ['required', 'exists:items,id'],
         ];
     }
 }
