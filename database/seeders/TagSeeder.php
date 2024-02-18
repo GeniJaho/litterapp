@@ -49,6 +49,8 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt-2024-04',
             'CornishSplicedTreasureHunt-2024-05',
             'CornishSplicedTreasureHunt-2024-06',
+            'FastFoodMonitoring',
+            'LandelijkeOpschoonDag-2024',
             'NoordzeeKanaal-IJ-2024',
             'Ospar-100m',
             'Ospar-1000m',
