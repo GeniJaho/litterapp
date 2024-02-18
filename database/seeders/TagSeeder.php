@@ -58,6 +58,7 @@ class TagSeeder extends Seeder
             'PeukMeuk-2024',
             'PlasticAvengers-Bakzeil',
             'RedBullLitter',
+            'SchoneRivieren-2024',
             'ShowYourImpact',
             'ShowYourImpact_DeAfvalraperBladel',
             'ShowYourImpact_DeGrachtWacht',
