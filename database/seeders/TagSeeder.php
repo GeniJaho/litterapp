@@ -314,6 +314,7 @@ class TagSeeder extends Seeder
             'Buxton',
             'Buys',
             'Buzz Bar',
+            'C.R.E.A.M (Cream)',
             'C&A (CA)',
             'Cable Car',
             'Cadbury',
