@@ -94,6 +94,8 @@ class TagSeeder extends Seeder
             'Paper',
             'Paraffine',
             'Plastic',
+            'Plastic (hard)',
+            'Plastic (soft)',
             'Plastic (ABS)',
             'Plastic (HDPE)',
             'Plastic (LDPE)',
