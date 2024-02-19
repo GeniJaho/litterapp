@@ -37,6 +37,8 @@ const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.f
 const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
+const selectedStates = ref(props.tags.state.filter(state => filters.value.tag_ids.includes(state.id)));
+const selectedContents = ref(props.tags.content.filter(content => filters.value.tag_ids.includes(content.id)));
 const hasGPS = ref(yesOrNoOptions.find(option => option.value === filters.value.has_gps));
 const isTagged = ref(yesOrNoOptions.find(option => option.value === filters.value.is_tagged));
 
@@ -48,6 +50,8 @@ const filter = () => {
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
         ...selectedEvents.value.map(event => event.id),
+        ...selectedStates.value.map(state => state.id),
+        ...selectedContents.value.map(content => content.id),
     ];
     filters.value.has_gps = hasGPS.value.value !== null ? (hasGPS.value.value === true ? 1 : 0) : null;
     filters.value.is_tagged = isTagged.value.value !== null ? (isTagged.value.value === true ? 1 : 0) : null;
@@ -59,6 +63,8 @@ const clear = () => {
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
+    selectedStates.value = [];
+    selectedContents.value = [];
     hasGPS.value = yesOrNoOptions[0];
     isTagged.value = yesOrNoOptions[0];
 
@@ -117,6 +123,26 @@ const clear = () => {
                         id="event-filter"
                         v-model="selectedEvents"
                         :items="tags.event"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="state-filter" value="States" />
+                    <TagBox
+                        id="state-filter"
+                        v-model="selectedStates"
+                        :items="tags.state"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="content-filter" value="Contents" />
+                    <TagBox
+                        id="content-filter"
+                        v-model="selectedContents"
+                        :items="tags.content"
                         :multiple="true"
                         class="mt-1 block w-full"
                     ></TagBox>

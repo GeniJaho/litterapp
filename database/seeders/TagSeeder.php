@@ -15,10 +15,14 @@ class TagSeeder extends Seeder
         $brand = TagType::query()->firstOrCreate(['name' => 'Brand', 'slug' => 'brand']);
         $material = TagType::query()->firstOrCreate(['name' => 'Material', 'slug' => 'material']);
         $event = TagType::query()->firstOrCreate(['name' => 'Event', 'slug' => 'event']);
+        $state = TagType::query()->firstOrCreate(['name' => 'State', 'slug' => 'state']);
+        $content = TagType::query()->firstOrCreate(['name' => 'Content', 'slug' => 'content']);
 
         Tag::query()->insertOrIgnore($this->format($this->getEvents(), $event));
         Tag::query()->insertOrIgnore($this->format($this->getBrands(), $brand));
         Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
+        Tag::query()->insertOrIgnore($this->format($this->getStates(), $state));
+        Tag::query()->insertOrIgnore($this->format($this->getContents(), $content));
     }
 
     private function format(array $tags, Model $type): array
@@ -114,6 +118,36 @@ class TagSeeder extends Seeder
             'Unknown',
             'Wax',
             'Wood',
+        ];
+    }
+
+    private function getStates(): array
+    {
+        return [
+            'Dented',
+            'Flat/Crushed',
+            'Intact',
+            'Shredded',
+        ];
+    }
+
+    private function getContents(): array
+    {
+        return [
+            'Alcohol',
+            'Beer',
+            'Ice tea',
+            'Juice',
+            'Milk',
+            'Oil',
+            'Protein drink',
+            'Shampoo',
+            'Shower gel',
+            'Soda',
+            'Sports drink',
+            'Sun lotion',
+            'Water',
+            'Wine',
         ];
     }
 
