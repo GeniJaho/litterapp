@@ -127,6 +127,7 @@ class TagSeeder extends Seeder
             'Dented',
             'Flat/Crushed',
             'Intact',
+            'OTHER (Please add this missing state to the picklist)',
             'Shredded',
         ];
     }
@@ -136,18 +137,26 @@ class TagSeeder extends Seeder
         return [
             'Alcohol',
             'Beer',
+            'Cleaner',
+            'Coffee',
+            'Energy drink',
+            'Ice',
             'Ice tea',
             'Juice',
             'Milk',
+            'Milkshake',
             'Oil',
+            'OTHER (Please add this missing content to the picklist)',
             'Protein drink',
             'Shampoo',
             'Shower gel',
+            'Sirop',
             'Soda',
             'Sports drink',
             'Sun lotion',
             'Water',
             'Wine',
+            'Yogurt',
         ];
     }
 
