@@ -69,16 +69,16 @@ const selectedContentTag = ref(props.tags.content[0]);
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
                         class="w-full lg:w-48"
-                        :items="tags.event"
-                        v-model="selectedEventTag"
+                        :items="tags.content"
+                        v-model="selectedContentTag"
                     ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedEventTag.id)"
-                        :disabled="!selectedEventTag"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedContentTag.id)"
+                        :disabled="!selectedContentTag"
                     >
-                        Add Event
+                        Add Content
                     </PrimaryButton>
                 </div>
 
@@ -101,16 +101,16 @@ const selectedContentTag = ref(props.tags.content[0]);
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
                         class="w-full lg:w-48"
-                        :items="tags.content"
-                        v-model="selectedContentTag"
+                        :items="tags.event"
+                        v-model="selectedEventTag"
                     ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedContentTag.id)"
-                        :disabled="!selectedContentTag"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedEventTag.id)"
+                        :disabled="!selectedEventTag"
                     >
-                        Add Content
+                        Add Event
                     </PrimaryButton>
                 </div>
 
