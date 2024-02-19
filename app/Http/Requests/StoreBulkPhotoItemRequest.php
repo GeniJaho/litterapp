@@ -29,7 +29,7 @@ class StoreBulkPhotoItemRequest extends FormRequest
                         ->exists();
 
                     if ($photosBelongsToOthers) {
-                        $fail("You are not the owner of the photos.");
+                        $fail('You are not the owner of the photos.');
                     }
                 },
             ],
