@@ -59,6 +59,7 @@ class ItemSeeder extends Seeder
             'Bottle (without cap/lid)',
             'Bottle (0 - 0,5 liter)',
             'Bottle (> 0,5 liter)',
+            'Bottle (Thermos)',
             'Bottle Cap/Lid',
             'Bowl',
             'Box',
