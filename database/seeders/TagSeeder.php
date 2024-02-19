@@ -124,9 +124,10 @@ class TagSeeder extends Seeder
     private function getStates(): array
     {
         return [
+            'Degraded',
             'Dented',
             'Flat/Crushed',
-            'Intact',
+            'Intact/undamaged',
             'OTHER (Please add this missing state to the picklist)',
             'Shredded',
         ];
@@ -140,6 +141,7 @@ class TagSeeder extends Seeder
             'Cleaner',
             'Coffee',
             'Energy drink',
+            'Food',
             'Ice',
             'Ice tea',
             'Juice',
