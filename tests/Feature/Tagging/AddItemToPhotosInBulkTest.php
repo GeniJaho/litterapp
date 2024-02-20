@@ -17,13 +17,13 @@ test('a user can add items to many photos at once', function () {
 
     $response = $this->actingAs($user)->postJson("/photos/items", [
         'photo_ids' => [$photoA->id, $photoB->id],
-        'items' => [
+        'items' => [[
             'id' => $newItem->id,
             'picked_up' => true,
             'recycled' => true,
             'deposit' => true,
             'quantity' => 2,
-        ]
+        ]]
     ]);
 
     $response->assertOk();
@@ -60,13 +60,13 @@ test('a user can add an item more than once to their photos', function () {
 
     $response = $this->actingAs($user)->postJson("/photos/items", [
         'photo_ids' => [$photoA->id, $photoB->id],
-        'items' => [
+        'items' => [[
             'id' => $existingItem->id,
             'picked_up' => true,
             'recycled' => true,
             'deposit' => true,
             'quantity' => 1,
-        ]
+        ]]
     ]);
 
     $response->assertOk();
@@ -75,38 +75,38 @@ test('a user can add an item more than once to their photos', function () {
     expect($photoB->items->count())->toBe(2);
 });
 
-test('the request is validated', function ($key, $value) {
+test('the request is validated', function ($key, $error, $value) {
     $user = User::factory()->create();
     $item = Item::factory()->create();
     $data = [
         'photo_ids' => [1],
-        'items' => [
+        'items' => [[
             'id' => $item->id,
             'picked_up' => true,
             'recycled' => true,
             'deposit' => true,
             'quantity' => 2,
             ...[$key => $value],
-        ],
+        ]],
     ];
 
     $response = $this->actingAs($user)->postJson("/photos/items", $data);
 
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors($key);
+    $response->assertJsonValidationErrors($error);
 })->with([
-    'photo_ids is required' => ['photo_ids', null],
-    'photo_ids must be an array' => ['photo_ids', 'string'],
-    'picked up is required' => ['picked_up', null],
-    'picked up must be a boolean' => ['picked_up', 'string'],
-    'recycled is required' => ['recycled', null],
-    'recycled must be a boolean' => ['recycled', 'string'],
-    'deposit is required' => ['deposit', null],
-    'deposit must be a boolean' => ['deposit', 'string'],
-    'quantity is required' => ['quantity', null],
-    'quantity must be an integer' => ['quantity', 'string'],
-    'quantity must be at least 1' => ['quantity', 0],
-    'quantity may not be greater than 1000' => ['quantity', 1001],
+    'photo_ids is required' => ['photo_ids', 'photo_ids', null],
+    'photo_ids must be an array' => ['photo_ids', 'photo_ids', 'string'],
+    'picked up is required' => ['picked_up', 'items.0.picked_up', null],
+    'picked up must be a boolean' => ['picked_up', 'items.0.picked_up', 'string'],
+    'recycled is required' => ['recycled', 'items.0.recycled', null],
+    'recycled must be a boolean' => ['recycled', 'items.0.recycled', 'string'],
+    'deposit is required' => ['deposit', 'items.0.deposit', null],
+    'deposit must be a boolean' => ['deposit', 'items.0.deposit', 'string'],
+    'quantity is required' => ['quantity', 'items.0.quantity', null],
+    'quantity must be an integer' => ['quantity', 'items.0.quantity', 'string'],
+    'quantity must be at least 1' => ['quantity', 'items.0.quantity', 0],
+    'quantity may not be greater than 1000' => ['quantity', 'items.0.quantity', 1001],
 ]);
 
 test('the request items and tags must exist', function () {
@@ -115,13 +115,13 @@ test('the request items and tags must exist', function () {
 
     $response = $this->actingAs($user)->postJson("/photos/items", [
         'photo_ids' => [$photo->id],
-        'items' => [
+        'items' => [[
             'id' => 999,
             'picked_up' => true,
             'recycled' => true,
             'deposit' => true,
             'quantity' => 2,
-        ],
+        ]],
     ]);
 
     $response->assertStatus(422);
@@ -135,13 +135,13 @@ test('a user can not add an item to another users photo', function () {
 
     $response = $this->actingAs($user)->postJson("/photos/items", [
         'photo_ids' => [$photo->id],
-        'items' => [
+        'items' => [[
             'id' => $item->id,
             'picked_up' => true,
             'recycled' => true,
             'deposit' => true,
             'quantity' => 1,
-        ],
+        ]],
     ]);
 
     $response->assertStatus(422);

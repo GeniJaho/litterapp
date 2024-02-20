@@ -6,10 +6,6 @@ use App\Models\Photo;
 use Closure;
 use Spatie\LaravelData\Data;
 
-/**
- * @property  int[]  $photo_ids
- * @property BulkItem[] $items
- */
 class BulkPhotoItems extends Data
 {
     /**
@@ -47,7 +43,6 @@ class BulkPhotoItems extends Data
                 },
             ],
             'photo_ids.*' => ['required', 'exists:photos,id'],
-//            'items' => ['required', 'array'],
         ];
     }
 }
