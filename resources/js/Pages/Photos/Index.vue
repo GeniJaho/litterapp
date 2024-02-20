@@ -3,6 +3,7 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import {Link, router} from '@inertiajs/vue3';
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import Filters from "@/Components/Filters.vue";
+import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
 
 const props = defineProps({
     photos: Object,
@@ -41,6 +42,8 @@ const filter = (filters) => {
                         :items="items"
                         :default-filters="filters"
                     />
+
+                    <BulkTag></BulkTag>
                 </div>
 
                 <div v-if="photos.data.length" class="mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">

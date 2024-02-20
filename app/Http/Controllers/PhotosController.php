@@ -38,7 +38,7 @@ class PhotosController extends Controller
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
-        return Inertia::render('Photos', [
+        return Inertia::render('Photos/Index', [
             'photos' => $photos,
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
@@ -60,7 +60,7 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
 
-            return Inertia::render('Photo/Show', [
+            return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
