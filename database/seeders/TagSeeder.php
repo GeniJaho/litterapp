@@ -84,6 +84,7 @@ class TagSeeder extends Seeder
             'Cardboard',
             'Cellulose Acetate Fiber',
             'Ceramic/Pottery',
+            'Cocktail',
             'Copper',
             'Fiberglass',
             'Foam',
@@ -124,7 +125,7 @@ class TagSeeder extends Seeder
     private function getStates(): array
     {
         return [
-            'Degraded',
+            'Degraded naturally',
             'Dented',
             'Flat/Crushed',
             'Intact/undamaged',
@@ -136,7 +137,6 @@ class TagSeeder extends Seeder
     private function getContents(): array
     {
         return [
-            'Alcohol',
             'Beer',
             'Cleaner',
             'Coffee',
@@ -154,6 +154,7 @@ class TagSeeder extends Seeder
             'Shower gel',
             'Sirop',
             'Soda',
+            'Spirit',
             'Sports drink',
             'Sun lotion',
             'Water',
