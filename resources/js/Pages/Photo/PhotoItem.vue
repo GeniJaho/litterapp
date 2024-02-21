@@ -17,6 +17,7 @@ const selectedBrandTag = ref(props.tags.brand[0]);
 const selectedEventTag = ref(props.tags.event[0]);
 const selectedStateTag = ref(props.tags.state[0]);
 const selectedContentTag = ref(props.tags.content[0]);
+const selectedSizeTag = ref(props.tags.size[0]);
 </script>
 
 <template>
@@ -79,6 +80,22 @@ const selectedContentTag = ref(props.tags.content[0]);
                         :disabled="!selectedContentTag"
                     >
                         Add Content
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-2 flex flex-row justify-between space-x-2">
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.size"
+                        v-model="selectedSizeTag"
+                    ></TagBox>
+
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedSizeTag.id)"
+                        :disabled="!selectedSizeTag"
+                    >
+                        Add Size
                     </PrimaryButton>
                 </div>
 
