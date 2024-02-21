@@ -261,7 +261,7 @@ class ItemSeeder extends Seeder
             'Reflector',
             'Ribbon',
             'Rolling Papers',
-            'Rope/string/cord'
+            'Rope/string/cord',
             'Sachet',
             'Sachet (Creamer)',
             'Sachet (Ketchup)',

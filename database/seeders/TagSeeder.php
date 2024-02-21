@@ -24,7 +24,7 @@ class TagSeeder extends Seeder
         Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
         Tag::query()->insertOrIgnore($this->format($this->getStates(), $state));
         Tag::query()->insertOrIgnore($this->format($this->getContents(), $content));
-        Tag::query()->insertOrIgnore($this->format($this->getSize(), $size));
+        Tag::query()->insertOrIgnore($this->format($this->getSizes(), $size));
     }
 
     private function format(array $tags, Model $type): array
@@ -168,22 +168,23 @@ class TagSeeder extends Seeder
     private function getSizes(): array
     {
         return [
-            '0 - 0,9 cm',
-            '1 - 2,4 cm',
-            '2,5 - 9,9 cm',
-            '10 - 49,9 cm',
-            '50 - .. cm',
-            '1 lbs',
-            '20 lbs',
-            '0 - 0,5 liter',
-            '0,5 liter',
-            '0,5 - 1 liter',
-            '1 liter',
-            '1, - 1,5 liter',
-            '1,5 liter',
-            '1,5 - 2 liter',
-            '2 liter',
-            '2 - .. liter',
+            'Size: 0 - 0,9 cm',
+            'Size: 1 - 2,4 cm',
+            'Size: 2,5 - 9,9 cm',
+            'Size: 10 - 49,9 cm',
+            'Size: More than 50 cm',
+            'Weight: 1 lbs',
+            'Weight: 10 lbs',
+            'Weight: 20 lbs',
+            'Volume: 0 - 0,5 liter',
+            'Volume: 0,5 liter',
+            'Volume: 0,5 - 1 liter',
+            'Volume: 1 liter',
+            'Volume: 1 - 1,5 liter',
+            'Volume: 1,5 liter',
+            'Volume: 1,5 - 2 liter',
+            'Volume: 2 liter',
+            'Volume: More than 2 liter',
             'OTHER (Please add this missing size to the picklist)',
         ];
     }
