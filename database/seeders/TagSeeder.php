@@ -17,12 +17,14 @@ class TagSeeder extends Seeder
         $event = TagType::query()->firstOrCreate(['name' => 'Event', 'slug' => 'event']);
         $state = TagType::query()->firstOrCreate(['name' => 'State', 'slug' => 'state']);
         $content = TagType::query()->firstOrCreate(['name' => 'Content', 'slug' => 'content']);
+        $size = TagType::query()->firstOrCreate(['name' => 'Size', 'slug' => 'size']);
 
         Tag::query()->insertOrIgnore($this->format($this->getEvents(), $event));
         Tag::query()->insertOrIgnore($this->format($this->getBrands(), $brand));
         Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
         Tag::query()->insertOrIgnore($this->format($this->getStates(), $state));
         Tag::query()->insertOrIgnore($this->format($this->getContents(), $content));
+        Tag::query()->insertOrIgnore($this->format($this->getSizes(), $size));
     }
 
     private function format(array $tags, Model $type): array
@@ -84,6 +86,7 @@ class TagSeeder extends Seeder
             'Cardboard',
             'Cellulose Acetate Fiber',
             'Ceramic/Pottery',
+            'Cocktail',
             'Copper',
             'Fiberglass',
             'Foam',
@@ -124,7 +127,7 @@ class TagSeeder extends Seeder
     private function getStates(): array
     {
         return [
-            'Degraded',
+            'Degraded naturally',
             'Dented',
             'Flat/Crushed',
             'Intact/undamaged',
@@ -136,7 +139,6 @@ class TagSeeder extends Seeder
     private function getContents(): array
     {
         return [
-            'Alcohol',
             'Beer',
             'Cleaner',
             'Coffee',
@@ -154,11 +156,36 @@ class TagSeeder extends Seeder
             'Shower gel',
             'Sirop',
             'Soda',
+            'Spirit',
             'Sports drink',
             'Sun lotion',
             'Water',
             'Wine',
             'Yogurt',
+        ];
+    }
+
+    private function getSizes(): array
+    {
+        return [
+            'Size: 0 - 0,9 cm',
+            'Size: 1 - 2,4 cm',
+            'Size: 2,5 - 9,9 cm',
+            'Size: 10 - 49,9 cm',
+            'Size: More than 50 cm',
+            'Weight: 1 lbs',
+            'Weight: 10 lbs',
+            'Weight: 20 lbs',
+            'Volume: 0 - 0,5 liter',
+            'Volume: 0,5 liter',
+            'Volume: 0,5 - 1 liter',
+            'Volume: 1 liter',
+            'Volume: 1 - 1,5 liter',
+            'Volume: 1,5 liter',
+            'Volume: 1,5 - 2 liter',
+            'Volume: 2 liter',
+            'Volume: More than 2 liter',
+            'OTHER (Please add this missing size to the picklist)',
         ];
     }
 
