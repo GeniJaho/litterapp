@@ -114,7 +114,7 @@ class ItemSeeder extends Seeder
             'Cutlery (Spork)',
             'De-Icer',
             'Deodorant',
-            'DepositInBin',
+            'DepositItemInBin',
             'Diaper',
             'Dog Tag',
             'Drink Carton',
