@@ -17,6 +17,7 @@ const selectedBrandTag = ref(props.tags.brand[0]);
 const selectedEventTag = ref(props.tags.event[0]);
 const selectedStateTag = ref(props.tags.state[0]);
 const selectedContentTag = ref(props.tags.content[0]);
+const selectedSizeTag = ref(props.tags.size[0]);
 </script>
 
 <template>
@@ -85,6 +86,22 @@ const selectedContentTag = ref(props.tags.content[0]);
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
                         class="w-full lg:w-48"
+                        :items="tags.size"
+                        v-model="selectedSizeTag"
+                    ></TagBox>
+
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="$emit('add-tag-to-item', item.key, selectedSizeTag)"
+                        :disabled="!selectedSizeTag"
+                    >
+                        Add Size
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-2 flex flex-row justify-between space-x-2">
+                    <TagBox
+                        class="w-full lg:w-48"
                         :items="tags.state"
                         v-model="selectedStateTag"
                     ></TagBox>
@@ -114,12 +131,12 @@ const selectedContentTag = ref(props.tags.content[0]);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-4 text-sm text-gray-500 flex flex-wrap space-x-1">
+                <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
                         v-for="tag in item.tags"
                         :key="tag.id"
                         @click="$emit('remove-tag-from-item', item.key, tag.id)"
-                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 mb-2 mr-2 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
+                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>

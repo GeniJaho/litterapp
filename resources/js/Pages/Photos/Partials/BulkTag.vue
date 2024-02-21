@@ -68,28 +68,17 @@ const closeModal = () => {
     </PrimaryButton>
 
     <BulkTagModal max-width="7xl" :show="confirmingUserDeletion" @close="closeModal">
-        <template #title>
-            Tag Multiple Photos
+        <template #header>
+            <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+                Tag Multiple Photos
+            </div>
+            <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
+                Add items and tags to multiple photos at once. You can also mark them as picked up, recycled, or deposited.<br>
+                After you have added all the items and tags, click the "Save" button to save the changes.
+            </div>
         </template>
 
         <template #content>
-            Add items and tags to multiple photos at once. You can also mark them as picked up, recycled, or deposited.
-            After you have added all the items and tags, click the "Save" button to save the changes.
-
-            <div class="mt-4">
-<!--                <TextInput-->
-<!--                    ref="passwordInput"-->
-<!--                    v-model="form.password"-->
-<!--                    type="password"-->
-<!--                    class="mt-1 block w-3/4"-->
-<!--                    placeholder="Password"-->
-<!--                    autocomplete="current-password"-->
-<!--                    @keyup.enter="deleteUser"-->
-<!--                />-->
-
-<!--                <InputError :message="form.errors.password" class="mt-2" />-->
-            </div>
-
             <div class="mt-4 w-full px-4">
                 <div class="flex flex-row mt-6 md:mt-0">
                     <TagBox
