@@ -39,6 +39,7 @@ const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_id
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
 const selectedStates = ref(props.tags.state.filter(state => filters.value.tag_ids.includes(state.id)));
 const selectedContents = ref(props.tags.content.filter(content => filters.value.tag_ids.includes(content.id)));
+const selectedSizes = ref(props.tags.size.filter(size => filters.value.tag_ids.includes(size.id)));
 const hasGPS = ref(yesOrNoOptions.find(option => option.value === filters.value.has_gps));
 const isTagged = ref(yesOrNoOptions.find(option => option.value === filters.value.is_tagged));
 
@@ -52,6 +53,7 @@ const filter = () => {
         ...selectedEvents.value.map(event => event.id),
         ...selectedStates.value.map(state => state.id),
         ...selectedContents.value.map(content => content.id),
+        ...selectedSizes.value.map(size => size.id),
     ];
     filters.value.has_gps = hasGPS.value.value !== null ? (hasGPS.value.value === true ? 1 : 0) : null;
     filters.value.is_tagged = isTagged.value.value !== null ? (isTagged.value.value === true ? 1 : 0) : null;
@@ -65,6 +67,7 @@ const clear = () => {
     selectedEvents.value = [];
     selectedStates.value = [];
     selectedContents.value = [];
+    selectedSizes.value = [];
     hasGPS.value = yesOrNoOptions[0];
     isTagged.value = yesOrNoOptions[0];
 
@@ -143,6 +146,16 @@ const clear = () => {
                         id="content-filter"
                         v-model="selectedContents"
                         :items="tags.content"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="size-filter" value="Sizes" />
+                    <TagBox
+                        id="size-filter"
+                        v-model="selectedSizes"
+                        :items="tags.size"
                         :multiple="true"
                         class="mt-1 block w-full"
                     ></TagBox>
