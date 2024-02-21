@@ -35,7 +35,7 @@ const logout = () => {
         <Banner/>
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-mainWhite dark:bg-darkBlue">
+            <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
                 <div class="max-w-7xl mx-auto px-4 pt-12 sm:px-6 lg:px-20">
                     <div class="flex justify-between h-16">
@@ -43,7 +43,7 @@ const logout = () => {
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-10 w-24"/>
+                                    <ApplicationMark class="block h-14 w-48"/>
                                 </Link>
                             </div>
 
@@ -58,7 +58,7 @@ const logout = () => {
                                 <NavLink :href="route('upload')" :active="route().current('upload')">
                                     Upload
                                 </NavLink>
-                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-darkBlue dark:text-mainWhite hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
+                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-bold leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
                                     Docs
                                 </a>
                             </div>
@@ -243,7 +243,7 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('upload')" :active="route().current('upload')">
                             Upload
                         </ResponsiveNavLink>
-                        <a :href="route('docs')" target="_blank" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <a :href="route('docs')" target="_blank" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
                             Docs
                         </a>
                     </div>

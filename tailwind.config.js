@@ -17,7 +17,9 @@ export default {
     theme: {
         extend: {
             fontFamily: {
-                sans: ['Arial', ...defaultTheme.fontFamily.sans],
+                sans: ['Inter var', ...defaultTheme.fontFamily.sans],
+                arial: ['arial', 'sans'],
+
 
             },
             colors: {
@@ -25,6 +27,18 @@ export default {
                 'darkBlue': '#1F2937',
                 'turqoFocus': '#03DCCD',
             },
+            letterSpacing: {
+                tightest: '-.075em',
+                tighter: '-.05em',
+                tight: '-.025em',
+                normal: '0',
+                wide: '.025em',
+                wider: '.05em',
+                widest: '.15em',
+            },
+            lineHeight: {
+                '12': '68px',
+            }
         },
     },
 
