@@ -10,7 +10,7 @@ class BulkPhotoItems extends Data
 {
     /**
      * @param  int[]  $photo_ids
-     * @param BulkItem[] $items
+     * @param  BulkItem[]  $items
      */
     public function __construct(
         public array $photo_ids,
@@ -19,7 +19,7 @@ class BulkPhotoItems extends Data
     }
 
     /**
-     * @return array<string, string[]>
+     * @return array<string, mixed>
      */
     public static function rules(): array
     {

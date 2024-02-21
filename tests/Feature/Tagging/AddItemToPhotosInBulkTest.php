@@ -15,7 +15,7 @@ test('a user can add items to many photos at once', function () {
     $photoA->items()->attach($existingItem);
     $newItem = Item::factory()->create();
 
-    $response = $this->actingAs($user)->postJson("/photos/items", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photoA->id, $photoB->id],
         'items' => [[
             'id' => $newItem->id,
@@ -23,7 +23,7 @@ test('a user can add items to many photos at once', function () {
             'recycled' => true,
             'deposit' => true,
             'quantity' => 2,
-        ]]
+        ]],
     ]);
 
     $response->assertOk();
@@ -58,7 +58,7 @@ test('a user can add an item more than once to their photos', function () {
     $photoB = Photo::factory()->create(['user_id' => $user->id]);
     $photoB->items()->attach($existingItem);
 
-    $response = $this->actingAs($user)->postJson("/photos/items", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photoA->id, $photoB->id],
         'items' => [[
             'id' => $existingItem->id,
@@ -66,7 +66,7 @@ test('a user can add an item more than once to their photos', function () {
             'recycled' => true,
             'deposit' => true,
             'quantity' => 1,
-        ]]
+        ]],
     ]);
 
     $response->assertOk();
@@ -77,9 +77,10 @@ test('a user can add an item more than once to their photos', function () {
 
 test('the request is validated', function ($key, $error, $value) {
     $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
     $data = [
-        'photo_ids' => [1],
+        'photo_ids' => [$photo->id],
         'items' => [[
             'id' => $item->id,
             'picked_up' => true,
@@ -90,13 +91,11 @@ test('the request is validated', function ($key, $error, $value) {
         ]],
     ];
 
-    $response = $this->actingAs($user)->postJson("/photos/items", $data);
+    $response = $this->actingAs($user)->postJson('/photos/items', $data);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors($error);
 })->with([
-    'photo_ids is required' => ['photo_ids', 'photo_ids', null],
-    'photo_ids must be an array' => ['photo_ids', 'photo_ids', 'string'],
     'picked up is required' => ['picked_up', 'items.0.picked_up', null],
     'picked up must be a boolean' => ['picked_up', 'items.0.picked_up', 'string'],
     'recycled is required' => ['recycled', 'items.0.recycled', null],
@@ -113,7 +112,7 @@ test('the request items and tags must exist', function () {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
 
-    $response = $this->actingAs($user)->postJson("/photos/items", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photo->id],
         'items' => [[
             'id' => 999,
@@ -128,12 +127,36 @@ test('the request items and tags must exist', function () {
     $response->assertJsonValidationErrors('items.0.id');
 });
 
+test('the photo ids are validated', function ($photoIds) {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+    $data = [
+        'photo_ids' => $photoIds,
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+        ]],
+    ];
+
+    $response = $this->actingAs($user)->postJson('/photos/items', $data);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('photo_ids');
+})->with([
+    'photo_ids is required' => [null],
+    'photo_ids must be an array' => ['string'],
+]);
+
 test('a user can not add an item to another users photo', function () {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $item = Item::factory()->create();
 
-    $response = $this->actingAs($user)->postJson("/photos/items", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photo->id],
         'items' => [[
             'id' => $item->id,

@@ -43,7 +43,10 @@ const filter = (filters) => {
                         :default-filters="filters"
                     />
 
-                    <BulkTag></BulkTag>
+                    <BulkTag
+                        :tags="tags"
+                        :items="items"
+                    ></BulkTag>
                 </div>
 
                 <div v-if="photos.data.length" class="mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
