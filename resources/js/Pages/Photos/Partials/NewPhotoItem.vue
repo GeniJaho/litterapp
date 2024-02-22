@@ -140,7 +140,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
-                        {{ tags.find(propTag => propTag.id === tag.id) }}
+                        {{ tag.name }}
                     </span>
                 </div>
             </div>
@@ -165,21 +165,21 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                 <ToggleInput
                     v-model="item.picked_up"
-                    @update:modelValue="$emit('toggle-picked-up', item.key, item.picked_up)"
+                    @update:modelValue="$emit('toggle-picked-up', item.key)"
                     class="block w-full"
                 >
                     <template #label>Picked Up</template>
                 </ToggleInput>
                 <ToggleInput
                     v-model="item.recycled"
-                    @update:modelValue="$emit('toggle-recycled', item.key, item.recycled)"
+                    @update:modelValue="$emit('toggle-recycled', item.key)"
                     class="block w-full"
                 >
                     <template #label>Recycled</template>
                 </ToggleInput>
                 <ToggleInput
                     v-model="item.deposit"
-                    @update:modelValue="$emit('toggle-deposit', item.key, item.deposit)"
+                    @update:modelValue="$emit('toggle-deposit', item.key)"
                     class="block w-full"
                 >
                     <template #label>Deposit</template>
@@ -188,7 +188,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
             <div class="flex flex-col justify-end">
                 <IconPrimaryButton
-                    @click="$emit('copy-item', item.key)"
+                    @click="$emit('copy-item', item)"
                 >
                     <i class="far fa-fw fa-copy text-xs"></i>
                 </IconPrimaryButton>

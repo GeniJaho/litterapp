@@ -15,7 +15,6 @@ const props = defineProps({
     tags: Object,
 });
 
-const photoItems = ref([]);
 const selectedItem = ref(null);
 
 const addItem = () => {
@@ -23,7 +22,7 @@ const addItem = () => {
         key: Math.floor(Math.random() * 10000) + 1, // random int 1 to 10000
         id: selectedItem.value.id,
         name: selectedItem.value.name,
-        tag_ids: [],
+        tags: [],
         picked_up: false,
         recycled: false,
         deposit: false,
@@ -31,6 +30,71 @@ const addItem = () => {
     });
 
     selectedItem.value = null;
+};
+
+const removeItem = (key) => {
+    form.items = form.items.filter(item => item.key !== key);
+};
+
+const addTagToItem = (key, tag) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        tags: [...item.tags, tag],
+    });
+};
+
+const removeTagFromItem = (key, tagId) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        tags: item.tags.filter(itemTag => itemTag.id !== tagId),
+    });
+};
+
+const copyItem = (item) => {
+    form.items.push({
+        ...item,
+        key: Math.floor(Math.random() * 10000) + 1, // random int 1 to 10000
+    });
+};
+
+const toggleItemPickedUp = (key) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        picked_up: !item.picked_up,
+    });
+};
+
+const toggleItemRecycled = (key) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        recycled: !item.recycled,
+    });
+};
+
+const toggleItemDeposit = (key) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        deposit: !item.deposit,
+    });
+};
+
+const updateItemQuantity = (key, quantity) => {
+    const item = form.items.find(item => item.key === key);
+
+    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
+        ...item,
+        quantity: quantity,
+    });
 };
 
 const confirmingUserDeletion = ref(false);
@@ -109,6 +173,14 @@ const closeModal = () => {
                                 :key="item.key"
                                 :item="item"
                                 :tags="tags"
+                                @remove-item="removeItem"
+                                @add-tag-to-item="addTagToItem"
+                                @remove-tag-from-item="removeTagFromItem"
+                                @copy-item="copyItem"
+                                @toggle-picked-up="toggleItemPickedUp"
+                                @toggle-recycled="toggleItemRecycled"
+                                @toggle-deposit="toggleItemDeposit"
+                                @update-quantity="updateItemQuantity"
                             />
                         </TransitionGroup>
                     </div>
