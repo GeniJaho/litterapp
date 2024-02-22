@@ -37,11 +37,13 @@ const removeItem = (key) => {
 };
 
 const addTagToItem = (key, tag) => {
-    const item = form.items.find(item => item.key === key);
-
-    form.items.splice(form.items.findIndex(item => item.key === key), 1, {
-        ...item,
-        tags: [...item.tags, tag],
+    form.items = form.items.map(item => {
+        if (item.key === key) { // update the item
+            if (item.tags.find(itemTag => itemTag.id === tag.id))
+                return item; // tag already exists
+            return {...item, tags: [...item.tags, tag]}; // add the tag
+        }
+        return item;
     });
 };
 
@@ -171,7 +173,7 @@ const closeModal = () => {
                             <NewPhotoItem
                                 v-for="item in form.items"
                                 :key="item.key"
-                                :item="item"
+                                :prop-item="item"
                                 :tags="tags"
                                 @remove-item="removeItem"
                                 @add-tag-to-item="addTagToItem"

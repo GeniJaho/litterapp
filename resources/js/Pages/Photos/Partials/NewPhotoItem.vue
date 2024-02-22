@@ -8,9 +8,11 @@ import TextInput from "@/Components/TextInput.vue";
 import TagBox from "@/Components/TagBox.vue";
 
 const props = defineProps({
-    item: Object,
+    propItem: Object,
     tags: Object,
 });
+
+const item = ref(props.propItem);
 
 const selectedMaterialTag = ref(props.tags.material[0]);
 const selectedBrandTag = ref(props.tags.brand[0]);
