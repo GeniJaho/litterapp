@@ -6,12 +6,12 @@ import {Link} from "@inertiajs/vue3";
 <template>
 
     <div>
-        <div class="flex flex-col px-12  lg:px-40 space-y-12 bg-darkBlue">
-            <div class="md:ml-10">
-                <h1 class="text-xl leading-8 font-black tracking-widest text-mainWhite pt-6">
+        <div class="flex flex-col px-6  lg:px-40 space-y-12 bg-darkBlue">
+            <div class="mt-12">
+                <h1 class="text-xl leading-8 font-black tracking-widest text-mainWhite">
                     Welcome to LitterApp!
                 </h1>
-                <div class="pt-16 md:pt-40">
+                <div class="mt-16 md:mt-16">
                     <div class="text-5xl md:text-6xl font-normal leading-12 tracking-widest text-mainWhite">From
                         <span class="font-black tracking-widest">waste to data</span>, step by step
                     </div>
@@ -20,13 +20,13 @@ import {Link} from "@inertiajs/vue3";
                     </div>
                     <Link :href="route('my-photos')">
                         <button
-                            class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                            class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                             Start uploading <i class="fa-solid fa-arrow-right text-base pl-2"></i>
                         </button>
                     </Link>
                 </div>
 
-                <div class="flex flex-col items-center pt-24 pb-6 md:pt-32">
+                <div class="flex flex-col items-center pt-24 pb-6 md:pt-26">
                     <div class="h-2 w-2 bg-mainWhite rounded-full"></div>
                     <div class="text-2xl leading-8 font-black tracking-widest text-mainWhite pt-8">A
                         common procedure
@@ -34,11 +34,11 @@ import {Link} from "@inertiajs/vue3";
                 </div>
             </div>
 
-            <div class="md:ml-10 flex flex-col space-y-28 md:space-y-40">
+            <div class="flex flex-col space-y-28 md:space-y-40">
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
-                    <img src="/img/first-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80"/>
+                    <img src="/img/first-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover object-cover"/>
                     <div>
-                        <div class="tracking-widest text-mainWhite px-6">
+                        <div class="tracking-wider text-mainWhite px-6">
                             <div class="text-3xl"># 1 <strong>Tons</strong> of litter photos.</div>
                             <div class="text-mainWhite text-xs pt-2">
                                 Take a photo, either from your phone or desktop.
@@ -55,9 +55,9 @@ import {Link} from "@inertiajs/vue3";
                 </div>
 
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
-                    <img src="/img/second-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80"/>
+                    <img src="/img/second-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
                     <div>
-                        <div class="tracking-widest text-mainWhite px-6">
+                        <div class="tracking-wider text-mainWhite px-6">
                             <div class="text-3xl"># 2 <strong>Upload</strong> photos.</div>
                             <div class="text-mainWhite text-xs pt-2">
                                 Depending on your preferences, you can get creative using the LitterApp platform
@@ -73,9 +73,9 @@ import {Link} from "@inertiajs/vue3";
                 </div>
 
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
-                    <img src="/img/third-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80"/>
+                    <img src="/img/third-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
                     <div>
-                        <div class="tracking-widest text-mainWhite px-6">
+                        <div class="tracking-wider text-mainWhite px-6">
                             <div class="text-3xl"># 3 <strong>Tag!</strong> You're it.</div>
                             <div class="text-mainWhite text-xs pt-2">
                                 Data registration has some rules to follow... Make sure you know what you're doing.
@@ -98,8 +98,8 @@ import {Link} from "@inertiajs/vue3";
                 </div>
 
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
-                    <img src="/img/fourth-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80"/>
-                    <div class="tracking-widest text-mainWhite px-6">
+                    <img src="/img/fourth-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
+                    <div class="tracking-wider text-mainWhite px-6">
                         <div class="text-mainWhite text-2xl">
                             <strong># 4 See litter </strong>at the Global Map.
                         </div>
@@ -117,7 +117,7 @@ import {Link} from "@inertiajs/vue3";
                 </div>
             </div>
 
-            <div class="md:ml-10 py-12 md:py-32">
+            <div class="py-12 md:py-32">
                 <div class="text-6xl font-normal leading-12 tracking-widest text-mainWhite">
                     Capturing data is <span class="font-black">fun</span>, and crucially <span class="font-black">useful</span>.
                 </div>
@@ -142,7 +142,7 @@ import {Link} from "@inertiajs/vue3";
             </div>
         </div>
         <div class="md:px-40 flex items-center bg-mainWhite">
-            <div class="ml-10 leading-12 text-darkBlue py-24 md:py-40">
+            <div class="ml-6 leading-12 text-darkBlue py-24 md:py-40">
                 <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-darkBlue">Communities are rising.</div>
                 <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-darkBlue">Let's build, <span class="font-black">together</span>.</div>
                 <div class="pt-10">

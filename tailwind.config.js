@@ -26,6 +26,7 @@ export default {
                 'mainWhite': '#FDFFFC',
                 'darkBlue': '#1F2937',
                 'turqoFocus': '#03DCCD',
+                'turqo': '#04F1E1',
             },
             letterSpacing: {
                 tightest: '-.075em',

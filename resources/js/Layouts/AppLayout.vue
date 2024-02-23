@@ -37,13 +37,13 @@ const logout = () => {
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto pr-4 pt-6 md:pt-12 sm:px-6 lg:px-20">
+                <div class="max-w-7xl mx-auto pr-4 pb-6 md:pb-0 pt-6 md:pt-12 sm:px-6 lg:px-20">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
+                            <div class="shrink-0 flex items-center mt-6 md:mt-0">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-14 w-48"/>
+                                    <ApplicationMark class="block h-14 px-4"/>
                                 </Link>
                             </div>
 
