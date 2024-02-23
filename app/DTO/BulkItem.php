@@ -17,7 +17,7 @@ class BulkItem extends Data
         public bool $deposit,
         #[Min(1), Max(1000)]
         public int $quantity,
-        public array $tag_ids = [],
+        public ?array $tag_ids = [],
     ) {
     }
 }

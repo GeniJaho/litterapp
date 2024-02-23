@@ -20,6 +20,30 @@ const selectedEventTag = ref(props.tags.event[0]);
 const selectedStateTag = ref(props.tags.state[0]);
 const selectedContentTag = ref(props.tags.content[0]);
 const selectedSizeTag = ref(props.tags.size[0]);
+
+const addTagToItem = (tag) => {
+    if (item.value.tag_ids.find(itemTag => itemTag === tag.id)) {
+        return;
+    }
+
+    item.value.tag_ids.push(tag.id);
+    emit('change', item.value);
+};
+
+const removeTagFromItem = (tagId) => {
+    item.value.tag_ids = item.value.tag_ids.filter(itemTag => itemTag !== tagId);
+    emit('change', item.value);
+};
+
+const emit = defineEmits([
+    'change',
+    'remove-item',
+    'copy-item',
+]);
+
+const change = () => {
+    emit('change', item.value);
+};
 </script>
 
 <template>
@@ -46,7 +70,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedMaterialTag)"
+                        @click="addTagToItem(selectedMaterialTag)"
                         :disabled="!selectedMaterialTag"
                     >
                         Add Material
@@ -62,7 +86,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedBrandTag)"
+                        @click="addTagToItem(selectedBrandTag)"
                         :disabled="!selectedBrandTag"
                     >
                         Add Brand
@@ -78,7 +102,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedEventTag)"
+                        @click="addTagToItem(selectedEventTag)"
                         :disabled="!selectedEventTag"
                     >
                         Add Event
@@ -94,7 +118,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedSizeTag)"
+                        @click="addTagToItem(selectedSizeTag)"
                         :disabled="!selectedSizeTag"
                     >
                         Add Size
@@ -110,7 +134,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedStateTag)"
+                        @click="addTagToItem(selectedStateTag)"
                         :disabled="!selectedStateTag"
                     >
                         Add State
@@ -126,7 +150,7 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.key, selectedContentTag)"
+                        @click="addTagToItem(selectedContentTag)"
                         :disabled="!selectedContentTag"
                     >
                         Add Content
@@ -135,14 +159,14 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                 <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
-                        v-for="tag in item.tags"
-                        :key="tag.id"
-                        @click="$emit('remove-tag-from-item', item.key, tag.id)"
+                        v-for="tagId in item.tag_ids"
+                        :key="tagId"
+                        @click="removeTagFromItem(tagId)"
                         class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
-                        {{ tag.name }}
+                        {{ tagId }}
                     </span>
                 </div>
             </div>
@@ -153,12 +177,12 @@ const selectedSizeTag = ref(props.tags.size[0]);
                     <TextInput
                         id="quantity"
                         type="number"
-                        :model-value="item.quantity"
+                        v-model="item.quantity"
                         class="w-12 mr-2"
                         required
                         min="1"
                         max="1000"
-                        @input="$emit('update-quantity', item.key, $event.target.value)"
+                        @input="change"
                     />
                     <label for="quantity" class="block font-medium text-sm text-gray-900 dark:text-gray-100">
                         Quantity
@@ -167,21 +191,21 @@ const selectedSizeTag = ref(props.tags.size[0]);
 
                 <ToggleInput
                     v-model="item.picked_up"
-                    @update:modelValue="$emit('toggle-picked-up', item.key)"
+                    @update:modelValue="change"
                     class="block w-full"
                 >
                     <template #label>Picked Up</template>
                 </ToggleInput>
                 <ToggleInput
                     v-model="item.recycled"
-                    @update:modelValue="$emit('toggle-recycled', item.key)"
+                    @update:modelValue="change"
                     class="block w-full"
                 >
                     <template #label>Recycled</template>
                 </ToggleInput>
                 <ToggleInput
                     v-model="item.deposit"
-                    @update:modelValue="$emit('toggle-deposit', item.key)"
+                    @update:modelValue="change"
                     class="block w-full"
                 >
                     <template #label>Deposit</template>
