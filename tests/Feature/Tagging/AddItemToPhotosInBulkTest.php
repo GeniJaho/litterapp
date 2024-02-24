@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\Tag;
 use App\Models\User;
 
 use function Pest\Laravel\assertDatabaseCount;
@@ -14,6 +15,7 @@ test('a user can add items to many photos at once', function () {
     $existingItem = Item::factory()->create();
     $photoA->items()->attach($existingItem);
     $newItem = Item::factory()->create();
+    $tag = Tag::factory()->create();
 
     $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photoA->id, $photoB->id],
@@ -23,6 +25,7 @@ test('a user can add items to many photos at once', function () {
             'recycled' => true,
             'deposit' => true,
             'quantity' => 2,
+            'tag_ids' => [$tag->id],
         ]],
     ]);
 
@@ -48,6 +51,15 @@ test('a user can add items to many photos at once', function () {
         'deposit' => true,
         'quantity' => 2,
     ]);
+
+    expect($photoA->photoItems->first()->tags()->get())
+        ->toHaveCount(0);
+    expect($photoA->photoItems->last()->tags()->get())
+        ->toHaveCount(1)
+        ->first()->id->toBe($tag->id);
+    expect($photoB->photoItems->last()->tags()->get())
+        ->toHaveCount(1)
+        ->first()->id->toBe($tag->id);
 });
 
 test('a user can add an item more than once to their photos', function () {
@@ -108,9 +120,9 @@ test('the request is validated', function ($key, $error, $value) {
     'quantity may not be greater than 1000' => ['quantity', 'items.0.quantity', 1001],
 ]);
 
-test('the request items and tags must exist', function () {
+test('the request items must exist', function () {
     $user = User::factory()->create();
-    $photo = Photo::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
 
     $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photo->id],
@@ -125,6 +137,27 @@ test('the request items and tags must exist', function () {
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('items.0.id');
+});
+
+test('the request tags must exist', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+            'tag_ids' => [999],
+        ]],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('items.0.tag_ids');
 });
 
 test('the photo ids are validated', function ($photoIds) {

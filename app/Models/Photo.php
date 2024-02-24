@@ -11,10 +11,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 /**
  * @property Collection<Item> $items
+ * @property Collection<PhotoItem> $photoItems
  */
 class Photo extends Model
 {
@@ -41,6 +43,14 @@ class Photo extends Model
             ->withPivot(['id', 'picked_up', 'recycled', 'deposit', 'quantity'])
             ->using(PhotoItem::class)
             ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<PhotoItem>
+     */
+    public function photoItems(): HasMany
+    {
+        return $this->hasMany(PhotoItem::class);
     }
 
     /**

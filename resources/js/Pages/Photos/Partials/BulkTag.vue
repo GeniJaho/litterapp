@@ -16,13 +16,13 @@ const props = defineProps({
 const selectedItem = ref(null);
 const showModal = ref(false);
 const form = useForm({
-    photo_ids: [11, 10],
+    photo_ids: [2],
     items: []
 });
 const message = ref('');
 
 const addItem = () => {
-    form.items.push({
+    form.items.unshift({
         key: Math.floor(Math.random() * 100000) + 1, // random int 1 to 100'000
         id: selectedItem.value.id,
         name: selectedItem.value.name,
@@ -56,7 +56,6 @@ const save = () => {
     form.post(route('bulk-photo-items.store'), {
         preserveScroll: true,
         onSuccess: () => closeModalWithSuccess(),
-        onFinish: () => form.reset(),
     });
 };
 
@@ -120,22 +119,22 @@ const openModal = () => {
                     </h3>
                     <div class="mt-2">
                         <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                            <div
-                                v-for="(item, index) in form.items"
+                            <NewPhotoItem
+                                v-for="item in form.items"
                                 :key="item.key"
-                                :class="form.errors[`items.${index - 1}.tag_ids`] ? ' ring-inset ring-red-500' : ''"
-                            >
-                                <NewPhotoItem
-                                    :prop-item="item"
-                                    :tags="tags"
-                                    @change="updateItem"
-                                    @remove-item="removeItem"
-                                    @copy-item="copyItem"
-                                />
-                            </div>
+                                :prop-item="item"
+                                :tags="tags"
+                                @change="updateItem"
+                                @remove-item="removeItem"
+                                @copy-item="copyItem"
+                            />
                         </TransitionGroup>
                     </div>
                 </div>
+            </div>
+
+            <div v-if="form.hasErrors" class="flex flex-col items-end mt-8 text-sm text-red-500 dark:text-red-430">
+                <p v-for="error in form.errors">{{ error }}</p>
             </div>
 
         </template>

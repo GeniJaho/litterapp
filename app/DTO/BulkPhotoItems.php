@@ -45,4 +45,16 @@ class BulkPhotoItems extends Data
             'photo_ids.*' => ['required', 'exists:photos,id'],
         ];
     }
+
+    /**
+     * @return string[]
+     */
+    public static function messages(): array
+    {
+        return [
+            'photo_ids.required' => 'You must select at least one photo.',
+            'photo_ids.*.required' => 'You must select at least one photo.',
+            'photo_ids.*.exists' => 'The selected photo #:position does not exist.',
+        ];
+    }
 }
