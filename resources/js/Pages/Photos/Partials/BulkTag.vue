@@ -89,7 +89,8 @@ const openModal = () => {
                 Tag Multiple Photos
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
-                Add items and tags to multiple photos at once. You can also mark them as picked up, recycled, or deposited.<br>
+                Add items and tags to multiple photos at once. You can also mark them as picked up, recycled,
+                or being an item with deposit on it.<br>
                 After you have added all the items and tags, click the "Save" button to save the changes.
             </div>
         </template>

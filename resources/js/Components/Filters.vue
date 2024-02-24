@@ -87,9 +87,9 @@ const clear = () => {
 </script>
 
 <template>
-    <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 lg:p-0">
+    <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 sm:p-0">
         <div class="w-full">
-            <div class="grid grid-cols-1 gap-4 lg:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div class="col-span-1 lg:col-span-2">
                     <InputLabel for="item-filter" value="Items" />
                     <TagBox

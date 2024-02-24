@@ -4,12 +4,20 @@ import {Link, router} from '@inertiajs/vue3';
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
+import {ref, watch} from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     photos: Object,
     tags: Object,
     items: Array,
     filters: Object,
+});
+
+const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
+
+watch(showFilters, (value) => {
+    localStorage.setItem('showFilters', value ? 'true' : 'false');
 });
 
 const deletePhoto = (photoId) => {
@@ -32,16 +40,13 @@ const filter = (filters) => {
             </h2>
         </template>
 
-        <div class="py-12">
+        <div class="py-6 lg:py-12">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-                <div>
-                    <Filters
-                        @change="filter"
-                        :tags="tags"
-                        :items="items"
-                        :default-filters="filters"
-                    />
+                <div class="flex flex-row gap-4 px-4 sm:px-0">
+                    <PrimaryButton @click="showFilters = !showFilters">
+                        {{ showFilters ? 'Hide' : 'Show' }} Filters
+                    </PrimaryButton>
 
                     <BulkTag
                         :tags="tags"
@@ -49,7 +54,16 @@ const filter = (filters) => {
                     ></BulkTag>
                 </div>
 
-                <div v-if="photos.data.length" class="mt-4 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
+                <Filters
+                    v-if="showFilters"
+                    @change="filter"
+                    :tags="tags"
+                    :items="items"
+                    :default-filters="filters"
+                    class="mt-6"
+                />
+
+                <div v-if="photos.data.length" class="mt-6 bg-white dark:bg-gray-800 overflow-hidden shadow-xl sm:rounded-lg">
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                             <div
