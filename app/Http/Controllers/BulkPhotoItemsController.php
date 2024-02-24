@@ -4,11 +4,10 @@ namespace App\Http\Controllers;
 
 use App\DTO\BulkPhotoItems;
 use App\Models\Item;
-use Illuminate\Http\JsonResponse;
 
 class BulkPhotoItemsController extends Controller
 {
-    public function store(BulkPhotoItems $bulkPhotoItems): JsonResponse
+    public function store(BulkPhotoItems $bulkPhotoItems)
     {
         $items = Item::query()->find(array_column($bulkPhotoItems->items, 'id'))->keyBy('id');
 
@@ -23,7 +22,5 @@ class BulkPhotoItemsController extends Controller
                 'quantity' => $requestItem->quantity,
             ]);
         }
-
-        return response()->json();
     }
 }

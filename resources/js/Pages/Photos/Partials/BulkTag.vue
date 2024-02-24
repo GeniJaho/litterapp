@@ -1,11 +1,9 @@
 <script setup>
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DialogModal from "@/Components/DialogModal.vue";
 import {useForm} from "@inertiajs/vue3";
 import {ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 import TagBox from "@/Components/TagBox.vue";
 import NewPhotoItem from "@/Pages/Photos/Partials/NewPhotoItem.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
@@ -43,6 +41,7 @@ const updateItem = (item) => {
 const copyItem = (item) => {
     form.items.push({
         ...item,
+        tag_ids: [...item.tag_ids],
         key: Math.floor(Math.random() * 100000) + 1, // random int 1 to 100'000
     });
 };
@@ -56,8 +55,6 @@ const form = useForm({
 
 const confirmUserDeletion = () => {
     confirmingUserDeletion.value = true;
-
-    // setTimeout(() => passwordInput.value.focus(), 250);
 };
 
 const deleteUser = () => {
@@ -93,14 +90,14 @@ const closeModal = () => {
         </template>
 
         <template #content>
-            <div class="mt-4 w-full px-4">
-                <div class="flex flex-row mt-6 md:mt-0">
+            <div class="mt-4 w-full h-full min-h-96 px-4">
+                <div class="flex flex-col md:flex-row mt-6 md:mt-0">
                     <TagBox
-                        class="w-full sm:w-96"
+                        class="w-full md:w-96"
                         :items="items"
                         v-model="selectedItem"
                     ></TagBox>
-                    <div class="ml-4 mt-0.5">
+                    <div class="ml-0 md:ml-4 mt-4 md:mt-0.5 ml-auto">
                         <PrimaryButton
                             class="whitespace-nowrap"
                             @click="addItem"
@@ -116,7 +113,7 @@ const closeModal = () => {
                         Litter Objects
                     </h3>
                     <div class="mt-2">
-                        <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
+                        <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
                             <NewPhotoItem
                                 v-for="item in form.items"
                                 :key="item.key"

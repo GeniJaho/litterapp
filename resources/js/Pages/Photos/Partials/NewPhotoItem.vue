@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
@@ -20,6 +20,17 @@ const selectedEventTag = ref(props.tags.event[0]);
 const selectedStateTag = ref(props.tags.state[0]);
 const selectedContentTag = ref(props.tags.content[0]);
 const selectedSizeTag = ref(props.tags.size[0]);
+
+const tagNames = computed(() => {
+    return item.value.tag_ids.map(function (tagId) {
+        for (const [key, value] of Object.entries(props.tags)) {
+            const tagName = value.find(tag => tag.id === tagId)?.name;
+            if (tagName) {
+                return {id: tagId, name: tagName};
+            }
+        }
+    });
+});
 
 const addTagToItem = (tag) => {
     if (item.value.tag_ids.find(itemTag => itemTag === tag.id)) {
@@ -43,6 +54,10 @@ const emit = defineEmits([
 
 const change = () => {
     emit('change', item.value);
+};
+
+const copyItem = () => {
+    emit('copy-item', item.value);
 };
 </script>
 
@@ -159,14 +174,14 @@ const change = () => {
 
                 <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
-                        v-for="tagId in item.tag_ids"
-                        :key="tagId"
-                        @click="removeTagFromItem(tagId)"
+                        v-for="tag in tagNames"
+                        :key="tag.id"
+                        @click="removeTagFromItem(tag.id)"
                         class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
-                        {{ tagId }}
+                        {{ tag.name }}
                     </span>
                 </div>
             </div>
@@ -214,7 +229,7 @@ const change = () => {
 
             <div class="flex flex-col justify-end">
                 <IconPrimaryButton
-                    @click="$emit('copy-item', item)"
+                    @click="copyItem"
                 >
                     <i class="far fa-fw fa-copy text-xs"></i>
                 </IconPrimaryButton>
