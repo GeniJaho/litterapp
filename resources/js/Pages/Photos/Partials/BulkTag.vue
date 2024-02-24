@@ -9,6 +9,7 @@ import NewPhotoItem from "@/Pages/Photos/Partials/NewPhotoItem.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 
 const props = defineProps({
+    photoIds: Array,
     items: Array,
     tags: Object,
 });
@@ -16,7 +17,7 @@ const props = defineProps({
 const selectedItem = ref(null);
 const showModal = ref(false);
 const form = useForm({
-    photo_ids: [2],
+    photo_ids: props.photoIds,
     items: []
 });
 const message = ref('');
@@ -86,11 +87,12 @@ const openModal = () => {
     <BulkTagModal max-width="7xl" :show="showModal" @close="closeModal">
         <template #header>
             <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                Tag Multiple Photos
+                Tag Multiple Photos ({{ photoIds.length }} selected)
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
                 Add items and tags to multiple photos at once. You can also mark them as picked up, recycled,
                 or being an item with deposit on it.<br>
+                The existing items and tags of the selected photos will not be affected.<br><br>
                 After you have added all the items and tags, click the "Save" button to save the changes.
             </div>
         </template>

@@ -14,11 +14,46 @@ const props = defineProps({
     filters: Object,
 });
 
+const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
+const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
+
+watch(isSelecting, (value) => {
+    localStorage.setItem('isSelecting', value ? 'true' : 'false');
+});
 
 watch(showFilters, (value) => {
     localStorage.setItem('showFilters', value ? 'true' : 'false');
 });
+
+const selectPhoto = (photoId) => {
+    if (! isSelecting.value) {
+        return;
+    }
+
+    if (selectedPhotos.value.includes(photoId)) {
+        selectedPhotos.value = selectedPhotos.value.filter(id => id !== photoId);
+    } else {
+        selectedPhotos.value.push(photoId);
+    }
+
+    localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+};
+
+const toggleSelecting = () => {
+    if (isSelecting.value) {
+        clearSelection();
+        return;
+    }
+
+    isSelecting.value = true;
+};
+
+const clearSelection = () => {
+    isSelecting.value = false;
+    selectedPhotos.value = [];
+    localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+};
 
 const deletePhoto = (photoId) => {
     router.delete(`/photos/${photoId}`, {
@@ -28,6 +63,7 @@ const deletePhoto = (photoId) => {
 };
 
 const filter = (filters) => {
+    clearSelection();
     router.get(window.location.pathname, filters);
 }
 </script>
@@ -48,7 +84,13 @@ const filter = (filters) => {
                         {{ showFilters ? 'Hide' : 'Show' }} Filters
                     </PrimaryButton>
 
+                    <PrimaryButton @click="toggleSelecting">
+                        {{ isSelecting ? 'Clear Selection' : 'Select Photos' }}
+                    </PrimaryButton>
+
                     <BulkTag
+                        v-if="isSelecting && selectedPhotos.length"
+                        :photoIds="selectedPhotos"
                         :tags="tags"
                         :items="items"
                     ></BulkTag>
@@ -69,28 +111,36 @@ const filter = (filters) => {
                             <div
                                 v-for="photo in photos.data"
                                 :key="photo.id"
-                                class="relative"
+                                class="rounded-lg bg-indigo-600 dark:bg-teal-400"
                             >
+                                <div
+                                    class="relative"
+                                    :class="isSelecting && selectedPhotos.includes(photo.id) ? 'scale-[.95]' : ''"
+                                >
+                                    <a
+                                        :href="isSelecting ? null : `/photos/${photo.id}`"
+                                        :class="isSelecting ? 'cursor-cell' : 'cursor-pointer'"
+                                        @click="selectPhoto(photo.id)"
+                                    >
+                                        <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
+                                    </a>
 
-                                <a :href="`/photos/${photo.id}`">
-                                    <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
-                                </a>
-
-                                <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50/30 w-8 h-8 rounded-full">
-                                    <i class="fas fa-tags text-green-500  mt-0.5 ml-0.5"></i>
+                                    <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full">
+                                    <i class="fas fa-tags text-green-700  mt-0.5 ml-0.5"></i>
                                 </span>
 
-                                <IconDangerButton
-                                    class="absolute bottom-2 right-2"
-                                    @click="deletePhoto(photo.id)"
-                                >
-                                    <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                                </IconDangerButton>
-
+                                    <IconDangerButton
+                                        v-if="!isSelecting"
+                                        class="absolute bottom-2 right-2"
+                                        @click="deletePhoto(photo.id)"
+                                    >
+                                        <i class="fas fa-fw fa-trash-alt text-xs"></i>
+                                    </IconDangerButton>
+                                </div>
                             </div>
                         </div>
 
-                        <div v-if="photos.links?.length && photos.last_page > 1" class="flex justify-center space-x-2 my-4">
+                        <div v-if="photos.links?.length && photos.last_page > 1" class="flex justify-center space-x-2 mt-8 mg-4">
                             <div v-for="link in photos.links" :key="link.url">
                                 <Link
                                     v-if="link.url"
