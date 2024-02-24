@@ -26,7 +26,7 @@ test('a user can see their photos', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.full_path', $photoB->full_path)
         ->where('photos.data.0.items_exists', true)
@@ -47,7 +47,7 @@ test('a user can not see another users photos', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->where('photos.data', [])
         ->etc()
     );
@@ -65,7 +65,7 @@ test('a user can filter their photos by items on the photos', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.items_exists', true)
@@ -112,7 +112,7 @@ test('a user can filter their photos by tags on the photo items', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.items_exists', true)
@@ -131,7 +131,7 @@ test('a user can filter their photos by date uploaded from', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->etc()
@@ -149,7 +149,7 @@ test('a user can filter their photos by date uploaded until', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
         ->etc()
@@ -167,7 +167,7 @@ test('a user can filter their photos by the date the photo is taken from', funct
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->etc()
@@ -185,7 +185,7 @@ test('a user can filter their photos by the date the photo is taken until', func
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
         ->etc()
@@ -202,7 +202,7 @@ test('a user can filter their photos by having GPS data or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
         ->etc()
@@ -212,7 +212,7 @@ test('a user can filter their photos by having GPS data or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->etc()
@@ -222,7 +222,7 @@ test('a user can filter their photos by having GPS data or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
@@ -240,7 +240,7 @@ test('a user can filter their photos by having tags or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
         ->etc()
@@ -250,7 +250,7 @@ test('a user can filter their photos by having tags or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
         ->etc()
@@ -260,7 +260,7 @@ test('a user can filter their photos by having tags or not', function () {
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photos')
+        ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
