@@ -62,7 +62,7 @@ const copyItem = () => {
 </script>
 
 <template>
-    <li class="col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
+    <li class="ring ring-inset ring-red-500 col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
         <div class="px-4 py-5 sm:p-6 flex-1">
             <div class="flex items-center justify-between space-x-3">
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">

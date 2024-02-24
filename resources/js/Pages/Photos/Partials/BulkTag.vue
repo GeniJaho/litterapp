@@ -14,6 +14,12 @@ const props = defineProps({
 });
 
 const selectedItem = ref(null);
+const showModal = ref(false);
+const form = useForm({
+    photo_ids: [11, 10],
+    items: []
+});
+const message = ref('');
 
 const addItem = () => {
     form.items.push({
@@ -46,39 +52,39 @@ const copyItem = (item) => {
     });
 };
 
-const confirmingUserDeletion = ref(false);
-
-const form = useForm({
-    photo_ids: [11, 10],
-    items: []
-});
-
-const confirmUserDeletion = () => {
-    confirmingUserDeletion.value = true;
-};
-
-const deleteUser = () => {
+const save = () => {
     form.post(route('bulk-photo-items.store'), {
         preserveScroll: true,
-        onSuccess: () => closeModal(),
-        // onError: () => passwordInput.value.focus(),
+        onSuccess: () => closeModalWithSuccess(),
         onFinish: () => form.reset(),
     });
 };
 
+const closeModalWithSuccess = () => {
+    form.reset();
+    message.value = 'Tagged successfully!';
+
+    setTimeout(() => showModal.value = false, 2000);
+};
+
 const closeModal = () => {
-    confirmingUserDeletion.value = false;
+    showModal.value = false;
 
     form.reset();
+};
+
+const openModal = () => {
+    message.value = '';
+    showModal.value = true;
 };
 </script>
 
 <template>
-    <PrimaryButton @click="confirmUserDeletion">
+    <PrimaryButton @click="openModal">
         Tag Multiple Photos
     </PrimaryButton>
 
-    <BulkTagModal max-width="7xl" :show="confirmingUserDeletion" @close="closeModal">
+    <BulkTagModal max-width="7xl" :show="showModal" @close="closeModal">
         <template #header>
             <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
                 Tag Multiple Photos
@@ -114,15 +120,19 @@ const closeModal = () => {
                     </h3>
                     <div class="mt-2">
                         <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
-                            <NewPhotoItem
-                                v-for="item in form.items"
+                            <div
+                                v-for="(item, index) in form.items"
                                 :key="item.key"
-                                :prop-item="item"
-                                :tags="tags"
-                                @change="updateItem"
-                                @remove-item="removeItem"
-                                @copy-item="copyItem"
-                            />
+                                :class="form.errors[`items.${index - 1}.tag_ids`] ? ' ring-inset ring-red-500' : ''"
+                            >
+                                <NewPhotoItem
+                                    :prop-item="item"
+                                    :tags="tags"
+                                    @change="updateItem"
+                                    @remove-item="removeItem"
+                                    @copy-item="copyItem"
+                                />
+                            </div>
                         </TransitionGroup>
                     </div>
                 </div>
@@ -131,6 +141,9 @@ const closeModal = () => {
         </template>
 
         <template #footer>
+            <div v-if="message" class="flex items-center px-3 text-sm text-gray-700 dark:text-gray-200">
+                {{ message }}
+            </div>
             <SecondaryButton @click="closeModal">
                 Cancel
             </SecondaryButton>
@@ -138,8 +151,8 @@ const closeModal = () => {
             <PrimaryButton
                 class="ml-3"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing"
-                @click="deleteUser"
+                :disabled="form.processing || !form.items.length"
+                @click="save"
             >
                 Save
             </PrimaryButton>
