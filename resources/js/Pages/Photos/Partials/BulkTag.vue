@@ -17,7 +17,6 @@ const props = defineProps({
 const selectedItem = ref(null);
 const showModal = ref(false);
 const form = useForm({
-    photo_ids: props.photoIds,
     items: []
 });
 const message = ref('');
@@ -54,10 +53,15 @@ const copyItem = (item) => {
 };
 
 const save = () => {
-    form.post(route('bulk-photo-items.store'), {
-        preserveScroll: true,
-        onSuccess: () => closeModalWithSuccess(),
-    });
+    form
+        .transform((data) => ({
+            ...data,
+            photo_ids: props.photoIds,
+        }))
+        .post(route('bulk-photo-items.store'), {
+            preserveScroll: true,
+            onSuccess: () => closeModalWithSuccess(),
+        });
 };
 
 const closeModalWithSuccess = () => {
