@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import {ref, computed, onMounted} from 'vue'
 import {
     Combobox,
     ComboboxInput,
@@ -40,6 +40,14 @@ const removeItem = (id) => {
     const index = props.modelValue.findIndex((item) => item.id === id);
     props.modelValue.splice(index, 1);
 }
+
+const input = ref(null);
+
+onMounted(() => {
+    if (props.autofocus) {
+        setTimeout(() => input.value.el?.focus(), 300)
+    }
+})
 </script>
 
 <template>
@@ -52,11 +60,11 @@ const removeItem = (id) => {
             <div class="relative">
                 <div class="relative">
                     <ComboboxInput
+                        ref="input"
                         class="w-full rounded-md border-0 bg-white dark:bg-gray-900 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         :displayValue="(item) => item?.name"
                         @change="query = $event.target.value"
                         @focus="$event.target.select()"
-                        :autofocus="autofocus"
                         autocomplete="off"
                     />
                     <ComboboxButton

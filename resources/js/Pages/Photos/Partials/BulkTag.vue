@@ -104,8 +104,9 @@ const openModal = () => {
                         class="w-full md:w-96"
                         :items="items"
                         v-model="selectedItem"
+                        :autofocus="true"
                     ></TagBox>
-                    <div class="ml-0 md:ml-4 mt-4 md:mt-0.5 ml-auto">
+                    <div class="md:ml-4 mt-4 md:mt-0.5 ml-auto">
                         <PrimaryButton
                             class="whitespace-nowrap"
                             @click="addItem"
