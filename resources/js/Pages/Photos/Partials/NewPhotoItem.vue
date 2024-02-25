@@ -78,7 +78,8 @@ const copyItem = () => {
             <div class="mt-6">
                 <div class="flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.material"
                         v-model="selectedMaterialTag"
                     ></TagBox>
@@ -94,7 +95,8 @@ const copyItem = () => {
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.brand"
                         v-model="selectedBrandTag"
                     ></TagBox>
@@ -110,7 +112,8 @@ const copyItem = () => {
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.event"
                         v-model="selectedEventTag"
                     ></TagBox>
@@ -126,7 +129,8 @@ const copyItem = () => {
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.size"
                         v-model="selectedSizeTag"
                     ></TagBox>
@@ -142,7 +146,8 @@ const copyItem = () => {
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.state"
                         v-model="selectedStateTag"
                     ></TagBox>
@@ -158,7 +163,8 @@ const copyItem = () => {
 
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
+                        class="w-full"
+                        dropdownWidth="w-full"
                         :items="tags.content"
                         v-model="selectedContentTag"
                     ></TagBox>
