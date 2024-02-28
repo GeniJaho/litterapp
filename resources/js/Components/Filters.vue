@@ -202,7 +202,7 @@ const clear = () => {
                         v-model="hasGPS"
                         :options="yesOrNoOptions"
                         id="has-gps"
-                        class="block w-full"
+                        class="block w-full mt-1"
                     ></SelectInput>
                 </div>
                 <div>
@@ -211,7 +211,7 @@ const clear = () => {
                         v-model="isTagged"
                         :options="yesOrNoOptions"
                         id="is-tagged"
-                        class="block w-full"
+                        class="block w-full mt-1"
                     ></SelectInput>
                 </div>
             </div>

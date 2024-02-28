@@ -20,7 +20,7 @@ const emit = defineEmits(['update:modelValue'])
         @update:modelValue="value => emit('update:modelValue', value)"
         by="label"
     >
-        <div class="relative mt-1">
+        <div class="relative">
             <ListboxButton
                 class="relative w-full cursor-default rounded-md bg-white dark:bg-gray-900 py-1.5 pl-3 pr-10 text-left text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6"
             >

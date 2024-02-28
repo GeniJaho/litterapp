@@ -10,7 +10,7 @@ use Spatie\LaravelData\Data;
 class BulkItem extends Data
 {
     /**
-     * @param int[] $tag_ids
+     * @param  int[]  $tag_ids
      */
     public function __construct(
         #[Exists('items', 'id')]
@@ -21,7 +21,7 @@ class BulkItem extends Data
         #[Min(1), Max(1000)]
         public int $quantity,
         #[Exists('tags', 'id')]
-        public ?array $tag_ids = []
+        public ?array $tag_ids = [],
     ) {
     }
 

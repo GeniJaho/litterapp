@@ -34,7 +34,11 @@ class PhotosController extends Controller
             $user->save();
         }
 
-        $photos = $filterPhotosAction->run($user);
+        $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96])
+            ? $request->integer('per_page')
+            : 12;
+
+        $photos = $filterPhotosAction->run($user, $perPage);
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 

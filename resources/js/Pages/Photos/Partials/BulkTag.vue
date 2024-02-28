@@ -68,7 +68,7 @@ const closeModalWithSuccess = () => {
     form.reset();
     message.value = 'Tagged successfully!';
 
-    setTimeout(() => showModal.value = false, 2000);
+    setTimeout(() => showModal.value = false, 3000);
 };
 
 const closeModal = () => {
