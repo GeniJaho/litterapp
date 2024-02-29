@@ -114,16 +114,16 @@ const copyItem = () => {
                     <TagBox
                         class="w-full"
                         dropdownWidth="w-full"
-                        :items="tags.event"
-                        v-model="selectedEventTag"
+                        :items="tags.content"
+                        v-model="selectedContentTag"
                     ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="addTagToItem(selectedEventTag)"
-                        :disabled="!selectedEventTag"
+                        @click="addTagToItem(selectedContentTag)"
+                        :disabled="!selectedContentTag"
                     >
-                        Add Event
+                        Add Content
                     </PrimaryButton>
                 </div>
 
@@ -165,16 +165,16 @@ const copyItem = () => {
                     <TagBox
                         class="w-full"
                         dropdownWidth="w-full"
-                        :items="tags.content"
-                        v-model="selectedContentTag"
+                        :items="tags.event"
+                        v-model="selectedEventTag"
                     ></TagBox>
 
                     <PrimaryButton
                         class="whitespace-nowrap"
-                        @click="addTagToItem(selectedContentTag)"
-                        :disabled="!selectedContentTag"
+                        @click="addTagToItem(selectedEventTag)"
+                        :disabled="!selectedEventTag"
                     >
-                        Add Content
+                        Add Event
                     </PrimaryButton>
                 </div>
 
