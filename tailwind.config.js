@@ -25,8 +25,10 @@ export default {
             colors: {
                 'mainWhite': '#FDFFFC',
                 'darkBlue': '#1F2937',
+                'bluee': '#113946',
                 'turqoFocus': '#03DCCD',
                 'turqo': '#04F1E1',
+
             },
             letterSpacing: {
                 tightest: '-.075em',

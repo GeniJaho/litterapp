@@ -37,18 +37,18 @@ const logout = () => {
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
             <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto pr-4 pb-6 md:pb-0 pt-6 md:pt-12 sm:px-6 lg:px-20">
+                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-40">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center mt-6 md:mt-0">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-14 px-4"/>
+                                    <ApplicationMark class="block h-14"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden sm:space-x-6 lg:space-x-24 sm:-my-px lg:ml-14 md:flex">
+                            <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
@@ -58,7 +58,7 @@ const logout = () => {
                                 <NavLink :href="route('upload')" :active="route().current('upload')">
                                     Upload
                                 </NavLink>
-                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-gray-300 dark:hover:border-gray-700 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
+                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
                                     Docs
                                 </a>
                             </div>

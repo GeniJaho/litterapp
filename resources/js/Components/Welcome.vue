@@ -6,16 +6,16 @@ import {Link} from "@inertiajs/vue3";
 <template>
 
     <div>
-        <div class="flex flex-col px-6  lg:px-40 space-y-12 bg-darkBlue">
+        <div class="flex flex-col px-12 lg:px-40 space-y-12 bg-mainWhite dark:bg-darkBlue ">
             <div class="mt-12">
-                <h1 class="text-xl leading-8 font-black tracking-widest text-mainWhite">
+                <h1 class="text-xl leading-8 font-black tracking-widest dark:text-mainWhite text-darkBlue">
                     Welcome to LitterApp!
                 </h1>
                 <div class="mt-16 md:mt-16">
-                    <div class="text-5xl md:text-6xl font-normal leading-12 tracking-widest text-mainWhite">From
+                    <div class="tracking-widest md:leading-12 text-4xl md:text-6xl dark:text-mainWhite text-darkBlue">From
                         <span class="font-black tracking-widest">waste to data</span>, step by step
                     </div>
-                    <div class="text-base font-normal tracking-widest text-mainWhite pt-12 pb-4">I
+                    <div class="text-base font-normal tracking-widest dark:text-mainWhite text-darkBlue pt-12 pb-4">I
                         already know the story
                     </div>
                     <Link :href="route('my-photos')">
@@ -27,8 +27,8 @@ import {Link} from "@inertiajs/vue3";
                 </div>
 
                 <div class="flex flex-col items-center pt-24 pb-6 md:pt-26">
-                    <div class="h-2 w-2 bg-mainWhite rounded-full"></div>
-                    <div class="text-2xl leading-8 font-black tracking-widest text-mainWhite pt-8">A
+                    <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
+                    <div class="text-center text-2xl leading-8 font-black tracking-widest dark:text-mainWhite text-darkBlue pt-8">A
                         common procedure
                     </div>
                 </div>
@@ -38,15 +38,15 @@ import {Link} from "@inertiajs/vue3";
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
                     <img src="/img/first-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover object-cover"/>
                     <div>
-                        <div class="tracking-wider text-mainWhite px-6">
+                        <div class="tracking-wider dark:text-mainWhite text-darkBlue lg:pl-4 lg:pr-24">
                             <div class="text-3xl"># 1 <strong>Tons</strong> of litter photos.</div>
-                            <div class="text-mainWhite text-xs pt-2">
+                            <div class="dark:text-mainWhite text-darkBlue font-black text-xs pt-6">
                                 Take a photo, either from your phone or desktop.
                             </div>
-                            <div class="text-mainWhite font-bold text-xs pt-4">
+                            <div class="dark:text-mainWhite text-darkBlue text-xs pt-4">
                                 GPS location is recommended. But not required to upload photos.
                             </div>
-                            <div class="text-mainWhite text-xs">
+                            <div class="dark:text-mainWhite text-darkBlue text-xs pt-4">
                                 Allowing geolocation detection in your settings, you can contribute to build up the
                                 world map of our litter, it's open source.
                             </div>
@@ -57,16 +57,15 @@ import {Link} from "@inertiajs/vue3";
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
                     <img src="/img/second-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
                     <div>
-                        <div class="tracking-wider text-mainWhite px-6">
+                        <div class="tracking-wider dark:text-mainWhite text-darkBlue lg:pl-4 lg:pr-24">
                             <div class="text-3xl"># 2 <strong>Upload</strong> photos.</div>
-                            <div class="text-mainWhite text-xs pt-2">
-                                Depending on your preferences, you can get creative using the LitterApp platform
+                            <div class="dark:text-mainWhite text-darkBlue font-bold text-xs pt-6">
+                                You can get creative using the LitterApp
+                                platform.
                             </div>
-                            <div class="text-mainWhite font-bold text-xs pt-4">
-                                Our app is coming soon!
-                            </div>
-                            <div class="text-mainWhite text-xs">
-                                Meanwhile you can use the website on your computer or phone to register data.
+                            <div class="dark:text-mainWhite text-darkBlue text-xs pt-4">
+                                Our app is coming soon.
+                                Meanwhile you can use a web browser on your computer or phone to start transforming your data.
                             </div>
                         </div>
                     </div>
@@ -75,22 +74,21 @@ import {Link} from "@inertiajs/vue3";
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
                     <img src="/img/third-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
                     <div>
-                        <div class="tracking-wider text-mainWhite px-6">
-                            <div class="text-3xl"># 3 <strong>Tag!</strong> You're it.</div>
-                            <div class="text-mainWhite text-xs pt-2">
+                        <div class="dark:text-mainWhite text-darkBlue lg:pl-4 lg:pr-24">
+                            <div class="tracking-wider text-3xl"># 3 <strong>Tag!</strong> You're it.</div>
+                            <div class="tracking-wider dark:text-mainWhite text-darkBlue font-bold text-xs pt-2">
                                 Data registration has some rules to follow... Make sure you know what you're doing.
                             </div>
-                            <div class="text-mainWhite text-xs pt-4">
-                                When tagging your photos, it's important to consider the <strong>accuracy of the
-                                data</strong>. It's possible to add any details necessary from one or more photos,
-                                always make sure data
-                                is accurate, that's why got this wonderful feature to <strong>re-edit the tags in case of a mistake</strong>.
+                            <div class="tracking-wider dark:text-mainWhite text-darkBlue text-xs pt-4">
+                                When tagging your photos, it's important to consider the accuracy of the
+                                data. It's possible to add any details necessary from one or more photos,
+                                always ensure that your data  is precise, that's why got this wonderful feature to re-edit the tags in case of a mistake.
                             </div>
-                            <div class="text-mainWhite text-xs pt-4 pb-4">
-                                We got tutorials made with love. Find more about tagging:
+                            <div class="tracking-wider dark:text-mainWhite text-darkBlue text-xs pt-8 pb-4">
+                                Watch our demo tutorial explaining more about tagging:
                             </div>
                             <button
-                                class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                                class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                                 Go to youtube
                             </button>
                         </div>
@@ -99,63 +97,75 @@ import {Link} from "@inertiajs/vue3";
 
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
                     <img src="/img/fourth-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
-                    <div class="tracking-wider text-mainWhite px-6">
-                        <div class="text-mainWhite text-2xl">
+                    <div class="dark:text-mainWhite text-darkBlue lg:pl-4 lg:pr-24">
+                        <div class="tracking-wider dark:text-mainWhite text-darkBlue text-2xl">
                             <strong># 4 See litter </strong>at the Global Map.
                         </div>
-                        <div class="text-mainWhite text-xs pt-4">
-                            Enable page global map for live feed, the possibilities are endless.
+                        <div class="tracking-wider dark:text-mainWhite text-darkBlue font-bold text-xs pt-4">
+                            If we all tagged our litter, the world map
+                            would be completly red.
                         </div>
-                        <div class="text-mainWhite text-xs pt-4 pb-4">
-                            We got tutorials made with love. Find more about Graffana:
+                        <div class="tracking-wide dark:text-mainWhite text-darkBlue font-bold text-xs pt-4">
+                            Enable page global map for live feed, the possibilities are endless.
+                            <span class="dark:text-mainWhite text-darkBlue font-light text-xs pt-4 pb-4">
+                            If you want to add up to our
+                            Global Map, find out more about how to work with Grafana:
+                        </span>
+                        </div>
+                        <div class="dark:text-mainWhite text-darkBlue text-xs pt-4 pb-4">
+                            Watch our demo tutorial, made with love:
                         </div>
                         <button
-                            class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                            class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                             Go to youtube
                         </button>
                     </div>
                 </div>
             </div>
 
-            <div class="py-12 md:py-32">
-                <div class="text-6xl font-normal leading-12 tracking-widest text-mainWhite">
+            <div class="flex flex-col space-y-2 items-center pt-24 pb-6 md:pt-26">
+                <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
+                <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
+                <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
+            </div>
+
+            <div class="py-12 md:pb-32">
+                <div class="tracking-widest md:leading-12 text-4xl md:text-6xl dark:text-mainWhite text-darkBlue">
                     Capturing data is <span class="font-black">fun</span>, and crucially <span class="font-black">useful</span>.
                 </div>
                 <div class="pt-12">
-                    <div class="tracking-widest text-mainWhite text-lg pb-4">
+                    <div class="tracking-widest dark:text-mainWhite text-darkBlue text-lg pb-4">
                         Let's make more success stories:
                     </div>
                     <button
-                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                         Our stories
                     </button>
                 </div>
                 <div class="pt-10">
-                    <div class="tracking-widest text-mainWhite text-lg pb-4">
-                        Read about our Vision with this project:
+                    <div class="tracking-widest dark:text-mainWhite text-darkBlue text-lg pb-4">
+                        Read about our Mission and join the ride 😎
                     </div>
                     <button
-                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                         Our Mission
                     </button>
                 </div>
             </div>
         </div>
-        <div class="md:px-40 flex items-center bg-mainWhite">
-            <div class="ml-6 leading-12 text-darkBlue py-24 md:py-40">
-                <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-darkBlue">Communities are rising.</div>
-                <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-darkBlue">Let's build, <span class="font-black">together</span>.</div>
+
+        <div class="px-12 lg:px-40 flex items-center bg-darkBlue dark:bg-mainWhite">
+            <div class="leading-12 text-mainWhite dark:text-darkBlue py-20 md:py-32">
+                <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-mainWhite dark:text-darkBlue">The Global community is rising.</div>
+                <div class="tracking-widest md:leading-12 text-4xl md:text-6xl text-mainWhite dark:text-darkBlue">Let's <span class="font-black">tag litter,</span> together.</div>
                 <div class="pt-10">
-                    <div class="tracking-widest  text-darkBlue text-lg pb-2">
-                        Interested? Join our <strong>slack workspace:</strong>
+                    <div class="tracking-widest text-mainWhite dark:text-darkBlue text-lg pb-2">
+                        Interested? Join our slack workspace:
                     </div>
                     <button
-                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-gray-700 dark:hover:bg-white focus:bg-gray-700 dark:focus:bg-white active:bg-gray-900 dark:active:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800 transition ease-in-out duration-150 uppercase">
+                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                         Go to litterapp
                     </button>
-                    <div class="tracking-wider text-darkBlue text-xs pt-2">
-                        Disclaimer: Rabbit hole warning, there's a whole story behind it <span class="text-xl">🐇</span>
-                    </div>
                 </div>
             </div>
         </div>
