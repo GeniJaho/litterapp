@@ -36,7 +36,7 @@ test('a user can see the photo tagging page', function () {
     $response->assertOk();
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
-        ->component('Photo/Show')
+        ->component('Photos/Show')
         ->where('photoId', $photo->id)
         ->where('tags', [
             $brand->slug => $brandTags->sortBy('name')->values()->toArray(),

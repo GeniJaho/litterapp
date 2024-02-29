@@ -63,7 +63,7 @@ Route::middleware([
     Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
-    Route::post('/photos/items/{item}', [BulkPhotoItemsController::class, 'store']);
+    Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
     Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);
     Route::delete('/photo-items/{photoItem}', [PhotoItemsController::class, 'destroy']);

@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\Tag;
 use App\Models\User;
 
 use function Pest\Laravel\assertDatabaseCount;
@@ -14,13 +15,18 @@ test('a user can add items to many photos at once', function () {
     $existingItem = Item::factory()->create();
     $photoA->items()->attach($existingItem);
     $newItem = Item::factory()->create();
+    $tag = Tag::factory()->create();
 
-    $response = $this->actingAs($user)->postJson("/photos/items/{$newItem->id}", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photoA->id, $photoB->id],
-        'picked_up' => true,
-        'recycled' => true,
-        'deposit' => true,
-        'quantity' => 2,
+        'items' => [[
+            'id' => $newItem->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+            'tag_ids' => [$tag->id],
+        ]],
     ]);
 
     $response->assertOk();
@@ -45,6 +51,15 @@ test('a user can add items to many photos at once', function () {
         'deposit' => true,
         'quantity' => 2,
     ]);
+
+    expect($photoA->photoItems->first()->tags()->get())
+        ->toHaveCount(0);
+    expect($photoA->photoItems->last()->tags()->get())
+        ->toHaveCount(1)
+        ->first()->id->toBe($tag->id);
+    expect($photoB->photoItems->last()->tags()->get())
+        ->toHaveCount(1)
+        ->first()->id->toBe($tag->id);
 });
 
 test('a user can add an item more than once to their photos', function () {
@@ -55,12 +70,15 @@ test('a user can add an item more than once to their photos', function () {
     $photoB = Photo::factory()->create(['user_id' => $user->id]);
     $photoB->items()->attach($existingItem);
 
-    $response = $this->actingAs($user)->postJson("/photos/items/{$existingItem->id}", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photoA->id, $photoB->id],
-        'picked_up' => true,
-        'recycled' => true,
-        'deposit' => true,
-        'quantity' => 1,
+        'items' => [[
+            'id' => $existingItem->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
     ]);
 
     $response->assertOk();
@@ -69,35 +87,101 @@ test('a user can add an item more than once to their photos', function () {
     expect($photoB->items->count())->toBe(2);
 });
 
-test('the request is validated', function ($key, $value) {
+test('the request is validated', function ($key, $error, $value) {
     $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
     $data = [
-        'photo_ids' => [1],
-        'picked_up' => true,
-        'recycled' => true,
-        'deposit' => true,
-        'quantity' => 2,
-        ...[$key => $value],
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+            ...[$key => $value],
+        ]],
     ];
 
-    $response = $this->actingAs($user)->postJson("/photos/items/{$item->id}", $data);
+    $response = $this->actingAs($user)->postJson('/photos/items', $data);
 
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors($key);
+    $response->assertJsonValidationErrors($error);
 })->with([
-    'photo_ids is required' => ['photo_ids', null],
-    'photo_ids must be an array' => ['photo_ids', 'string'],
-    'picked up is required' => ['picked_up', null],
-    'picked up must be a boolean' => ['picked_up', 'string'],
-    'recycled is required' => ['recycled', null],
-    'recycled must be a boolean' => ['recycled', 'string'],
-    'deposit is required' => ['deposit', null],
-    'deposit must be a boolean' => ['deposit', 'string'],
-    'quantity is required' => ['quantity', null],
-    'quantity must be an integer' => ['quantity', 'string'],
-    'quantity must be at least 1' => ['quantity', 0],
-    'quantity may not be greater than 1000' => ['quantity', 1001],
+    'picked up is required' => ['picked_up', 'items.0.picked_up', null],
+    'picked up must be a boolean' => ['picked_up', 'items.0.picked_up', 'string'],
+    'recycled is required' => ['recycled', 'items.0.recycled', null],
+    'recycled must be a boolean' => ['recycled', 'items.0.recycled', 'string'],
+    'deposit is required' => ['deposit', 'items.0.deposit', null],
+    'deposit must be a boolean' => ['deposit', 'items.0.deposit', 'string'],
+    'quantity is required' => ['quantity', 'items.0.quantity', null],
+    'quantity must be an integer' => ['quantity', 'items.0.quantity', 'string'],
+    'quantity must be at least 1' => ['quantity', 'items.0.quantity', 0],
+    'quantity may not be greater than 1000' => ['quantity', 'items.0.quantity', 1001],
+]);
+
+test('the request items must exist', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => 999,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+        ]],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('items.0.id');
+});
+
+test('the request tags must exist', function () {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+            'tag_ids' => [999],
+        ]],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('items.0.tag_ids');
+});
+
+test('the photo ids are validated', function ($photoIds) {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+    $data = [
+        'photo_ids' => $photoIds,
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 2,
+        ]],
+    ];
+
+    $response = $this->actingAs($user)->postJson('/photos/items', $data);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('photo_ids');
+})->with([
+    'photo_ids is required' => [null],
+    'photo_ids must be an array' => ['string'],
 ]);
 
 test('a user can not add an item to another users photo', function () {
@@ -105,8 +189,15 @@ test('a user can not add an item to another users photo', function () {
     $photo = Photo::factory()->create();
     $item = Item::factory()->create();
 
-    $response = $this->actingAs($user)->postJson("/photos/items/{$item->id}", [
+    $response = $this->actingAs($user)->postJson('/photos/items', [
         'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
     ]);
 
     $response->assertStatus(422);

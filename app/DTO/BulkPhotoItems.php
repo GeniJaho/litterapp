@@ -1,18 +1,27 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\DTO;
 
 use App\Models\Photo;
 use Closure;
-use Illuminate\Contracts\Validation\ValidationRule;
-use Illuminate\Foundation\Http\FormRequest;
+use Spatie\LaravelData\Data;
 
-class StoreBulkPhotoItemRequest extends FormRequest
+class BulkPhotoItems extends Data
 {
     /**
-     * @return array<string, ValidationRule|array<int, mixed>|string>
+     * @param  int[]  $photo_ids
+     * @param  BulkItem[]  $items
      */
-    public function rules(): array
+    public function __construct(
+        public array $photo_ids,
+        public array $items = [],
+    ) {
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function rules(): array
     {
         return [
             'photo_ids' => [
@@ -34,10 +43,18 @@ class StoreBulkPhotoItemRequest extends FormRequest
                 },
             ],
             'photo_ids.*' => ['required', 'exists:photos,id'],
-            'picked_up' => 'required|boolean',
-            'recycled' => 'required|boolean',
-            'deposit' => 'required|boolean',
-            'quantity' => 'required|integer|min:1|max:1000',
+        ];
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function messages(): array
+    {
+        return [
+            'photo_ids.required' => 'You must select at least one photo.',
+            'photo_ids.*.required' => 'You must select at least one photo.',
+            'photo_ids.*.exists' => 'The selected photo #:position does not exist.',
         ];
     }
 }

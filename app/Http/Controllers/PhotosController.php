@@ -34,11 +34,15 @@ class PhotosController extends Controller
             $user->save();
         }
 
-        $photos = $filterPhotosAction->run($user);
+        $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96])
+            ? $request->integer('per_page')
+            : 12;
+
+        $photos = $filterPhotosAction->run($user, $perPage);
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
-        return Inertia::render('Photos', [
+        return Inertia::render('Photos/Index', [
             'photos' => $photos,
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
@@ -60,7 +64,7 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
 
-            return Inertia::render('Photo/Show', [
+            return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],

@@ -73,7 +73,7 @@
             "rector"
         ],
         "phpstan": [
-            "phpstan"
+            "phpstan --memory-limit=1G"
         ],
         "qa": [
             "rector",

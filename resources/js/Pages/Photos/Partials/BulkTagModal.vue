@@ -82,8 +82,18 @@ const maxWidthClass = computed(() => {
                     leave-from-class="opacity-100 translate-y-0 sm:scale-100"
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                    <div v-show="show" class="mb-6 bg-white dark:bg-gray-800 rounded-lg overflow-hidden shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
-                        <slot v-if="show" />
+                    <div v-show="show" class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
+                        <div v-if="show" class="rounded-lg">
+                            <slot name="header" />
+
+                            <div class="mt-4 px-6 py-4 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
+                                <slot name="content" />
+                            </div>
+
+                            <div class="flex flex-row justify-end rounded-b-lg px-6 py-4 bg-gray-100 dark:bg-gray-700 text-right">
+                                <slot name="footer" />
+                            </div>
+                        </div>
                     </div>
                 </transition>
             </div>

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, onUnmounted, ref} from "vue";
-import PhotoItem from "@/Pages/Photo/PhotoItem.vue";
+import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
