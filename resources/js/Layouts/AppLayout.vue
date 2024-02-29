@@ -35,20 +35,20 @@ const logout = () => {
         <Banner/>
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-            <nav class="bg-white dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700">
+            <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
-                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-40">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
-                            <div class="shrink-0 flex items-center">
+                            <div class="shrink-0 flex items-center mt-6 md:mt-0">
                                 <Link :href="route('dashboard')">
-                                    <ApplicationMark class="block h-9 w-auto"/>
+                                    <ApplicationMark class="block h-14"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
+                            <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
                                 <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
                                     Dashboard
                                 </NavLink>
@@ -58,13 +58,13 @@ const logout = () => {
                                 <NavLink :href="route('upload')" :active="route().current('upload')">
                                     Upload
                                 </NavLink>
-                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-2 border-transparent text-sm font-medium leading-5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300 hover:border-gray-300 dark:hover:border-gray-700 focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
+                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
                                     Docs
                                 </a>
                             </div>
                         </div>
 
-                        <div class="hidden sm:flex sm:items-center sm:ml-6">
+                        <div class="hidden md:flex md:items-center md:ml-6">
                             <div class="ml-3 relative">
                                 <ThemeSwitcher/>
                             </div>
@@ -197,15 +197,15 @@ const logout = () => {
                             </div>
                         </div>
 
-                        <div class="-mr-2 flex items-center sm:hidden">
+                        <div class="-mr-2 flex items-center md:hidden">
                             <ThemeSwitcher/>
 
                             <!-- Hamburger -->
                             <button
-                                class="ml-2 inline-flex items-center justify-center p-2 rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-900 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-900 focus:text-gray-500 dark:focus:text-gray-400 transition duration-150 ease-in-out"
+                                class="ml-2 inline-flex items-center justify-center p-1 rounded-md text-darkBlue hover:text-slate-900 hover:bg-mainWhite hover:opacity-75 focus:outline-none focus:bg-mainWhite focus:text-slate-900 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = ! showingNavigationDropdown">
                                 <svg
-                                    class="h-6 w-6"
+                                    class="h-10 w-10 font-black"
                                     stroke="currentColor"
                                     fill="none"
                                     viewBox="0 0 24 24"
@@ -230,7 +230,7 @@ const logout = () => {
                     </div>
                 </div>
 
-                <!-- Responsive Navigation Menu -->
+                <!-- Responsive Navigation Menu MOBILEEEEEE-->
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
@@ -243,7 +243,7 @@ const logout = () => {
                         <ResponsiveNavLink :href="route('upload')" :active="route().current('upload')">
                             Upload
                         </ResponsiveNavLink>
-                        <a :href="route('docs')" target="_blank" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <a :href="route('docs')" target="_blank" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
                             Docs
                         </a>
                     </div>
@@ -261,7 +261,7 @@ const logout = () => {
                                 <div class="font-medium text-base text-gray-800 dark:text-gray-200">
                                     {{ $page.props.auth.user.name }}
                                 </div>
-                                <div class="font-medium text-sm text-gray-500">
+                                <div class="font-medium text-sm text-slate-700">
                                     {{ $page.props.auth.user.email }}
                                 </div>
                             </div>
@@ -338,14 +338,14 @@ const logout = () => {
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class="bg-white dark:bg-gray-800 shadow">
+            <header v-if="$slots.header" class="bg-darkBlue dark:bg-darkBlue shadow">
                 <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-                    <slot name="header"/>
+<!--                    <slot name="header"/>-->
                 </div>
             </header>
 
             <!-- Page Content -->
-            <main>
+            <main class="">
                 <slot/>
             </main>
         </div>
