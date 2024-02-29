@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -70,6 +71,24 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             'admin@litterhero.com',
             'admin@litterapp.com',
         ]);
+    }
+
+    /**
+     * Update the user's profile photo.
+     */
+    public function updateProfilePhoto(UploadedFile $photo, string $storagePath = 'profile-photos'): void
+    {
+        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
+            $this->forceFill([
+                'profile_photo_path' => $photo->store(
+                    $storagePath, ['disk' => $this->profilePhotoDisk()]
+                ),
+            ])->save();
+
+            if ($previous) {
+                Storage::disk($this->profilePhotoDisk())->delete($previous);
+            }
+        });
     }
 
     /**

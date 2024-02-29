@@ -47,10 +47,11 @@ const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
 };
 
-const addItem = () => {
+const addItems = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_id: selectedItem.value.id,
+        item_ids: [selectedItem.value.id],
     }).then(() => {
+        selectedItem.value = null;
         getPhoto();
     });
 };
@@ -95,6 +96,14 @@ const toggleItemPickedUp = debounce((photoItemId, pickedUp) => {
 const toggleItemRecycled = debounce((photoItemId, recycled) => {
     axios.post(`/photo-items/${photoItemId}`, {
         recycled: recycled,
+    }).then(() => {
+        getPhoto();
+    });
+}, 1000, {leading: true, trailing: true});
+
+const toggleItemDeposit = debounce((photoItemId, deposit) => {
+    axios.post(`/photo-items/${photoItemId}`, {
+        deposit: deposit,
     }).then(() => {
         getPhoto();
     });
@@ -174,13 +183,15 @@ const onKeyDown = (event) => {
                                 :items="items"
                                 v-model="selectedItem"
                             ></TagBox>
-                            <PrimaryButton
-                                class="whitespace-nowrap ml-4"
-                                @click="addItem"
-                                :disabled="!selectedItem"
-                            >
-                                Add Object
-                            </PrimaryButton>
+                            <div class="ml-4 mt-0.5">
+                                <PrimaryButton
+                                    class="whitespace-nowrap"
+                                    @click="addItems"
+                                    :disabled="!selectedItem"
+                                >
+                                    Add Object
+                                </PrimaryButton>
+                            </div>
                         </div>
 
                         <div class="mt-8" v-if="photoItems.length">
@@ -200,6 +211,7 @@ const onKeyDown = (event) => {
                                         @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"
                                         @toggle-recycled="toggleItemRecycled"
+                                        @toggle-deposit="toggleItemDeposit"
                                         @update-quantity="updateItemQuantity"
                                     />
                                 </TransitionGroup>

@@ -3,11 +3,13 @@
 /public/build
 /public/hot
 /public/storage
+/public/api-docs
 /storage/*.key
 /storage/pint.cache
 /storage/rector/cache
 /storage/phpstan
 /vendor
+/.scribe
 .env
 .env.backup
 .env.production

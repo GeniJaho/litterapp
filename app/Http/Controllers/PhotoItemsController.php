@@ -20,9 +20,10 @@ class PhotoItemsController extends Controller
             abort(404);
         }
 
-        $photo->items()->attach($request->item_id, [
+        $photo->items()->attach($request->item_ids, [
             'picked_up' => $user->settings->picked_up_by_default,
             'recycled' => $user->settings->recycled_by_default,
+            'deposit' => $user->settings->deposit_by_default,
         ]);
 
         return response()->json();
@@ -44,6 +45,10 @@ class PhotoItemsController extends Controller
 
         if ($request->filled('recycled')) {
             $photoItem->recycled = $request->recycled;
+        }
+
+        if ($request->filled('deposit')) {
+            $photoItem->deposit = $request->deposit;
         }
 
         $photoItem->save();

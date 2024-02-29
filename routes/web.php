@@ -3,6 +3,7 @@
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
+use App\Http\Controllers\BulkPhotoItemsController;
 use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
@@ -62,6 +63,7 @@ Route::middleware([
     Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
+    Route::post('/photos/items/{item}', [BulkPhotoItemsController::class, 'store']);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
     Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);
     Route::delete('/photo-items/{photoItem}', [PhotoItemsController::class, 'destroy']);

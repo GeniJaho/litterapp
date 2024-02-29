@@ -38,12 +38,14 @@ RUN apt-get update && apt-get install -y nodejs
 RUN set -eux; \
 	docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
 	docker-php-ext-configure intl; \
+	docker-php-ext-configure pcntl --enable-pcntl; \
 	docker-php-ext-configure mysqli --with-mysqli=mysqlnd; \
 	docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install -j "$(nproc)" \
 		gd \
 		intl \
+		pcntl \
 		mysqli \
 		opcache \
 		pdo_mysql \

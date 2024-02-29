@@ -47,6 +47,7 @@ class GenerateRandomPhotos extends Command
                     'item_id' => random_int(1, 300),
                     'picked_up' => 0,
                     'recycled' => 0,
+                    'deposit' => 0,
                     'quantity' => 1,
                     'created_at' => $now,
                     'updated_at' => $now,

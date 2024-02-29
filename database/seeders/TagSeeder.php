@@ -15,10 +15,16 @@ class TagSeeder extends Seeder
         $brand = TagType::query()->firstOrCreate(['name' => 'Brand', 'slug' => 'brand']);
         $material = TagType::query()->firstOrCreate(['name' => 'Material', 'slug' => 'material']);
         $event = TagType::query()->firstOrCreate(['name' => 'Event', 'slug' => 'event']);
+        $state = TagType::query()->firstOrCreate(['name' => 'State', 'slug' => 'state']);
+        $content = TagType::query()->firstOrCreate(['name' => 'Content', 'slug' => 'content']);
+        $size = TagType::query()->firstOrCreate(['name' => 'Size', 'slug' => 'size']);
 
         Tag::query()->insertOrIgnore($this->format($this->getEvents(), $event));
         Tag::query()->insertOrIgnore($this->format($this->getBrands(), $brand));
         Tag::query()->insertOrIgnore($this->format($this->getMaterials(), $material));
+        Tag::query()->insertOrIgnore($this->format($this->getStates(), $state));
+        Tag::query()->insertOrIgnore($this->format($this->getContents(), $content));
+        Tag::query()->insertOrIgnore($this->format($this->getSizes(), $size));
     }
 
     private function format(array $tags, Model $type): array
@@ -49,13 +55,16 @@ class TagSeeder extends Seeder
             'CornishSplicedTreasureHunt-2024-04',
             'CornishSplicedTreasureHunt-2024-05',
             'CornishSplicedTreasureHunt-2024-06',
+            'FastFoodMonitoring',
+            'LandelijkeOpschoonDag-2024',
             'NoordzeeKanaal-IJ-2024',
             'Ospar-100m',
             'Ospar-1000m',
-            'OTHER (For an Event that is not in the picklist)',
+            'OTHER (Please add this missing event to the picklist)',
             'PeukMeuk-2024',
             'PlasticAvengers-Bakzeil',
             'RedBullLitter',
+            'SchoneRivieren-2024',
             'ShowYourImpact',
             'ShowYourImpact_DeAfvalraperBladel',
             'ShowYourImpact_DeGrachtWacht',
@@ -76,9 +85,11 @@ class TagSeeder extends Seeder
             'Burlap',
             'Cardboard',
             'Cellulose Acetate Fiber',
-            'Ceramic',
+            'Ceramic/Pottery',
+            'Cocktail',
             'Copper',
             'Fiberglass',
+            'Foam',
             'Glass',
             'Iron or Steel',
             'Latex',
@@ -86,9 +97,12 @@ class TagSeeder extends Seeder
             'Lithium',
             'Metal',
             'Nylon',
-            'OTHER (For a Material that is not in the picklist)',
+            'OTHER (Please add this missing material to the picklist)',
             'Paper',
+            'Paraffine',
             'Plastic',
+            'Plastic (hard)',
+            'Plastic (soft)',
             'Plastic (ABS)',
             'Plastic (HDPE)',
             'Plastic (LDPE)',
@@ -105,7 +119,73 @@ class TagSeeder extends Seeder
             'Styrofoam',
             'Textile',
             'Unknown',
+            'Wax',
             'Wood',
+        ];
+    }
+
+    private function getStates(): array
+    {
+        return [
+            'Degraded naturally',
+            'Dented',
+            'Flat/Crushed',
+            'Intact/undamaged',
+            'OTHER (Please add this missing state to the picklist)',
+            'Shredded',
+        ];
+    }
+
+    private function getContents(): array
+    {
+        return [
+            'Beer',
+            'Cleaner',
+            'Coffee',
+            'Energy drink',
+            'Food',
+            'Ice',
+            'Ice tea',
+            'Juice',
+            'Milk',
+            'Milkshake',
+            'Oil',
+            'OTHER (Please add this missing content to the picklist)',
+            'Protein drink',
+            'Shampoo',
+            'Shower gel',
+            'Sirop',
+            'Soda',
+            'Spirit',
+            'Sports drink',
+            'Sun lotion',
+            'Water',
+            'Wine',
+            'Yogurt',
+        ];
+    }
+
+    private function getSizes(): array
+    {
+        return [
+            'Size: 0 - 0,9 cm',
+            'Size: 1 - 2,4 cm',
+            'Size: 2,5 - 9,9 cm',
+            'Size: 10 - 49,9 cm',
+            'Size: More than 50 cm',
+            'Weight: 1 lbs',
+            'Weight: 10 lbs',
+            'Weight: 20 lbs',
+            'Volume: 0 - 0,5 liter',
+            'Volume: 0,5 liter',
+            'Volume: 0,5 - 1 liter',
+            'Volume: 1 liter',
+            'Volume: 1 - 1,5 liter',
+            'Volume: 1,5 liter',
+            'Volume: 1,5 - 2 liter',
+            'Volume: 2 liter',
+            'Volume: More than 2 liter',
+            'OTHER (Please add this missing size to the picklist)',
         ];
     }
 
@@ -311,6 +391,7 @@ class TagSeeder extends Seeder
             'Buxton',
             'Buys',
             'Buzz Bar',
+            'C.R.E.A.M (Cream)',
             'C&A (CA)',
             'Cable Car',
             'Cadbury',
@@ -1116,7 +1197,7 @@ class TagSeeder extends Seeder
             'Orient Express',
             'Original Foods',
             'Oshee',
-            'OTHER (For a Brand that is not in the picklist)',
+            'OTHER (Please add this missing brand to the picklist)',
             'Otrivin',
             'Pablo',
             'Pabst',

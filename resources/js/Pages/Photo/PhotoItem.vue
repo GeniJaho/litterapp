@@ -15,6 +15,9 @@ const props = defineProps({
 const selectedMaterialTag = ref(props.tags.material[0]);
 const selectedBrandTag = ref(props.tags.brand[0]);
 const selectedEventTag = ref(props.tags.event[0]);
+const selectedStateTag = ref(props.tags.state[0]);
+const selectedContentTag = ref(props.tags.content[0]);
+const selectedSizeTag = ref(props.tags.size[0]);
 </script>
 
 <template>
@@ -67,6 +70,54 @@ const selectedEventTag = ref(props.tags.event[0]);
                 <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
                         class="w-full lg:w-48"
+                        :items="tags.content"
+                        v-model="selectedContentTag"
+                    ></TagBox>
+
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedContentTag.id)"
+                        :disabled="!selectedContentTag"
+                    >
+                        Add Content
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-2 flex flex-row justify-between space-x-2">
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.size"
+                        v-model="selectedSizeTag"
+                    ></TagBox>
+
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedSizeTag.id)"
+                        :disabled="!selectedSizeTag"
+                    >
+                        Add Size
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-2 flex flex-row justify-between space-x-2">
+                    <TagBox
+                        class="w-full lg:w-48"
+                        :items="tags.state"
+                        v-model="selectedStateTag"
+                    ></TagBox>
+
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="$emit('add-tag-to-item', item.pivot, selectedStateTag.id)"
+                        :disabled="!selectedStateTag"
+                    >
+                        Add State
+                    </PrimaryButton>
+                </div>
+
+                <div class="mt-2 flex flex-row justify-between space-x-2">
+                    <TagBox
+                        class="w-full lg:w-48"
                         :items="tags.event"
                         v-model="selectedEventTag"
                     ></TagBox>
@@ -80,12 +131,12 @@ const selectedEventTag = ref(props.tags.event[0]);
                     </PrimaryButton>
                 </div>
 
-                <div class="mt-4 text-sm text-gray-500 flex flex-wrap space-x-1">
+                <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
                         v-for="tag in item.pivot.tags"
                         :key="tag.id"
                         @click="$emit('remove-tag-from-item', item.pivot, tag.id)"
-                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 mb-2 mr-2 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
+                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
@@ -125,6 +176,13 @@ const selectedEventTag = ref(props.tags.event[0]);
                     class="block w-full"
                 >
                     <template #label>Recycled</template>
+                </ToggleInput>
+                <ToggleInput
+                    v-model="item.pivot.deposit"
+                    @update:modelValue="$emit('toggle-deposit', item.pivot.id, item.pivot.deposit)"
+                    class="block w-full"
+                >
+                    <template #label>Deposit</template>
                 </ToggleInput>
             </div>
 
