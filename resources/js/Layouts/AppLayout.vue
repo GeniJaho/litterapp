@@ -58,7 +58,7 @@ const logout = () => {
                                 <NavLink :href="route('upload')" :active="route().current('upload')">
                                     Upload
                                 </NavLink>
-                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-gray-300 focus:border-gray-300 dark:focus:border-gray-700 transition duration-150 ease-in-out">
+                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-darkBlue focus:border-darkBlue dark:focus:border-white transition duration-150 ease-in-out">
                                     Docs
                                 </a>
                             </div>

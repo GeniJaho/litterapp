@@ -31,9 +31,7 @@ export default {
 
             },
             letterSpacing: {
-                wide: '.025em',
-                wider: '.1em',
-                widest_xl: '.15em',
+                "widest-xl": '.15em',
             },
             lineHeight: {
                 '12': '68px',
