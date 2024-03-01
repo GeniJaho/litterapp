@@ -151,16 +151,18 @@ import {Link} from "@inertiajs/vue3";
                     Capturing data is <span class="font-black">fun</span>, and crucially <span
                     class="font-black">useful</span>.
                 </div>
+
+<!--                <div class="pt-12">-->
+<!--                    <div class="tracking-widest-xl dark:text-mainWhite text-darkBlue text-lg pb-4">-->
+<!--                        Let's make more success stories:-->
+<!--                    </div>-->
+<!--                    <button-->
+<!--                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">-->
+<!--                        Our stories-->
+<!--                    </button>-->
+<!--                </div>-->
+
                 <div class="pt-12">
-                    <div class="tracking-widest-xl dark:text-mainWhite text-darkBlue text-lg pb-4">
-                        Let's make more success stories:
-                    </div>
-                    <button
-                        class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
-                        Our stories
-                    </button>
-                </div>
-                <div class="pt-10">
                     <div class="tracking-widest-xl dark:text-mainWhite text-darkBlue text-lg pb-4">
                         Read about our Mission and join the ride 😎
                     </div>
@@ -188,7 +190,9 @@ import {Link} from "@inertiajs/vue3";
                         Interested? Join our slack workspace:
                     </div>
                     <a
-                        href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2c81hu09y-Edwy2o74yk7FulbHACjnGw">
+                        href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2c81hu09y-Edwy2o74yk7FulbHACjnGw"
+                        target="_blank"
+                    >
                         <button
                             class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                             Go to litterapp
