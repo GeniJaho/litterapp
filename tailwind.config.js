@@ -31,13 +31,7 @@ export default {
 
             },
             letterSpacing: {
-                tightest: '-.075em',
-                tighter: '-.05em',
-                tight: '-.025em',
-                normal: '0',
-                wide: '.025em',
-                wider: '.1em',
-                widest: '.15em',
+                "widest-xl": '.15em',
             },
             lineHeight: {
                 '12': '68px',
