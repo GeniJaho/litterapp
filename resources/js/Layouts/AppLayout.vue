@@ -42,20 +42,20 @@ const logout = () => {
                         <div class="flex">
                             <!-- Logo -->
                             <div class="shrink-0 flex items-center mt-6 md:mt-0">
-                                <Link :href="route('dashboard')">
+                                <Link :href="route('home')">
                                     <ApplicationMark class="block h-14"/>
                                 </Link>
                             </div>
 
                             <!-- Navigation Links -->
                             <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
-                                <NavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                                    Dashboard
-                                </NavLink>
-                                <NavLink :href="route('my-photos')" :active="route().current('my-photos')">
+<!--                                <NavLink href="https://globalmap.litterapp.net/">-->
+<!--                                    Global Map-->
+<!--                                </NavLink>-->
+                                <NavLink v-if="$page.props.auth.user" :href="route('my-photos')" :active="route().current('my-photos')">
                                     My Photos
                                 </NavLink>
-                                <NavLink :href="route('upload')" :active="route().current('upload')">
+                                <NavLink v-if="$page.props.auth.user" :href="route('upload')" :active="route().current('upload')">
                                     Upload
                                 </NavLink>
                                 <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-darkBlue focus:border-darkBlue dark:focus:border-white transition duration-150 ease-in-out">
@@ -145,7 +145,7 @@ const logout = () => {
 
                             <!-- Settings Dropdown -->
                             <div class="ml-3 relative">
-                                <Dropdown align="right" width="48">
+                                <Dropdown v-if="$page.props.auth.user" align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos"
                                                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -194,6 +194,18 @@ const logout = () => {
                                         </form>
                                     </template>
                                 </Dropdown>
+                                <template v-else>
+                                    <NavLink :href="route('login')"
+                                             :active="route().current('login')"
+                                    >
+                                        Log in
+                                    </NavLink>
+                                    <NavLink :href="route('register')"
+                                             :active="route().current('register')"
+                                    >
+                                        Register
+                                    </NavLink>
+                                </template>
                             </div>
                         </div>
 
@@ -234,23 +246,22 @@ const logout = () => {
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-                        <ResponsiveNavLink :href="route('dashboard')" :active="route().current('dashboard')">
-                            Dashboard
-                        </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('my-photos')" :active="route().current('my-photos')">
                             My Photos
                         </ResponsiveNavLink>
                         <ResponsiveNavLink :href="route('upload')" :active="route().current('upload')">
                             Upload
                         </ResponsiveNavLink>
-                        <a :href="route('docs')" target="_blank" class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <a :href="route('docs')"
+                           target="_blank"
+                           class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium hover:bg-gray-50 dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-gray-200 focus:bg-gray-50 dark:focus:bg-gray-700 focus:border-gray-300 dark:focus:border-gray-600 transition duration-150 ease-in-out">
                             Docs
                         </a>
                     </div>
 
                     <!-- Responsive Settings Options -->
                     <div class="pt-4 pb-1 border-t border-gray-200 dark:border-gray-600">
-                        <div class="flex items-center px-4">
+                        <div v-if="$page.props.auth.user" class="flex items-center px-4">
                             <div v-if="$page.props.jetstream.managesProfilePhotos" class="shrink-0 mr-3">
                                 <img class="h-10 w-10 rounded-full object-cover"
                                      :src="$page.props.auth.user.profile_photo_url"
