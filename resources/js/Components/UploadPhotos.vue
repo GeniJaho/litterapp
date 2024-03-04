@@ -113,10 +113,11 @@ setInterval(() => {
 
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
-                    <div class="mb-4 flex justify-center">
+                    <div v-if="uploadProgress > 0"
+                        class="mb-4 flex justify-center">
                         <Link
                             :href="route('my-photos')">
-                            <PrimaryButton :disabled="uploadProgress < 100 && ! isIdle">My Photos</PrimaryButton>
+                            <PrimaryButton :disabled="uploadProgress < 100 && ! isIdle">Go to My Photos</PrimaryButton>
                         </Link>
                     </div>
                     <file-pond
