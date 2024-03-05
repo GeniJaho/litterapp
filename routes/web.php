@@ -26,11 +26,11 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Welcome', [
-        'canLogin' => Route::has('login'),
-        'canRegister' => Route::has('register'),
-    ]);
-});
+    return Inertia::render('Home');
+})->name('home');
+Route::get('/docs/en/', function () {
+    return Inertia::render('Docs');
+})->name('docs');
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
@@ -44,17 +44,9 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-
     Route::get('/upload', function () {
         return Inertia::render('Upload');
     })->name('upload');
-
-    Route::get('/docs/en/', function () {
-        return Inertia::render('Docs');
-    })->name('docs');
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');

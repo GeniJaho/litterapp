@@ -119,7 +119,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             return mb_substr($segment, 0, 1);
         })->join(' '));
 
-        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=03DCCD&background=e3faf8';
+        return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=1F2937&background=e3faf8';
     }
 
     /**

@@ -1,5 +1,4 @@
 <script setup>
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {Link} from "@inertiajs/vue3";
 </script>
 
@@ -87,7 +86,7 @@ import {Link} from "@inertiajs/vue3";
                             <div class="tracking-wider dark:text-mainWhite text-darkBlue text-xs pt-4">
                                 When tagging your photos, it's important to consider the accuracy of the
                                 data. It's possible to add any details necessary from one or more photos,
-                                always ensure that your data is precise, that's why got this wonderful feature to
+                                always ensure that your data is precise, that's why we have this wonderful feature to
                                 re-edit the tags in case of a mistake.
                             </div>
                             <div class="tracking-wider dark:text-mainWhite text-darkBlue text-xs pt-8 pb-4">
@@ -108,12 +107,15 @@ import {Link} from "@inertiajs/vue3";
                 <div class="flex flex-col space-y-6 md:space-y-0 md:flex-row items-center md:space-x-16">
                     <img src="/img/fourth-landing.png" alt="LitterApp" class="w-full md:w-3/6 h-80 object-cover"/>
                     <div class="dark:text-mainWhite text-darkBlue lg:pl-4 lg:pr-24">
-                        <div class="tracking-wider dark:text-mainWhite text-darkBlue text-2xl">
+                        <div class="tracking-wider dark:text-mainWhite text-darkBlue text-3xl">
                             <strong># 4 See litter </strong>at the Global Map.
                         </div>
                         <div class="tracking-wider dark:text-mainWhite text-darkBlue font-bold text-xs pt-4">
                             If we all tagged our litter, the world map
-                            would be completly red.
+                            would be completely
+                            <a class="text-reddish underline"
+                               href="https://globalmap.litterapp.net/"
+                               target="_blank">red</a>.
                         </div>
                         <div class="tracking-wide dark:text-mainWhite text-darkBlue font-bold text-xs pt-4">
                             Enable page global map for live feed, the possibilities are endless.
@@ -167,7 +169,9 @@ import {Link} from "@inertiajs/vue3";
                         Read about our Mission and join the ride 😎
                     </div>
                     <a
-                        href="https://litterapp.net/en/05_Mission-Vision/">
+                        href="https://litterapp.net/en/05_Mission-Vision/"
+                        target="_blank"
+                    >
                         <button
                             class="inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
                             Our Mission

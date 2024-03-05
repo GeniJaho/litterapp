@@ -28,6 +28,7 @@ export default {
                 'bluee': '#113946',
                 'turqoFocus': '#03DCCD',
                 'turqo': '#04F1E1',
+                'reddish': '#CA7471',
 
             },
             letterSpacing: {
