@@ -1,11 +1,15 @@
 <script setup>
-import { computed } from 'vue';
-import { Link } from '@inertiajs/vue3';
+import {computed} from 'vue';
+import {Link} from '@inertiajs/vue3';
 
 const props = defineProps({
     active: Boolean,
     href: String,
     as: String,
+    target: {
+        type: String,
+        default: '_self',
+    },
 });
 
 const classes = computed(() => {
@@ -18,11 +22,19 @@ const classes = computed(() => {
 <template>
     <div>
         <button v-if="as == 'button'" :class="classes" class="w-full text-left">
-            <slot />
+            <slot/>
         </button>
 
+        <a v-else-if="as == 'externalLink'"
+           :href="href"
+           :class="classes"
+           :target="target"
+        >
+            <slot/>
+        </a>
+
         <Link v-else :href="href" :class="classes">
-            <slot />
+            <slot/>
         </Link>
     </div>
 </template>

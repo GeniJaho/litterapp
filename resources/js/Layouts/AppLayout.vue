@@ -49,18 +49,31 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
-<!--                                <NavLink href="https://globalmap.litterapp.net/">-->
-<!--                                    Global Map-->
-<!--                                </NavLink>-->
-                                <NavLink v-if="$page.props.auth.user" :href="route('my-photos')" :active="route().current('my-photos')">
+                                <NavLink href="https://globalmap.litterapp.net/"
+                                         :externalLink="true"
+                                         target="_blank"
+                                >
+                                    Global Map
+                                </NavLink>
+                                <NavLink v-if="$page.props.auth.user"
+                                         :href="route('my-photos')"
+                                         :active="route().current('my-photos')"
+                                >
                                     My Photos
                                 </NavLink>
-                                <NavLink v-if="$page.props.auth.user" :href="route('upload')" :active="route().current('upload')">
+                                <NavLink v-if="$page.props.auth.user"
+                                         :href="route('upload')"
+                                         :active="route().current('upload')"
+                                >
                                     Upload
                                 </NavLink>
-                                <a :href="route('docs')" target="_blank" class="inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm font-bold tracking-widest leading-5 text-darkBlue hover:text-gray-700 dark:hover:text-slate-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-none focus:text-gray-700 dark:focus:text-darkBlue focus:border-darkBlue dark:focus:border-white transition duration-150 ease-in-out">
+                                <NavLink :href="route('docs')"
+                                         :active="route().current('docs')"
+                                         :externalLink="true"
+                                         target="_blank"
+                                >
                                     Docs
-                                </a>
+                                </NavLink>
                             </div>
                         </div>
 
@@ -98,7 +111,7 @@ const logout = () => {
 
                                                 <!-- Team Settings -->
                                                 <DropdownLink v-if="$page.props.auth.user.current_team"
-                                                    :href="route('teams.show', $page.props.auth.user.current_team)">
+                                                              :href="route('teams.show', $page.props.auth.user.current_team)">
                                                     Team Settings
                                                 </DropdownLink>
 
@@ -247,6 +260,14 @@ const logout = () => {
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+
+                        <ResponsiveNavLink href="https://globalmap.litterapp.net/"
+                                           as="externalLink"
+                                           target="_blank"
+                        >
+                            Global Map
+                        </ResponsiveNavLink>
+
                         <ResponsiveNavLink v-if="$page.props.auth.user"
                                            :href="route('my-photos')"
                                            :active="route().current('my-photos')"
@@ -259,11 +280,13 @@ const logout = () => {
                         >
                             Upload
                         </ResponsiveNavLink>
-                        <a :href="route('docs')"
-                           target="_blank"
-                           class="block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium hover:bg-mainWhite dark:hover:bg-gray-700 hover:border-gray-300 dark:hover:border-gray-600 focus:outline-none focus:text-gray-800 dark:focus:text-darkBlue focus:bg-gray-50 dark:focus:bg-mainWhite focus:border-darkBlue dark:focus:border-gray-600 transition duration-150 ease-in-out">
+                        <ResponsiveNavLink :href="route('docs')"
+                                           :active="route().current('docs')"
+                                           as="externalLink"
+                                           target="_blank"
+                        >
                             Docs
-                        </a>
+                        </ResponsiveNavLink>
                     </div>
 
                     <!-- Responsive Settings Options -->
@@ -294,7 +317,7 @@ const logout = () => {
                             </div>
                         </div>
 
-                        <div v-if="$page.props.auth.user"  class="mt-3 space-y-1">
+                        <div v-if="$page.props.auth.user" class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
                             </ResponsiveNavLink>
