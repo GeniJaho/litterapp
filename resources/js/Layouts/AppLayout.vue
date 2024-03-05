@@ -144,8 +144,8 @@ const logout = () => {
                             </div>
 
                             <!-- Settings Dropdown -->
-                            <div class="h-full sm:space-x-8 md:flex">
-                                <Dropdown v-if="$page.props.auth.user" align="right" width="48">
+                            <div v-if="$page.props.auth.user" class="ml-3">
+                                <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos"
                                                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
@@ -194,18 +194,19 @@ const logout = () => {
                                         </form>
                                     </template>
                                 </Dropdown>
-                                <template v-else>
-                                    <NavLink :href="route('login')"
-                                             :active="route().current('login')"
-                                    >
-                                        Log in
-                                    </NavLink>
-                                    <NavLink :href="route('register')"
-                                             :active="route().current('register')"
-                                    >
-                                        Register
-                                    </NavLink>
-                                </template>
+                            </div>
+
+                            <div class="ml-3 h-full sm:space-x-8 sm:-my-px md:flex" v-if="! $page.props.auth.user">
+                                <NavLink :href="route('login')"
+                                         :active="route().current('login')"
+                                >
+                                    Log in
+                                </NavLink>
+                                <NavLink :href="route('register')"
+                                         :active="route().current('register')"
+                                >
+                                    Register
+                                </NavLink>
                             </div>
                         </div>
 
