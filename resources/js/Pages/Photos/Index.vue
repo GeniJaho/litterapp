@@ -23,6 +23,7 @@ const perPageOptions = [
     {label: '24 per page', value: 24},
     {label: '48 per page', value: 48},
     {label: '96 per page', value: 96},
+    {label: '192 per page', value: 192},
 ];
 const perPage = ref(perPageOptions.find(option => option.value === props.photos.per_page));
 
@@ -113,7 +114,7 @@ const filter = (filters) => {
             </h2>
         </template>
 
-        <div class="py-6 lg:py-12">
+        <div class="py-6 lg:py-16">
             <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
 
                 <div class="flex flex-row gap-4 px-4 sm:px-0">

@@ -34,7 +34,7 @@ class PhotosController extends Controller
             $user->save();
         }
 
-        $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96])
+        $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96, 192])
             ? $request->integer('per_page')
             : 12;
 
