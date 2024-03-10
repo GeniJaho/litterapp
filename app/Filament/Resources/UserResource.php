@@ -6,6 +6,7 @@ use App\Filament\Resources\UserResource\Pages\CreateUser;
 use App\Filament\Resources\UserResource\Pages\EditUser;
 use App\Filament\Resources\UserResource\Pages\ListUsers;
 use App\Models\User;
+use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -36,6 +37,9 @@ class UserResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(191),
+                DateTimePicker::make('email_verified_at')
+                    ->nullable()
+                    ->displayFormat('MMMM D, YYYY'),
             ]);
     }
 
@@ -45,6 +49,9 @@ class UserResource extends Resource
             ->persistFiltersInSession()
             ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
             ->columns([
+                TextColumn::make('id')
+                    ->sortable()
+                    ->searchable(),
                 ImageColumn::make('profile_photo_path')
                     ->label('Avatar')
                     ->circular()
@@ -88,7 +95,7 @@ class UserResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('name');
+            ->defaultSort('id', 'desc');
     }
 
     public static function getRelations(): array
