@@ -1,7 +1,7 @@
 <script setup>
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 import {ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
@@ -14,6 +14,7 @@ const props = defineProps({
     tags: Object,
 });
 
+const page = usePage();
 const selectedItem = ref(null);
 const showModal = ref(false);
 const form = useForm({
@@ -27,9 +28,9 @@ const addItem = () => {
         id: selectedItem.value.id,
         name: selectedItem.value.name,
         tag_ids: [],
-        picked_up: false,
-        recycled: false,
-        deposit: false,
+        picked_up: page.props.auth.user.settings.picked_up_by_default || false,
+        recycled: page.props.auth.user.settings.recycled_by_default || false,
+        deposit: page.props.auth.user.settings.deposit_by_default || false,
         quantity: 1,
     });
 
