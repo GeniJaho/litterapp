@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import {computed, ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
@@ -12,12 +12,39 @@ const props = defineProps({
     tags: Object,
 });
 
-const selectedMaterialTag = ref(props.tags.material[0]);
-const selectedBrandTag = ref(props.tags.brand[0]);
-const selectedEventTag = ref(props.tags.event[0]);
-const selectedStateTag = ref(props.tags.state[0]);
-const selectedContentTag = ref(props.tags.content[0]);
-const selectedSizeTag = ref(props.tags.size[0]);
+const emit = defineEmits([
+    'add-tags-to-item',
+    'remove-item',
+    'remove-tag-from-item',
+    'update-quantity',
+    'toggle-picked-up',
+    'toggle-recycled',
+    'toggle-deposit',
+    'copy-item',
+]);
+
+const selectedMaterialTag = ref(props.tags.material.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedBrandTag = ref(props.tags.brand.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedEventTag = ref(props.tags.event.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedStateTag = ref(props.tags.state.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedContentTag = ref(props.tags.content.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedSizeTag = ref(props.tags.size.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+
+const selectedTagIds = computed(() => {
+    return [
+        selectedMaterialTag.value?.id,
+        selectedBrandTag.value?.id,
+        selectedEventTag.value?.id,
+        selectedStateTag.value?.id,
+        selectedContentTag.value?.id,
+        selectedSizeTag.value?.id,
+    ].filter(tag => tag);
+});
+
+const addTagsToItem = () => {
+    emit("add-tags-to-item", props.item.pivot, selectedTagIds.value);
+};
+
 </script>
 
 <template>
@@ -35,103 +62,61 @@ const selectedSizeTag = ref(props.tags.size[0]);
                 </IconDangerButton>
             </div>
             <div class="mt-6">
-                <div class="flex flex-row justify-between space-x-2">
+                <div class="space-y-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.material"
+                        :nullable="true"
+                        placeholder="Material"
                         v-model="selectedMaterialTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedMaterialTag.id)"
-                        :disabled="!selectedMaterialTag"
-                    >
-                        Add Material
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.brand"
+                        :nullable="true"
+                        placeholder="Brand"
                         v-model="selectedBrandTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedBrandTag.id)"
-                        :disabled="!selectedBrandTag"
-                    >
-                        Add Brand
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.content"
+                        :nullable="true"
+                        placeholder="Content"
                         v-model="selectedContentTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedContentTag.id)"
-                        :disabled="!selectedContentTag"
-                    >
-                        Add Content
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.size"
+                        :nullable="true"
+                        placeholder="Size"
                         v-model="selectedSizeTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedSizeTag.id)"
-                        :disabled="!selectedSizeTag"
-                    >
-                        Add Size
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.state"
+                        :nullable="true"
+                        placeholder="State"
                         v-model="selectedStateTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedStateTag.id)"
-                        :disabled="!selectedStateTag"
-                    >
-                        Add State
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
                     <TagBox
-                        class="w-full lg:w-48"
                         :items="tags.event"
+                        :nullable="true"
+                        placeholder="Event"
                         v-model="selectedEventTag"
                     ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="$emit('add-tag-to-item', item.pivot, selectedEventTag.id)"
-                        :disabled="!selectedEventTag"
-                    >
-                        Add Event
-                    </PrimaryButton>
+                    <div class="flex justify-center">
+                        <PrimaryButton
+                            class="whitespace-nowrap"
+                            @click="addTagsToItem"
+                            :disabled="selectedTagIds.length === 0"
+                        >
+                            Add Selected Tags
+                        </PrimaryButton>
+                    </div>
                 </div>
 
-                <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
+                <div v-if="item.pivot.tags?.length" class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
                         v-for="tag in item.pivot.tags"
                         :key="tag.id"

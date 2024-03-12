@@ -17,6 +17,14 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    nullable: {
+        type: Boolean,
+        default: false,
+    },
+    placeholder: {
+        type: String,
+        default: '',
+    },
     dropdownWidth: {
         type: String,
         default: 'w-full md:w-96 right-0',
@@ -59,6 +67,7 @@ onMounted(() => {
         :modelValue="modelValue"
         @update:modelValue="value => $emit('update:modelValue', value)"
         :multiple="multiple"
+        :nullable="nullable"
         by="id"
     >
             <div class="relative">
@@ -67,6 +76,7 @@ onMounted(() => {
                         ref="input"
                         class="w-full rounded-md border-0 bg-white dark:bg-gray-900 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         :displayValue="(item) => item?.name"
+                        :placeholder="placeholder"
                         @change="query = $event.target.value"
                         @focus="$event.target.select()"
                         autocomplete="off"

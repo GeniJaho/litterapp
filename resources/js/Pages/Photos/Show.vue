@@ -70,9 +70,9 @@ const copyItem = (photoItemId) => {
         });
 };
 
-const addTagToItem = (photoItem, tagId) => {
+const addTagsToItem = (photoItem, tagIds) => {
     axios.post(`/photo-items/${photoItem.id}/tags`, {
-        tag_id: tagId,
+        tag_ids: tagIds,
     }).then(() => {
         getPhoto();
     });
@@ -206,7 +206,7 @@ const onKeyDown = (event) => {
                                         :item="item"
                                         :tags="tags"
                                         @remove-item="removeItem"
-                                        @add-tag-to-item="addTagToItem"
+                                        @add-tags-to-item="addTagsToItem"
                                         @remove-tag-from-item="removeTagFromItem"
                                         @copy-item="copyItem"
                                         @toggle-picked-up="toggleItemPickedUp"

@@ -14,7 +14,7 @@ test('a user can add a tag to an item of a photo', function () {
     $tag = Tag::factory()->create();
 
     $response = $this->actingAs($user)->postJson("/photo-items/{$photoItem->id}/tags", [
-        'tag_id' => $tag->id,
+        'tag_ids' => [$tag->id],
     ]);
 
     $response->assertOk();
@@ -32,11 +32,11 @@ test('the request is validated', function () {
     $photoItem = PhotoItem::factory()->for($item)->for($photo)->create();
 
     $response = $this->actingAs($user)->postJson("/photo-items/{$photoItem->id}/tags", [
-        'tag_id' => '12345',
+        'tag_ids' => ['12345'],
     ]);
 
     $response->assertStatus(422);
-    $response->assertJsonValidationErrors('tag_id');
+    $response->assertJsonValidationErrors('tag_ids.0');
     $this->assertDatabaseCount('photo_item_tag', 0);
 });
 
@@ -48,7 +48,7 @@ test('a user can not add a tag to an item of a photo of another user', function 
     $tag = Tag::factory()->create();
 
     $response = $this->actingAs($user)->postJson("/photo-items/{$photoItem->id}/tags", [
-        'tag_id' => $tag->id,
+        'tag_ids' => [$tag->id],
     ]);
 
     $response->assertNotFound();
