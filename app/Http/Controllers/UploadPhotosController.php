@@ -8,9 +8,16 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class UploadPhotosController extends Controller
 {
+    public function show(): Response
+    {
+        return Inertia::render('Upload');
+    }
+
     public function store(
         StorePhotosRequest $request,
         ExtractsExifFromPhoto $extractExif,
