@@ -22,10 +22,6 @@ class Photo extends Model
 {
     use HasFactory;
 
-    protected $casts = [
-        'user_id' => 'integer',
-    ];
-
     /**
      * @return BelongsTo<User, Photo>
      */
@@ -98,5 +94,15 @@ class Photo extends Model
             ->when($filters->has_gps === false, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn ($query) => $query->whereHas('items'))
             ->when($filters->is_tagged === false, fn ($query) => $query->whereDoesntHave('items'));
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'user_id' => 'integer',
+        ];
     }
 }
