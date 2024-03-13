@@ -17,9 +17,13 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
-    dropdownWidth: {
+    nullable: {
+        type: Boolean,
+        default: false,
+    },
+    placeholder: {
         type: String,
-        default: 'w-full md:w-96 right-0',
+        default: '',
     },
 });
 
@@ -59,6 +63,7 @@ onMounted(() => {
         :modelValue="modelValue"
         @update:modelValue="value => $emit('update:modelValue', value)"
         :multiple="multiple"
+        :nullable="nullable"
         by="id"
     >
             <div class="relative">
@@ -67,6 +72,7 @@ onMounted(() => {
                         ref="input"
                         class="w-full rounded-md border-0 bg-white dark:bg-gray-900 py-1.5 pl-3 pr-12 text-gray-900 dark:text-gray-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-gray-700 focus:ring-2 focus:ring-inset focus:ring-indigo-500 dark:focus:ring-indigo-600 sm:text-sm sm:leading-6"
                         :displayValue="(item) => item?.name"
+                        :placeholder="placeholder"
                         @change="query = $event.target.value"
                         @focus="$event.target.select()"
                         autocomplete="off"
@@ -96,8 +102,7 @@ onMounted(() => {
                     @after-leave="query = ''"
                 >
                     <ComboboxOptions
-                        class="absolute z-10 mt-1 max-h-96 overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
-                        :class="dropdownWidth"
+                        class="absolute z-10 mt-1 max-h-96 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                     >
                         <div
                             v-if="filteredItems.length === 0 && query !== ''"
