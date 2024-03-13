@@ -14,12 +14,23 @@ const props = defineProps({
 
 const item = ref(props.propItem);
 
-const selectedMaterialTag = ref(props.tags.material[0]);
-const selectedBrandTag = ref(props.tags.brand[0]);
-const selectedEventTag = ref(props.tags.event[0]);
-const selectedStateTag = ref(props.tags.state[0]);
-const selectedContentTag = ref(props.tags.content[0]);
-const selectedSizeTag = ref(props.tags.size[0]);
+const selectedMaterialTag = ref(null);
+const selectedBrandTag = ref(null);
+const selectedEventTag = ref(null);
+const selectedStateTag = ref(null);
+const selectedContentTag = ref(null);
+const selectedSizeTag = ref(null);
+
+const selectedTagIds = computed(() => {
+    return [
+        selectedMaterialTag.value?.id,
+        selectedBrandTag.value?.id,
+        selectedEventTag.value?.id,
+        selectedStateTag.value?.id,
+        selectedContentTag.value?.id,
+        selectedSizeTag.value?.id,
+    ].filter(tag => tag);
+});
 
 const tagNames = computed(() => {
     return item.value.tag_ids.map(function (tagId) {
@@ -32,13 +43,17 @@ const tagNames = computed(() => {
     });
 });
 
-const addTagToItem = (tag) => {
-    if (item.value.tag_ids.find(itemTag => itemTag === tag.id)) {
-        return;
-    }
+const addTagsToItem = () => {
+    item.value.tag_ids = [...new Set([...item.value.tag_ids, ...selectedTagIds.value])];
 
-    item.value.tag_ids.push(tag.id);
     emit('change', item.value);
+
+    selectedMaterialTag.value = null;
+    selectedBrandTag.value = null;
+    selectedEventTag.value = null;
+    selectedStateTag.value = null;
+    selectedContentTag.value = null;
+    selectedSizeTag.value = null;
 };
 
 const removeTagFromItem = (tagId) => {
@@ -75,110 +90,63 @@ const copyItem = () => {
                     <i class="fas fa-fw fa-trash-alt text-xs"></i>
                 </IconDangerButton>
             </div>
-            <div class="mt-6">
-                <div class="flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.material"
-                        v-model="selectedMaterialTag"
-                    ></TagBox>
+            <div class="mt-6 space-y-2">
+                <TagBox
+                    class="w-full"
+                    :items="tags.material"
+                    v-model="selectedMaterialTag"
+                    :nullable="true"
+                    placeholder="Material"
+                    @change="addTagsToItem"
+                ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedMaterialTag)"
-                        :disabled="!selectedMaterialTag"
-                    >
-                        Add Material
-                    </PrimaryButton>
-                </div>
+                <TagBox
+                    class="w-full"
+                    :items="tags.brand"
+                    v-model="selectedBrandTag"
+                    :nullable="true"
+                    placeholder="Brand"
+                    @change="addTagsToItem"
+                ></TagBox>
 
-                <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.brand"
-                        v-model="selectedBrandTag"
-                    ></TagBox>
+                <TagBox
+                    class="w-full"
+                    :items="tags.content"
+                    v-model="selectedContentTag"
+                    :nullable="true"
+                    placeholder="Content"
+                    @change="addTagsToItem"
+                ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedBrandTag)"
-                        :disabled="!selectedBrandTag"
-                    >
-                        Add Brand
-                    </PrimaryButton>
-                </div>
+                <TagBox
+                    class="w-full"
+                    :items="tags.size"
+                    v-model="selectedSizeTag"
+                    :nullable="true"
+                    placeholder="Size"
+                    @change="addTagsToItem"
+                ></TagBox>
 
-                <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.content"
-                        v-model="selectedContentTag"
-                    ></TagBox>
+                <TagBox
+                    class="w-full"
+                    :items="tags.state"
+                    v-model="selectedStateTag"
+                    :nullable="true"
+                    placeholder="State"
+                    @change="addTagsToItem"
+                ></TagBox>
 
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedContentTag)"
-                        :disabled="!selectedContentTag"
-                    >
-                        Add Content
-                    </PrimaryButton>
-                </div>
+                <TagBox
+                    class="w-full"
+                    :items="tags.event"
+                    v-model="selectedEventTag"
+                    :nullable="true"
+                    placeholder="Event"
+                    @change="addTagsToItem"
+                ></TagBox>
+            </div>
 
-                <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.size"
-                        v-model="selectedSizeTag"
-                    ></TagBox>
-
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedSizeTag)"
-                        :disabled="!selectedSizeTag"
-                    >
-                        Add Size
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.state"
-                        v-model="selectedStateTag"
-                    ></TagBox>
-
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedStateTag)"
-                        :disabled="!selectedStateTag"
-                    >
-                        Add State
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-2 flex flex-row justify-between space-x-2">
-                    <TagBox
-                        class="w-full"
-                        dropdownWidth="w-full"
-                        :items="tags.event"
-                        v-model="selectedEventTag"
-                    ></TagBox>
-
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagToItem(selectedEventTag)"
-                        :disabled="!selectedEventTag"
-                    >
-                        Add Event
-                    </PrimaryButton>
-                </div>
-
-                <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
+            <div class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
                         v-for="tag in tagNames"
                         :key="tag.id"
@@ -189,7 +157,15 @@ const copyItem = () => {
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
                         {{ tag.name }}
                     </span>
-                </div>
+            </div>
+
+            <div v-if="selectedTagIds.length" class="mt-4 flex justify-center">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    @click="addTagsToItem"
+                >
+                    Add Selected Tags
+                </PrimaryButton>
             </div>
         </div>
         <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">
