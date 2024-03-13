@@ -23,12 +23,12 @@ const emit = defineEmits([
     'copy-item',
 ]);
 
-const selectedMaterialTag = ref(props.tags.material.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
-const selectedBrandTag = ref(props.tags.brand.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
-const selectedEventTag = ref(props.tags.event.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
-const selectedStateTag = ref(props.tags.state.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
-const selectedContentTag = ref(props.tags.content.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
-const selectedSizeTag = ref(props.tags.size.find(tag => props.item.pivot.tags?.find(t => t.id === tag.id)));
+const selectedMaterialTag = ref(null);
+const selectedBrandTag = ref(null);
+const selectedEventTag = ref(null);
+const selectedStateTag = ref(null);
+const selectedContentTag = ref(null);
+const selectedSizeTag = ref(null);
 
 const selectedTagIds = computed(() => {
     return [
@@ -43,6 +43,13 @@ const selectedTagIds = computed(() => {
 
 const addTagsToItem = () => {
     emit("add-tags-to-item", props.item.pivot, selectedTagIds.value);
+
+    selectedMaterialTag.value = null;
+    selectedBrandTag.value = null;
+    selectedEventTag.value = null;
+    selectedStateTag.value = null;
+    selectedContentTag.value = null;
+    selectedSizeTag.value = null;
 };
 
 </script>
@@ -68,6 +75,7 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="Material"
                         v-model="selectedMaterialTag"
+                        @change="addTagsToItem"
                     ></TagBox>
 
                     <TagBox
@@ -75,6 +83,7 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="Brand"
                         v-model="selectedBrandTag"
+                        @change="addTagsToItem"
                     ></TagBox>
 
                     <TagBox
@@ -82,6 +91,7 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="Content"
                         v-model="selectedContentTag"
+                        @change="addTagsToItem"
                     ></TagBox>
 
                     <TagBox
@@ -89,6 +99,7 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="Size"
                         v-model="selectedSizeTag"
+                        @change="addTagsToItem"
                     ></TagBox>
 
                     <TagBox
@@ -96,6 +107,7 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="State"
                         v-model="selectedStateTag"
+                        @change="addTagsToItem"
                     ></TagBox>
 
                     <TagBox
@@ -103,17 +115,8 @@ const addTagsToItem = () => {
                         :nullable="true"
                         placeholder="Event"
                         v-model="selectedEventTag"
+                        @change="addTagsToItem"
                     ></TagBox>
-
-                    <div class="flex justify-center">
-                        <PrimaryButton
-                            class="whitespace-nowrap"
-                            @click="addTagsToItem"
-                            :disabled="selectedTagIds.length === 0"
-                        >
-                            Add Selected Tags
-                        </PrimaryButton>
-                    </div>
                 </div>
 
                 <div v-if="item.pivot.tags?.length" class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
@@ -127,6 +130,15 @@ const addTagsToItem = () => {
                              aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
                         {{ tag.name }}
                     </span>
+                </div>
+
+                <div v-if="selectedTagIds.length" class="mt-4 flex justify-center">
+                    <PrimaryButton
+                        class="whitespace-nowrap"
+                        @click="addTagsToItem"
+                    >
+                        Add Selected Tags
+                    </PrimaryButton>
                 </div>
             </div>
         </div>
