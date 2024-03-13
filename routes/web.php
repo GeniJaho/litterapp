@@ -5,6 +5,8 @@ use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\BulkPhotoItemsController;
 use App\Http\Controllers\CopyPhotoItemController;
+use App\Http\Controllers\DocsController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
@@ -12,7 +14,6 @@ use App\Http\Controllers\PhotoTagsController;
 use App\Http\Controllers\UploadPhotosController;
 use App\Http\Controllers\UserSettingsController;
 use Illuminate\Support\Facades\Route;
-use Inertia\Inertia;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,12 +26,8 @@ use Inertia\Inertia;
 |
 */
 
-Route::get('/', function () {
-    return Inertia::render('Home');
-})->name('home');
-Route::get('/docs/en/', function () {
-    return Inertia::render('Docs');
-})->name('docs');
+Route::get('/', HomeController::class)->name('home');
+Route::get('/docs/en/', DocsController::class)->name('docs');
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
@@ -44,9 +41,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/upload', function () {
-        return Inertia::render('Upload');
-    })->name('upload');
+    Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
+    Route::post('/upload', [UploadPhotosController::class, 'store']);
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
@@ -63,8 +59,6 @@ Route::middleware([
     Route::delete('/photo-items/{photoItem}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
 
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
-
-    Route::post('/upload', [UploadPhotosController::class, 'store']);
 
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
 });

@@ -134,6 +134,7 @@ const filter = (filters) => {
                         :photoIds="selectedPhotos"
                         :tags="tags"
                         :items="items"
+                        @closeModalWithSuccess="clearSelection"
                     ></BulkTag>
                 </div>
 

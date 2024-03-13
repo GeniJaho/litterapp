@@ -14,6 +14,8 @@ const props = defineProps({
     tags: Object,
 });
 
+const emit = defineEmits(['closeModalWithSuccess'])
+
 const page = usePage();
 const selectedItem = ref(null);
 const showModal = ref(false);
@@ -69,7 +71,11 @@ const closeModalWithSuccess = () => {
     form.reset();
     message.value = 'Tagged successfully!';
 
-    setTimeout(() => showModal.value = false, 3000);
+    setTimeout(() => {
+        showModal.value = false;
+
+        emit('closeModalWithSuccess');
+    }, 3000);
 };
 
 const closeModal = () => {
