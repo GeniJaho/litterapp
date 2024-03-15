@@ -32,13 +32,15 @@ class PhotosController extends Controller
         } elseif ($request->boolean('clear_filters')) {
             $user->settings->photo_filters = null;
             $user->save();
+        } elseif ($request->boolean('set_per_page')) {
+            $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96, 192])
+                ? $request->integer('per_page')
+                : 12;
+            $user->settings->per_page = $perPage;
+            $user->save();
         }
 
-        $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96, 192])
-            ? $request->integer('per_page')
-            : 12;
-
-        $photos = $filterPhotosAction->run($user, $perPage);
+        $photos = $filterPhotosAction->run($user);
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 

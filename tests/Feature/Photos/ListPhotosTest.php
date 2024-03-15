@@ -57,7 +57,17 @@ test('a user can choose the number of photos per page', function () {
     $this->actingAs($user = User::factory()->create());
     Photo::factory(25)->for($user)->create();
 
-    $response = $this->get('/my-photos?per_page=24');
+    $response = $this->get('/my-photos?set_per_page=true&per_page=24');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 24)
+        ->where('photos.per_page', 24)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page) => $page

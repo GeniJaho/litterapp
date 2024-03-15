@@ -29,6 +29,7 @@ const perPage = ref(perPageOptions.find(option => option.value === props.photos.
 
 watch(perPage, (value) => {
     router.get(window.location.pathname, {
+        set_per_page: true,
         per_page: value.value,
     });
 });
@@ -99,10 +100,7 @@ const deletePhoto = (photoId) => {
 
 const filter = (filters) => {
     clearSelection();
-    router.get(window.location.pathname, {
-        ...filters,
-        per_page: perPage.value.value,
-    });
+    router.get(window.location.pathname, filters);
 }
 </script>
 
