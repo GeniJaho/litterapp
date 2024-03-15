@@ -2,11 +2,12 @@
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import {useForm, usePage} from "@inertiajs/vue3";
-import {ref} from "vue";
+import {computed, onMounted, onUnmounted, ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import NewPhotoItem from "@/Pages/Photos/Partials/NewPhotoItem.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
+import Tooltip from "@/Components/Tooltip.vue";
 
 const props = defineProps({
     photoIds: Array,
@@ -23,6 +24,16 @@ const form = useForm({
     items: []
 });
 const message = ref('');
+
+onMounted(() => {
+    window.addEventListener('keydown', onKeyDown);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeyDown);
+});
+
+const saveDisabled = computed(() => form.processing || !form.items.length);
 
 const addItem = () => {
     form.items.unshift({
@@ -87,6 +98,13 @@ const closeModal = () => {
 const openModal = () => {
     message.value = '';
     showModal.value = true;
+};
+
+const onKeyDown = (event) => {
+    if ((event.ctrlKey || event.metaKey) && event.code === "Enter" && ! saveDisabled.value) {
+        event.preventDefault();
+        save();
+    }
 };
 </script>
 
@@ -163,11 +181,14 @@ const openModal = () => {
             </SecondaryButton>
 
             <PrimaryButton
-                class="ml-3"
+                class="ml-3 group relative"
                 :class="{ 'opacity-25': form.processing }"
-                :disabled="form.processing || !form.items.length"
+                :disabled="saveDisabled"
                 @click="save"
             >
+                <Tooltip>
+                    <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</span>
+                </Tooltip>
                 Save
             </PrimaryButton>
         </template>

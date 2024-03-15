@@ -11,14 +11,14 @@ class FilterPhotosAction
     /**
      * @return LengthAwarePaginator<Photo>
      */
-    public function run(User $user, int $perPage): LengthAwarePaginator
+    public function run(User $user): LengthAwarePaginator
     {
         $photos = $user
             ->photos()
             ->filter($user->settings->photo_filters)
             ->withExists('items')
             ->latest('id')
-            ->paginate($perPage)
+            ->paginate($user->settings->per_page)
             ->withQueryString();
 
         $photos->getCollection()->transform(function (Photo $photo) {

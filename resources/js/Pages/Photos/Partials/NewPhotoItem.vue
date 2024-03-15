@@ -79,17 +79,10 @@ const copyItem = () => {
 <template>
     <li class="col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
         <div class="px-4 py-5 sm:p-6 flex-1">
-            <div class="flex items-center justify-between space-x-3">
-                <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
-                    {{ item.quantity }}
-                    {{ item.name }}
-                </h3>
-                <IconDangerButton
-                    @click="$emit('remove-item', item.key)"
-                >
-                    <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                </IconDangerButton>
-            </div>
+            <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
+                {{ item.quantity }}
+                {{ item.name }}
+            </h3>
             <div class="mt-6 space-y-2">
                 <TagBox
                     class="w-full"
@@ -209,12 +202,17 @@ const copyItem = () => {
                 </ToggleInput>
             </div>
 
-            <div class="flex flex-col justify-end">
+            <div class="flex flex-row flex-1 items-end justify-end gap-3">
                 <IconPrimaryButton
                     @click="copyItem"
                 >
                     <i class="far fa-fw fa-copy text-xs"></i>
                 </IconPrimaryButton>
+                <IconDangerButton
+                    @click="$emit('remove-item', item.key)"
+                >
+                    <i class="fas fa-fw fa-trash-alt text-xs"></i>
+                </IconDangerButton>
             </div>
         </div>
     </li>
