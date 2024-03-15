@@ -47,16 +47,6 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'settings' => UserSettings::class.':default',
-    ];
-
-    /**
      * The accessors to append to the model's array form.
      *
      * @var array<int, string>
@@ -128,5 +118,16 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'settings' => UserSettings::class.':default',
+        ];
     }
 }

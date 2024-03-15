@@ -16,15 +16,6 @@ class Team extends JetstreamTeam
     use HasFactory;
 
     /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
-    protected $casts = [
-        'personal_team' => 'boolean',
-    ];
-
-    /**
      * The event map for the model.
      *
      * @var array<string, class-string>
@@ -34,4 +25,14 @@ class Team extends JetstreamTeam
         'updated' => TeamUpdated::class,
         'deleted' => TeamDeleted::class,
     ];
+
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'personal_team' => 'boolean',
+        ];
+    }
 }
