@@ -130,4 +130,12 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     {
         return $this->hasMany(Photo::class);
     }
+
+    /**
+     * @return HasMany<TagShortcut>
+     */
+    public function tagShortcuts(): HasMany
+    {
+        return $this->hasMany(TagShortcut::class);
+    }
 }
