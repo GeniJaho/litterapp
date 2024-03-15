@@ -21,6 +21,18 @@ class PhotoItem extends Pivot
     public $incrementing = true;
 
     /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'picked_up' => 'boolean',
+            'recycled' => 'boolean',
+            'deposit' => 'boolean',
+        ];
+    }
+
+    /**
      * @return BelongsTo<Item, PhotoItem>
      */
     public function item(): BelongsTo
@@ -52,17 +64,5 @@ class PhotoItem extends Pivot
             ->withPivot('id')
             ->using(PhotoItemTag::class)
             ->withTimestamps();
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'picked_up' => 'boolean',
-            'recycled' => 'boolean',
-            'deposit' => 'boolean',
-        ];
     }
 }

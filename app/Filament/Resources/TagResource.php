@@ -50,10 +50,17 @@ class TagResource extends Resource
                     ->searchable(),
                 TextColumn::make('slug')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('type.name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('photo_item_tags_count')
+                    ->counts('photoItemTags')
+                    ->label('Times used')
+                    ->sortable()
+                    ->toggleable()
+                    ->numeric(),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

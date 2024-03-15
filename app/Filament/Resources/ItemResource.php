@@ -44,9 +44,16 @@ class ItemResource extends Resource
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('photo_items_count')
+                    ->counts('photoItems')
+                    ->label('Times used')
+                    ->sortable()
+                    ->toggleable()
+                    ->numeric(),
                 TextColumn::make('slug')
                     ->sortable()
-                    ->searchable(),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

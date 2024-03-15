@@ -55,6 +55,17 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         'profile_photo_url',
     ];
 
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'email_verified_at' => 'datetime',
+            'settings' => UserSettings::class.':default',
+        ];
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return in_array($this->email, [
@@ -118,16 +129,5 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
-    }
-
-    /**
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
-        return [
-            'email_verified_at' => 'datetime',
-            'settings' => UserSettings::class.':default',
-        ];
     }
 }
