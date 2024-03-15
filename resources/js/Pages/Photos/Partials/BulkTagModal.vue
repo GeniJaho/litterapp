@@ -70,7 +70,7 @@ const maxWidthClass = computed(() => {
                     leave-to-class="opacity-0"
                 >
                     <div v-show="show" class="fixed inset-0 transform transition-all" @click="close">
-                        <div class="absolute inset-0 bg-gray-500 dark:bg-gray-900 opacity-75" />
+                        <div class="absolute inset-0" />
                     </div>
                 </transition>
 
@@ -82,15 +82,15 @@ const maxWidthClass = computed(() => {
                     leave-from-class="opacity-100 translate-y-0 sm:scale-100"
                     leave-to-class="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
                 >
-                    <div v-show="show" class="mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
+                    <div v-show="show" class="mb-6 bg-white/50 dark:bg-gray-800/30 backdrop-blur-3xl rounded-lg shadow-xl transform transition-all sm:w-full sm:mx-auto" :class="maxWidthClass">
                         <div v-if="show" class="rounded-lg">
                             <slot name="header" />
 
-                            <div class="mt-4 px-6 py-4 text-sm text-gray-600 dark:text-gray-400 bg-gray-50 dark:bg-gray-700">
+                            <div class="mt-4 px-6 py-4 text-sm text-gray-600 dark:text-gray-400 bg-gray-50/30 dark:bg-gray-700/30">
                                 <slot name="content" />
                             </div>
 
-                            <div class="flex flex-row justify-end rounded-b-lg px-6 py-4 bg-gray-100 dark:bg-gray-700 text-right">
+                            <div class="flex flex-row justify-end rounded-b-lg px-6 py-4 bg-gray-100/50 dark:bg-gray-700/50 text-right">
                                 <slot name="footer" />
                             </div>
                         </div>
