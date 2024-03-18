@@ -38,7 +38,9 @@ class PhotoResource extends Resource
                     ->sortable(),
                 ImageColumn::make('full_path')
                     ->label('Photo')
-                    ->searchable(),
+                    ->searchable(query: function (Builder $query, string $search): Builder {
+                        return $query->where('path', 'like', "%{$search}%");
+                    }),
                 TextColumn::make('gps')
                     ->label('GPS')
                     ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
