@@ -150,14 +150,16 @@ const onKeyUp = (event) => {
 };
 
 watch(tagShortcut, (newValue) => {
-    if (newValue) {
-        axios.post(`/photos/${photo.value.id}/tag-shortcuts`, {
-            tag_shortcut_id: newValue.id,
-        }).then(() => {
+    if (! newValue) {
+        return;
+    }
+
+    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${newValue.id}`)
+        .then(() => {
+            tagShortcut.value = null;
             speedTaggingOpened.value = false;
             getPhoto();
         });
-    }
 });
 
 </script>

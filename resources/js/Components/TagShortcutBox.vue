@@ -1,11 +1,11 @@
 <script setup>
-import {ref, computed, onMounted} from 'vue'
+import {computed, onMounted, ref} from 'vue'
 import {
     Combobox,
-    ComboboxInput,
     ComboboxButton,
-    ComboboxOptions,
+    ComboboxInput,
     ComboboxOption,
+    ComboboxOptions,
     TransitionRoot,
 } from '@headlessui/vue';
 
@@ -28,7 +28,7 @@ defineEmits(['update:modelValue']);
 let query = ref('')
 
 let filteredItems = computed(() => {
-    const items = query.value === ''
+    return query.value === ''
         ? props.items
         : props.items.filter((item) =>
             item.shortcut
@@ -36,14 +36,7 @@ let filteredItems = computed(() => {
                 .replace(/\s+/g, '')
                 .includes(query.value.toLowerCase().replace(/\s+/g, ''))
         );
-
-    return items;
 })
-
-const removeItem = (id) => {
-    const index = props.modelValue.findIndex((item) => item.id === id);
-    props.modelValue.splice(index, 1);
-}
 
 const input = ref(null);
 

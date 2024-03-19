@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ApplyTagShortcutController;
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
@@ -53,6 +54,7 @@ Route::middleware([
 
     Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
+    Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);
     Route::delete('/photo-items/{photoItem}', [PhotoItemsController::class, 'destroy']);
     Route::post('/photo-items/{photoItem}/tags', [PhotoItemTagsController::class, 'store']);

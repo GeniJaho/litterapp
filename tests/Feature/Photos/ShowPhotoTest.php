@@ -5,6 +5,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
+use App\Models\TagShortcut;
 use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,20 @@ test('a user can see the photo tagging page', function () {
             $material->slug => $materialTags->sortBy('name')->values()->toArray(),
         ])
         ->has('items', 2)
+    );
+});
+
+test('a user can see their shortcuts in the photo tagging page', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->where('tagShortcuts.0.id', $tagShortcut->id)
     );
 });
 
