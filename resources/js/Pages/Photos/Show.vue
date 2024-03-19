@@ -10,7 +10,6 @@ import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
-import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -24,21 +23,16 @@ const props = defineProps({
 const photo = ref(null);
 const photoItems = ref([]);
 const selectedItem = ref(null);
-
-let timesShiftPressed = 0;
-const speedTaggingOpened = ref(false);
 const tagShortcut = ref(null);
 
 onMounted(() => {
     getPhoto();
 
     window.addEventListener('keydown', onKeyDown);
-    window.addEventListener('keyup', onKeyUp);
 });
 
 onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('keyup', onKeyUp);
 });
 
 const getPhoto = () => {
@@ -138,17 +132,6 @@ const onKeyDown = (event) => {
     }
 };
 
-const onKeyUp = (event) => {
-    if (event.key === 'Shift') {
-        timesShiftPressed++
-        if (timesShiftPressed >= 2) {
-            speedTaggingOpened.value = !speedTaggingOpened.value;
-
-        }
-        setTimeout(() => (timesShiftPressed = 0), 400)
-    }
-};
-
 watch(tagShortcut, (newValue) => {
     if (! newValue) {
         return;
@@ -157,7 +140,6 @@ watch(tagShortcut, (newValue) => {
     axios.post(`/photos/${photo.value.id}/tag-shortcuts/${newValue.id}`)
         .then(() => {
             tagShortcut.value = null;
-            speedTaggingOpened.value = false;
             getPhoto();
         });
 });
@@ -168,11 +150,8 @@ watch(tagShortcut, (newValue) => {
     <AppLayout title="See Photo">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                See Photo {{ speedTaggingOpened ? 'Speed Tagging' : '' }}
+                See Photo
             </h2>
-            <PrimaryButton @click="speedTaggingOpened = ! speedTaggingOpened">
-                Tag Faster
-            </PrimaryButton>
         </template>
 
         <div v-if="photo">
@@ -214,12 +193,23 @@ watch(tagShortcut, (newValue) => {
                     </div>
 
                     <div class="w-full md:w-1/2 xl:w-2/3 px-4">
-                        <div class="flex flex-row mt-6 md:mt-0">
+                        <div class="mt-6 md:mt-0">
+                            <TagShortcutBox
+                                class="w-full sm:w-96"
+                                v-model="tagShortcut"
+                                :items="tagShortcuts"
+                                :autofocus="true"
+                                placeholder="Tag Shortcuts"
+                            ></TagShortcutBox>
+                        </div>
+
+                        <div class="flex flex-row mt-6">
                             <TagBox
                                 :autofocus="true"
                                 class="w-full sm:w-96"
                                 :items="items"
                                 v-model="selectedItem"
+                                placeholder="Litter Objects"
                             ></TagBox>
                             <div class="ml-4 mt-0.5">
                                 <PrimaryButton
@@ -260,27 +250,6 @@ watch(tagShortcut, (newValue) => {
                 </div>
             </div>
         </div>
-
-        <BulkTagModal max-width="7xl" :show="speedTaggingOpened" @close="speedTaggingOpened = false">
-            <template #header>
-                <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                    My Tag Shortcuts
-                </div>
-            </template>
-
-            <template #content>
-                <div class="mt-4 w-full h-full min-h-96 px-4">
-                    <div>
-                        <TagShortcutBox
-                            class="w-96"
-                            v-model="tagShortcut"
-                            :items="tagShortcuts"
-                            :autofocus="true"
-                        ></TagShortcutBox>
-                    </div>
-                </div>
-            </template>
-        </BulkTagModal>
     </AppLayout>
 </template>
 
