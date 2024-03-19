@@ -7,6 +7,7 @@ import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
 import {ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
+import TaggedIcon from "@/Components/TaggedIcon.vue";
 
 const props = defineProps({
     photos: Object,
@@ -166,9 +167,7 @@ const filter = (filters) => {
                                         <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
                                     </a>
 
-                                    <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full">
-                                    <i class="fas fa-tags text-green-700  mt-0.5 ml-0.5"></i>
-                                </span>
+                                    <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 
                                     <IconDangerButton
                                         v-if="!isSelecting"

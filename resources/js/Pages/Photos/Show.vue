@@ -9,6 +9,7 @@ import { router } from '@inertiajs/vue3'
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import TaggedIcon from "@/Components/TaggedIcon.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -147,6 +148,8 @@ const onKeyDown = (event) => {
                                 :alt="photo.id"
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                             >
+
+                            <TaggedIcon v-if="photoItems.length" class="absolute top-4 left-4" />
 
                             <IconDangerButton
                                 class="absolute top-4 right-4"
