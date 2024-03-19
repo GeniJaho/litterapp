@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -9,6 +9,8 @@ import { router } from '@inertiajs/vue3'
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import TagShortcutBox from "@/Components/TagShortcutBox.vue";
+import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -16,20 +18,27 @@ const props = defineProps({
     tags: Object,
     nextPhotoUrl: String,
     previousPhotoUrl: String,
+    tagShortcuts: Array,
 });
 
 const photo = ref(null);
 const photoItems = ref([]);
 const selectedItem = ref(null);
 
+let timesShiftPressed = 0;
+const speedTaggingOpened = ref(false);
+const tagShortcut = ref(null);
+
 onMounted(() => {
     getPhoto();
 
     window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('keyup', onKeyUp);
 });
 
 onUnmounted(() => {
     window.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('keyup', onKeyUp);
 });
 
 const getPhoto = () => {
@@ -118,14 +127,38 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
 }, 1000, {leading: true, trailing: true});
 
 const onKeyDown = (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.code === "ArrowLeft" && props.previousPhotoUrl) {
-        event.preventDefault();
-        router.visit(props.previousPhotoUrl);
-    } else if ((event.ctrlKey || event.metaKey) && event.code === "ArrowRight" && props.nextPhotoUrl) {
-        event.preventDefault();
-        router.visit(props.nextPhotoUrl);
+    if (event.ctrlKey || event.metaKey) {
+        if (event.code === "ArrowLeft" && props.previousPhotoUrl) {
+            event.preventDefault();
+            router.visit(props.previousPhotoUrl);
+        } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
+            event.preventDefault();
+            router.visit(props.nextPhotoUrl);
+        }
     }
 };
+
+const onKeyUp = (event) => {
+    if (event.key === 'Shift') {
+        timesShiftPressed++
+        if (timesShiftPressed >= 2) {
+            speedTaggingOpened.value = !speedTaggingOpened.value;
+
+        }
+        setTimeout(() => (timesShiftPressed = 0), 400)
+    }
+};
+
+watch(tagShortcut, (newValue) => {
+    if (newValue) {
+        axios.post(`/photos/${photo.value.id}/tag-shortcuts`, {
+            tag_shortcut_id: newValue.id,
+        }).then(() => {
+            speedTaggingOpened.value = false;
+            getPhoto();
+        });
+    }
+});
 
 </script>
 
@@ -133,8 +166,11 @@ const onKeyDown = (event) => {
     <AppLayout title="See Photo">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                See Photo
+                See Photo {{ speedTaggingOpened ? 'Speed Tagging' : '' }}
             </h2>
+            <PrimaryButton @click="speedTaggingOpened = ! speedTaggingOpened">
+                Tag Faster
+            </PrimaryButton>
         </template>
 
         <div v-if="photo">
@@ -222,6 +258,27 @@ const onKeyDown = (event) => {
                 </div>
             </div>
         </div>
+
+        <BulkTagModal max-width="7xl" :show="speedTaggingOpened" @close="speedTaggingOpened = false">
+            <template #header>
+                <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
+                    My Tag Shortcuts
+                </div>
+            </template>
+
+            <template #content>
+                <div class="mt-4 w-full h-full min-h-96 px-4">
+                    <div>
+                        <TagShortcutBox
+                            class="w-96"
+                            v-model="tagShortcut"
+                            :items="tagShortcuts"
+                            :autofocus="true"
+                        ></TagShortcutBox>
+                    </div>
+                </div>
+            </template>
+        </BulkTagModal>
     </AppLayout>
 </template>
 
