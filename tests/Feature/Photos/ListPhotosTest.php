@@ -290,3 +290,132 @@ test('a user can filter their photos by having tags or not', function () {
         ->etc()
     );
 });
+
+test('a user can filter their photos by being picked up or not', function () {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    PhotoItem::factory()->for($item)->for($photoA)->create([
+        'picked_up' => false,
+    ]);
+    PhotoItem::factory()->for($item)->for($photoB)->create([
+        'picked_up' => true,
+    ]);
+
+    $response = $this->get('/my-photos?store_filters=1&picked_up=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&picked_up=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&picked_up=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by being recycled or not', function () {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    PhotoItem::factory()->for($item)->for($photoA)->create([
+        'recycled' => false,
+    ]);
+    PhotoItem::factory()->for($item)->for($photoB)->create([
+        'recycled' => true,
+    ]);
+
+    $response = $this->get('/my-photos?store_filters=1&recycled=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&recycled=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&recycled=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by being deposit or not', function () {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    PhotoItem::factory()->for($item)->for($photoA)->create([
+        'deposit' => false,
+    ]);
+    PhotoItem::factory()->for($item)->for($photoB)->create([
+        'deposit' => true,
+    ]);
+
+    $response = $this->get('/my-photos?store_filters=1&deposit=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&deposit=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&deposit=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
