@@ -1,13 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {Link, router} from '@inertiajs/vue3';
-import IconDangerButton from "@/Components/IconDangerButton.vue";
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
 import {ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
+import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
 
 const props = defineProps({
     photos: Object,
@@ -169,13 +169,11 @@ const filter = (filters) => {
 
                                     <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 
-                                    <IconDangerButton
-                                        v-if="!isSelecting"
+                                    <DeletePhotoButton
+                                        v-if="! isSelecting"
+                                        @delete="deletePhoto(photo.id)"
                                         class="absolute bottom-2 right-2"
-                                        @click="deletePhoto(photo.id)"
-                                    >
-                                        <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                                    </IconDangerButton>
+                                    />
                                 </div>
                             </div>
                         </div>
