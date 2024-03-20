@@ -84,6 +84,12 @@ class Photo extends Model
             return;
         }
 
+        $photoItemProperties = array_filter([
+            'picked_up' => $filters->picked_up,
+            'recycled' => $filters->recycled,
+            'deposit' => $filters->deposit,
+        ], fn ($value) => $value !== null);
+
         $query
             ->when($filters->item_ids !== [], fn ($query) => $query
                 ->whereHas('items', fn ($query) => $query
@@ -103,6 +109,7 @@ class Photo extends Model
             ->when($filters->has_gps === true, fn ($query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
             ->when($filters->has_gps === false, fn ($query) => $query->where(fn ($query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn ($query) => $query->whereHas('items'))
-            ->when($filters->is_tagged === false, fn ($query) => $query->whereDoesntHave('items'));
+            ->when($filters->is_tagged === false, fn ($query) => $query->whereDoesntHave('items'))
+            ->when($photoItemProperties !== [], fn ($query) => $query->whereHas('photoItems', fn ($query) => $query->where($photoItemProperties)));
     }
 }

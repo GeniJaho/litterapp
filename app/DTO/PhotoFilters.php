@@ -19,6 +19,9 @@ class PhotoFilters extends Data
         public ?string $taken_until_local = null,
         public ?bool $is_tagged = null,
         public ?bool $has_gps = null,
+        public ?bool $picked_up = null,
+        public ?bool $recycled = null,
+        public ?bool $deposit = null,
     ) {
         $this->item_ids = array_map(fn (int|string $id) => (int) $id, $this->item_ids);
         $this->tag_ids = array_map(fn (int|string $id) => (int) $id, $this->tag_ids);
@@ -40,6 +43,9 @@ class PhotoFilters extends Data
             'taken_until_local' => ['nullable', 'date_format:Y-m-d\\TH:i'],
             'is_tagged' => ['nullable', 'boolean'],
             'has_gps' => ['nullable', 'boolean'],
+            'picked_up' => ['nullable', 'boolean'],
+            'recycled' => ['nullable', 'boolean'],
+            'deposit' => ['nullable', 'boolean'],
         ];
     }
 }

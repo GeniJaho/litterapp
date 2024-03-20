@@ -31,6 +31,9 @@ const filters = ref({
     taken_until_local: props.defaultFilters?.taken_until_local ?? null,
     has_gps: props.defaultFilters?.has_gps ?? null,
     is_tagged: props.defaultFilters?.is_tagged ?? null,
+    picked_up: props.defaultFilters?.picked_up ?? null,
+    recycled: props.defaultFilters?.recycled ?? null,
+    deposit: props.defaultFilters?.deposit ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -42,6 +45,9 @@ const selectedContents = ref(props.tags.content.filter(content => filters.value.
 const selectedSizes = ref(props.tags.size.filter(size => filters.value.tag_ids.includes(size.id)));
 const hasGPS = ref(yesOrNoOptions.find(option => option.value === filters.value.has_gps));
 const isTagged = ref(yesOrNoOptions.find(option => option.value === filters.value.is_tagged));
+const pickedUp = ref(yesOrNoOptions.find(option => option.value === filters.value.picked_up));
+const recycled = ref(yesOrNoOptions.find(option => option.value === filters.value.recycled));
+const deposit = ref(yesOrNoOptions.find(option => option.value === filters.value.deposit));
 
 const emit = defineEmits(['change']);
 
@@ -57,6 +63,9 @@ const filter = () => {
     ];
     filters.value.has_gps = hasGPS.value.value !== null ? (hasGPS.value.value === true ? 1 : 0) : null;
     filters.value.is_tagged = isTagged.value.value !== null ? (isTagged.value.value === true ? 1 : 0) : null;
+    filters.value.picked_up = pickedUp.value.value !== null ? (pickedUp.value.value === true ? 1 : 0) : null;
+    filters.value.recycled = recycled.value.value !== null ? (recycled.value.value === true ? 1 : 0) : null;
+    filters.value.deposit = deposit.value.value !== null ? (deposit.value.value === true ? 1 : 0) : null;
     emit('change', {...filters.value, store_filters: 1});
 }
 
@@ -70,6 +79,9 @@ const clear = () => {
     selectedSizes.value = [];
     hasGPS.value = yesOrNoOptions[0];
     isTagged.value = yesOrNoOptions[0];
+    pickedUp.value = yesOrNoOptions[0];
+    recycled.value = yesOrNoOptions[0];
+    deposit.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -80,6 +92,9 @@ const clear = () => {
         taken_until_local: null,
         has_gps: null,
         is_tagged: null,
+        picked_up: null,
+        recycled: null,
+        deposit: null,
     };
 
     emit('change', {...filters.value, clear_filters: 1});
@@ -90,7 +105,7 @@ const clear = () => {
     <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 sm:p-0">
         <div class="w-full">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div class="col-span-1 lg:col-span-2">
+                <div>
                     <InputLabel for="item-filter" value="Items" />
                     <TagBox
                         id="item-filter"
@@ -121,26 +136,6 @@ const clear = () => {
                     ></TagBox>
                 </div>
                 <div>
-                    <InputLabel for="event-filter" value="Events" />
-                    <TagBox
-                        id="event-filter"
-                        v-model="selectedEvents"
-                        :items="tags.event"
-                        :multiple="true"
-                        class="mt-1 block w-full"
-                    ></TagBox>
-                </div>
-                <div>
-                    <InputLabel for="state-filter" value="States" />
-                    <TagBox
-                        id="state-filter"
-                        v-model="selectedStates"
-                        :items="tags.state"
-                        :multiple="true"
-                        class="mt-1 block w-full"
-                    ></TagBox>
-                </div>
-                <div>
                     <InputLabel for="content-filter" value="Contents" />
                     <TagBox
                         id="content-filter"
@@ -159,6 +154,35 @@ const clear = () => {
                         :multiple="true"
                         class="mt-1 block w-full"
                     ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="state-filter" value="States" />
+                    <TagBox
+                        id="state-filter"
+                        v-model="selectedStates"
+                        :items="tags.state"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="event-filter" value="Events" />
+                    <TagBox
+                        id="event-filter"
+                        v-model="selectedEvents"
+                        :items="tags.event"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
+                <div>
+                    <InputLabel for="is-tagged" value="Is Tagged" />
+                    <SelectInput
+                        v-model="isTagged"
+                        :options="yesOrNoOptions"
+                        id="is-tagged"
+                        class="block w-full mt-1"
+                    ></SelectInput>
                 </div>
                 <div>
                     <InputLabel for="uploaded-from" value="Uploaded From" />
@@ -206,11 +230,29 @@ const clear = () => {
                     ></SelectInput>
                 </div>
                 <div>
-                    <InputLabel for="is-tagged" value="Is Tagged" />
+                    <InputLabel for="picked_up" value="Picked Up" />
                     <SelectInput
-                        v-model="isTagged"
+                        v-model="pickedUp"
                         :options="yesOrNoOptions"
-                        id="is-tagged"
+                        id="picked_up"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="recycled" value="Recycled" />
+                    <SelectInput
+                        v-model="recycled"
+                        :options="yesOrNoOptions"
+                        id="recycled"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="deposit" value="Deposit" />
+                    <SelectInput
+                        v-model="deposit"
+                        :options="yesOrNoOptions"
+                        id="deposit"
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>

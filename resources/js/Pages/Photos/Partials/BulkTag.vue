@@ -101,7 +101,7 @@ const openModal = () => {
 };
 
 const onKeyDown = (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.code === "Enter" && ! saveDisabled.value) {
+    if ((event.ctrlKey || event.metaKey) && (event.code === "Enter" || event.code === "ArrowRight") && ! saveDisabled.value) {
         event.preventDefault();
         save();
     }
@@ -187,7 +187,10 @@ const onKeyDown = (event) => {
                 @click="save"
             >
                 <Tooltip>
-                    <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</span>
+                    <div>
+                        <div class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</div>
+                        <div class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</div>
+                    </div>
                 </Tooltip>
                 Save
             </PrimaryButton>

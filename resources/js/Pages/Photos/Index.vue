@@ -1,12 +1,13 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {Link, router} from '@inertiajs/vue3';
-import IconDangerButton from "@/Components/IconDangerButton.vue";
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
 import {ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
+import TaggedIcon from "@/Components/TaggedIcon.vue";
+import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
 
 const props = defineProps({
     photos: Object,
@@ -166,17 +167,13 @@ const filter = (filters) => {
                                         <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
                                     </a>
 
-                                    <span v-if="photo.items_exists" class="absolute top-2 right-2 flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full">
-                                    <i class="fas fa-tags text-green-700  mt-0.5 ml-0.5"></i>
-                                </span>
+                                    <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 
-                                    <IconDangerButton
-                                        v-if="!isSelecting"
+                                    <DeletePhotoButton
+                                        v-if="! isSelecting"
+                                        @delete="deletePhoto(photo.id)"
                                         class="absolute bottom-2 right-2"
-                                        @click="deletePhoto(photo.id)"
-                                    >
-                                        <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                                    </IconDangerButton>
+                                    />
                                 </div>
                             </div>
                         </div>

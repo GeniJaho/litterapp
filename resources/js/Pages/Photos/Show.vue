@@ -6,9 +6,10 @@ import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
 import { router } from '@inertiajs/vue3'
-import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import TaggedIcon from "@/Components/TaggedIcon.vue";
+import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 
 const props = defineProps({
@@ -165,12 +166,12 @@ watch(tagShortcut, (newValue) => {
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                             >
 
-                            <IconDangerButton
+                            <TaggedIcon v-if="photoItems.length" class="absolute top-4 left-4" />
+
+                            <DeletePhotoButton
+                                @delete="deletePhoto"
                                 class="absolute top-4 right-4"
-                                @click="deletePhoto"
-                            >
-                                <i class="fas fa-fw fa-trash-alt text-xs"></i>
-                            </IconDangerButton>
+                            />
                         </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
