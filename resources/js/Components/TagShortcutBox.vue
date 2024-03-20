@@ -124,17 +124,19 @@ onMounted(() => {
                     </ComboboxOptions>
                 </TransitionRoot>
 
-                <div class="absolute left-full w-full" v-if="activeOption">
-                    <div class="ml-8 w-full">
-                        <div v-for="tagShortcutItem in activeOption.tag_shortcut_items" :key="tagShortcutItem.id">
-                            Item: {{ tagShortcutItem.item.name }} <br>
-                            Picked Up: {{ tagShortcutItem.picked_up }} <br>
-                            Recycled: {{ tagShortcutItem.recycled }} <br>
-                            Deposit: {{ tagShortcutItem.deposit }} <br>
-                            Quantity: {{ tagShortcutItem.quantity }} <br>
-                            Tags:
-                            <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
-                                {{ tag.name }},
+                <div class="absolute right-full transform transition-all sm:w-full sm:mx-auto sm:max-w-2xl" v-if="activeOption">
+                    <div class="mr-4 bg-white/50 dark:bg-gray-800/30 backdrop-blur-xl rounded-lg shadow-xl">
+                        <div class=" px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
+                            <div v-for="tagShortcutItem in activeOption.tag_shortcut_items" :key="tagShortcutItem.id">
+                                Item: {{ tagShortcutItem.item.name }} <br>
+                                Picked Up: {{ tagShortcutItem.picked_up }} <br>
+                                Recycled: {{ tagShortcutItem.recycled }} <br>
+                                Deposit: {{ tagShortcutItem.deposit }} <br>
+                                Quantity: {{ tagShortcutItem.quantity }} <br>
+                                Tags:
+                                <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
+                                    {{ tag.name }},
+                                </div>
                             </div>
                         </div>
                     </div>
