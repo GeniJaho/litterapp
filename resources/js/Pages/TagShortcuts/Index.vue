@@ -3,22 +3,27 @@ import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {ref} from "vue";
 import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     tagShortcuts: Array,
 });
 
 const showModal = ref(false);
-const activeTagShortcut = ref(null);
+const activeTagShortcutId = ref(null);
 
-const openModal = (tagShortcut = null) => {
-    activeTagShortcut.value = tagShortcut;
+const openModal = (tagShortcutId = null) => {
+    activeTagShortcutId.value = tagShortcutId;
     showModal.value = true;
 };
 
 const closeModal = () => {
-    activeTagShortcut.value = null;
+    activeTagShortcutId.value = null;
     showModal.value = false;
+};
+
+const reload = () => {
+    router.reload();
 };
 </script>
 
@@ -56,7 +61,7 @@ const closeModal = () => {
                                     v-for="tagShortcut in tagShortcuts"
                                     :key="tagShortcut.id"
                                     class="hover:bg-gray-50 cursor-pointer"
-                                    @click="openModal(tagShortcut)"
+                                    @click="openModal(tagShortcut.id)"
                                 >
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                         {{ tagShortcut.shortcut }}
@@ -88,9 +93,10 @@ const closeModal = () => {
             </div>
 
             <TagShortcutModal
-                :tagShortcut="activeTagShortcut"
+                :tagShortcutId="activeTagShortcutId"
                 :show="showModal"
                 @close="closeModal"
+                @changed="reload"
             ></TagShortcutModal>
 
         </div>

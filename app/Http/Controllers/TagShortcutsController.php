@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\TagShortcuts\StoreTagShortcutRequest;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
@@ -24,6 +25,17 @@ class TagShortcutsController extends Controller
 
         return Inertia::render('TagShortcuts/Index', [
             'tagShortcuts' => $tagShortcuts,
+        ]);
+    }
+
+    public function show(TagShortcut $tagShortcut): JsonResponse
+    {
+        $tagShortcut->load(['tagShortcutItems' => [
+            'item:id,name', 'tags:id,name',
+        ]]);
+
+        return response()->json([
+            'tagShortcut' => $tagShortcut,
         ]);
     }
 

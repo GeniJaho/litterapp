@@ -2,18 +2,17 @@
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
-import {useForm} from "@inertiajs/vue3";
 import TextInput from "@/Components/TextInput.vue";
 import InputError from "@/Components/InputError.vue";
 import ActionMessage from "@/Components/ActionMessage.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {ref} from "vue";
+import {onMounted, ref, watch} from "vue";
 
-const emit = defineEmits(['close']);
+const emit = defineEmits(['close', 'changed']);
 
 const props = defineProps({
-    existingTagShortcut: {
-        type: Object,
+    tagShortcutId: {
+        type: Number,
         default: null,
     },
     show: {
@@ -22,11 +21,30 @@ const props = defineProps({
     },
 });
 
-const tagShortcut = ref(props.existingTagShortcut);
-const shortcutName = ref(props.existingTagShortcut?.shortcut || '');
+const tagShortcut = ref(null);
+const shortcutName = ref('');
 const processing = ref(false);
 const error = ref('');
 const message = ref('');
+
+watch(props, (value) => {
+    if (value.show) {
+        if (! props.tagShortcutId) {
+            return;
+        }
+
+        axios.get(route('tag-shortcuts.show', props.tagShortcutId)).then((r) => {
+            tagShortcut.value = r.data.tagShortcut;
+            shortcutName.value = r.data.tagShortcut.shortcut;
+        });
+    } else {
+        tagShortcut.value = null;
+        shortcutName.value = '';
+        processing.value = false;
+        error.value = '';
+        message.value = '';
+    }
+});
 
 const save = () => {
     processing.value = true;
@@ -38,6 +56,7 @@ const save = () => {
         error.value = '';
         message.value = 'Saved.';
         setTimeout(() => message.value = '', 3000);
+        emit('changed');
     }).catch((e) => {
         processing.value = false;
         error.value = e.response.data.message;
@@ -53,7 +72,7 @@ const close = () => {
     <BulkTagModal max-width="7xl" :show="show" @close="close">
         <template #header>
             <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
-                {{ existingTagShortcut ? 'Edit' : 'Add new' }} shortcut
+                {{ tagShortcut ? 'Edit' : 'Add new' }} shortcut
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
                 Add items and tags to the shortcut. You can also set the quantity, and mark it as picked up, recycled,
@@ -65,12 +84,12 @@ const close = () => {
             <div>
                 <form @submit.prevent="save">
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <div>
+                        <div class="w-full sm:max-w-xs">
                             <TextInput
                                 id="shortcut"
                                 v-model="shortcutName"
                                 type="text"
-                                class="block w-full sm:max-w-sm"
+                                class="block w-full"
                                 autocomplete="shortcut"
                                 placeholder="Shortcut"
                             />
@@ -90,7 +109,19 @@ const close = () => {
                     </div>
                 </form>
 
-
+                <div>
+                    <div v-for="tagShortcutItem in tagShortcut?.tag_shortcut_items" :key="tagShortcutItem.id">
+                        Item: {{ tagShortcutItem.item.name }} <br>
+                        Picked Up: {{ tagShortcutItem.picked_up }} <br>
+                        Recycled: {{ tagShortcutItem.recycled }} <br>
+                        Deposit: {{ tagShortcutItem.deposit }} <br>
+                        Quantity: {{ tagShortcutItem.quantity }} <br>
+                        Tags:
+                        <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
+                            {{ tag.name }},
+                        </div>
+                    </div>
+                </div>
                 </div>
         </template>
 
