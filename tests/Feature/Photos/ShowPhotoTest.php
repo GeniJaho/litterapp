@@ -50,7 +50,16 @@ test('a user can see the photo tagging page', function () {
 test('a user can see their shortcuts in the photo tagging page', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
+    $tag = Tag::factory()->create();
+    $item = Item::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($item, [
+        'picked_up' => false,
+        'recycled' => false,
+        'deposit' => true,
+        'quantity' => 3,
+    ]);
+    $tagShortcut->tagShortcutItems()->first()->tags()->attach($tag);
 
     $response = $this->get(route('photos.show', $photo));
 
@@ -58,6 +67,11 @@ test('a user can see their shortcuts in the photo tagging page', function () {
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
         ->where('tagShortcuts.0.id', $tagShortcut->id)
+        ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.id', $item->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.name', $item->name)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.id', $tag->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.name', $tag->name)
     );
 });
 

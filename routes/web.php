@@ -12,6 +12,7 @@ use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
+use App\Http\Controllers\TagShortcutsController;
 use App\Http\Controllers\UploadPhotosController;
 use App\Http\Controllers\UserSettingsController;
 use Illuminate\Support\Facades\Route;
@@ -63,4 +64,6 @@ Route::middleware([
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
 
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
+
+    Route::get('/user/tag-shortcuts', [TagShortcutsController::class, 'index'])->name('tag-shortcuts.index');
 });
