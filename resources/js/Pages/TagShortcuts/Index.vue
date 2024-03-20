@@ -1,10 +1,25 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
+import {ref} from "vue";
+import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue";
 
 const props = defineProps({
     tagShortcuts: Array,
 });
+
+const showModal = ref(false);
+const activeTagShortcut = ref(null);
+
+const openModal = (tagShortcut = null) => {
+    activeTagShortcut.value = tagShortcut;
+    showModal.value = true;
+};
+
+const closeModal = () => {
+    activeTagShortcut.value = null;
+    showModal.value = false;
+};
 </script>
 
 <template>
@@ -22,7 +37,7 @@ const props = defineProps({
                     <p class="mt-2 text-sm text-gray-700">A list of all the tag shortcuts in your account.</p>
                 </div>
                 <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                    <PrimaryButton>Add shortcut</PrimaryButton>
+                    <PrimaryButton @click="openModal(null)">Add shortcut</PrimaryButton>
                 </div>
             </div>
             <div class="mt-8 flow-root">
@@ -41,6 +56,7 @@ const props = defineProps({
                                     v-for="tagShortcut in tagShortcuts"
                                     :key="tagShortcut.id"
                                     class="hover:bg-gray-50 cursor-pointer"
+                                    @click="openModal(tagShortcut)"
                                 >
                                     <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
                                         {{ tagShortcut.shortcut }}
@@ -70,6 +86,13 @@ const props = defineProps({
                     </div>
                 </div>
             </div>
+
+            <TagShortcutModal
+                :tagShortcut="activeTagShortcut"
+                :show="showModal"
+                @close="closeModal"
+            ></TagShortcutModal>
+
         </div>
 
     </AppLayout>

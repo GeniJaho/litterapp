@@ -66,4 +66,5 @@ Route::middleware([
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
 
     Route::get('/user/tag-shortcuts', [TagShortcutsController::class, 'index'])->name('tag-shortcuts.index');
+    Route::post('/user/tag-shortcuts', [TagShortcutsController::class, 'store'])->name('tag-shortcuts.store');
 });

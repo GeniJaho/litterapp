@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\TagShortcuts\StoreTagShortcutRequest;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -25,11 +27,20 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-//    public function store(Request $request)
-//    {
-//        //
-//    }
-//
+    public function store(StoreTagShortcutRequest $request)
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $tagShortcut = $user->tagShortcuts()->create([
+            'shortcut' => $request->shortcut,
+        ]);
+
+        return response()->json([
+            'tagShortcut' => $tagShortcut,
+        ]);
+    }
+
 //    public function update(Request $request, string $id)
 //    {
 //        //
