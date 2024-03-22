@@ -37,5 +37,10 @@ export let tagShortcutState = ref({
             this.processing = false;
             this.error = e.response.data.message;
         });
+    },
+
+    delete(tagShortcutId) {
+       axios.delete(route('tag-shortcuts.destroy', tagShortcutId))
+              .then(() => router.reload());
     }
 });

@@ -9,7 +9,7 @@ import { router } from '@inertiajs/vue3'
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
-import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
+import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 
 const props = defineProps({
@@ -168,7 +168,7 @@ watch(tagShortcut, (newValue) => {
 
                             <TaggedIcon v-if="photoItems.length" class="absolute top-4 left-4" />
 
-                            <DeletePhotoButton
+                            <ConfirmDeleteButton
                                 @delete="deletePhoto"
                                 class="absolute top-4 right-4"
                             />

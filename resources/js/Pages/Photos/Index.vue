@@ -7,7 +7,7 @@ import {ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
-import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
+import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 
 const props = defineProps({
     photos: Object,
@@ -169,7 +169,7 @@ const filter = (filters) => {
 
                                     <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 
-                                    <DeletePhotoButton
+                                    <ConfirmDeleteButton
                                         v-if="! isSelecting"
                                         @delete="deletePhoto(photo.id)"
                                         class="absolute bottom-2 right-2"

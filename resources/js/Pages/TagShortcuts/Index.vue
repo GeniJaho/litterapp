@@ -6,6 +6,7 @@ import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
 import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortcutItem.vue";
+import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 
 const props = defineProps({
     tagShortcuts: Array,
@@ -23,6 +24,10 @@ const openModal = (tagShortcut = null) => {
 const closeModal = () => {
     tagShortcutState.value.reset();
     showModal.value = false;
+};
+
+const deleteTagShortcut = (tagShortcutId) => {
+    tagShortcutState.value.delete(tagShortcutId);
 };
 
 provide('items', readonly(props.items));
@@ -57,19 +62,23 @@ provide('tags', readonly(props.tags));
                                 <tr>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Shortcut</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Items & Tags</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody class="divide-y divide-gray-200 bg-white">
                                 <tr
                                     v-for="tagShortcut in tagShortcuts"
                                     :key="tagShortcut.id"
-                                    class="hover:bg-gray-50 cursor-pointer"
-                                    @click="openModal(tagShortcut)"
+                                    class="hover:bg-gray-50"
                                 >
-                                    <td class="whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6">
+                                    <td @click="openModal(tagShortcut)"
+                                        class="whitespace-nowrap cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                    >
                                         {{ tagShortcut.shortcut }}
                                     </td>
-                                    <td class="whitespace-nowrap px-3 py-4">
+                                    <td @click="openModal(tagShortcut)"
+                                        class="whitespace-nowrap cursor-pointer px-3 py-4 w-full min-w-[24rem]"
+                                    >
                                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                                             <SimpleTagShortcutItem
                                                 v-for="item in tagShortcut.tag_shortcut_items"
@@ -78,6 +87,9 @@ provide('tags', readonly(props.tags));
                                                 :tags="tags"
                                             />
                                         </div>
+                                    </td>
+                                    <td class="px-3 py-4">
+                                        <ConfirmDeleteButton @delete="deleteTagShortcut(tagShortcut.id)" />
                                     </td>
                                 </tr>
                                 </tbody>

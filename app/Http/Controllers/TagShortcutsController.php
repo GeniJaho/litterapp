@@ -62,8 +62,12 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-//    public function destroy(string $id)
-//    {
-//        //
-//    }
+    public function destroy(TagShortcut $tagShortcut): void
+    {
+        if (auth()->id() !== $tagShortcut->user_id) {
+            abort(403);
+        }
+
+        $tagShortcut->delete();
+    }
 }

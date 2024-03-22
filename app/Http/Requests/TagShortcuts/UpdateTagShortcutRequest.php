@@ -25,4 +25,9 @@ class UpdateTagShortcutRequest extends FormRequest
             ],
         ];
     }
+
+    public function authorize(): bool
+    {
+        return auth()->id() === $this->route('tagShortcut')?->user_id;
+    }
 }
