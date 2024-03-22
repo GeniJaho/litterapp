@@ -35,6 +35,17 @@ class TagShortcutsController extends Controller
         ]);
     }
 
+    public function show(TagShortcut $tagShortcut): JsonResponse
+    {
+        $tagShortcut->load(['tagShortcutItems' => [
+            'item:id,name', 'tags:id,name',
+        ]]);
+
+        return response()->json([
+            'tagShortcut' => $tagShortcut,
+        ]);
+    }
+
     public function store(StoreTagShortcutRequest $request): JsonResponse
     {
         /** @var User $user */

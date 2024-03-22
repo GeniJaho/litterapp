@@ -4,9 +4,9 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {provide, readonly, ref} from "vue";
 import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
-import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
 import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortcutItem.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     tagShortcuts: Array,
@@ -23,11 +23,8 @@ const openModal = (tagShortcut = null) => {
 
 const closeModal = () => {
     tagShortcutState.value.reset();
+    router.reload();
     showModal.value = false;
-};
-
-const deleteTagShortcut = (tagShortcutId) => {
-    tagShortcutState.value.delete(tagShortcutId);
 };
 
 provide('items', readonly(props.items));
@@ -89,7 +86,7 @@ provide('tags', readonly(props.tags));
                                         </div>
                                     </td>
                                     <td class="px-3 py-4">
-                                        <ConfirmDeleteButton @delete="deleteTagShortcut(tagShortcut.id)" />
+                                        <ConfirmDeleteButton @delete="tagShortcutState.delete(tagShortcut.id)" />
                                     </td>
                                 </tr>
                                 </tbody>

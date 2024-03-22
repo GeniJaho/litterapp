@@ -13,6 +13,13 @@ export let tagShortcutState = ref({
         this.shortcutName = tagShortcut?.shortcut || '';
     },
 
+    reloadTagShortcut() {
+        if (! this.tagShortcut) return;
+
+        axios.get(route('tag-shortcuts.show', this.tagShortcut.id))
+             .then((r) => this.setTagShortcut(r.data.tagShortcut));
+    },
+
     reset() {
         this.tagShortcut = null;
         this.error = '';
@@ -32,7 +39,6 @@ export let tagShortcutState = ref({
             this.error = '';
             this.message = 'Saved.';
             setTimeout(() => this.message = '', 3000);
-            router.reload();
         }).catch((e) => {
             this.processing = false;
             this.error = e.response.data.message;
@@ -42,5 +48,10 @@ export let tagShortcutState = ref({
     delete(tagShortcutId) {
        axios.delete(route('tag-shortcuts.destroy', tagShortcutId))
               .then(() => router.reload());
+    },
+
+    removeItem(tagShortcutItemId) {
+        axios.delete(route('tag-shortcut-items.destroy', tagShortcutItemId))
+            .then(() => this.reloadTagShortcut());
     }
 });

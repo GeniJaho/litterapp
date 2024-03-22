@@ -70,11 +70,12 @@ Route::middleware([
 
     Route::get('/user/tag-shortcuts', [TagShortcutsController::class, 'index'])->name('tag-shortcuts.index');
     Route::post('/user/tag-shortcuts', [TagShortcutsController::class, 'store'])->name('tag-shortcuts.store');
+    Route::get('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'show'])->name('tag-shortcuts.show');
     Route::post('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'update'])->name('tag-shortcuts.update');
     Route::delete('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'destroy'])->name('tag-shortcuts.destroy');
-    Route::post('/user/tag-shortcuts/{tagShortcut}/items', [TagShortcutItemsController::class, 'store']);
+    Route::post('/user/tag-shortcuts/{tagShortcut}/items', [TagShortcutItemsController::class, 'store'])->name('tag-shortcut-items.store');
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}', [TagShortcutItemsController::class, 'update']);
-    Route::delete('/user/tag-shortcut-items/{tagShortcutItem}', [TagShortcutItemsController::class, 'destroy']);
+    Route::delete('/user/tag-shortcut-items/{tagShortcutItem}', [TagShortcutItemsController::class, 'destroy'])->name('tag-shortcut-items.destroy');
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}/tags', [TagShortcutItemTagsController::class, 'store']);
     Route::delete('/user/tag-shortcut-items/{tagShortcutItem}/tags/{tag}', [TagShortcutItemTagsController::class, 'destroy']);
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}/copy', CopyTagShortcutItemController::class);

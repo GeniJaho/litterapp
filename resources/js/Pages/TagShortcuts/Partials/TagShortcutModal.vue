@@ -11,6 +11,7 @@ import TagBox from "@/Components/TagBox.vue";
 import {inject, ref} from "vue";
 import {router} from "@inertiajs/vue3";
 import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
+import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 
 const emit = defineEmits(['close']);
 
@@ -26,11 +27,11 @@ const tags = inject('tags');
 const selectedItem = ref(null);
 
 const addItem = () => {
-    axios.post(`/photos/${tagShortcutState.value.tagShortcut.id}/items`, {
+    axios.post(route('tag-shortcut-items.store', tagShortcutState.value.tagShortcut.id), {
         item_id: selectedItem.value.id,
     }).then(() => {
         selectedItem.value = null;
-        router.reload();
+        tagShortcutState.value.reloadTagShortcut();
     });
 };
 
@@ -111,6 +112,7 @@ const close = () => {
                                     :key="item.id"
                                     :item="item"
                                     :tags="tags"
+                                    @remove-item="tagShortcutState.removeItem(item.id)"
                                 />
                             </TransitionGroup>
                         </div>
@@ -129,5 +131,21 @@ const close = () => {
 </template>
 
 <style scoped>
+.items-move, /* apply transition to moving elements */
+.items-enter-active,
+.items-leave-active {
+    transition: all 0.5s ease;
+}
 
+.items-enter-from,
+.items-leave-to {
+    opacity: 0;
+    transform: translateX(30px);
+}
+
+/* ensure leaving items are taken out of layout flow so that moving
+   animations can be calculated correctly. */
+.items-leave-active {
+    position: absolute;
+}
 </style>
