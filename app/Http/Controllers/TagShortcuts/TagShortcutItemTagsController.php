@@ -12,7 +12,7 @@ class TagShortcutItemTagsController extends Controller
 {
     public function store(TagShortcutItem $tagShortcutItem, StoreTagShortcutItemTagRequest $request): JsonResponse
     {
-        if (auth()->id() !== $tagShortcutItem->tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcutItem->tagShortcut->user_id) {
             abort(404);
         }
 
@@ -23,7 +23,7 @@ class TagShortcutItemTagsController extends Controller
 
     public function destroy(TagShortcutItem $tagShortcutItem, Tag $tag): JsonResponse
     {
-        if (auth()->id() !== $tagShortcutItem->tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcutItem->tagShortcut->user_id) {
             abort(404);
         }
 

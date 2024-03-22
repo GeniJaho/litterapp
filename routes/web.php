@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\ApplyTagShortcutController;
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
@@ -12,6 +11,7 @@ use App\Http\Controllers\PhotoItemsController;
 use App\Http\Controllers\PhotoItemTagsController;
 use App\Http\Controllers\PhotosController;
 use App\Http\Controllers\PhotoTagsController;
+use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\TagShortcutItemsController;
 use App\Http\Controllers\TagShortcuts\TagShortcutItemTagsController;
 use App\Http\Controllers\TagShortcuts\TagShortcutsController;

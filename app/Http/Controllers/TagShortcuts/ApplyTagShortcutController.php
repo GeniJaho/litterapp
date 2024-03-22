@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TagShortcuts;
 
+use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\TagShortcut;

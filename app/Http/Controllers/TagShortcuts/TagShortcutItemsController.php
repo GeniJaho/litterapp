@@ -32,7 +32,7 @@ class TagShortcutItemsController extends Controller
 
     public function update(TagShortcutItem $tagShortcutItem, UpdateTagShortcutItemRequest $request): JsonResponse
     {
-        if (auth()->id() !== $tagShortcutItem->tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcutItem->tagShortcut->user_id) {
             abort(404);
         }
 
@@ -59,7 +59,7 @@ class TagShortcutItemsController extends Controller
 
     public function destroy(TagShortcutItem $tagShortcutItem): JsonResponse
     {
-        if (auth()->id() !== $tagShortcutItem->tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcutItem->tagShortcut->user_id) {
             abort(404);
         }
 

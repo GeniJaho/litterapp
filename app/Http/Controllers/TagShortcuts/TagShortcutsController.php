@@ -37,7 +37,7 @@ class TagShortcutsController extends Controller
 
     public function show(TagShortcut $tagShortcut): JsonResponse
     {
-        if (auth()->id() !== $tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcut->user_id) {
             abort(404);
         }
 
@@ -81,8 +81,8 @@ class TagShortcutsController extends Controller
 
     public function destroy(TagShortcut $tagShortcut): void
     {
-        if (auth()->id() !== $tagShortcut->user_id) {
-            abort(403);
+        if (auth()->id() !== (int) $tagShortcut->user_id) {
+            abort(404);
         }
 
         $tagShortcut->delete();
