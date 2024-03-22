@@ -33,6 +33,6 @@ class UpdateTagShortcutRequest extends FormRequest
         /** @var TagShortcut|null $tagShortcut */
         $tagShortcut = $this->route('tagShortcut');
 
-        return auth()->id() === $tagShortcut?->user_id;
+        return auth()->id() === (int) $tagShortcut?->user_id;
     }
 }

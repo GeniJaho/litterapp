@@ -17,7 +17,7 @@ class TagShortcutItemsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $tagShortcut->user_id) {
+        if ($user->id !== (int) $tagShortcut->user_id) {
             abort(404);
         }
 
