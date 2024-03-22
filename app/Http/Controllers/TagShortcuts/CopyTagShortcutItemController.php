@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\TagShortcuts;
+namespace App\Http\Controllers\TagShortcuts;
 
 use App\Http\Controllers\Controller;
 use App\Models\TagShortcutItem;
@@ -10,7 +10,7 @@ class CopyTagShortcutItemController extends Controller
 {
     public function __invoke(TagShortcutItem $tagShortcutItem): JsonResponse
     {
-        if (auth()->id() !== $tagShortcutItem->tagShortcut->user_id) {
+        if (auth()->id() !== (int) $tagShortcutItem->tagShortcut->user_id) {
             abort(404);
         }
 

@@ -13,11 +13,11 @@ use App\Http\Controllers\Photos\PhotosController;
 use App\Http\Controllers\Photos\PhotoTagsController;
 use App\Http\Controllers\Photos\UploadPhotosController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
+use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
 use App\Http\Controllers\TagShortcuts\TagShortcutItemsController;
 use App\Http\Controllers\TagShortcuts\TagShortcutItemTagsController;
 use App\Http\Controllers\TagShortcuts\TagShortcutsController;
 use App\Http\Controllers\UserSettingsController;
-use App\Http\Requests\TagShortcuts\CopyTagShortcutItemController;
 use Illuminate\Support\Facades\Route;
 
 /*
