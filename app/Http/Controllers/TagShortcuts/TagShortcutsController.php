@@ -37,6 +37,10 @@ class TagShortcutsController extends Controller
 
     public function show(TagShortcut $tagShortcut): JsonResponse
     {
+        if (auth()->id() !== $tagShortcut->user_id) {
+            abort(404);
+        }
+
         $tagShortcut->load(['tagShortcutItems' => [
             'item:id,name', 'tags:id,name',
         ]]);
