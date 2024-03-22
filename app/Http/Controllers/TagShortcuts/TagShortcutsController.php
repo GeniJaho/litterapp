@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\TagShortcuts;
 
 use App\Actions\Photos\GetTagsAndItemsAction;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\TagShortcuts\StoreTagShortcutRequest;
 use App\Http\Requests\TagShortcuts\UpdateTagShortcutRequest;
 use App\Models\TagShortcut;

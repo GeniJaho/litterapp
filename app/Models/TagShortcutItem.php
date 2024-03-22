@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
+ * @property TagShortcut $tagShortcut
  * @property Collection<Item> $items
  * @property Collection<Tag> $tags
  * @property Collection<TagShortcutItemTag> $tagShortcutItemTags
@@ -32,6 +33,14 @@ class TagShortcutItem extends Pivot
             'recycled' => 'boolean',
             'deposit' => 'boolean',
         ];
+    }
+
+    /**
+     * @return BelongsTo<TagShortcut, TagShortcutItem>
+     */
+    public function tagShortcut(): BelongsTo
+    {
+        return $this->belongsTo(TagShortcut::class);
     }
 
     /**
