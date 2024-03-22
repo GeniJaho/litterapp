@@ -1,12 +1,16 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {ref} from "vue";
+import {provide, readonly, ref} from "vue";
 import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
+import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
+import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortcutItem.vue";
 
 const props = defineProps({
     tagShortcuts: Array,
+    items: Array,
+    tags: Object,
 });
 
 const showModal = ref(false);
@@ -20,6 +24,9 @@ const closeModal = () => {
     tagShortcutState.value.reset();
     showModal.value = false;
 };
+
+provide('items', readonly(props.items));
+provide('tags', readonly(props.tags));
 
 </script>
 
@@ -64,20 +71,12 @@ const closeModal = () => {
                                     </td>
                                     <td class="whitespace-nowrap px-3 py-4">
                                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-                                            <div
-                                                v-for="tagShortcutItem in tagShortcut.tag_shortcut_items"
-                                                :key="tagShortcutItem.id"
-                                            >
-                                                Item: {{ tagShortcutItem.item.name }} <br>
-                                                Picked Up: {{ tagShortcutItem.picked_up }} <br>
-                                                Recycled: {{ tagShortcutItem.recycled }} <br>
-                                                Deposit: {{ tagShortcutItem.deposit }} <br>
-                                                Quantity: {{ tagShortcutItem.quantity }} <br>
-                                                Tags:
-                                                <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
-                                                    {{ tag.name }},
-                                                </div>
-                                            </div>
+                                            <SimpleTagShortcutItem
+                                                v-for="item in tagShortcut.tag_shortcut_items"
+                                                :key="item.id"
+                                                :item="item"
+                                                :tags="tags"
+                                            />
                                         </div>
                                     </td>
                                 </tr>

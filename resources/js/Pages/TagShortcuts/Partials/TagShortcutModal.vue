@@ -7,6 +7,11 @@ import InputError from "@/Components/InputError.vue";
 import ActionMessage from "@/Components/ActionMessage.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
+import TagBox from "@/Components/TagBox.vue";
+import {inject, ref} from "vue";
+import {router} from "@inertiajs/vue3";
+import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
+import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
 
 const emit = defineEmits(['close']);
 
@@ -16,6 +21,19 @@ const props = defineProps({
         default: false,
     },
 })
+
+const items = inject('items');
+const tags = inject('tags');
+const selectedItem = ref(null);
+
+const addItem = () => {
+    axios.post(`/photos/${tagShortcutState.value.tagShortcut.id}/items`, {
+        item_id: selectedItem.value.id,
+    }).then(() => {
+        selectedItem.value = null;
+        router.reload();
+    });
+};
 
 const close = () => {
     emit('close');
@@ -38,7 +56,7 @@ const close = () => {
             <div>
                 <form @submit.prevent="tagShortcutState.save">
                     <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="w-full sm:max-w-xs">
+                        <div class="w-full sm:max-w-96">
                             <TextInput
                                 id="shortcut"
                                 v-model="tagShortcutState.shortcutName"
@@ -64,24 +82,48 @@ const close = () => {
                 </form>
 
                 <div>
-                    <div v-for="tagShortcutItem in tagShortcutState.tagShortcut?.tag_shortcut_items" :key="tagShortcutItem.id">
-                        Item: {{ tagShortcutItem.item.name }} <br>
-                        Picked Up: {{ tagShortcutItem.picked_up }} <br>
-                        Recycled: {{ tagShortcutItem.recycled }} <br>
-                        Deposit: {{ tagShortcutItem.deposit }} <br>
-                        Quantity: {{ tagShortcutItem.quantity }} <br>
-                        Tags:
-                        <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
-                            {{ tag.name }},
+                    <div class="flex flex-row mt-6">
+                        <TagBox
+                            :autofocus="true"
+                            class="w-full sm:w-96"
+                            :items="items"
+                            v-model="selectedItem"
+                            placeholder="Litter Objects"
+                        ></TagBox>
+                        <div class="ml-4">
+                            <PrimaryButton
+                                class="whitespace-nowrap"
+                                @click="addItem"
+                                :disabled="!selectedItem"
+                            >
+                                Add Object
+                            </PrimaryButton>
+                        </div>
+                    </div>
+
+                    <div class="mt-8" v-if="tagShortcutState.tagShortcut?.tag_shortcut_items.length">
+                        <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
+                            Litter Objects
+                        </h3>
+                        <div class="mt-2">
+                            <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                                <TagShortcutItem
+                                    v-for="item in tagShortcutState.tagShortcut?.tag_shortcut_items"
+                                    :key="item.id"
+                                    :item="item"
+                                    :tags="tags"
+                                />
+                            </TransitionGroup>
                         </div>
                     </div>
                 </div>
+
                 </div>
         </template>
 
         <template #footer>
             <SecondaryButton @click="close">
-                Cancel
+                Close
             </SecondaryButton>
         </template>
     </BulkTagModal>

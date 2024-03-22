@@ -1,0 +1,58 @@
+<script setup>
+import {computed, ref} from "vue";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
+import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
+import IconDangerButton from "@/Components/IconDangerButton.vue";
+import TextInput from "@/Components/TextInput.vue";
+import TagBox from "@/Components/TagBox.vue";
+
+const props = defineProps({
+    item: Object,
+    tags: Object,
+});
+
+</script>
+
+<template>
+    <li class="col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
+        <div class="px-4 py-5 sm:p-6 flex-1">
+            <h3 class="truncate text-md font-bold text-gray-900 dark:text-gray-100">
+                {{ item.quantity }}
+                {{ item.item.name }}
+            </h3>
+
+            <div v-if="item.tags?.length" class="mt-2">
+                <div class="text-sm text-gray-500 flex flex-wrap gap-1">
+                    <span
+                        v-for="tag in item.tags"
+                        :key="tag.id"
+                        class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
+                    >
+                        <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
+                             aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
+                        {{ tag.name }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
+            <div class="flex flex-wrap space-x-1">
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+                    Picked Up
+                </span>
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+                    Recycled
+                </span>
+                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+                    Deposit
+                </span>
+            </div>
+
+        </div>
+    </li>
+</template>
+
+<style scoped>
+
+</style>
