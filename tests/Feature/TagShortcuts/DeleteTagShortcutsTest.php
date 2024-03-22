@@ -20,7 +20,7 @@ test('the shortcut must belong to the user', function () {
 
     $response = $this->actingAs($user)->deleteJson(route('tag-shortcuts.update', $tagShortcut));
 
-    $response->assertForbidden();
+    $response->assertNotFound();
 
     expect($tagShortcut->fresh()->shortcut)->not->toBeNull();
 });
