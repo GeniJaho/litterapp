@@ -17,11 +17,11 @@ class ApplyTagShortcutController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id) {
+        if ($user->id !== (int) $photo->user_id) {
             abort(404);
         }
 
-        if ($user->id !== $tagShortcut->user_id) {
+        if ($user->id !== (int) $tagShortcut->user_id) {
             abort(404);
         }
 
