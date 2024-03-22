@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
 use App\DTO\BulkPhotoItems;
+use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\PhotoItem;
 use Illuminate\Support\Facades\DB;

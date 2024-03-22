@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\ExtractsExifFromPhoto;
-use App\Http\Requests\StorePhotosRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Photos\StorePhotosRequest;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;

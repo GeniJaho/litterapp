@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
+use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;

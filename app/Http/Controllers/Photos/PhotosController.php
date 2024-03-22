@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
+use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
