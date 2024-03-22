@@ -21,7 +21,10 @@ export let tagShortcutState = ref({
 
     save() {
         this.processing = true;
-        axios.post(route('tag-shortcuts.store'), {
+        const url = this.tagShortcut
+            ? route('tag-shortcuts.update', this.tagShortcut.id)
+            : route('tag-shortcuts.store');
+        axios.post(url, {
             shortcut: this.shortcutName,
         }).then((r) => {
             this.setTagShortcut(r.data.tagShortcut);

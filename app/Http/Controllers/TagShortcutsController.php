@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Http\Requests\TagShortcuts\StoreTagShortcutRequest;
+use App\Http\Requests\TagShortcuts\UpdateTagShortcutRequest;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -31,22 +33,7 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-//    public function show(TagShortcut $tagShortcut, GetTagsAndItemsAction $getTagsAndItemsAction): JsonResponse
-//    {
-//        $tagShortcut->load(['tagShortcutItems' => [
-//            'item:id,name', 'tags:id,name',
-//        ]]);
-//
-//        $tagsAndItems = $getTagsAndItemsAction->run();
-//
-//        return response()->json([
-//            'tagShortcut' => $tagShortcut,
-//            'items' => $tagsAndItems['items'],
-//            'tags' => $tagsAndItems['tags'],
-//        ]);
-//    }
-
-    public function store(StoreTagShortcutRequest $request)
+    public function store(StoreTagShortcutRequest $request): \Illuminate\Http\JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -60,11 +47,21 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-//    public function update(Request $request, string $id)
-//    {
-//        //
-//    }
-//
+    public function update(TagShortcut $tagShortcut, UpdateTagShortcutRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $tagShortcut->update([
+            'shortcut' => $request->shortcut,
+        ]);
+
+        $tagShortcut->load(['tagShortcutItems' => [
+            'item:id,name', 'tags:id,name',
+        ]]);
+
+        return response()->json([
+            'tagShortcut' => $tagShortcut,
+        ]);
+    }
+
 //    public function destroy(string $id)
 //    {
 //        //

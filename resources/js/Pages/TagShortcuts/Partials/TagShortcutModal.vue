@@ -10,7 +10,6 @@ import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import TagBox from "@/Components/TagBox.vue";
 import {inject, ref} from "vue";
 import {router} from "@inertiajs/vue3";
-import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
 
 const emit = defineEmits(['close']);

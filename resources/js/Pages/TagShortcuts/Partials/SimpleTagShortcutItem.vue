@@ -35,20 +35,18 @@ const props = defineProps({
                     </span>
                 </div>
             </div>
-        </div>
-        <div class="px-4 py-5 sm:p-6">
-            <div class="flex flex-wrap space-x-1">
-                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+
+            <div v-if="item.picked_up || item.recycled || item.deposit" class="mt-2 divide-x divide-gray-500">
+                <span v-if="item.picked_up" class="text-xs text-gray-900 dark:text-gray-100">
                     Picked Up
                 </span>
-                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+                <span v-if="item.recycled" class="pl-1 text-xs text-gray-900 dark:text-gray-100">
                     Recycled
                 </span>
-                <span class="inline-flex items-center rounded-full px-2 py-1 text-xs  text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200">
+                <span v-if="item.deposit" class="pl-1 text-xs text-gray-900 dark:text-gray-100">
                     Deposit
                 </span>
             </div>
-
         </div>
     </li>
 </template>
