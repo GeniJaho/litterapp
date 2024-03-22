@@ -1,10 +1,10 @@
 <?php
 
 use App\Models\Item;
+use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\TagShortcutItem;
 use App\Models\TagShortcutItemTag;
-use App\Models\Tag;
 use App\Models\User;
 
 test('a user can duplicate an item and its tags on a tag shortcut', function () {

@@ -23,7 +23,7 @@ test('a user can list their tag shortcuts', function () {
     $response = $this->actingAs($user)->get(route('tag-shortcuts.index'));
 
     $response->assertOk();
-    $response->assertInertia(fn(AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page) => $page
         ->component('TagShortcuts/Index')
         ->has('tagShortcuts', 2)
         ->where('tagShortcuts.0.id', $tagShortcutA->id)

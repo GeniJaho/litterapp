@@ -8,6 +8,7 @@ use App\Http\Requests\TagShortcuts\StoreTagShortcutRequest;
 use App\Http\Requests\TagShortcuts\UpdateTagShortcutRequest;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Http\JsonResponse;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,7 +35,7 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-    public function store(StoreTagShortcutRequest $request): \Illuminate\Http\JsonResponse
+    public function store(StoreTagShortcutRequest $request): JsonResponse
     {
         /** @var User $user */
         $user = auth()->user();
@@ -48,7 +49,7 @@ class TagShortcutsController extends Controller
         ]);
     }
 
-    public function update(TagShortcut $tagShortcut, UpdateTagShortcutRequest $request): \Illuminate\Http\JsonResponse
+    public function update(TagShortcut $tagShortcut, UpdateTagShortcutRequest $request): JsonResponse
     {
         $tagShortcut->update([
             'shortcut' => $request->shortcut,

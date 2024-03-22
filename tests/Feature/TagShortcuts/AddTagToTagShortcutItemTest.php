@@ -1,9 +1,9 @@
 <?php
 
 use App\Models\Item;
+use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\TagShortcutItem;
-use App\Models\Tag;
 use App\Models\User;
 
 test('a user can add tags to an item of a tag shortcut', function () {
@@ -13,7 +13,7 @@ test('a user can add tags to an item of a tag shortcut', function () {
     $tagShortcutItem = TagShortcutItem::factory()->for($item)->for($tagShortcut)->create();
     $tagA = Tag::factory()->create();
     $tagB = Tag::factory()->create();
-$this->withoutExceptionHandling();
+
     $response = $this->actingAs($user)->postJson("/user/tag-shortcut-items/{$tagShortcutItem->id}/tags", [
         'tag_ids' => [$tagA->id, $tagB->id],
     ]);

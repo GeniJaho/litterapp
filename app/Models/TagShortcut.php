@@ -17,6 +17,9 @@ class TagShortcut extends Model
 {
     use HasFactory;
 
+    /**
+     * @return BelongsTo<User, TagShortcut>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

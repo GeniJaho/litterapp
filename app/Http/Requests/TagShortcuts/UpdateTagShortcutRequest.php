@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\TagShortcuts;
 
+use App\Models\TagShortcut;
+use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -10,7 +12,7 @@ class UpdateTagShortcutRequest extends FormRequest
     /**
      * Get the validation rules that apply to the request.
      *
-     * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
+     * @return array<string, (ValidationRule | array<mixed> | string)>
      */
     public function rules(): array
     {
@@ -28,6 +30,9 @@ class UpdateTagShortcutRequest extends FormRequest
 
     public function authorize(): bool
     {
-        return auth()->id() === $this->route('tagShortcut')?->user_id;
+        /** @var TagShortcut|null $tagShortcut */
+        $tagShortcut = $this->route('tagShortcut');
+
+        return auth()->id() === $tagShortcut?->user_id;
     }
 }

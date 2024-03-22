@@ -14,11 +14,17 @@ class TagShortcutItemTag extends Pivot
 
     public $incrementing = true;
 
+    /**
+     * @return BelongsTo<TagShortcutItem, TagShortcutItemTag>
+     */
     public function tagShortcutItem(): BelongsTo
     {
         return $this->belongsTo(TagShortcutItem::class);
     }
 
+    /**
+     * @return BelongsTo<Tag, TagShortcutItemTag>
+     */
     public function tag(): BelongsTo
     {
         return $this->belongsTo(Tag::class);
