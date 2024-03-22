@@ -133,17 +133,16 @@ const onKeyDown = (event) => {
     }
 };
 
-watch(tagShortcut, (newValue) => {
-    if (! newValue) {
+const applyTagShortcut = () => {
+    if (! tagShortcut.value) {
         return;
     }
 
-    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${newValue.id}`)
-        .then(() => {
-            tagShortcut.value = null;
-            getPhoto();
-        });
-});
+    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${tagShortcut.value.id}`)
+        .then(() => getPhoto());
+
+    tagShortcut.value = null;
+};
 
 </script>
 
@@ -193,8 +192,8 @@ watch(tagShortcut, (newValue) => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 xl:w-2/3 px-4">
-                        <div class="mt-6 md:mt-0">
+                    <div class="w-full md:w-1/2 xl:w-2/3 px-4 min-h-96">
+                        <div class="flex flex-row items-center mt-6 md:mt-0">
                             <TagShortcutBox
                                 class="w-full sm:w-96"
                                 v-model="tagShortcut"
@@ -202,17 +201,26 @@ watch(tagShortcut, (newValue) => {
                                 :autofocus="true"
                                 placeholder="Tag Shortcuts"
                             ></TagShortcutBox>
+                            <div class="ml-4">
+                                <PrimaryButton
+                                    class="whitespace-nowrap"
+                                    @click="applyTagShortcut"
+                                    :disabled="!tagShortcut"
+                                >
+                                    Apply Shortcut
+                                </PrimaryButton>
+                            </div>
                         </div>
 
-                        <div class="flex flex-row mt-6">
+                        <div class="flex flex-row items-center mt-6">
                             <TagBox
-                                :autofocus="true"
+                                :autofocus="false"
                                 class="w-full sm:w-96"
                                 :items="items"
                                 v-model="selectedItem"
                                 placeholder="Litter Objects"
                             ></TagBox>
-                            <div class="ml-4 mt-0.5">
+                            <div class="ml-4">
                                 <PrimaryButton
                                     class="whitespace-nowrap"
                                     @click="addItems"

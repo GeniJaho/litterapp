@@ -43,14 +43,14 @@ provide('tags', readonly(props.tags));
         <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
-                    <h1 class="text-base font-semibold leading-6 text-gray-900">Tag Shortcuts</h1>
-                    <p class="mt-2 text-sm text-gray-700">A list of all the tag shortcuts in your account.</p>
+                    <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Tag Shortcuts</h1>
+                    <p class="mt-2 text-sm text-gray-700 dark:text-gray-200">A list of all the tag shortcuts in your account.</p>
                 </div>
                 <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
                     <PrimaryButton @click="openModal(null)">Add shortcut</PrimaryButton>
                 </div>
             </div>
-            <div class="mt-8 flow-root">
+            <div v-if="tagShortcuts.length" class="mt-8 flow-root">
                 <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
@@ -74,14 +74,13 @@ provide('tags', readonly(props.tags));
                                         {{ tagShortcut.shortcut }}
                                     </td>
                                     <td @click="openModal(tagShortcut)"
-                                        class="whitespace-nowrap cursor-pointer px-3 py-4 w-full min-w-[24rem]"
+                                        class="cursor-pointer px-3 py-4 w-full min-w-[24rem]"
                                     >
                                         <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                                             <SimpleTagShortcutItem
                                                 v-for="item in tagShortcut.tag_shortcut_items"
                                                 :key="item.id"
                                                 :item="item"
-                                                :tags="tags"
                                             />
                                         </div>
                                     </td>

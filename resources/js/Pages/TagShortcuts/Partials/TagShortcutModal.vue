@@ -9,9 +9,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import TagBox from "@/Components/TagBox.vue";
 import {inject, ref} from "vue";
-import {router} from "@inertiajs/vue3";
 import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
-import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
 
 const emit = defineEmits(['close']);
 
@@ -81,7 +79,7 @@ const close = () => {
                     </div>
                 </form>
 
-                <div>
+                <div v-if="tagShortcutState.tagShortcut">
                     <div class="flex flex-row mt-6">
                         <TagBox
                             :autofocus="true"
@@ -101,18 +99,25 @@ const close = () => {
                         </div>
                     </div>
 
-                    <div class="mt-8" v-if="tagShortcutState.tagShortcut?.tag_shortcut_items.length">
+                    <div class="mt-8" v-if="tagShortcutState.tagShortcut?.tag_shortcut_items?.length">
                         <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                             Litter Objects
                         </h3>
                         <div class="mt-2">
                             <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                                 <TagShortcutItem
-                                    v-for="item in tagShortcutState.tagShortcut?.tag_shortcut_items"
+                                    v-for="item in tagShortcutState.tagShortcut.tag_shortcut_items"
                                     :key="item.id"
                                     :item="item"
                                     :tags="tags"
                                     @remove-item="tagShortcutState.removeItem(item.id)"
+                                    @add-tags-to-item="tagShortcutState.addTagsToItem"
+                                    @remove-tag-from-item="tagShortcutState.removeTagFromItem"
+                                    @copy-item="tagShortcutState.copyItem"
+                                    @toggle-picked-up="tagShortcutState.toggleItemPickedUp"
+                                    @toggle-recycled="tagShortcutState.toggleItemRecycled"
+                                    @toggle-deposit="tagShortcutState.toggleItemDeposit"
+                                    @update-quantity="tagShortcutState.updateItemQuantity"
                                 />
                             </TransitionGroup>
                         </div>

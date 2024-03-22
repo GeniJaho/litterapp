@@ -8,6 +8,9 @@ import {
     ComboboxOptions,
     TransitionRoot,
 } from '@headlessui/vue';
+import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortcutItem.vue";
+import {Link} from "@inertiajs/vue3";
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 
 const props = defineProps({
     items: Array,
@@ -84,10 +87,14 @@ onMounted(() => {
                         class="absolute z-10 mt-1 max-h-96 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-none sm:text-sm"
                     >
                         <div
-                            v-if="filteredItems.length === 0 && query !== ''"
-                            class="relative cursor-default select-none px-4 py-2 text-gray-700"
+                            v-if="filteredItems.length === 0"
+                            class="relative cursor-default select-none"
                         >
-                            Nothing found.
+                            <Link :href="route('tag-shortcuts.index')" class="flex justify-center">
+                                <PrimaryButton class="whitespace-nowrap">
+                                    Add Shortcut
+                                </PrimaryButton>
+                            </Link>
                         </div>
 
                         <ComboboxOption
@@ -124,19 +131,15 @@ onMounted(() => {
                     </ComboboxOptions>
                 </TransitionRoot>
 
-                <div class="absolute right-full transform transition-all sm:w-full sm:mx-auto sm:max-w-2xl" v-if="activeOption">
-                    <div class="mr-4 bg-white/50 dark:bg-gray-800/30 backdrop-blur-xl rounded-lg shadow-xl">
-                        <div class=" px-6 py-4 text-sm text-gray-600 dark:text-gray-400">
-                            <div v-for="tagShortcutItem in activeOption.tag_shortcut_items" :key="tagShortcutItem.id">
-                                Item: {{ tagShortcutItem.item.name }} <br>
-                                Picked Up: {{ tagShortcutItem.picked_up }} <br>
-                                Recycled: {{ tagShortcutItem.recycled }} <br>
-                                Deposit: {{ tagShortcutItem.deposit }} <br>
-                                Quantity: {{ tagShortcutItem.quantity }} <br>
-                                Tags:
-                                <div v-for="tag in tagShortcutItem.tags" :key="tag.id">
-                                    {{ tag.name }},
-                                </div>
+                <div class="fixed md:absolute bottom-0 md:top-0 md:right-full transform transition-all min-w-full md:min-w-96 z-10" v-if="activeOption">
+                    <div class="mb-4 md:mb-0 mr-8 sm:mr-20 md:mr-4 bg-white/50 dark:bg-gray-800/30 backdrop-blur-xl rounded-lg shadow-xl overflow-hidden">
+                        <div class="px-3 py-4">
+                            <div class="grid grid-cols-1 gap-3 max-h-36 md:max-h-96 overflow-y-auto ">
+                                <SimpleTagShortcutItem
+                                    v-for="item in activeOption.tag_shortcut_items"
+                                    :key="item.id"
+                                    :item="item"
+                                />
                             </div>
                         </div>
                     </div>
