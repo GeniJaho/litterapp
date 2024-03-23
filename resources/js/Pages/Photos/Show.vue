@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, onUnmounted, ref} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
@@ -11,6 +11,8 @@ import Tooltip from "@/Components/Tooltip.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -24,6 +26,7 @@ const props = defineProps({
 const photo = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
+const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
 
 onMounted(() => {
     getPhoto();
@@ -142,14 +145,46 @@ const applyTagShortcut = () => {
     tagShortcut.value = null;
 };
 
+watch(tagShortcutsEnabled, (value) => {
+    localStorage.setItem('tagShortcutsEnabled', value ? 'true' : 'false');
+});
+
+const toggleTagShortcutsEnabled = (enabled) => {
+    tagShortcutsEnabled.value = enabled;
+};
+
 </script>
 
 <template>
     <AppLayout title="See Photo">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                See Photo
-            </h2>
+            <div class="flex justify-between relative">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    See Photo
+                </h2>
+                <!-- Settings Dropdown -->
+                <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <Dropdown align="right" width="64">
+                        <template #trigger>
+                            <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                <i class="fas fa-gear text-lg text-gray-800 dark:text-gray-200 mt-0.5 sm:ml-[1px]"></i>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <div>
+                                <ToggleInput
+                                    v-model="tagShortcutsEnabled"
+                                    @update:modelValue="toggleTagShortcutsEnabled"
+                                    class="block w-full px-4 py-2"
+                                >
+                                    <template #label>Tag Shortcuts enabled</template>
+                                </ToggleInput>
+                            </div>
+                        </template>
+                    </Dropdown>
+                </div>
+            </div>
         </template>
 
         <div v-if="photo">
@@ -190,10 +225,13 @@ const applyTagShortcut = () => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 xl:w-2/3 px-4 min-h-96">
-                        <div class="flex flex-row items-center mt-6 md:mt-0">
+                    <div class="w-full md:w-1/2 xl:w-2/3 px-4 min-h-96 space-y-6 mt-6 md:mt-0">
+                        <div
+                            v-if="tagShortcutsEnabled"
+                            class="flex flex-row items-center"
+                        >
                             <TagShortcutBox
-                                class="w-full sm:w-96"
+                                class="w-full md:w-96"
                                 v-model="tagShortcut"
                                 :items="tagShortcuts"
                                 :autofocus="true"
@@ -210,10 +248,10 @@ const applyTagShortcut = () => {
                             </div>
                         </div>
 
-                        <div class="flex flex-row items-center mt-6">
+                        <div class="flex flex-row items-center">
                             <TagBox
-                                :autofocus="false"
-                                class="w-full sm:w-96"
+                                :autofocus="! tagShortcutsEnabled"
+                                class="w-full md:w-96"
                                 :items="items"
                                 v-model="selectedItem"
                                 placeholder="Litter Objects"
@@ -229,7 +267,7 @@ const applyTagShortcut = () => {
                             </div>
                         </div>
 
-                        <div class="mt-8" v-if="photo.photo_items.length">
+                        <div v-if="photo.photo_items.length">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
