@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, onUnmounted, ref, watch} from "vue";
-import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
+import {onMounted, onUnmounted, ref} from "vue";
+import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
@@ -22,7 +22,6 @@ const props = defineProps({
 });
 
 const photo = ref(null);
-const photoItems = ref([]);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 
@@ -40,7 +39,6 @@ const getPhoto = () => {
     axios.get(`/photos/${props.photoId}`)
         .then(response => {
             photo.value = response.data.photo;
-            photoItems.value = response.data.items;
         })
         .catch(error => {
             console.log(error);
@@ -165,7 +163,7 @@ const applyTagShortcut = () => {
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                             >
 
-                            <TaggedIcon v-if="photoItems.length" class="absolute top-4 left-4" />
+                            <TaggedIcon v-if="photo.photo_items.length" class="absolute top-4 left-4" />
 
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"
@@ -231,16 +229,16 @@ const applyTagShortcut = () => {
                             </div>
                         </div>
 
-                        <div class="mt-8" v-if="photoItems.length">
+                        <div class="mt-8" v-if="photo.photo_items.length">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
                                 <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                                    <PhotoItem
-                                        v-for="item in photoItems"
-                                        :key="item.pivot.id"
-                                        :item="item"
+                                    <PivotItem
+                                        v-for="photoItem in photo.photo_items"
+                                        :key="photoItem.id"
+                                        :pivotItem="photoItem"
                                         :tags="tags"
                                         @remove-item="removeItem"
                                         @add-tags-to-item="addTagsToItem"

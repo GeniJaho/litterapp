@@ -10,8 +10,8 @@ use Illuminate\Testing\Fluent\AssertableJson;
 test('a user can see a tag shortcut', function () {
     $this->actingAs($user = User::factory()->create());
     $tagShortcut = TagShortcut::factory()->for($user)->create();
-    $items = Item::factory()->create();
-    $tagShortcut->items()->sync($items);
+    $item = Item::factory()->create();
+    $tagShortcut->items()->sync($item);
     $tag = Tag::factory()->create();
     TagShortcutItemTag::create([
         'tag_shortcut_item_id' => $tagShortcut->tagShortcutItems()->first()->id,
@@ -24,8 +24,8 @@ test('a user can see a tag shortcut', function () {
     $response->assertJson(fn (AssertableJson $json) => $json
         ->where('tagShortcut.id', $tagShortcut->id)
         ->has('tagShortcut.tag_shortcut_items', 1)
-        ->where('tagShortcut.tag_shortcut_items.0.item.id', $items->first()->id)
-        ->where('tagShortcut.tag_shortcut_items.0.item.name', $items->first()->name)
+        ->where('tagShortcut.tag_shortcut_items.0.item.id', $item->id)
+        ->where('tagShortcut.tag_shortcut_items.0.item.name', $item->name)
         ->has('tagShortcut.tag_shortcut_items.0.tags', 1)
         ->where('tagShortcut.tag_shortcut_items.0.tags.0.id', $tag->id)
         ->where('tagShortcut.tag_shortcut_items.0.tags.0.name', $tag->name)

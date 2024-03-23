@@ -6,7 +6,6 @@ use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
-use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -81,17 +80,16 @@ class PhotosController extends Controller
             ]);
         }
 
-        $items = $photo
-            ->items()
-            ->orderByDesc('photo_items.id')
-            ->get()
-            ->each(fn (Item $item) => $item->pivot?->load('tags'));
-
-        $photo->append('full_path');
+        $photo
+            ->append('full_path')
+            ->load(['photoItems' => fn ($q) => $q
+                ->with('item:id,name')
+                ->with('tags:id,name')
+                ->orderByDesc('id'),
+            ]);
 
         return response()->json([
             'photo' => $photo,
-            'items' => $items,
         ]);
     }
 

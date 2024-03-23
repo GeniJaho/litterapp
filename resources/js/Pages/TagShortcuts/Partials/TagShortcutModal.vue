@@ -9,7 +9,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import TagBox from "@/Components/TagBox.vue";
 import {inject, ref} from "vue";
-import TagShortcutItem from "@/Pages/TagShortcuts/Partials/TagShortcutItem.vue";
+import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
 
 const emit = defineEmits(['close']);
 
@@ -105,12 +105,12 @@ const close = () => {
                         </h3>
                         <div class="mt-2">
                             <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                                <TagShortcutItem
-                                    v-for="item in tagShortcutState.tagShortcut.tag_shortcut_items"
-                                    :key="item.id"
-                                    :item="item"
+                                <PivotItem
+                                    v-for="tagShortcutItem in tagShortcutState.tagShortcut.tag_shortcut_items"
+                                    :key="tagShortcutItem.id"
+                                    :pivotItem="tagShortcutItem"
                                     :tags="tags"
-                                    @remove-item="tagShortcutState.removeItem(item.id)"
+                                    @remove-item="tagShortcutState.removeItem(tagShortcutItem.id)"
                                     @add-tags-to-item="tagShortcutState.addTagsToItem"
                                     @remove-tag-from-item="tagShortcutState.removeTagFromItem"
                                     @copy-item="tagShortcutState.copyItem"

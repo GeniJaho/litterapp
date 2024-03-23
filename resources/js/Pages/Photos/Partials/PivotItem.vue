@@ -8,7 +8,7 @@ import TextInput from "@/Components/TextInput.vue";
 import TagBox from "@/Components/TagBox.vue";
 
 const props = defineProps({
-    item: Object,
+    pivotItem: Object,
     tags: Object,
 });
 
@@ -42,7 +42,7 @@ const selectedTagIds = computed(() => {
 });
 
 const addTagsToItem = () => {
-    emit("add-tags-to-item", props.item.pivot, selectedTagIds.value);
+    emit("add-tags-to-item", props.pivotItem, selectedTagIds.value);
 
     selectedMaterialTag.value = null;
     selectedBrandTag.value = null;
@@ -58,8 +58,8 @@ const addTagsToItem = () => {
     <li class="col-span-1 flex flex-col divide-y divide-gray-200 dark:divide-gray-700 rounded-lg bg-white dark:bg-gray-800 shadow">
         <div class="px-4 py-5 sm:p-6 flex-1">
             <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
-                {{ item.pivot.quantity }}
-                {{ item.name }}
+                {{ pivotItem.quantity }}
+                {{ pivotItem.item.name }}
             </h3>
 
             <div class="mt-6">
@@ -113,11 +113,11 @@ const addTagsToItem = () => {
                     ></TagBox>
                 </div>
 
-                <div v-if="item.pivot.tags?.length" class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
+                <div v-if="pivotItem.tags?.length" class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
                     <span
-                        v-for="tag in item.pivot.tags"
+                        v-for="tag in pivotItem.tags"
                         :key="tag.id"
-                        @click="$emit('remove-tag-from-item', item.pivot, tag.id)"
+                        @click="$emit('remove-tag-from-item', pivotItem, tag.id)"
                         class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                     >
                         <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
@@ -142,12 +142,12 @@ const addTagsToItem = () => {
                     <TextInput
                         id="quantity"
                         type="number"
-                        :model-value="item.pivot.quantity"
+                        :model-value="pivotItem.quantity"
                         class="w-12 mr-2"
                         required
                         min="1"
                         max="1000"
-                        @input="$emit('update-quantity', item.pivot.id, $event.target.value)"
+                        @input="$emit('update-quantity', pivotItem.id, $event.target.value)"
                     />
                     <label for="quantity" class="block font-medium text-sm text-gray-900 dark:text-gray-100">
                         Quantity
@@ -155,22 +155,22 @@ const addTagsToItem = () => {
                 </div>
 
                 <ToggleInput
-                    v-model="item.pivot.picked_up"
-                    @update:modelValue="$emit('toggle-picked-up', item.pivot.id, item.pivot.picked_up)"
+                    v-model="pivotItem.picked_up"
+                    @update:modelValue="$emit('toggle-picked-up', pivotItem.id, pivotItem.picked_up)"
                     class="block w-full"
                 >
                     <template #label>Picked Up</template>
                 </ToggleInput>
                 <ToggleInput
-                    v-model="item.pivot.recycled"
-                    @update:modelValue="$emit('toggle-recycled', item.pivot.id, item.pivot.recycled)"
+                    v-model="pivotItem.recycled"
+                    @update:modelValue="$emit('toggle-recycled', pivotItem.id, pivotItem.recycled)"
                     class="block w-full"
                 >
                     <template #label>Recycled</template>
                 </ToggleInput>
                 <ToggleInput
-                    v-model="item.pivot.deposit"
-                    @update:modelValue="$emit('toggle-deposit', item.pivot.id, item.pivot.deposit)"
+                    v-model="pivotItem.deposit"
+                    @update:modelValue="$emit('toggle-deposit', pivotItem.id, pivotItem.deposit)"
                     class="block w-full"
                 >
                     <template #label>Deposit</template>
@@ -179,12 +179,12 @@ const addTagsToItem = () => {
 
             <div class="flex flex-row flex-1 items-end justify-end gap-3">
                 <IconPrimaryButton
-                    @click="$emit('copy-item', item.pivot.id)"
+                    @click="$emit('copy-item', pivotItem.id)"
                 >
                     <i class="far fa-fw fa-copy text-xs"></i>
                 </IconPrimaryButton>
                 <IconDangerButton
-                    @click="$emit('remove-item', item.pivot.id)"
+                    @click="$emit('remove-item', pivotItem.id)"
                 >
                     <i class="fas fa-fw fa-trash-alt text-xs"></i>
                 </IconDangerButton>

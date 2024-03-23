@@ -142,11 +142,11 @@ test('a user can not see the previous untagged photo link if there are no more u
 test('a user can see a photo', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
-    $items = Item::factory()->count(2)->create();
-    $photo->items()->sync($items);
+    $item = Item::factory()->create();
+    $photo->items()->sync($item);
     $tag = Tag::factory()->create();
     PhotoItemTag::create([
-        'photo_item_id' => $photo->items()->orderByDesc('photo_items.id')->first()->pivot->id,
+        'photo_item_id' => $photo->photoItems()->first()->id,
         'tag_id' => $tag->id,
     ]);
 
@@ -156,12 +156,16 @@ test('a user can see a photo', function () {
     $response->assertJson(fn (AssertableJson $json) => $json
         ->where('photo.id', $photo->id)
         ->where('photo.full_path', $photo->full_path)
-        ->has('items', 2)
-        ->has('items.0.pivot.tags', 1)
-        ->has('items.0.pivot.picked_up')
-        ->has('items.0.pivot.recycled')
-        ->has('items.0.pivot.deposit')
-        ->has('items.0.pivot.quantity')
+        ->has('photo.photo_items', 1)
+        ->where('photo.photo_items.0.item.id', $item->id)
+        ->where('photo.photo_items.0.item.name', $item->name)
+        ->has('photo.photo_items.0.tags', 1)
+        ->where('photo.photo_items.0.tags.0.id', $tag->id)
+        ->where('photo.photo_items.0.tags.0.name', $tag->name)
+        ->has('photo.photo_items.0.picked_up')
+        ->has('photo.photo_items.0.recycled')
+        ->has('photo.photo_items.0.deposit')
+        ->has('photo.photo_items.0.quantity')
         ->etc()
     );
 });
