@@ -17,6 +17,13 @@ class TagShortcut extends Model
 {
     use HasFactory;
 
+    public const COMMON_EAGER_LOADS = [
+        'tagShortcutItems' => [
+            'item:id,name',
+            'tags:id,name',
+        ],
+    ];
+
     /**
      * @return BelongsTo<User, TagShortcut>
      */

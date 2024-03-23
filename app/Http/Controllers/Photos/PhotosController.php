@@ -7,6 +7,7 @@ use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -69,7 +70,8 @@ class PhotosController extends Controller
             $tagShortcuts = $user
                 ->tagShortcuts()
                 ->whereHas('tagShortcutItems')
-                ->with(['tagShortcutItems' => ['item:id,name', 'tags:id,name']])
+                ->with(TagShortcut::COMMON_EAGER_LOADS)
+                ->orderBy('shortcut')
                 ->get();
 
             return Inertia::render('Photos/Show', [

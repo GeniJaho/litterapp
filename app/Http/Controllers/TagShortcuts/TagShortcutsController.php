@@ -19,11 +19,10 @@ class TagShortcutsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        $tagShortcuts = $user->tagShortcuts()
+        $tagShortcuts = $user
+            ->tagShortcuts()
+            ->with(TagShortcut::COMMON_EAGER_LOADS)
             ->orderBy('shortcut')
-            ->with(['tagShortcutItems' => [
-                'item:id,name', 'tags:id,name',
-            ]])
             ->get();
 
         $tagsAndItems = $getTagsAndItemsAction->run();
@@ -41,9 +40,7 @@ class TagShortcutsController extends Controller
             abort(404);
         }
 
-        $tagShortcut->load(['tagShortcutItems' => [
-            'item:id,name', 'tags:id,name',
-        ]]);
+        $tagShortcut->load(TagShortcut::COMMON_EAGER_LOADS);
 
         return response()->json([
             'tagShortcut' => $tagShortcut,
@@ -70,9 +67,7 @@ class TagShortcutsController extends Controller
             'shortcut' => $request->shortcut,
         ]);
 
-        $tagShortcut->load(['tagShortcutItems' => [
-            'item:id,name', 'tags:id,name',
-        ]]);
+        $tagShortcut->load(TagShortcut::COMMON_EAGER_LOADS);
 
         return response()->json([
             'tagShortcut' => $tagShortcut,
