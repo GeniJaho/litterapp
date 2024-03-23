@@ -52,6 +52,7 @@ test('a user can see their shortcuts in the photo tagging page', function () {
     $photo = Photo::factory()->for($user)->create();
     $tag = Tag::factory()->create();
     $item = Item::factory()->create();
+    $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut->items()->attach($item, [
         'picked_up' => false,
@@ -66,6 +67,7 @@ test('a user can see their shortcuts in the photo tagging page', function () {
     $response->assertOk();
 
     $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('tagShortcuts', 1)
         ->where('tagShortcuts.0.id', $tagShortcut->id)
         ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
         ->where('tagShortcuts.0.tag_shortcut_items.0.item.id', $item->id)

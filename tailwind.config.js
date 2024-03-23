@@ -19,8 +19,6 @@ export default {
             fontFamily: {
                 sans: ['Inter var', ...defaultTheme.fontFamily.sans],
                 arial: ['arial', 'sans'],
-
-
             },
             colors: {
                 'mainWhite': '#FDFFFC',
@@ -36,6 +34,10 @@ export default {
             },
             lineHeight: {
                 '12': '68px',
+            },
+            spacing: {
+                '128' : '32rem',
+                '144': '36rem',
             }
         },
     },

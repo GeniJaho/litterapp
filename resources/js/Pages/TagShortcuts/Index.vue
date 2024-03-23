@@ -8,6 +8,7 @@ import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortc
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import {router} from "@inertiajs/vue3";
 import TextInput from "@/Components/TextInput.vue";
+import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 
 const props = defineProps({
     tagShortcuts: Array,
@@ -101,7 +102,10 @@ provide('tags', readonly(props.tags));
                                             />
                                         </div>
                                     </td>
-                                    <td class="px-3 py-4">
+                                    <td class="px-3 py-4 flex flex-row gap-2">
+                                        <IconPrimaryButton @click="tagShortcutState.copy(tagShortcut.id)">
+                                            <i class="far fa-fw fa-copy text-xs"></i>
+                                        </IconPrimaryButton>
                                         <ConfirmDeleteButton @delete="tagShortcutState.delete(tagShortcut.id)" />
                                     </td>
                                 </tr>

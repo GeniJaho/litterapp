@@ -53,8 +53,8 @@ const close = () => {
         <template #content>
             <div>
                 <form @submit.prevent="tagShortcutState.save">
-                    <div class="flex flex-col sm:flex-row gap-4">
-                        <div class="w-full sm:max-w-96">
+                    <div class="flex flex-row">
+                        <div class="w-full sm:w-96">
                             <TextInput
                                 id="shortcut"
                                 v-model="tagShortcutState.shortcutName"
@@ -64,17 +64,14 @@ const close = () => {
                                 placeholder="Shortcut"
                             />
                             <InputError :message="tagShortcutState.error" class="mt-2" />
+                            <ActionMessage :on="tagShortcutState.message.length > 0" class="mt-2">
+                                {{ tagShortcutState.message }}
+                            </ActionMessage>
                         </div>
-
-                        <div>
-                            <div class="flex sm:flex-row-reverse items-center justify-end gap-4">
-                                <ActionMessage :on="tagShortcutState.message.length > 0">
-                                    {{ tagShortcutState.message }}
-                                </ActionMessage>
-                                <PrimaryButton :class="{ 'opacity-25': tagShortcutState.processing }" :disabled="tagShortcutState.processing">
-                                    Save
-                                </PrimaryButton>
-                            </div>
+                        <div class="ml-4">
+                            <PrimaryButton :class="{ 'opacity-25': tagShortcutState.processing }" :disabled="tagShortcutState.processing">
+                                Save
+                            </PrimaryButton>
                         </div>
                     </div>
                 </form>

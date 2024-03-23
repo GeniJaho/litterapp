@@ -66,9 +66,11 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
 
-            $tagShortcuts = $user->tagShortcuts()->with(['tagShortcutItems' => [
-                'item:id,name', 'tags:id,name',
-            ]])->get();
+            $tagShortcuts = $user
+                ->tagShortcuts()
+                ->whereHas('tagShortcutItems')
+                ->with(['tagShortcutItems' => ['item:id,name', 'tags:id,name']])
+                ->get();
 
             return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,

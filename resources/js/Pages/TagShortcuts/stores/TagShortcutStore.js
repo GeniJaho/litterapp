@@ -51,6 +51,11 @@ export let tagShortcutState = ref({
               .then(() => router.reload());
     },
 
+    copy(tagShortcutId) {
+       axios.post(route('tag-shortcuts.copy', tagShortcutId))
+              .then(() => router.reload());
+    },
+
     removeItem(tagShortcutItemId) {
         axios.delete(route('tag-shortcut-items.destroy', tagShortcutItemId))
             .then(() => tagShortcutState.value.reloadTagShortcut());
