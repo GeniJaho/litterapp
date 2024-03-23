@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\TagShortcuts;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePhotoItemTagRequest extends FormRequest
+class UpdateTagShortcutItemRequest extends FormRequest
 {
     /**
      * Get the validation rules that apply to the request.
@@ -15,8 +15,10 @@ class StorePhotoItemTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tag_ids' => 'required|array',
-            'tag_ids.*' => 'required|integer|exists:tags,id',
+            'picked_up' => 'nullable|boolean',
+            'recycled' => 'nullable|boolean',
+            'deposit' => 'nullable|boolean',
+            'quantity' => 'nullable|integer|min:1|max:1000',
         ];
     }
 }

@@ -1,7 +1,7 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {onMounted, onUnmounted, ref} from "vue";
-import PhotoItem from "@/Pages/Photos/Partials/PhotoItem.vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
+import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
 import {Link} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce'
@@ -9,7 +9,10 @@ import { router } from '@inertiajs/vue3'
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
-import DeletePhotoButton from "@/Components/DeletePhotoButton.vue";
+import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
+import TagShortcutBox from "@/Components/TagShortcutBox.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -17,11 +20,13 @@ const props = defineProps({
     tags: Object,
     nextPhotoUrl: String,
     previousPhotoUrl: String,
+    tagShortcuts: Array,
 });
 
 const photo = ref(null);
-const photoItems = ref([]);
 const selectedItem = ref(null);
+const tagShortcut = ref(null);
+const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
 
 onMounted(() => {
     getPhoto();
@@ -37,7 +42,6 @@ const getPhoto = () => {
     axios.get(`/photos/${props.photoId}`)
         .then(response => {
             photo.value = response.data.photo;
-            photoItems.value = response.data.items;
         })
         .catch(error => {
             console.log(error);
@@ -119,13 +123,34 @@ const updateItemQuantity = debounce((photoItemId, quantity) => {
 }, 1000, {leading: true, trailing: true});
 
 const onKeyDown = (event) => {
-    if ((event.ctrlKey || event.metaKey) && event.code === "ArrowLeft" && props.previousPhotoUrl) {
-        event.preventDefault();
-        router.visit(props.previousPhotoUrl);
-    } else if ((event.ctrlKey || event.metaKey) && event.code === "ArrowRight" && props.nextPhotoUrl) {
-        event.preventDefault();
-        router.visit(props.nextPhotoUrl);
+    if (event.ctrlKey || event.metaKey) {
+        if (event.code === "ArrowLeft" && props.previousPhotoUrl) {
+            event.preventDefault();
+            router.visit(props.previousPhotoUrl);
+        } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
+            event.preventDefault();
+            router.visit(props.nextPhotoUrl);
+        }
     }
+};
+
+const applyTagShortcut = () => {
+    if (! tagShortcut.value) {
+        return;
+    }
+
+    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${tagShortcut.value.id}`)
+        .then(() => getPhoto());
+
+    tagShortcut.value = null;
+};
+
+watch(tagShortcutsEnabled, (value) => {
+    localStorage.setItem('tagShortcutsEnabled', value ? 'true' : 'false');
+});
+
+const toggleTagShortcutsEnabled = (enabled) => {
+    tagShortcutsEnabled.value = enabled;
 };
 
 </script>
@@ -133,9 +158,33 @@ const onKeyDown = (event) => {
 <template>
     <AppLayout title="See Photo">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                See Photo
-            </h2>
+            <div class="flex justify-between relative">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    See Photo
+                </h2>
+                <!-- Settings Dropdown -->
+                <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+                    <Dropdown align="right" width="64">
+                        <template #trigger>
+                            <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                <i class="fas fa-gear text-lg text-gray-800 dark:text-gray-200 mt-0.5 sm:ml-[1px]"></i>
+                            </button>
+                        </template>
+
+                        <template #content>
+                            <div>
+                                <ToggleInput
+                                    v-model="tagShortcutsEnabled"
+                                    @update:modelValue="toggleTagShortcutsEnabled"
+                                    class="block w-full px-4 py-2"
+                                >
+                                    <template #label>Tag Shortcuts enabled</template>
+                                </ToggleInput>
+                            </div>
+                        </template>
+                    </Dropdown>
+                </div>
+            </div>
         </template>
 
         <div v-if="photo">
@@ -149,9 +198,9 @@ const onKeyDown = (event) => {
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                             >
 
-                            <TaggedIcon v-if="photoItems.length" class="absolute top-4 left-4" />
+                            <TaggedIcon v-if="photo.photo_items.length" class="absolute top-4 left-4" />
 
-                            <DeletePhotoButton
+                            <ConfirmDeleteButton
                                 @delete="deletePhoto"
                                 class="absolute top-4 right-4"
                             />
@@ -176,15 +225,38 @@ const onKeyDown = (event) => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 xl:w-2/3 px-4">
-                        <div class="flex flex-row mt-6 md:mt-0">
-                            <TagBox
+                    <div class="w-full md:w-1/2 xl:w-2/3 px-4 min-h-96 space-y-6 mt-6 md:mt-0">
+                        <div
+                            v-if="tagShortcutsEnabled"
+                            class="flex flex-row items-center"
+                        >
+                            <TagShortcutBox
+                                class="w-full md:w-96"
+                                v-model="tagShortcut"
+                                :items="tagShortcuts"
                                 :autofocus="true"
-                                class="w-full sm:w-96"
+                                placeholder="Tag Shortcuts"
+                            ></TagShortcutBox>
+                            <div class="ml-4">
+                                <PrimaryButton
+                                    class="whitespace-nowrap"
+                                    @click="applyTagShortcut"
+                                    :disabled="!tagShortcut"
+                                >
+                                    Apply Shortcut
+                                </PrimaryButton>
+                            </div>
+                        </div>
+
+                        <div class="flex flex-row items-center">
+                            <TagBox
+                                :autofocus="! tagShortcutsEnabled"
+                                class="w-full md:w-96"
                                 :items="items"
                                 v-model="selectedItem"
+                                placeholder="Litter Objects"
                             ></TagBox>
-                            <div class="ml-4 mt-0.5">
+                            <div class="ml-4">
                                 <PrimaryButton
                                     class="whitespace-nowrap"
                                     @click="addItems"
@@ -195,16 +267,16 @@ const onKeyDown = (event) => {
                             </div>
                         </div>
 
-                        <div class="mt-8" v-if="photoItems.length">
+                        <div v-if="photo.photo_items.length">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
                                 <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 xl:grid-cols-2">
-                                    <PhotoItem
-                                        v-for="item in photoItems"
-                                        :key="item.pivot.id"
-                                        :item="item"
+                                    <PivotItem
+                                        v-for="photoItem in photo.photo_items"
+                                        :key="photoItem.id"
+                                        :pivotItem="photoItem"
                                         :tags="tags"
                                         @remove-item="removeItem"
                                         @add-tags-to-item="addTagsToItem"

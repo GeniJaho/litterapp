@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
-use App\Http\Requests\StorePhotoItemRequest;
-use App\Http\Requests\UpdatePhotoItemRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Photos\StorePhotoItemRequest;
+use App\Http\Requests\Photos\UpdatePhotoItemRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;

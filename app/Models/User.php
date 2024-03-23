@@ -24,6 +24,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Collection<Photo> $photos
  * @property UserSettings $settings
  * @property Collection<Team> $ownedTeams
+ * @property Collection<TagShortcut> $tagShortcuts
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -129,5 +130,13 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     public function photos(): HasMany
     {
         return $this->hasMany(Photo::class);
+    }
+
+    /**
+     * @return HasMany<TagShortcut>
+     */
+    public function tagShortcuts(): HasMany
+    {
+        return $this->hasMany(TagShortcut::class);
     }
 }

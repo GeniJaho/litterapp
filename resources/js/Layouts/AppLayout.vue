@@ -192,6 +192,10 @@ const logout = () => {
                                             Profile
                                         </DropdownLink>
 
+                                        <DropdownLink :href="route('tag-shortcuts.index')">
+                                            Tag Shortcuts
+                                        </DropdownLink>
+
                                         <DropdownLink v-if="$page.props.jetstream.hasApiFeatures"
                                                       :href="route('api-tokens.index')">
                                             API Tokens
@@ -308,7 +312,7 @@ const logout = () => {
                             </div>
 
                             <div>
-                                <div class="font-medium text-base text-gray-800 dark:text-gray-200">
+                                <div class="font-medium text-base text-gray-800">
                                     {{ $page.props.auth.user.name }}
                                 </div>
                                 <div class="font-medium text-sm text-slate-700">
@@ -320,6 +324,10 @@ const logout = () => {
                         <div v-if="$page.props.auth.user" class="mt-3 space-y-1">
                             <ResponsiveNavLink :href="route('profile.show')" :active="route().current('profile.show')">
                                 Profile
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('tag-shortcuts.index')" :active="route().current('tag-shortcuts.index')">
+                                Tag Shortcuts
                             </ResponsiveNavLink>
 
                             <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures"

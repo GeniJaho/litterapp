@@ -5,6 +5,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
+use App\Models\TagShortcut;
 use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
@@ -43,6 +44,36 @@ test('a user can see the photo tagging page', function () {
             $material->slug => $materialTags->sortBy('name')->values()->toArray(),
         ])
         ->has('items', 2)
+    );
+});
+
+test('a user can see their shortcuts in the photo tagging page', function () {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+    $tag = Tag::factory()->create();
+    $item = Item::factory()->create();
+    $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($item, [
+        'picked_up' => false,
+        'recycled' => false,
+        'deposit' => true,
+        'quantity' => 3,
+    ]);
+    $tagShortcut->tagShortcutItems()->first()->tags()->attach($tag);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page) => $page
+        ->has('tagShortcuts', 1)
+        ->where('tagShortcuts.0.id', $tagShortcut->id)
+        ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.id', $item->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.name', $item->name)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.id', $tag->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.name', $tag->name)
     );
 });
 
@@ -113,11 +144,11 @@ test('a user can not see the previous untagged photo link if there are no more u
 test('a user can see a photo', function () {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
-    $items = Item::factory()->count(2)->create();
-    $photo->items()->sync($items);
+    $item = Item::factory()->create();
+    $photo->items()->sync($item);
     $tag = Tag::factory()->create();
     PhotoItemTag::create([
-        'photo_item_id' => $photo->items()->orderByDesc('photo_items.id')->first()->pivot->id,
+        'photo_item_id' => $photo->photoItems()->first()->id,
         'tag_id' => $tag->id,
     ]);
 
@@ -127,12 +158,16 @@ test('a user can see a photo', function () {
     $response->assertJson(fn (AssertableJson $json) => $json
         ->where('photo.id', $photo->id)
         ->where('photo.full_path', $photo->full_path)
-        ->has('items', 2)
-        ->has('items.0.pivot.tags', 1)
-        ->has('items.0.pivot.picked_up')
-        ->has('items.0.pivot.recycled')
-        ->has('items.0.pivot.deposit')
-        ->has('items.0.pivot.quantity')
+        ->has('photo.photo_items', 1)
+        ->where('photo.photo_items.0.item.id', $item->id)
+        ->where('photo.photo_items.0.item.name', $item->name)
+        ->has('photo.photo_items.0.tags', 1)
+        ->where('photo.photo_items.0.tags.0.id', $tag->id)
+        ->where('photo.photo_items.0.tags.0.name', $tag->name)
+        ->has('photo.photo_items.0.picked_up')
+        ->has('photo.photo_items.0.recycled')
+        ->has('photo.photo_items.0.deposit')
+        ->has('photo.photo_items.0.quantity')
         ->etc()
     );
 });

@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
-use App\Http\Requests\StorePhotoItemTagRequest;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Photos\StorePhotoItemTagRequest;
 use App\Models\PhotoItem;
 use App\Models\Tag;
 use Illuminate\Http\JsonResponse;

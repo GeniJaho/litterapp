@@ -3,15 +3,21 @@
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
-use App\Http\Controllers\BulkPhotoItemsController;
-use App\Http\Controllers\CopyPhotoItemController;
 use App\Http\Controllers\DocsController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\PhotoItemsController;
-use App\Http\Controllers\PhotoItemTagsController;
-use App\Http\Controllers\PhotosController;
-use App\Http\Controllers\PhotoTagsController;
-use App\Http\Controllers\UploadPhotosController;
+use App\Http\Controllers\Photos\BulkPhotoItemsController;
+use App\Http\Controllers\Photos\CopyPhotoItemController;
+use App\Http\Controllers\Photos\PhotoItemsController;
+use App\Http\Controllers\Photos\PhotoItemTagsController;
+use App\Http\Controllers\Photos\PhotosController;
+use App\Http\Controllers\Photos\PhotoTagsController;
+use App\Http\Controllers\Photos\UploadPhotosController;
+use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
+use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
+use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
+use App\Http\Controllers\TagShortcuts\TagShortcutItemsController;
+use App\Http\Controllers\TagShortcuts\TagShortcutItemTagsController;
+use App\Http\Controllers\TagShortcuts\TagShortcutsController;
 use App\Http\Controllers\UserSettingsController;
 use Illuminate\Support\Facades\Route;
 
@@ -52,6 +58,7 @@ Route::middleware([
     Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
     Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
+    Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
     Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);
     Route::delete('/photo-items/{photoItem}', [PhotoItemsController::class, 'destroy']);
@@ -61,4 +68,17 @@ Route::middleware([
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
 
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
+
+    Route::get('/user/tag-shortcuts', [TagShortcutsController::class, 'index'])->name('tag-shortcuts.index');
+    Route::post('/user/tag-shortcuts', [TagShortcutsController::class, 'store'])->name('tag-shortcuts.store');
+    Route::get('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'show'])->name('tag-shortcuts.show');
+    Route::post('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'update'])->name('tag-shortcuts.update');
+    Route::delete('/user/tag-shortcuts/{tagShortcut}', [TagShortcutsController::class, 'destroy'])->name('tag-shortcuts.destroy');
+    Route::post('/user/tag-shortcuts/{tagShortcut}/copy', CopyTagShortcutController::class)->name('tag-shortcuts.copy');
+    Route::post('/user/tag-shortcuts/{tagShortcut}/items', [TagShortcutItemsController::class, 'store'])->name('tag-shortcut-items.store');
+    Route::post('/user/tag-shortcut-items/{tagShortcutItem}', [TagShortcutItemsController::class, 'update'])->name('tag-shortcut-items.update');
+    Route::delete('/user/tag-shortcut-items/{tagShortcutItem}', [TagShortcutItemsController::class, 'destroy'])->name('tag-shortcut-items.destroy');
+    Route::post('/user/tag-shortcut-items/{tagShortcutItem}/tags', [TagShortcutItemTagsController::class, 'store'])->name('tag-shortcut-item-tags.store');
+    Route::delete('/user/tag-shortcut-items/{tagShortcutItem}/tags/{tag}', [TagShortcutItemTagsController::class, 'destroy'])->name('tag-shortcut-item-tags.destroy');
+    Route::post('/user/tag-shortcut-items/{tagShortcutItem}/copy', CopyTagShortcutItemController::class)->name('tag-shortcut-items.copy');
 });

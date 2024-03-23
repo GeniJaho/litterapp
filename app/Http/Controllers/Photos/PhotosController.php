@@ -1,12 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
-use App\Models\Item;
+use App\Http\Controllers\Controller;
 use App\Models\Photo;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -66,26 +67,33 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
 
+            $tagShortcuts = $user
+                ->tagShortcuts()
+                ->whereHas('tagShortcutItems')
+                ->with(TagShortcut::COMMON_EAGER_LOADS)
+                ->orderBy('shortcut')
+                ->get();
+
             return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
                 'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
                 'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
+                'tagShortcuts' => $tagShortcuts,
             ]);
         }
 
-        $items = $photo
-            ->items()
-            ->orderByDesc('photo_items.id')
-            ->get()
-            ->each(fn (Item $item) => $item->pivot?->load('tags'));
-
-        $photo->append('full_path');
+        $photo
+            ->append('full_path')
+            ->load(['photoItems' => fn ($q) => $q
+                ->with('item:id,name')
+                ->with('tags:id,name')
+                ->orderByDesc('id'),
+            ]);
 
         return response()->json([
             'photo' => $photo,
-            'items' => $items,
         ]);
     }
 
