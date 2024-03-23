@@ -1,12 +1,13 @@
 <script setup>
 import AppLayout from "@/Layouts/AppLayout.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import {provide, readonly, ref} from "vue";
+import {computed, provide, readonly, ref} from "vue";
 import TagShortcutModal from "@/Pages/TagShortcuts/Partials/TagShortcutModal.vue";
 import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import SimpleTagShortcutItem from "@/Pages/TagShortcuts/Partials/SimpleTagShortcutItem.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import {router} from "@inertiajs/vue3";
+import TextInput from "@/Components/TextInput.vue";
 
 const props = defineProps({
     tagShortcuts: Array,
@@ -15,6 +16,17 @@ const props = defineProps({
 });
 
 const showModal = ref(false);
+const search = ref('');
+const filteredTagShortcuts = computed(() => {
+    if (! search.value) {
+        return props.tagShortcuts;
+    }
+    return props.tagShortcuts.filter(tagShortcut => {
+        return tagShortcut.shortcut
+            .toLowerCase().replace(/\s+/g, '')
+            .includes(search.value.toLowerCase().replace(/\s+/g, ''));
+    });
+});
 
 const openModal = (tagShortcut = null) => {
     tagShortcutState.value.setTagShortcut(tagShortcut);
@@ -46,37 +58,42 @@ provide('tags', readonly(props.tags));
                     <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Tag Shortcuts</h1>
                     <p class="mt-2 text-sm text-gray-700 dark:text-gray-200">A list of all the tag shortcuts in your account.</p>
                 </div>
-                <div class="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-                    <PrimaryButton @click="openModal(null)">Add shortcut</PrimaryButton>
-                </div>
             </div>
-            <div v-if="tagShortcuts.length" class="mt-8 flow-root">
+            <div class="mt-6 flex justify-between">
+                <TextInput
+                    class="min-w-40"
+                    v-model="search"
+                    placeholder="Search shortcuts"
+                />
+                <PrimaryButton class="whitespace-nowrap ml-4" @click="openModal(null)">Add shortcut</PrimaryButton>
+            </div>
+            <div v-if="filteredTagShortcuts.length" class="mt-4 flow-root">
                 <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
                     <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
                         <div class="overflow-hidden shadow ring-1 ring-black ring-opacity-5 sm:rounded-lg">
                             <table class="min-w-full divide-y divide-gray-300">
-                                <thead class="bg-gray-50">
+                                <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
-                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-6">Shortcut</th>
-                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Items & Tags</th>
-                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900">Actions</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">Shortcut</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Items & Tags</th>
+                                    <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Actions</th>
                                 </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-200 bg-white">
+                                <tbody class="divide-y divide-gray-200 bg-white dark:bg-gray-700">
                                 <tr
-                                    v-for="tagShortcut in tagShortcuts"
+                                    v-for="tagShortcut in filteredTagShortcuts"
                                     :key="tagShortcut.id"
-                                    class="hover:bg-gray-50"
+                                    class="hover:bg-gray-50 dark:hover:bg-gray-600"
                                 >
                                     <td @click="openModal(tagShortcut)"
-                                        class="whitespace-nowrap cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-6"
+                                        class="whitespace-nowrap cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-gray-700 dark:text-gray-200 sm:pl-6"
                                     >
                                         {{ tagShortcut.shortcut }}
                                     </td>
                                     <td @click="openModal(tagShortcut)"
                                         class="cursor-pointer px-3 py-4 w-full min-w-[24rem]"
                                     >
-                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                                             <SimpleTagShortcutItem
                                                 v-for="item in tagShortcut.tag_shortcut_items"
                                                 :key="item.id"
