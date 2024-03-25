@@ -24,6 +24,7 @@ const props = defineProps({
 const items = inject('items');
 const tags = inject('tags');
 const selectedItem = ref(null);
+const shortcutName = ref(null);
 
 const addItem = () => {
     axios.post(route('tag-shortcut-items.store', tagShortcutState.value.tagShortcut.id), {
@@ -45,6 +46,14 @@ const updateName = debounce(() => {
 const close = () => {
     emit('close');
 };
+
+defineExpose({
+    autofocusName: () => {
+        if (! tagShortcutState.value.tagShortcut) {
+            setTimeout(() => shortcutName.value?.focus(), 100)
+        }
+    }
+});
 </script>
 
 <template>
@@ -67,6 +76,7 @@ const close = () => {
                         <div class="w-full sm:w-96">
                             <TextInput
                                 id="shortcut"
+                                ref="shortcutName"
                                 v-model="tagShortcutState.shortcutName"
                                 @input="updateName"
                                 type="text"

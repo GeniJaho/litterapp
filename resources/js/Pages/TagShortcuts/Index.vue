@@ -16,6 +16,7 @@ const props = defineProps({
     tags: Object,
 });
 
+const tagShortcutModal = ref(null);
 const showModal = ref(false);
 const search = ref('');
 const filteredTagShortcuts = computed(() => {
@@ -33,6 +34,7 @@ const openModal = (tagShortcut = null) => {
     tagShortcutState.value.setTagShortcut(tagShortcut);
     tagShortcutState.value.setTagShortcutName(tagShortcut);
     showModal.value = true;
+    tagShortcutModal.value.autofocusName();
 };
 
 const closeModal = () => {
@@ -121,6 +123,7 @@ provide('tags', readonly(props.tags));
             </div>
 
             <TagShortcutModal
+                ref="tagShortcutModal"
                 :show="showModal"
                 @close="closeModal"
             ></TagShortcutModal>
