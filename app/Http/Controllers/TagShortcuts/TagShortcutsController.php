@@ -21,7 +21,7 @@ class TagShortcutsController extends Controller
 
         $tagShortcuts = $user
             ->tagShortcuts()
-            ->with(TagShortcut::COMMON_EAGER_LOADS)
+            ->with(TagShortcut::commonEagerLoads())
             ->orderBy('shortcut')
             ->get();
 
@@ -40,7 +40,7 @@ class TagShortcutsController extends Controller
             abort(404);
         }
 
-        $tagShortcut->load(TagShortcut::COMMON_EAGER_LOADS);
+        $tagShortcut->load(TagShortcut::commonEagerLoads());
 
         return response()->json([
             'tagShortcut' => $tagShortcut,
@@ -67,7 +67,7 @@ class TagShortcutsController extends Controller
             'shortcut' => $request->shortcut,
         ]);
 
-        $tagShortcut->load(TagShortcut::COMMON_EAGER_LOADS);
+        $tagShortcut->load(TagShortcut::commonEagerLoads());
 
         return response()->json([
             'tagShortcut' => $tagShortcut,

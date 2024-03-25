@@ -70,7 +70,7 @@ class PhotosController extends Controller
             $tagShortcuts = $user
                 ->tagShortcuts()
                 ->whereHas('tagShortcutItems')
-                ->with(TagShortcut::COMMON_EAGER_LOADS)
+                ->with(TagShortcut::commonEagerLoads())
                 ->orderBy('shortcut')
                 ->get();
 

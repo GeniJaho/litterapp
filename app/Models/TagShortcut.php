@@ -17,12 +17,17 @@ class TagShortcut extends Model
 {
     use HasFactory;
 
-    public const COMMON_EAGER_LOADS = [
-        'tagShortcutItems' => [
-            'item:id,name',
-            'tags:id,name',
-        ],
-    ];
+    /**
+     * @return array<string, callable>
+     */
+    public static function commonEagerLoads(): array
+    {
+        return [
+            'tagShortcutItems' => fn ($q) => $q
+                ->with('item:id,name', 'tags:id,name')
+                ->orderByDesc('id'),
+        ];
+    }
 
     /**
      * @return BelongsTo<User, TagShortcut>
