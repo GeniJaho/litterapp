@@ -31,6 +31,7 @@ const filteredTagShortcuts = computed(() => {
 
 const openModal = (tagShortcut = null) => {
     tagShortcutState.value.setTagShortcut(tagShortcut);
+    tagShortcutState.value.setTagShortcutName(tagShortcut);
     showModal.value = true;
 };
 
@@ -57,7 +58,10 @@ provide('tags', readonly(props.tags));
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
                     <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Tag Shortcuts</h1>
-                    <p class="mt-2 text-sm text-gray-700 dark:text-gray-200">A list of all the tag shortcuts in your account.</p>
+                    <p class="mt-2 text-sm text-gray-700 dark:text-gray-200">
+                        A list of all the tag shortcuts in your account.
+                        Shortcuts with no items will not appear in your photo tagging pages.
+                    </p>
                 </div>
             </div>
             <div class="mt-6 flex justify-between">

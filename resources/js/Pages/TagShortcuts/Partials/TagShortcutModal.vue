@@ -10,6 +10,7 @@ import {tagShortcutState} from "@/Pages/TagShortcuts/stores/TagShortcutStore";
 import TagBox from "@/Components/TagBox.vue";
 import {inject, ref} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
+import debounce from "lodash.debounce";
 
 const emit = defineEmits(['close']);
 
@@ -33,6 +34,14 @@ const addItem = () => {
     });
 };
 
+const updateName = debounce(() => {
+    if (! tagShortcutState.value.tagShortcut) {
+        return;
+    }
+
+    tagShortcutState.value.save();
+}, 300);
+
 const close = () => {
     emit('close');
 };
@@ -46,7 +55,8 @@ const close = () => {
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
                 Add items and tags to the shortcut. You can also set the quantity, and mark it as picked up, recycled,
-                or deposit.
+                or deposit.<br><br>
+                The shortcut name and items are saved automatically after you create the shortcut.
             </div>
         </template>
 
@@ -58,19 +68,17 @@ const close = () => {
                             <TextInput
                                 id="shortcut"
                                 v-model="tagShortcutState.shortcutName"
+                                @input="updateName"
                                 type="text"
                                 class="block w-full"
                                 autocomplete="shortcut"
                                 placeholder="Shortcut"
                             />
                             <InputError :message="tagShortcutState.error" class="mt-2" />
-                            <ActionMessage :on="tagShortcutState.message.length > 0" class="mt-2">
-                                {{ tagShortcutState.message }}
-                            </ActionMessage>
                         </div>
-                        <div class="ml-4">
+                        <div v-if="! tagShortcutState.tagShortcut" class="ml-4">
                             <PrimaryButton :class="{ 'opacity-25': tagShortcutState.processing }" :disabled="tagShortcutState.processing">
-                                Save
+                                Create Shortcut
                             </PrimaryButton>
                         </div>
                     </div>
@@ -125,6 +133,9 @@ const close = () => {
         </template>
 
         <template #footer>
+            <ActionMessage :on="tagShortcutState.message.length > 0" class="mr-4">
+                {{ tagShortcutState.message }}
+            </ActionMessage>
             <SecondaryButton @click="close">
                 Close
             </SecondaryButton>

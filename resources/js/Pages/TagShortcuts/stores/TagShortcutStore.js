@@ -11,6 +11,9 @@ export let tagShortcutState = ref({
 
     setTagShortcut(tagShortcut) {
         this.tagShortcut = tagShortcut;
+    },
+
+    setTagShortcutName(tagShortcut) {
         this.shortcutName = tagShortcut?.shortcut || '';
     },
 
@@ -18,7 +21,10 @@ export let tagShortcutState = ref({
         if (! this.tagShortcut) return;
 
         axios.get(route('tag-shortcuts.show', this.tagShortcut.id))
-             .then((r) => this.setTagShortcut(r.data.tagShortcut));
+             .then((r) => {
+                 this.setTagShortcut(r.data.tagShortcut);
+                 this.showSavedMessage();
+             });
     },
 
     reset() {
@@ -38,12 +44,16 @@ export let tagShortcutState = ref({
             this.setTagShortcut(r.data.tagShortcut);
             this.processing = false;
             this.error = '';
-            this.message = 'Saved.';
-            setTimeout(() => this.message = '', 3000);
+            this.showSavedMessage();
         }).catch((e) => {
             this.processing = false;
             this.error = e.response.data.message;
         });
+    },
+
+    showSavedMessage() {
+        this.message = 'Saved.';
+        setTimeout(() => this.message = '', 2000);
     },
 
     delete(tagShortcutId) {

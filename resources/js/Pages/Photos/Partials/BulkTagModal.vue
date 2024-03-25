@@ -90,7 +90,7 @@ const maxWidthClass = computed(() => {
                                 <slot name="content" />
                             </div>
 
-                            <div class="flex flex-row justify-end rounded-b-lg px-6 py-4 bg-gray-100 dark:bg-gray-700 text-right">
+                            <div class="flex flex-row items-center justify-end rounded-b-lg px-6 py-4 bg-gray-100 dark:bg-gray-700 text-right">
                                 <slot name="footer" />
                             </div>
                         </div>
