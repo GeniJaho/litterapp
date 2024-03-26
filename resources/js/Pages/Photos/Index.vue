@@ -3,11 +3,12 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import {Link, router} from '@inertiajs/vue3';
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
-import {ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
+import Tooltip from "@/Components/Tooltip.vue";
 
 const props = defineProps({
     photos: Object,
@@ -41,6 +42,26 @@ watch(isSelecting, (value) => {
 watch(showFilters, (value) => {
     localStorage.setItem('showFilters', value ? 'true' : 'false');
 });
+
+onMounted(() => {
+    window.addEventListener('keydown', onKeyDown);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeyDown);
+});
+
+const onKeyDown = (event) => {
+    if (event.ctrlKey || event.metaKey) {
+        if (event.code === "ArrowLeft" && props.photos.prev_page_url) {
+            event.preventDefault();
+            router.visit(props.photos.prev_page_url);
+        } else if (event.code === "ArrowRight" && props.photos.next_page_url) {
+            event.preventDefault();
+            router.visit(props.photos.next_page_url);
+        }
+    }
+};
 
 const selectPhoto = (photoId) => {
     if (! isSelecting.value) {
@@ -194,7 +215,13 @@ const filter = (filters) => {
                                 />
                             </div>
                             <div class="flex justify-center space-x-2 items-center pt-4 sm:pt-0">
-                                <div v-for="link in photos.links" :key="link.url">
+                                <div v-for="link in photos.links" :key="link.url" class="group relative">
+                                    <Tooltip v-if="link.url && link.url === photos.prev_page_url">
+                                        <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &larr;</span>
+                                    </Tooltip>
+                                    <Tooltip v-else-if="link.url && link.url === photos.next_page_url">
+                                        <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &rarr;</span>
+                                    </Tooltip>
                                     <Link
                                         v-if="link.url"
                                         :href="link.url"
