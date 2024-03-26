@@ -188,9 +188,9 @@ const toggleTagShortcutsEnabled = (enabled) => {
         </template>
 
         <div v-if="photo">
-            <div class="max-w-7xl mx-auto py-10 sm:px-6 lg:px-8">
+            <div class="max-w-9xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">
-                    <div class="w-full md:w-1/2 xl:w-1/3 px-4">
+                    <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4">
                         <div class="relative">
                             <img
                                 :src="photo.full_path"
@@ -225,7 +225,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 xl:w-2/3 px-4 min-h-96 space-y-6 mt-6 md:mt-0">
+                    <div class="w-full md:w-1/2 lg:w-2/3 xl:w-3/4 px-4 min-h-96 space-y-6 mt-6 md:mt-0 mb-36">
                         <div
                             v-if="tagShortcutsEnabled"
                             class="flex flex-row items-center"
@@ -272,7 +272,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
                                 Litter Objects
                             </h3>
                             <div class="mt-2">
-                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 xl:grid-cols-2">
+                                <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
                                     <PivotItem
                                         v-for="photoItem in photo.photo_items"
                                         :key="photoItem.id"

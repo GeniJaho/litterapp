@@ -113,7 +113,7 @@ const onKeyDown = (event) => {
         Tag Multiple Photos
     </PrimaryButton>
 
-    <BulkTagModal max-width="7xl" :show="showModal" @close="closeModal">
+    <BulkTagModal max-width="9xl" :show="showModal" @close="closeModal">
         <template #header>
             <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
                 Tag Multiple Photos ({{ photoIds.length }} selected)
@@ -151,7 +151,7 @@ const onKeyDown = (event) => {
                         Litter Objects
                     </h3>
                     <div class="mt-2">
-                        <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                        <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                             <NewPhotoItem
                                 v-for="item in form.items"
                                 :key="item.key"

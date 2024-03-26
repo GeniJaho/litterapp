@@ -35,9 +35,9 @@ class PhotosController extends Controller
             $user->settings->photo_filters = null;
             $user->save();
         } elseif ($request->boolean('set_per_page')) {
-            $perPage = in_array($request->integer('per_page'), [12, 24, 48, 96, 192])
+            $perPage = in_array($request->integer('per_page'), [25, 50, 100, 200])
                 ? $request->integer('per_page')
-                : 12;
+                : 25;
             $user->settings->per_page = $perPage;
             $user->save();
         }

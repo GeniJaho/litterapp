@@ -11,7 +11,14 @@ class UserSettings extends Data
         public bool $recycled_by_default = false,
         public bool $deposit_by_default = false,
         public ?PhotoFilters $photo_filters = null,
-        public int $per_page = 12,
+        public int $per_page = 25,
     ) {
+    }
+
+    public function getValidPerPage(): int
+    {
+        return in_array($this->per_page, [25, 50, 100, 200])
+            ? $this->per_page
+            : 25;
     }
 }

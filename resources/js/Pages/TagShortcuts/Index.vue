@@ -56,7 +56,7 @@ provide('tags', readonly(props.tags));
             </h2>
         </template>
 
-        <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-9xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
             <div class="sm:flex sm:items-center">
                 <div class="sm:flex-auto">
                     <h1 class="text-base font-semibold leading-6 text-gray-900 dark:text-gray-100">Tag Shortcuts</h1>
@@ -100,7 +100,7 @@ provide('tags', readonly(props.tags));
                                     <td @click="openModal(tagShortcut)"
                                         class="cursor-pointer px-3 py-4 w-full min-w-[24rem]"
                                     >
-                                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
                                             <SimpleTagShortcutItem
                                                 v-for="item in tagShortcut.tag_shortcut_items"
                                                 :key="item.id"
