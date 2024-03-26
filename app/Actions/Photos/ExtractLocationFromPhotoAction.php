@@ -57,7 +57,7 @@ class ExtractLocationFromPhotoAction
 
     private function gpsToNumeric(?string $coordinates): float
     {
-        if (! $coordinates) {
+        if ($coordinates === null || $coordinates === '' || $coordinates === '0') {
             return 0.0;
         }
 

@@ -31,7 +31,7 @@ return RectorConfig::configure()
         naming: false,
         instanceOf: true,
         earlyReturn: true,
-        strictBooleans: false,
+        strictBooleans: true,
     )
     ->withSets([
         LaravelSetList::LARAVEL_110,
