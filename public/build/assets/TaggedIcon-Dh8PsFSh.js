@@ -1,0 +1,1 @@
+import{_ as e}from"./_plugin-vue_export-helper-DlAUqK2U.js";import{o as s,d as t,a as o}from"./app-C44fLfJR.js";const c={},n={class:"flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full"},a=o("i",{class:"fas fa-tags text-green-700 mt-0.5 ml-0.5"},null,-1),r=[a];function _(f,l){return s(),t("span",n,r)}const m=e(c,[["render",_]]);export{m as T};
