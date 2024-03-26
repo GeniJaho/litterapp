@@ -12,13 +12,14 @@ class ExtractLocationFromPhotoAction
      */
     public function run(Collection $exif): array
     {
-        $gps = $exif->get('GPS');
+        /** @var array<string, string[]> $gps */
+        $gps = (array) $exif->get('GPS');
 
         if ($this->isExifInvalid($gps)) {
             return [];
         }
 
-        $result = $this->convertExifToLatLng((array) $gps);
+        $result = $this->convertExifToLatLng($gps);
 
         if ($result['latitude'] === 0.0 && $result['longitude'] === 0.0) {
             return [];
@@ -28,7 +29,7 @@ class ExtractLocationFromPhotoAction
     }
 
     /**
-     * @param  array<string, mixed>  $exif
+     * @param  array<string, string|string[]>  $exif
      * @return float[]
      */
     private function convertExifToLatLng(array $exif): array
@@ -78,9 +79,12 @@ class ExtractLocationFromPhotoAction
         return (float) $parts[0] / (float) $parts[1];
     }
 
-    private function isExifInvalid(mixed $exif): bool
+    /**
+     * @param array<string, string[]> $exif
+     */
+    private function isExifInvalid(array $exif): bool
     {
-        return ! $exif ||
+        return $exif === [] ||
             ! isset($exif['GPSLatitudeRef']) ||
             ! isset($exif['GPSLatitude']) ||
             ! isset($exif['GPSLongitudeRef']) ||
