@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Item;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class ItemSeeder extends Seeder
 {
