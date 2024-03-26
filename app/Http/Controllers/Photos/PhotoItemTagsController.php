@@ -16,7 +16,7 @@ class PhotoItemTagsController extends Controller
             abort(404);
         }
 
-        $photoItem->tags()->syncWithoutDetaching($request->input('tag_ids'));
+        $photoItem->tags()->syncWithoutDetaching((array) $request->input('tag_ids'));
 
         return response()->json();
     }

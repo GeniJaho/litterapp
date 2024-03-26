@@ -21,10 +21,10 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
- * @property Collection<Photo> $photos
+ * @property Collection<int, Photo> $photos
  * @property UserSettings $settings
- * @property Collection<Team> $ownedTeams
- * @property Collection<TagShortcut> $tagShortcuts
+ * @property Collection<int, Team> $ownedTeams
+ * @property Collection<int, TagShortcut> $tagShortcuts
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -80,16 +80,18 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     public function updateProfilePhoto(UploadedFile $photo, string $storagePath = 'profile-photos'): void
     {
-        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath): void {
+        tap($this->profile_photo_path, function (?string $previous) use ($photo, $storagePath): void {
             $this->forceFill([
                 'profile_photo_path' => $photo->store(
                     $storagePath, ['disk' => $this->profilePhotoDisk()]
                 ),
             ])->save();
 
-            if ($previous) {
-                Storage::disk($this->profilePhotoDisk())->delete($previous);
+            if ($previous === null || $previous === '') {
+                return;
             }
+
+            Storage::disk($this->profilePhotoDisk())->delete($previous);
         });
     }
 
@@ -115,7 +117,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected function defaultProfilePhotoUrl(): string
     {
-        $name = trim(collect(explode(' ', (string) $this->name))->map(fn ($segment): string => mb_substr($segment, 0, 1))->join(' '));
+        $name = trim(collect(explode(' ', (string) $this->name))
+            ->map(fn (string $segment): string => mb_substr($segment, 0, 1))
+            ->join(' ')
+        );
 
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=1F2937&background=e3faf8';
     }

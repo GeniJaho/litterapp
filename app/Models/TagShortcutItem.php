@@ -11,9 +11,9 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property TagShortcut $tagShortcut
- * @property Collection<Item> $items
- * @property Collection<Tag> $tags
- * @property Collection<TagShortcutItemTag> $tagShortcutItemTags
+ * @property Collection<int, Item> $items
+ * @property Collection<int, Tag> $tags
+ * @property Collection<int, TagShortcutItemTag> $tagShortcutItemTags
  */
 class TagShortcutItem extends Pivot
 {

@@ -23,6 +23,7 @@ class ListTags extends ListRecords
 
     public function getTabs(): array
     {
+        /** @var Tab[] $tagTypes */
         $tagTypes = TagType::query()->get()
             ->mapWithKeys(fn (TagType $tagType): array => [
                 $tagType->slug => Tab::make($tagType->name)

@@ -3,6 +3,7 @@
 namespace App\Actions\Photos;
 
 use Illuminate\Http\UploadedFile;
+use Intervention\Image\Collection;
 use Intervention\Image\ImageManager;
 
 class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
@@ -17,6 +18,7 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
     {
         $image = ImageManager::gd()->read($photo);
 
+        /** @var Collection<mixed> $exif */
         $exif = $image->exif();
 
         $location = $this->extractLocation->run($exif);

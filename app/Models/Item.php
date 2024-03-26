@@ -10,8 +10,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property PhotoItem|null $pivot
- * @property Collection<Photo> $photos
- * @property Collection<PhotoItem> $photoItems
+ * @property Collection<int, Photo> $photos
+ * @property Collection<int, PhotoItem> $photoItems
  */
 class Item extends Model
 {

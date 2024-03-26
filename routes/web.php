@@ -10,7 +10,6 @@ use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
-use App\Http\Controllers\Photos\PhotoTagsController;
 use App\Http\Controllers\Photos\UploadPhotosController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
@@ -53,9 +52,6 @@ Route::middleware([
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
-
-    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
-    Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
 
     Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);

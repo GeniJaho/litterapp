@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,8 +11,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
- * @property Collection<Item> $items
- * @property Collection<TagShortcutItem> $tagShortcutItems
+ * @property Collection<int, Item> $items
+ * @property Collection<int, TagShortcutItem> $tagShortcutItems
  */
 class TagShortcut extends Model
 {
@@ -23,7 +24,7 @@ class TagShortcut extends Model
     public static function commonEagerLoads(): array
     {
         return [
-            'tagShortcutItems' => fn ($q) => $q
+            'tagShortcutItems' => fn (Builder $q) => $q
                 ->with('item:id,name', 'tags:id,name')
                 ->orderByDesc('id'),
         ];

@@ -37,19 +37,19 @@ class PhotoItemsController extends Controller
         }
 
         if ($request->filled('quantity')) {
-            $photoItem->quantity = $request->quantity;
+            $photoItem->quantity = $request->integer('quantity');
         }
 
         if ($request->filled('picked_up')) {
-            $photoItem->picked_up = $request->picked_up;
+            $photoItem->picked_up = $request->boolean('picked_up');
         }
 
         if ($request->filled('recycled')) {
-            $photoItem->recycled = $request->recycled;
+            $photoItem->recycled = $request->boolean('recycled');
         }
 
         if ($request->filled('deposit')) {
-            $photoItem->deposit = $request->deposit;
+            $photoItem->deposit = $request->boolean('deposit');
         }
 
         $photoItem->save();

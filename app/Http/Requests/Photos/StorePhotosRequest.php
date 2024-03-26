@@ -4,6 +4,7 @@ namespace App\Http\Requests\Photos;
 
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Validation\Validator;
 
 class StorePhotosRequest extends FormRequest
@@ -33,9 +34,12 @@ class StorePhotosRequest extends FormRequest
     {
         return [
             function (Validator $validator): void {
+                /** @var UploadedFile $photo */
+                $photo = $this->photo;
+
                 $photoExists = auth()->user()
                     ?->photos()
-                    ->where('original_file_name', $this->photo->getClientOriginalName())
+                    ->where('original_file_name', $photo->getClientOriginalName())
                     ->exists();
 
                 if ($photoExists) {
