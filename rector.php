@@ -27,10 +27,10 @@ return RectorConfig::configure()
         codeQuality: true,
         codingStyle: true,
         typeDeclarations: true,
-        privatization: false,
+        privatization: true,
         naming: false,
-        instanceOf: false,
-        earlyReturn: false,
+        instanceOf: true,
+        earlyReturn: true,
         strictBooleans: false,
     )
     ->withSets([
