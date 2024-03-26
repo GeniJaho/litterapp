@@ -10,7 +10,6 @@ use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
-use App\Http\Controllers\Photos\PhotoTagsController;
 use App\Http\Controllers\Photos\UploadPhotosController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;

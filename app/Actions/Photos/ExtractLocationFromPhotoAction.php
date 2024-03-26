@@ -80,7 +80,7 @@ class ExtractLocationFromPhotoAction
     }
 
     /**
-     * @param array<string, string[]> $exif
+     * @param  array<string, string[]>  $exif
      */
     private function isExifInvalid(array $exif): bool
     {
