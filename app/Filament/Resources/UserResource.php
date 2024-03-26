@@ -10,6 +10,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
@@ -47,7 +48,7 @@ class UserResource extends Resource
     {
         return $table
             ->persistFiltersInSession()
-            ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
+            ->filtersTriggerAction(fn (Action $action): Action => $action->button()->label('Filters'))
             ->columns([
                 TextColumn::make('id')
                     ->sortable()

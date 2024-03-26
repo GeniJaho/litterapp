@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -86,7 +87,7 @@ class PhotosController extends Controller
 
         $photo
             ->append('full_path')
-            ->load(['photoItems' => fn ($q) => $q
+            ->load(['photoItems' => fn (Builder $q) => $q
                 ->with('item:id,name')
                 ->with('tags:id,name')
                 ->orderByDesc('id'),

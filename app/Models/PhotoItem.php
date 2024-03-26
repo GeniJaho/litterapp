@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
- * @property Collection<Tag> $tags
+ * @property Collection<int, Tag> $tags
  * @property Photo $photo
  */
 class PhotoItem extends Pivot

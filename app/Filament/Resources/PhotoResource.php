@@ -7,6 +7,7 @@ use App\Models\Photo;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Resources\Resource;
+use Filament\Tables\Actions\Action;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
@@ -27,7 +28,7 @@ class PhotoResource extends Resource
     {
         return $table
             ->persistFiltersInSession()
-            ->filtersTriggerAction(fn ($action) => $action->button()->label('Filters'))
+            ->filtersTriggerAction(fn (Action $action): Action => $action->button()->label('Filters'))
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
@@ -88,11 +89,11 @@ class PhotoResource extends Resource
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
                             $data['local_date_taken_from'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '>=', $date),
+                            fn (Builder $query, string $date): Builder => $query->whereDate('taken_at_local', '>=', $date),
                         )
                         ->when(
                             $data['local_date_taken_until'],
-                            fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
+                            fn (Builder $query, string $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
                         )),
                 Filter::make('created_at')
                     ->form([
@@ -102,11 +103,11 @@ class PhotoResource extends Resource
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
                             $data['created_at_from'],
-                            fn (Builder $query, $date): Builder => $query->where('created_at', '>=', $date),
+                            fn (Builder $query, string $date): Builder => $query->where('created_at', '>=', $date),
                         )
                         ->when(
                             $data['created_at_until'],
-                            fn (Builder $query, $date): Builder => $query->where('created_at', '<=', $date),
+                            fn (Builder $query, string $date): Builder => $query->where('created_at', '<=', $date),
                         )),
             ])
             ->bulkActions([

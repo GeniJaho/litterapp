@@ -5,6 +5,7 @@ namespace App\Actions\Photos;
 use App\Models\Item;
 use App\Models\Tag;
 use App\Models\TagType;
+use Illuminate\Database\Eloquent\Collection;
 
 class GetTagsAndItemsAction
 {
@@ -19,7 +20,7 @@ class GetTagsAndItemsAction
             ->orderBy('name')
             ->get()
             ->groupBy('tag_type_id')
-            ->mapWithKeys(function ($values, $key) use ($tagTypes): array {
+            ->mapWithKeys(function (Collection $values, int $key) use ($tagTypes): array {
                 /** @var TagType $tagType */
                 $tagType = $tagTypes->find($key);
 
