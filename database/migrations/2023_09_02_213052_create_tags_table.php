@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('tag_type_id')->constrained()->cascadeOnDelete();
             $table->string('name');
-            $table->string('slug')->unique();
             $table->timestamps();
         });
     }

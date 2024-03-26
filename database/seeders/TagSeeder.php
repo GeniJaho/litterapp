@@ -6,7 +6,6 @@ use App\Models\Tag;
 use App\Models\TagType;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class TagSeeder extends Seeder
 {
@@ -31,7 +30,6 @@ class TagSeeder extends Seeder
     {
         return array_map(fn (string $tag) => [
             'name' => $tag,
-            'slug' => Str::slug($tag),
             'tag_type_id' => $type->id,
             'created_at' => now(),
             'updated_at' => now(),
