@@ -4,7 +4,6 @@ namespace Database\Seeders;
 
 use App\Models\Item;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 
 class ItemSeeder extends Seeder
 {
@@ -339,7 +338,6 @@ class ItemSeeder extends Seeder
     {
         return array_map(fn (string $item) => [
             'name' => $item,
-            'slug' => Str::slug($item, dictionary: ['<' => 'lt', '>' => 'gt']),
             'created_at' => now(),
             'updated_at' => now(),
         ], $items);

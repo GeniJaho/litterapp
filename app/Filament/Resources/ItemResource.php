@@ -26,9 +26,6 @@ class ItemResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->required()
-                    ->maxLength(191),
-                TextInput::make('slug')
-                    ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(191),
             ]);
@@ -50,10 +47,6 @@ class ItemResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->numeric(),
-                TextColumn::make('slug')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()

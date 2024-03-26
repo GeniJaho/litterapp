@@ -30,9 +30,6 @@ class TagResource extends Resource
                     ->relationship(name: 'type', titleAttribute: 'name'),
                 TextInput::make('name')
                     ->required()
-                    ->maxLength(191),
-                TextInput::make('slug')
-                    ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(191),
             ]);
@@ -48,10 +45,6 @@ class TagResource extends Resource
                 TextColumn::make('name')
                     ->sortable()
                     ->searchable(),
-                TextColumn::make('slug')
-                    ->sortable()
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('type.name')
                     ->sortable()
                     ->searchable(),

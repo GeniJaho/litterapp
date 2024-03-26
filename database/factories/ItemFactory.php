@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Item;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Illuminate\Support\Str;
 
 /**
  * @extends Factory<Item>
@@ -18,11 +17,8 @@ class ItemFactory extends Factory
      */
     public function definition(): array
     {
-        $name = fake()->unique()->sentence();
-
         return [
-            'name' => $name,
-            'slug' => Str::slug($name),
+            'name' => fake()->unique()->sentence(),
         ];
     }
 }
