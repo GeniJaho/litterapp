@@ -60,14 +60,6 @@ class Photo extends Model
     }
 
     /**
-     * @return BelongsToMany<Tag>
-     */
-    public function tags(): BelongsToMany
-    {
-        return $this->belongsToMany(Tag::class, 'photo_tag');
-    }
-
-    /**
      * @return Attribute<callable, callable>
      */
     protected function fullPath(): Attribute

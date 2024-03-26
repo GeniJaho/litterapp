@@ -54,9 +54,6 @@ Route::middleware([
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
 
-    Route::post('/photos/{photo}/tags', [PhotoTagsController::class, 'store']);
-    Route::delete('/photos/{photo}/tags/{tag}', [PhotoTagsController::class, 'destroy']);
-
     Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);

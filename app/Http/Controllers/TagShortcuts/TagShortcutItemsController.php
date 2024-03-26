@@ -37,19 +37,19 @@ class TagShortcutItemsController extends Controller
         }
 
         if ($request->filled('quantity')) {
-            $tagShortcutItem->quantity = $request->quantity;
+            $tagShortcutItem->quantity = $request->integer('quantity');
         }
 
         if ($request->filled('picked_up')) {
-            $tagShortcutItem->picked_up = $request->picked_up;
+            $tagShortcutItem->picked_up = $request->boolean('picked_up');
         }
 
         if ($request->filled('recycled')) {
-            $tagShortcutItem->recycled = $request->recycled;
+            $tagShortcutItem->recycled = $request->boolean('recycled');
         }
 
         if ($request->filled('deposit')) {
-            $tagShortcutItem->deposit = $request->deposit;
+            $tagShortcutItem->deposit = $request->boolean('deposit');
         }
 
         $tagShortcutItem->save();

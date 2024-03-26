@@ -16,7 +16,7 @@ class TagShortcutItemTagsController extends Controller
             abort(404);
         }
 
-        $tagShortcutItem->tags()->syncWithoutDetaching($request->input('tag_ids'));
+        $tagShortcutItem->tags()->syncWithoutDetaching((array) $request->input('tag_ids'));
 
         return response()->json();
     }
