@@ -3,7 +3,7 @@
 use App\Models\TagShortcut;
 use App\Models\User;
 
-test('a user can store a tag shortcut', function () {
+test('a user can store a tag shortcut', function (): void {
     $user = User::factory()->create();
     TagShortcut::factory()->create(['shortcut' => 'some shortcut']);
 
@@ -19,7 +19,7 @@ test('a user can store a tag shortcut', function () {
     ]);
 });
 
-test('the shortcut must be unique to the user', function () {
+test('the shortcut must be unique to the user', function (): void {
     $user = User::factory()->create();
     TagShortcut::factory()->create(['user_id' => $user->id, 'shortcut' => 'some shortcut']);
 

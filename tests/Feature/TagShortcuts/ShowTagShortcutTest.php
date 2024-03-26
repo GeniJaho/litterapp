@@ -7,7 +7,7 @@ use App\Models\TagShortcutItemTag;
 use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 
-test('a user can see a tag shortcut', function () {
+test('a user can see a tag shortcut', function (): void {
     $this->actingAs($user = User::factory()->create());
     $tagShortcut = TagShortcut::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -21,7 +21,7 @@ test('a user can see a tag shortcut', function () {
     $response = $this->getJson(route('tag-shortcuts.show', $tagShortcut));
 
     $response->assertOk();
-    $response->assertJson(fn (AssertableJson $json) => $json
+    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
         ->where('tagShortcut.id', $tagShortcut->id)
         ->has('tagShortcut.tag_shortcut_items', 1)
         ->where('tagShortcut.tag_shortcut_items.0.item.id', $item->id)
@@ -37,7 +37,7 @@ test('a user can see a tag shortcut', function () {
     );
 });
 
-test('a user can not see another users tag shortcut', function () {
+test('a user can not see another users tag shortcut', function (): void {
     $this->actingAs($user = User::factory()->create());
     $otherUser = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->for($otherUser)->create();

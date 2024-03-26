@@ -21,7 +21,7 @@ class FilterPhotosAction
             ->paginate($user->settings->per_page)
             ->withQueryString();
 
-        $photos->getCollection()->transform(function (Photo $photo) {
+        $photos->getCollection()->transform(function (Photo $photo): Photo {
             $photo->append('full_path');
 
             return $photo;

@@ -4,7 +4,7 @@ use App\Jobs\MinifyProfilePhoto;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-test('it minifies the profile photo', function () {
+test('it minifies the profile photo', function (): void {
     Storage::fake(config('filesystems.default'));
     Storage::put(
         'profile-photos/default.jpg',

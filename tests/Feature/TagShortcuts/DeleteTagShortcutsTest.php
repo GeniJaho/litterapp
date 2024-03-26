@@ -3,7 +3,7 @@
 use App\Models\TagShortcut;
 use App\Models\User;
 
-test('a user can delete a tag shortcut', function () {
+test('a user can delete a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['shortcut' => 'some shortcut', 'user_id' => $user->id]);
 
@@ -14,7 +14,7 @@ test('a user can delete a tag shortcut', function () {
     expect($tagShortcut->fresh())->toBeNull();
 });
 
-test('the shortcut must belong to the user', function () {
+test('the shortcut must belong to the user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
 

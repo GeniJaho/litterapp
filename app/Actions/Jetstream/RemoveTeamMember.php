@@ -31,10 +31,15 @@ class RemoveTeamMember implements RemovesTeamMembers
      */
     protected function authorize(User $user, Team $team, User $teamMember): void
     {
-        if (! Gate::forUser($user)->check('removeTeamMember', $team) &&
-            $user->id !== $teamMember->id) {
-            throw new AuthorizationException;
+        if (Gate::forUser($user)->check('removeTeamMember', $team)) {
+            return;
         }
+
+        if ($user->id === $teamMember->id) {
+            return;
+        }
+
+        throw new AuthorizationException;
     }
 
     /**

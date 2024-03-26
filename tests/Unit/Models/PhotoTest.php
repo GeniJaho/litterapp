@@ -3,7 +3,7 @@
 use App\Models\Photo;
 use Illuminate\Support\Facades\Storage;
 
-test('a photo has a full path', function () {
+test('a photo has a full path', function (): void {
     Storage::fake(config('filesystems.default'));
 
     $photo = Photo::factory()->create([

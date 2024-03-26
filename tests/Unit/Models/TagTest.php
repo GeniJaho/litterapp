@@ -3,7 +3,7 @@
 use App\Models\Tag;
 use App\Models\TagType;
 
-test('a tag has a type', function () {
+test('a tag has a type', function (): void {
     $tagType = TagType::factory()->create();
     $tag = Tag::factory()->create(['tag_type_id' => $tagType->id]);
 

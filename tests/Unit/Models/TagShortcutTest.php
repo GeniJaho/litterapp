@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\TagShortcut;
 use Illuminate\Database\Eloquent\Collection;
 
-test('a tag shortcut belongs to many items', function () {
+test('a tag shortcut belongs to many items', function (): void {
     $tagShortcut = TagShortcut::factory()->create();
     $items = Item::factory(2)->create();
 

@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
 
-test('api tokens can be deleted', function () {
+test('api tokens can be deleted', function (): void {
     if (Features::hasTeamFeatures()) {
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());
     } else {
@@ -20,6 +20,4 @@ test('api tokens can be deleted', function () {
     $response = $this->delete('/user/api-tokens/'.$token->id);
 
     expect($user->fresh()->tokens)->toHaveCount(0);
-})->skip(function () {
-    return ! Features::hasApiFeatures();
-}, 'API support is not enabled.');
+})->skip(fn (): bool => ! Features::hasApiFeatures(), 'API support is not enabled.');

@@ -19,7 +19,7 @@ class GetTagsAndItemsAction
             ->orderBy('name')
             ->get()
             ->groupBy('tag_type_id')
-            ->mapWithKeys(function ($values, $key) use ($tagTypes) {
+            ->mapWithKeys(function ($values, $key) use ($tagTypes): array {
                 /** @var TagType $tagType */
                 $tagType = $tagTypes->find($key);
 

@@ -39,7 +39,7 @@ class UserSeeder extends Seeder
             'name' => 'Waste Wizard',
             'email' => 'wastewizard@litterapp.com',
             'password' => Hash::make('password'),
-        ]), function (User $user) {
+        ]), function (User $user): void {
             $user->ownedTeams()->save(Team::forceCreate([
                 'user_id' => $user->id,
                 'name' => "Wizard's Team",

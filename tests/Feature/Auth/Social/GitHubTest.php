@@ -2,7 +2,7 @@
 
 use Laravel\Socialite\Facades\Socialite;
 
-it('redirects to GitHub', function () {
+it('redirects to GitHub', function (): void {
     $spy = Socialite::spy();
 
     $this->get('/auth/github/redirect');

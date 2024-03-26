@@ -27,7 +27,7 @@ class ApplyTagShortcutController extends Controller
 
         $tagShortcut->loadMissing('tagShortcutItems.tagShortcutItemTags');
 
-        DB::transaction(function () use ($tagShortcut, $photo) {
+        DB::transaction(function () use ($tagShortcut, $photo): void {
             foreach ($tagShortcut->tagShortcutItems as $shortcut) {
                 /** @var PhotoItem $photoItem */
                 $photoItem = PhotoItem::query()->create([

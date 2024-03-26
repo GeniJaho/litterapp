@@ -24,7 +24,7 @@ class ListTags extends ListRecords
     public function getTabs(): array
     {
         $tagTypes = TagType::query()->get()
-            ->mapWithKeys(fn (TagType $tagType) => [
+            ->mapWithKeys(fn (TagType $tagType): array => [
                 $tagType->slug => Tab::make($tagType->name)
                     ->modifyQueryUsing(fn (Builder $query) => $query->where('tag_type_id', $tagType->id))
                     ->badge(Tag::query()->where('tag_type_id', $tagType->id)->count()),

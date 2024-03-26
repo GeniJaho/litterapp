@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 
-test('a user can add items to a photo', function () {
+test('a user can add items to a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -28,7 +28,7 @@ test('a user can add items to a photo', function () {
     ]);
 });
 
-test('a user can add an item more than once to a photo', function () {
+test('a user can add an item more than once to a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -46,7 +46,7 @@ test('a user can add an item more than once to a photo', function () {
     ]);
 });
 
-test('if the user has enabled settings to pick up by default the item should be added as picked up', function () {
+test('if the user has enabled settings to pick up by default the item should be added as picked up', function (): void {
     $user = User::factory()->create(['settings' => ['picked_up_by_default' => true]]);
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -64,7 +64,7 @@ test('if the user has enabled settings to pick up by default the item should be 
     ]);
 });
 
-test('if the user has enabled settings to recycle by default the item should be added as recycled', function () {
+test('if the user has enabled settings to recycle by default the item should be added as recycled', function (): void {
     $user = User::factory()->create(['settings' => ['recycled_by_default' => true]]);
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -82,7 +82,7 @@ test('if the user has enabled settings to recycle by default the item should be 
     ]);
 });
 
-test('if the user has enabled settings to deposit by default the item should be added as having deposit', function () {
+test('if the user has enabled settings to deposit by default the item should be added as having deposit', function (): void {
     $user = User::factory()->create(['settings' => ['deposit_by_default' => true]]);
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -100,7 +100,7 @@ test('if the user has enabled settings to deposit by default the item should be 
     ]);
 });
 
-test('the request is validated', function () {
+test('the request is validated', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
 
@@ -112,7 +112,7 @@ test('the request is validated', function () {
     $response->assertJsonValidationErrors('item_ids.0');
 });
 
-test('a user can not add an item to another users photo', function () {
+test('a user can not add an item to another users photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $item = Item::factory()->create();

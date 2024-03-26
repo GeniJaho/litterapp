@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\TagShortcut;
 use App\Models\User;
 
-test('a user can add an item to a tag shortcut', function () {
+test('a user can add an item to a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -23,7 +23,7 @@ test('a user can add an item to a tag shortcut', function () {
     ]);
 });
 
-test('a user can add an item more than once to a tag shortcut', function () {
+test('a user can add an item more than once to a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -41,7 +41,7 @@ test('a user can add an item more than once to a tag shortcut', function () {
     ]);
 });
 
-test('if the user has enabled settings to pick up or recycled or deposit by default the item should have them set accordingly', function () {
+test('if the user has enabled settings to pick up or recycled or deposit by default the item should have them set accordingly', function (): void {
     $user = User::factory()->create(['settings' => [
         'picked_up_by_default' => true,
         'recycled_by_default' => true,
@@ -65,7 +65,7 @@ test('if the user has enabled settings to pick up or recycled or deposit by defa
     ]);
 });
 
-test('the request is validated', function () {
+test('the request is validated', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
 
@@ -77,7 +77,7 @@ test('the request is validated', function () {
     $response->assertJsonValidationErrors('item_id');
 });
 
-test('a user can not add an item to another users tag shortcut', function () {
+test('a user can not add an item to another users tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
     $item = Item::factory()->create();

@@ -4,7 +4,7 @@ use App\Models\User;
 use Illuminate\Support\Str;
 use Laravel\Jetstream\Features;
 
-test('api token permissions can be updated', function () {
+test('api token permissions can be updated', function (): void {
     if (Features::hasTeamFeatures()) {
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());
     } else {
@@ -26,6 +26,4 @@ test('api token permissions can be updated', function () {
         ->can('create')->toBeFalse()
         ->can('read')->toBeFalse()
         ->can('missing-permission')->toBeFalse();
-})->skip(function () {
-    return ! Features::hasApiFeatures();
-}, 'API support is not enabled.');
+})->skip(fn (): bool => ! Features::hasApiFeatures(), 'API support is not enabled.');
