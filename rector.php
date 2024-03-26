@@ -49,7 +49,7 @@ return RectorConfig::configure()
         StaticArrowFunctionRector::class,
         StaticClosureRector::class,
         EncapsedStringsToSprintfRector::class,
-        __DIR__ . '/app/Http/Middleware/RedirectIfAuthenticated.php',
+        __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',
     ])
     ->withCache(
         cacheDirectory: './storage/rector/cache',

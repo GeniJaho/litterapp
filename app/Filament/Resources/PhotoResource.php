@@ -38,20 +38,17 @@ class PhotoResource extends Resource
                     ->sortable(),
                 ImageColumn::make('full_path')
                     ->label('Photo')
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query->where('path', 'like', "%{$search}%");
-                    }),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->where('path', 'like', "%{$search}%")),
                 TextColumn::make('gps')
                     ->label('GPS')
                     ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
                         ? "{$photo->latitude}, {$photo->longitude}"
                         : null
                     )
-                    ->searchable(query: function (Builder $query, string $search): Builder {
-                        return $query
-                            ->where('latitude', 'like', "%{$search}%")
-                            ->orWhere('longitude', 'like', "%{$search}%");
-                    }),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query
+                        ->where('latitude', 'like', "%{$search}%")
+                        ->orWhere('longitude', 'like', "%{$search}%")
+                    ),
                 TextColumn::make('original_file_name')
                     ->sortable()
                     ->searchable()
@@ -88,33 +85,29 @@ class PhotoResource extends Resource
                         DatePicker::make('local_date_taken_from')->label('Date taken from (Local time)'),
                         DatePicker::make('local_date_taken_until')->label('Date taken until (Local time)'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['local_date_taken_from'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '>=', $date),
-                            )
-                            ->when(
-                                $data['local_date_taken_until'],
-                                fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
-                            );
-                    }),
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when(
+                            $data['local_date_taken_from'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '>=', $date),
+                        )
+                        ->when(
+                            $data['local_date_taken_until'],
+                            fn (Builder $query, $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
+                        )),
                 Filter::make('created_at')
                     ->form([
                         DateTimePicker::make('created_at_from')->label('Uploaded from'),
                         DateTimePicker::make('created_at_until')->label('Uploaded until'),
                     ])
-                    ->query(function (Builder $query, array $data): Builder {
-                        return $query
-                            ->when(
-                                $data['created_at_from'],
-                                fn (Builder $query, $date): Builder => $query->where('created_at', '>=', $date),
-                            )
-                            ->when(
-                                $data['created_at_until'],
-                                fn (Builder $query, $date): Builder => $query->where('created_at', '<=', $date),
-                            );
-                    }),
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when(
+                            $data['created_at_from'],
+                            fn (Builder $query, $date): Builder => $query->where('created_at', '>=', $date),
+                        )
+                        ->when(
+                            $data['created_at_until'],
+                            fn (Builder $query, $date): Builder => $query->where('created_at', '<=', $date),
+                        )),
             ])
             ->bulkActions([
                 BulkActionGroup::make([

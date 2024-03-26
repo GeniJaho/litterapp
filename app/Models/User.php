@@ -117,9 +117,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected function defaultProfilePhotoUrl()
     {
-        $name = trim(collect(explode(' ', $this->name))->map(function ($segment) {
-            return mb_substr($segment, 0, 1);
-        })->join(' '));
+        $name = trim(collect(explode(' ', (string) $this->name))->map(fn ($segment) => mb_substr((string) $segment, 0, 1))->join(' '));
 
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=1F2937&background=e3faf8';
     }

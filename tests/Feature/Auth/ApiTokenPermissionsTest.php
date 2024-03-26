@@ -26,6 +26,4 @@ test('api token permissions can be updated', function () {
         ->can('create')->toBeFalse()
         ->can('read')->toBeFalse()
         ->can('missing-permission')->toBeFalse();
-})->skip(function () {
-    return ! Features::hasApiFeatures();
-}, 'API support is not enabled.');
+})->skip(fn () => ! Features::hasApiFeatures(), 'API support is not enabled.');

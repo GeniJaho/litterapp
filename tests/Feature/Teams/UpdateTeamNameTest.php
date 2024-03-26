@@ -12,6 +12,4 @@ test('team names can be updated', function () {
 
     expect($user->fresh()->ownedTeams)->toHaveCount(1);
     expect($user->currentTeam->fresh()->name)->toEqual('Test Team');
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');

@@ -13,9 +13,7 @@ test('team members can be removed from teams', function () {
     $response = $this->delete('/teams/'.$user->currentTeam->id.'/members/'.$otherUser->id);
 
     expect($user->currentTeam->fresh()->users)->toHaveCount(0);
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');
 
 test('only team owner can remove team members', function () {
     $user = User::factory()->withPersonalTeam()->create();
@@ -29,6 +27,4 @@ test('only team owner can remove team members', function () {
     $response = $this->delete('/teams/'.$user->currentTeam->id.'/members/'.$user->id);
 
     $response->assertStatus(403);
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');

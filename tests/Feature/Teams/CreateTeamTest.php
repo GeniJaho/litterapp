@@ -12,6 +12,4 @@ test('teams can be created', function () {
 
     expect($user->fresh()->ownedTeams)->toHaveCount(2);
     expect($user->fresh()->ownedTeams()->latest('id')->first()->name)->toEqual('Test Team');
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');

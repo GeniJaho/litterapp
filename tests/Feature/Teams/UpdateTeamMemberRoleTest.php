@@ -17,9 +17,7 @@ test('team member roles can be updated', function () {
     expect($otherUser->fresh()->hasTeamRole(
         $user->currentTeam->fresh(), 'editor'
     ))->toBeTrue();
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');
 
 test('only team owner can update team member roles', function () {
     $user = User::factory()->withPersonalTeam()->create();
@@ -37,6 +35,4 @@ test('only team owner can update team member roles', function () {
     expect($otherUser->fresh()->hasTeamRole(
         $user->currentTeam->fresh(), 'admin'
     ))->toBeTrue();
-})->skip(function () {
-    return ! Features::hasTeamFeatures();
-}, 'Teams not enabled.');
+})->skip(fn () => ! Features::hasTeamFeatures(), 'Teams not enabled.');
