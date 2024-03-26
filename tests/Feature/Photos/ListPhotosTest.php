@@ -8,13 +8,14 @@ use App\Models\PhotoItem;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
 });
 
-test('a user can see their photos', function () {
+test('a user can see their photos', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create(['created_at' => now()]);
@@ -25,7 +26,7 @@ test('a user can see their photos', function () {
     $response = $this->get('/my-photos');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.full_path', $photoB->full_path)
@@ -37,7 +38,7 @@ test('a user can see their photos', function () {
     );
 });
 
-test('a user can not see another users photos', function () {
+test('a user can not see another users photos', function (): void {
     $this->actingAs(User::factory()->create());
     $otherUser = User::factory()->create();
 
@@ -46,21 +47,21 @@ test('a user can not see another users photos', function () {
     $response = $this->get('/my-photos');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->where('photos.data', [])
         ->etc()
     );
 });
 
-test('a user can choose the number of photos per page', function () {
+test('a user can choose the number of photos per page', function (): void {
     $this->actingAs($user = User::factory()->create());
     Photo::factory(25)->for($user)->create();
 
     $response = $this->get('/my-photos?set_per_page=true&per_page=24');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 24)
         ->where('photos.per_page', 24)
@@ -70,7 +71,7 @@ test('a user can choose the number of photos per page', function () {
     $response = $this->get('/my-photos');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 24)
         ->where('photos.per_page', 24)
@@ -78,7 +79,7 @@ test('a user can choose the number of photos per page', function () {
     );
 });
 
-test('a user can filter their photos by items on the photos', function () {
+test('a user can filter their photos by items on the photos', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -89,7 +90,7 @@ test('a user can filter their photos by items on the photos', function () {
     $response = $this->get('/my-photos?store_filters=1&item_ids[]='.$item->id);
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -98,7 +99,7 @@ test('a user can filter their photos by items on the photos', function () {
     );
 });
 
-test('when the user is filtering the photos the filters are stored in their settings', function () {
+test('when the user is filtering the photos the filters are stored in their settings', function (): void {
     $this->actingAs($user = User::factory()->create());
     $item = Item::factory()->create();
 
@@ -113,7 +114,7 @@ test('when the user is filtering the photos the filters are stored in their sett
     ));
 });
 
-test('when the user is clearing the filters they are removed in their settings', function () {
+test('when the user is clearing the filters they are removed in their settings', function (): void {
     $this->actingAs($user = User::factory()->create([
         'settings' => new UserSettings(photo_filters: new PhotoFilters(item_ids: [1])),
     ]));
@@ -123,7 +124,7 @@ test('when the user is clearing the filters they are removed in their settings',
     expect($user->fresh()->settings->photo_filters)->toBeNull();
 });
 
-test('a user can filter their photos by tags on the photo items', function () {
+test('a user can filter their photos by tags on the photo items', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -136,7 +137,7 @@ test('a user can filter their photos by tags on the photo items', function () {
     $response = $this->get('/my-photos?store_filters=1&tag_ids[]='.$tag->id);
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -145,7 +146,7 @@ test('a user can filter their photos by tags on the photo items', function () {
     );
 });
 
-test('a user can filter their photos by date uploaded from', function () {
+test('a user can filter their photos by date uploaded from', function (): void {
     $this->freezeTime();
     $this->actingAs($user = User::factory()->create());
 
@@ -155,7 +156,7 @@ test('a user can filter their photos by date uploaded from', function () {
     $response = $this->get('/my-photos?store_filters=1&uploaded_from='.now()->addMinute()->format('Y-m-d\TH:i'));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -163,7 +164,7 @@ test('a user can filter their photos by date uploaded from', function () {
     );
 });
 
-test('a user can filter their photos by date uploaded until', function () {
+test('a user can filter their photos by date uploaded until', function (): void {
     $this->freezeTime();
     $this->actingAs($user = User::factory()->create());
 
@@ -173,7 +174,7 @@ test('a user can filter their photos by date uploaded until', function () {
     $response = $this->get('/my-photos?store_filters=1&uploaded_until='.now()->addMinute()->format('Y-m-d\TH:i'));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -181,7 +182,7 @@ test('a user can filter their photos by date uploaded until', function () {
     );
 });
 
-test('a user can filter their photos by the date the photo is taken from', function () {
+test('a user can filter their photos by the date the photo is taken from', function (): void {
     $this->freezeTime();
     $this->actingAs($user = User::factory()->create());
 
@@ -191,7 +192,7 @@ test('a user can filter their photos by the date the photo is taken from', funct
     $response = $this->get('/my-photos?store_filters=1&taken_from_local='.now()->addMinute()->format('Y-m-d\TH:i'));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -199,7 +200,7 @@ test('a user can filter their photos by the date the photo is taken from', funct
     );
 });
 
-test('a user can filter their photos by the date the photo is taken until', function () {
+test('a user can filter their photos by the date the photo is taken until', function (): void {
     $this->freezeTime();
     $this->actingAs($user = User::factory()->create());
 
@@ -209,7 +210,7 @@ test('a user can filter their photos by the date the photo is taken until', func
     $response = $this->get('/my-photos?store_filters=1&taken_until_local='.now()->addMinute()->format('Y-m-d\TH:i'));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -217,7 +218,7 @@ test('a user can filter their photos by the date the photo is taken until', func
     );
 });
 
-test('a user can filter their photos by having GPS data or not', function () {
+test('a user can filter their photos by having GPS data or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create(['latitude' => 1, 'longitude' => 1]);
@@ -226,7 +227,7 @@ test('a user can filter their photos by having GPS data or not', function () {
     $response = $this->get('/my-photos?store_filters=1&has_gps=1');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -236,7 +237,7 @@ test('a user can filter their photos by having GPS data or not', function () {
     $response = $this->get('/my-photos?store_filters=1&has_gps=0');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -246,14 +247,14 @@ test('a user can filter their photos by having GPS data or not', function () {
     $response = $this->get('/my-photos?store_filters=1&has_gps=');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
 });
 
-test('a user can filter their photos by having tags or not', function () {
+test('a user can filter their photos by having tags or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -264,7 +265,7 @@ test('a user can filter their photos by having tags or not', function () {
     $response = $this->get('/my-photos?store_filters=1&is_tagged=1');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -274,7 +275,7 @@ test('a user can filter their photos by having tags or not', function () {
     $response = $this->get('/my-photos?store_filters=1&is_tagged=0');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -284,14 +285,14 @@ test('a user can filter their photos by having tags or not', function () {
     $response = $this->get('/my-photos?store_filters=1&is_tagged=');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
 });
 
-test('a user can filter their photos by being picked up or not', function () {
+test('a user can filter their photos by being picked up or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -307,7 +308,7 @@ test('a user can filter their photos by being picked up or not', function () {
     $response = $this->get('/my-photos?store_filters=1&picked_up=1');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -317,7 +318,7 @@ test('a user can filter their photos by being picked up or not', function () {
     $response = $this->get('/my-photos?store_filters=1&picked_up=0');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -327,14 +328,14 @@ test('a user can filter their photos by being picked up or not', function () {
     $response = $this->get('/my-photos?store_filters=1&picked_up=');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
 });
 
-test('a user can filter their photos by being recycled or not', function () {
+test('a user can filter their photos by being recycled or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -350,7 +351,7 @@ test('a user can filter their photos by being recycled or not', function () {
     $response = $this->get('/my-photos?store_filters=1&recycled=1');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -360,7 +361,7 @@ test('a user can filter their photos by being recycled or not', function () {
     $response = $this->get('/my-photos?store_filters=1&recycled=0');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -370,14 +371,14 @@ test('a user can filter their photos by being recycled or not', function () {
     $response = $this->get('/my-photos?store_filters=1&recycled=');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()
     );
 });
 
-test('a user can filter their photos by being deposit or not', function () {
+test('a user can filter their photos by being deposit or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
@@ -393,7 +394,7 @@ test('a user can filter their photos by being deposit or not', function () {
     $response = $this->get('/my-photos?store_filters=1&deposit=1');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoB->id)
@@ -403,7 +404,7 @@ test('a user can filter their photos by being deposit or not', function () {
     $response = $this->get('/my-photos?store_filters=1&deposit=0');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
         ->where('photos.data.0.id', $photoA->id)
@@ -413,7 +414,7 @@ test('a user can filter their photos by being deposit or not', function () {
     $response = $this->get('/my-photos?store_filters=1&deposit=');
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
         ->etc()

@@ -3,7 +3,7 @@
 use App\Models\User;
 use Laravel\Jetstream\Features;
 
-test('api tokens can be created', function () {
+test('api tokens can be created', function (): void {
     if (Features::hasTeamFeatures()) {
         $this->actingAs($user = User::factory()->withPersonalTeam()->create());
     } else {
@@ -17,4 +17,4 @@ test('api tokens can be created', function () {
 
     expect($user->fresh()->tokens)->toHaveCount(1);
     expect($user->fresh()->tokens->first())->name->toEqual('Test Token');
-})->skip(fn () => ! Features::hasApiFeatures(), 'API support is not enabled.');
+})->skip(fn (): bool => ! Features::hasApiFeatures(), 'API support is not enabled.');

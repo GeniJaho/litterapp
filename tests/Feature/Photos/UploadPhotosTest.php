@@ -7,11 +7,11 @@ use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
 });
 
-test('a user can upload photos', function () {
+test('a user can upload photos', function (): void {
     $this->actingAs($user = User::factory()->create());
     $file = UploadedFile::fake()->image('photo.jpg');
 
@@ -29,7 +29,7 @@ test('a user can upload photos', function () {
     Storage::assertExists('photos/'.$file->hashName());
 });
 
-test('a user can upload photos with location data', function () {
+test('a user can upload photos with location data', function (): void {
     $this->swap(ExtractsExifFromPhoto::class, app(ExtractExifFromPhotoAction::class));
     $this->actingAs($user = User::factory()->create());
 
@@ -49,7 +49,7 @@ test('a user can upload photos with location data', function () {
         ->and($photo->longitude)->toBe(-77.15449870066);
 })->group('slow');
 
-test('a user can upload photos with the date the photo is taken', function () {
+test('a user can upload photos with the date the photo is taken', function (): void {
     Storage::fake('public');
     $this->swap(ExtractsExifFromPhoto::class, app(ExtractExifFromPhotoAction::class));
     $this->actingAs($user = User::factory()->create());
@@ -69,7 +69,7 @@ test('a user can upload photos with the date the photo is taken', function () {
     expect($photo->taken_at_local)->toBe('2019-10-10 12:00:00');
 })->group('slow')->skip('Properly implement this');
 
-test('a photo can not be larger than 20MB', function () {
+test('a photo can not be larger than 20MB', function (): void {
     $this->actingAs($user = User::factory()->create());
     $response = $this->post('/upload', [
         'photo' => UploadedFile::fake()->image('photo.jpg')->size(20481),
@@ -80,7 +80,7 @@ test('a photo can not be larger than 20MB', function () {
     expect($user->photos()->count())->toBeZero();
 });
 
-test('only images can be uploaded', function () {
+test('only images can be uploaded', function (): void {
     $this->actingAs($user = User::factory()->create());
     $response = $this->post('/upload', [
         'photo' => UploadedFile::fake()->create('document.pdf'),
@@ -91,7 +91,7 @@ test('only images can be uploaded', function () {
     expect($user->photos()->count())->toBeZero();
 });
 
-test('a user can not upload the same photo twice', function () {
+test('a user can not upload the same photo twice', function (): void {
     $user = User::factory()->create();
     Photo::factory()->for($user)->create([
         'original_file_name' => 'photo.jpg',
@@ -106,7 +106,7 @@ test('a user can not upload the same photo twice', function () {
     expect($user->photos()->count())->toBe(1);
 });
 
-test('a user can upload a photo with the same name as another users photo', function () {
+test('a user can upload a photo with the same name as another users photo', function (): void {
     Photo::factory()->create([
         'original_file_name' => 'photo.jpg',
     ]);

@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\TagShortcut;
 use App\Models\User;
 
-test('a user can remove an item from a tag shortcut', function () {
+test('a user can remove an item from a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -18,7 +18,7 @@ test('a user can remove an item from a tag shortcut', function () {
     $this->assertDatabaseEmpty('tag_shortcut_items');
 });
 
-test('a user can not remove an item from a tag shortcut of another user', function () {
+test('a user can not remove an item from a tag shortcut of another user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
     $existingItem = Item::factory()->create();

@@ -8,7 +8,7 @@ use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-test('a user can delete a photo', function () {
+test('a user can delete a photo', function (): void {
     Storage::fake(config('filesystems.default'));
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create(['path' => 'photos/1.jpg']);
@@ -27,7 +27,7 @@ test('a user can delete a photo', function () {
     Storage::assertMissing('photos/1.jpg');
 });
 
-test('a user can not delete another users photo', function () {
+test('a user can not delete another users photo', function (): void {
     Storage::fake(config('filesystems.default'));
     $user = User::factory()->create();
     $photo = Photo::factory()->for($user)->create(['path' => 'photos/1.jpg']);

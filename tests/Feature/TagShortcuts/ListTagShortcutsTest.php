@@ -4,9 +4,10 @@ use App\Models\Item;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
-test('a user can list their tag shortcuts', function () {
+test('a user can list their tag shortcuts', function (): void {
     $user = User::factory()->create();
     $tag = Tag::factory()->create();
     $item = Item::factory()->create();
@@ -23,7 +24,7 @@ test('a user can list their tag shortcuts', function () {
     $response = $this->actingAs($user)->get(route('tag-shortcuts.index'));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('TagShortcuts/Index')
         ->has('tagShortcuts', 2)
         ->where('tagShortcuts.0.id', $tagShortcutA->id)

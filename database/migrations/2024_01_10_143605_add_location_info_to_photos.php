@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('photos', function (Blueprint $table) {
+        Schema::table('photos', function (Blueprint $table): void {
             $table->decimal('latitude', 10, 8)->after('path')->nullable();
             $table->decimal('longitude', 11, 8)->after('latitude')->nullable();
         });

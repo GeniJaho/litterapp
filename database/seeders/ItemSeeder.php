@@ -337,7 +337,7 @@ class ItemSeeder extends Seeder
 
     private function format(array $items): array
     {
-        return array_map(fn (string $item) => [
+        return array_map(fn (string $item): array => [
             'name' => $item,
             'slug' => Str::slug($item, dictionary: ['<' => 'lt', '>' => 'gt']),
             'created_at' => now(),

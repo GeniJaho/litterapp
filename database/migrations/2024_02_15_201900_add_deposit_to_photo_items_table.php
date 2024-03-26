@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('photo_items', function (Blueprint $table) {
+        Schema::table('photo_items', function (Blueprint $table): void {
             $table->boolean('deposit')->default(false)->after('recycled');
         });
     }

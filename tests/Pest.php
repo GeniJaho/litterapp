@@ -2,6 +2,7 @@
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Pest\Arch\Expectations\Targeted;
+use Pest\Arch\SingleArchExpectation;
 use Pest\Arch\Support\FileLineFinder;
 use PHPUnit\Architecture\Elements\ObjectDescription;
 use Tests\TestCase;
@@ -32,7 +33,7 @@ uses(TestCase::class, RefreshDatabase::class)->in('Feature', 'Unit');
 
 expect()->extend('toBeZero', fn () => $this->toBe(0));
 
-expect()->extend('toNotEagerLoadByDefault', fn () => Targeted::make(
+expect()->extend('toNotEagerLoadByDefault', fn (): SingleArchExpectation => Targeted::make(
     $this,
     fn (ObjectDescription $object): bool => $object
         ->reflectionClass
@@ -53,7 +54,7 @@ expect()->extend('toNotEagerLoadByDefault', fn () => Targeted::make(
 |
 */
 
-function something()
+function something(): void
 {
     // ..
 }

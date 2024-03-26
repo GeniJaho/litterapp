@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 
-test('a user can update the data of an item on a photo', function () {
+test('a user can update the data of an item on a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -37,7 +37,7 @@ test('a user can update the data of an item on a photo', function () {
     ]);
 });
 
-test('the request is validated', function ($data, $error) {
+test('the request is validated', function ($data, $error): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -57,7 +57,7 @@ test('the request is validated', function ($data, $error) {
     'deposit not a boolean' => [['deposit' => 'not-a-boolean'], 'deposit'],
 ]);
 
-test('a user can not update an item on a photo of another user', function () {
+test('a user can not update an item on a photo of another user', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $existingItem = Item::factory()->create();

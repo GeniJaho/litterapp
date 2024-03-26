@@ -7,7 +7,7 @@ use App\Models\TagShortcutItem;
 use App\Models\TagShortcutItemTag;
 use App\Models\User;
 
-test('a user can duplicate a tag shortcut', function () {
+test('a user can duplicate a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -35,7 +35,7 @@ test('a user can duplicate a tag shortcut', function () {
     $this->assertEquals($tag->id, $latestTagShortcutItemTag->tag_id);
 });
 
-test('a user can not duplicate a tag shortcut of another user', function () {
+test('a user can not duplicate a tag shortcut of another user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
 

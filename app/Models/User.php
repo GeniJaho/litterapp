@@ -80,7 +80,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     public function updateProfilePhoto(UploadedFile $photo, string $storagePath = 'profile-photos'): void
     {
-        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath) {
+        tap($this->profile_photo_path, function ($previous) use ($photo, $storagePath): void {
             $this->forceFill([
                 'profile_photo_path' => $photo->store(
                     $storagePath, ['disk' => $this->profilePhotoDisk()]
@@ -112,12 +112,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     /**
      * Get the default profile photo URL if no profile photo has been uploaded.
-     *
-     * @return string
      */
-    protected function defaultProfilePhotoUrl()
+    protected function defaultProfilePhotoUrl(): string
     {
-        $name = trim(collect(explode(' ', (string) $this->name))->map(fn ($segment) => mb_substr((string) $segment, 0, 1))->join(' '));
+        $name = trim(collect(explode(' ', (string) $this->name))->map(fn ($segment): string => mb_substr($segment, 0, 1))->join(' '));
 
         return 'https://ui-avatars.com/api/?name='.urlencode($name).'&color=1F2937&background=e3faf8';
     }

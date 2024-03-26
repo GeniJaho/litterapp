@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('tag_shortcut_items', function (Blueprint $table) {
+        Schema::create('tag_shortcut_items', function (Blueprint $table): void {
             $table->id();
             $table->foreignId('tag_shortcut_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();

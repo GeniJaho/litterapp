@@ -2,7 +2,7 @@
 
 use Laravel\Socialite\Facades\Socialite;
 
-it('redirects to Twitter', function () {
+it('redirects to Twitter', function (): void {
     $spy = Socialite::spy();
 
     $this->get('/auth/twitter/redirect');

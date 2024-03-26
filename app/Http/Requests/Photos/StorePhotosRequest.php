@@ -32,7 +32,7 @@ class StorePhotosRequest extends FormRequest
     public function after(): array
     {
         return [
-            function (Validator $validator) {
+            function (Validator $validator): void {
                 $photoExists = auth()->user()
                     ?->photos()
                     ->where('original_file_name', $this->photo->getClientOriginalName())

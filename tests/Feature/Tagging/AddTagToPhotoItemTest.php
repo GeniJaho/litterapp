@@ -6,7 +6,7 @@ use App\Models\PhotoItem;
 use App\Models\Tag;
 use App\Models\User;
 
-test('a user can add tags to an item of a photo', function () {
+test('a user can add tags to an item of a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -30,7 +30,7 @@ test('a user can add tags to an item of a photo', function () {
     ]);
 });
 
-test('the request is validated', function () {
+test('the request is validated', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -45,7 +45,7 @@ test('the request is validated', function () {
     $this->assertDatabaseCount('photo_item_tag', 0);
 });
 
-test('a user can not add a tag to an item of a photo of another user', function () {
+test('a user can not add a tag to an item of a photo of another user', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $item = Item::factory()->create();

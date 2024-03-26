@@ -8,7 +8,7 @@ use App\Models\User;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 
-test('a user can add items to many photos at once', function () {
+test('a user can add items to many photos at once', function (): void {
     $user = User::factory()->create();
     $photoA = Photo::factory()->create(['user_id' => $user->id]);
     $photoB = Photo::factory()->create(['user_id' => $user->id]);
@@ -62,7 +62,7 @@ test('a user can add items to many photos at once', function () {
         ->first()->id->toBe($tag->id);
 });
 
-test('a user can add an item more than once to their photos', function () {
+test('a user can add an item more than once to their photos', function (): void {
     $user = User::factory()->create();
     $existingItem = Item::factory()->create();
     $photoA = Photo::factory()->create(['user_id' => $user->id]);
@@ -87,7 +87,7 @@ test('a user can add an item more than once to their photos', function () {
     expect($photoB->items->count())->toBe(2);
 });
 
-test('the request is validated', function ($key, $error, $value) {
+test('the request is validated', function ($key, $error, $value): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -120,7 +120,7 @@ test('the request is validated', function ($key, $error, $value) {
     'quantity may not be greater than 1000' => ['quantity', 'items.0.quantity', 1001],
 ]);
 
-test('the request items must exist', function () {
+test('the request items must exist', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
 
@@ -139,7 +139,7 @@ test('the request items must exist', function () {
     $response->assertJsonValidationErrors('items.0.id');
 });
 
-test('the request tags must exist', function () {
+test('the request tags must exist', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -160,7 +160,7 @@ test('the request tags must exist', function () {
     $response->assertJsonValidationErrors('items.0.tag_ids');
 });
 
-test('the photo ids are validated', function ($photoIds) {
+test('the photo ids are validated', function ($photoIds): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -184,7 +184,7 @@ test('the photo ids are validated', function ($photoIds) {
     'photo_ids must be an array' => ['string'],
 ]);
 
-test('a user can not add an item to another users photo', function () {
+test('a user can not add an item to another users photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $item = Item::factory()->create();

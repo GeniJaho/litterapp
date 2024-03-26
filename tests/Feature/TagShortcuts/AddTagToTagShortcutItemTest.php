@@ -6,7 +6,7 @@ use App\Models\TagShortcut;
 use App\Models\TagShortcutItem;
 use App\Models\User;
 
-test('a user can add tags to an item of a tag shortcut', function () {
+test('a user can add tags to an item of a tag shortcut', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -30,7 +30,7 @@ test('a user can add tags to an item of a tag shortcut', function () {
     ]);
 });
 
-test('the request is validated', function () {
+test('the request is validated', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -45,7 +45,7 @@ test('the request is validated', function () {
     $this->assertDatabaseCount('tag_shortcut_item_tag', 0);
 });
 
-test('a user can not add a tag to an item of a tag shortcut of another user', function () {
+test('a user can not add a tag to an item of a tag shortcut of another user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
     $item = Item::factory()->create();

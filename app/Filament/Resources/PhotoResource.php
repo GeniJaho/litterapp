@@ -78,7 +78,7 @@ class PhotoResource extends Resource
                     ->queries(
                         true: fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude'),
                         false: fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude'),
-                        blank: fn (Builder $query) => $query
+                        blank: fn (Builder $query): Builder => $query
                     ),
                 Filter::make('taken_at_local')
                     ->form([

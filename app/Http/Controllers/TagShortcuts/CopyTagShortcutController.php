@@ -21,7 +21,7 @@ class CopyTagShortcutController extends Controller
 
         $tagShortcut->load('tagShortcutItems.tags');
 
-        DB::transaction(function () use ($user, $tagShortcut) {
+        DB::transaction(function () use ($user, $tagShortcut): void {
             /** @var TagShortcut $newTagShortcut */
             $newTagShortcut = $user->tagShortcuts()->create([
                 'shortcut' => $this->getNewName($tagShortcut),

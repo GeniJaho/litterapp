@@ -29,7 +29,7 @@ class TagSeeder extends Seeder
 
     private function format(array $tags, Model $type): array
     {
-        return array_map(fn (string $tag) => [
+        return array_map(fn (string $tag): array => [
             'name' => $tag,
             'slug' => Str::slug($tag),
             'tag_type_id' => $type->id,

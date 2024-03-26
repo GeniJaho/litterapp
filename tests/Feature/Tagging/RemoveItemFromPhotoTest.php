@@ -4,7 +4,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 
-test('a user can remove an item from a photo', function () {
+test('a user can remove an item from a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $existingItem = Item::factory()->create();
@@ -18,7 +18,7 @@ test('a user can remove an item from a photo', function () {
     $this->assertDatabaseEmpty('photo_items');
 });
 
-test('a user can not remove an item from a photo of another user', function () {
+test('a user can not remove an item from a photo of another user', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $existingItem = Item::factory()->create();

@@ -6,7 +6,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
 
-test('profile information can be updated', function () {
+test('profile information can be updated', function (): void {
     Queue::fake();
     Storage::fake(config('filesystems.default'));
     $this->actingAs($user = User::factory()->create());

@@ -2,7 +2,7 @@
 
 use Laravel\Socialite\Facades\Socialite;
 
-it('redirects to Google', function () {
+it('redirects to Google', function (): void {
     $spy = Socialite::spy();
 
     $this->get('/auth/google/redirect');

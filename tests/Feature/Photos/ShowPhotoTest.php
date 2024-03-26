@@ -12,11 +12,11 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
 });
 
-test('a user can see the photo tagging page', function () {
+test('a user can see the photo tagging page', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $items = Item::factory()->count(2)->create();
@@ -36,7 +36,7 @@ test('a user can see the photo tagging page', function () {
 
     $response->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Show')
         ->where('photoId', $photo->id)
         ->where('tags', [
@@ -47,7 +47,7 @@ test('a user can see the photo tagging page', function () {
     );
 });
 
-test('a user can see their shortcuts in the photo tagging page', function () {
+test('a user can see their shortcuts in the photo tagging page', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $tag = Tag::factory()->create();
@@ -66,7 +66,7 @@ test('a user can see their shortcuts in the photo tagging page', function () {
 
     $response->assertOk();
 
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->has('tagShortcuts', 1)
         ->where('tagShortcuts.0.id', $tagShortcut->id)
         ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
@@ -77,7 +77,7 @@ test('a user can see their shortcuts in the photo tagging page', function () {
     );
 });
 
-test('a user can see the next untagged photo link', function () {
+test('a user can see the next untagged photo link', function (): void {
     $this->actingAs($user = User::factory()->create());
     $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
     $user->save();
@@ -88,12 +88,12 @@ test('a user can see the next untagged photo link', function () {
     $response = $this->get(route('photos.show', $photo));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->where('nextPhotoUrl', route('photos.show', $untaggedPhoto))
     );
 });
 
-test('a user can not see the next untagged photo link if there are no more untagged photos', function () {
+test('a user can not see the next untagged photo link if there are no more untagged photos', function (): void {
     $this->actingAs($user = User::factory()->create());
     $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
     $user->save();
@@ -106,10 +106,10 @@ test('a user can not see the next untagged photo link if there are no more untag
     $response = $this->get(route('photos.show', $photo));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page->where('nextPhotoUrl', null));
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page->where('nextPhotoUrl', null));
 });
 
-test('a user can see the previous untagged photo link', function () {
+test('a user can see the previous untagged photo link', function (): void {
     $this->actingAs($user = User::factory()->create());
     $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
     $user->save();
@@ -120,12 +120,12 @@ test('a user can see the previous untagged photo link', function () {
     $response = $this->get(route('photos.show', $photo));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->where('previousPhotoUrl', route('photos.show', $untaggedPhoto))
     );
 });
 
-test('a user can not see the previous untagged photo link if there are no more untagged photos', function () {
+test('a user can not see the previous untagged photo link if there are no more untagged photos', function (): void {
     $this->actingAs($user = User::factory()->create());
     $user->settings->photo_filters = new PhotoFilters(is_tagged: false);
     $user->save();
@@ -138,10 +138,10 @@ test('a user can not see the previous untagged photo link if there are no more u
     $response = $this->get(route('photos.show', $photo));
 
     $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page) => $page->where('previousPhotoUrl', null));
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page->where('previousPhotoUrl', null));
 });
 
-test('a user can see a photo', function () {
+test('a user can see a photo', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -155,7 +155,7 @@ test('a user can see a photo', function () {
     $response = $this->getJson(route('photos.show', $photo));
 
     $response->assertOk();
-    $response->assertJson(fn (AssertableJson $json) => $json
+    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
         ->where('photo.id', $photo->id)
         ->where('photo.full_path', $photo->full_path)
         ->has('photo.photo_items', 1)
@@ -172,7 +172,7 @@ test('a user can see a photo', function () {
     );
 });
 
-test('a user can not see another users photo', function () {
+test('a user can not see another users photo', function (): void {
     $this->actingAs($user = User::factory()->create());
     $otherUser = User::factory()->create();
     $photo = Photo::factory()->for($otherUser)->create();

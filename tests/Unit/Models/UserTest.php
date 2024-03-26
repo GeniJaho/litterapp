@@ -4,7 +4,7 @@ use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 
-test('a user has many tag shortcuts', function () {
+test('a user has many tag shortcuts', function (): void {
     $user = User::factory()->create();
     $tagShortcuts = TagShortcut::factory(2)->create(['user_id' => $user->id]);
 

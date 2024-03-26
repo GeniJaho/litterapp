@@ -27,7 +27,7 @@ class BulkPhotoItems extends Data
             'photo_ids' => [
                 'required',
                 'array',
-                function (string $attribute, mixed $value, Closure $fail) {
+                function (string $attribute, mixed $value, Closure $fail): void {
                     if (! is_array($value)) {
                         return;
                     }

@@ -88,7 +88,7 @@ class Photo extends Model
             'picked_up' => $filters->picked_up,
             'recycled' => $filters->recycled,
             'deposit' => $filters->deposit,
-        ], fn ($value) => $value !== null);
+        ], fn ($value): bool => $value !== null);
 
         $query
             ->when($filters->item_ids !== [], fn ($query) => $query

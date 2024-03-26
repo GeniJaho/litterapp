@@ -14,7 +14,7 @@ class BulkPhotoItemsController extends Controller
     {
         $items = Item::query()->find(array_column($bulkPhotoItems->items, 'id'))->keyBy('id');
 
-        DB::transaction(function () use ($items, $bulkPhotoItems) {
+        DB::transaction(function () use ($items, $bulkPhotoItems): void {
             foreach ($bulkPhotoItems->items as $requestItem) {
                 /** @var Item $item */
                 $item = $items[$requestItem->id];

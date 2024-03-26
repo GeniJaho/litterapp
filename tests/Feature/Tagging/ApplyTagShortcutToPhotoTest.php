@@ -9,7 +9,7 @@ use App\Models\User;
 use function Pest\Laravel\assertDatabaseCount;
 use function Pest\Laravel\assertDatabaseHas;
 
-test('a user can apply a tag shortcut to a photo', function () {
+test('a user can apply a tag shortcut to a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
@@ -41,7 +41,7 @@ test('a user can apply a tag shortcut to a photo', function () {
         ->first()->id->toBe($tag->id);
 });
 
-test('a user can not apply a tag shortcut to another users photo', function () {
+test('a user can not apply a tag shortcut to another users photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
@@ -51,7 +51,7 @@ test('a user can not apply a tag shortcut to another users photo', function () {
     $response->assertNotfound();
 });
 
-test('a user can not apply a tag shortcut that belongs to another user', function () {
+test('a user can not apply a tag shortcut that belongs to another user', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create();

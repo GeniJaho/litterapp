@@ -23,8 +23,8 @@ class PhotoFilters extends Data
         public ?bool $recycled = null,
         public ?bool $deposit = null,
     ) {
-        $this->item_ids = array_map(fn (int|string $id) => (int) $id, $this->item_ids);
-        $this->tag_ids = array_map(fn (int|string $id) => (int) $id, $this->tag_ids);
+        $this->item_ids = array_map(fn (int|string $id): int => (int) $id, $this->item_ids);
+        $this->tag_ids = array_map(fn (int|string $id): int => (int) $id, $this->tag_ids);
     }
 
     /**
