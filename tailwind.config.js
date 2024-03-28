@@ -29,6 +29,9 @@ export default {
                 'reddish': '#CA7471',
 
             },
+            backgroundImage: {
+                'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+            },
             letterSpacing: {
                 "widest-xl": '.15em',
             },

@@ -195,14 +195,7 @@ const filter = (filters) => {
                                         >
                                     </a>
 
-                                    <div
-                                        @click="zoomedImage = photo"
-                                        class="w-36 h-36 rounded-full cursor-pointer bg-transparent group-hover:bg-black/70 absolute -top-[72px] -left-[72px] transform transform-opacity duration-100"
-                                    >
-                                        <div class="relative w-full h-full">
-                                            <i class="fas fa-magnifying-glass-plus text-white text-xl absolute bottom-7 right-9"></i>
-                                        </div>
-                                    </div>
+                                    <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
 
                                     <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 

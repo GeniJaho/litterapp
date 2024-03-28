@@ -13,6 +13,8 @@ import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
+import ZoomIcon from "@/Components/ZoomIcon.vue";
+import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -27,6 +29,7 @@ const photo = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
+const zoomedPhoto = ref(false);
 
 onMounted(() => {
     getPhoto();
@@ -191,18 +194,20 @@ const toggleTagShortcutsEnabled = (enabled) => {
             <div class="max-w-9xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">
                     <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4">
-                        <div class="relative">
+                        <div class="relative group overflow-hidden">
                             <img
                                 :src="photo.full_path"
                                 :alt="photo.id"
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
                             >
 
-                            <TaggedIcon v-if="photo.photo_items.length" class="absolute top-4 left-4" />
+                            <ZoomIcon @click="zoomedPhoto = true" class="absolute top-0 left-0" />
+
+                            <TaggedIcon v-if="photo.photo_items.length" class="absolute top-2 right-2" />
 
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"
-                                class="absolute top-4 right-4"
+                                class="absolute bottom-2 right-2"
                             />
                         </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
@@ -291,9 +296,17 @@ const toggleTagShortcutsEnabled = (enabled) => {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
+
+            <Modal max-width="9xl" @close="zoomedPhoto = false" :show="zoomedPhoto">
+                <img
+                    :src="photo.full_path"
+                    :alt="photo.id"
+                    class="w-full h-full object-contain"
+                    @click="zoomedPhoto = false"
+                >
+            </Modal>
         </div>
     </AppLayout>
 </template>
