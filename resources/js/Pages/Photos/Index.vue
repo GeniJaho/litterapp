@@ -9,6 +9,8 @@ import SelectInput from "@/Components/SelectInput.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import ZoomIcon from "@/Components/ZoomIcon.vue";
+import Modal from "@/Components/Modal.vue";
 
 const props = defineProps({
     photos: Object,
@@ -27,6 +29,7 @@ const perPageOptions = [
     {label: '200 per page', value: 200},
 ];
 const perPage = ref(perPageOptions.find(option => option.value === props.photos.per_page));
+const zoomedImage = ref(null);
 
 watch(perPage, (value) => {
     router.get(window.location.pathname, {
@@ -192,6 +195,11 @@ const filter = (filters) => {
                                         >
                                     </a>
 
+                                    <ZoomIcon
+                                        @click="zoomedImage = photo"
+                                        class="absolute top-2 left-2 cursor-pointer"
+                                    />
+
                                     <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
 
                                     <ConfirmDeleteButton
@@ -232,6 +240,15 @@ const filter = (filters) => {
                                 </div>
                             </div>
                         </div>
+
+                        <Modal max-width="9xl" @close="zoomedImage = null" :show="zoomedImage !== null">
+                            <img
+                                :src="zoomedImage?.full_path"
+                                :alt="zoomedImage?.id"
+                                class="w-full h-full object-contain"
+                                @click="zoomedImage = null"
+                            >
+                        </Modal>
 
                     </div>
                 </div>
