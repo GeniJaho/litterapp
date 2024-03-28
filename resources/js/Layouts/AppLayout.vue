@@ -53,7 +53,7 @@ const logout = () => {
                                          :externalLink="true"
                                          target="_blank"
                                 >
-                                    Global Map
+                                    Global Data
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user"
                                          :href="route('my-photos')"
@@ -269,7 +269,7 @@ const logout = () => {
                                            as="externalLink"
                                            target="_blank"
                         >
-                            Global Map
+                            Global Data
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user"
