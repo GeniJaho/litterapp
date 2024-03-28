@@ -57,7 +57,7 @@ defineExpose({
 </script>
 
 <template>
-    <BulkTagModal max-width="7xl" :show="show" @close="close">
+    <BulkTagModal max-width="9xl" :show="show" @close="close">
         <template #header>
             <div class="px-6 py-4 text-lg font-medium text-gray-900 dark:text-gray-100">
                 {{ tagShortcutState.tagShortcut ? 'Edit' : 'Add new' }} shortcut
@@ -119,7 +119,7 @@ defineExpose({
                             Litter Objects
                         </h3>
                         <div class="mt-2">
-                            <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+                            <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 <PivotItem
                                     v-for="tagShortcutItem in tagShortcutState.tagShortcut.tag_shortcut_items"
                                     :key="tagShortcutItem.id"

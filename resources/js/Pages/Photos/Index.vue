@@ -3,11 +3,12 @@ import AppLayout from '@/Layouts/AppLayout.vue';
 import {Link, router} from '@inertiajs/vue3';
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
-import {ref, watch} from "vue";
+import {onMounted, onUnmounted, ref, watch} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SelectInput from "@/Components/SelectInput.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
+import Tooltip from "@/Components/Tooltip.vue";
 
 const props = defineProps({
     photos: Object,
@@ -20,11 +21,10 @@ const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false)
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
-    {label: '12 per page', value: 12},
-    {label: '24 per page', value: 24},
-    {label: '48 per page', value: 48},
-    {label: '96 per page', value: 96},
-    {label: '192 per page', value: 192},
+    {label: '25 per page', value: 25},
+    {label: '50 per page', value: 50},
+    {label: '100 per page', value: 100},
+    {label: '200 per page', value: 200},
 ];
 const perPage = ref(perPageOptions.find(option => option.value === props.photos.per_page));
 
@@ -42,6 +42,26 @@ watch(isSelecting, (value) => {
 watch(showFilters, (value) => {
     localStorage.setItem('showFilters', value ? 'true' : 'false');
 });
+
+onMounted(() => {
+    window.addEventListener('keydown', onKeyDown);
+});
+
+onUnmounted(() => {
+    window.removeEventListener('keydown', onKeyDown);
+});
+
+const onKeyDown = (event) => {
+    if (event.ctrlKey || event.metaKey) {
+        if (event.code === "ArrowLeft" && props.photos.prev_page_url) {
+            event.preventDefault();
+            router.visit(props.photos.prev_page_url);
+        } else if (event.code === "ArrowRight" && props.photos.next_page_url) {
+            event.preventDefault();
+            router.visit(props.photos.next_page_url);
+        }
+    }
+};
 
 const selectPhoto = (photoId) => {
     if (! isSelecting.value) {
@@ -114,7 +134,7 @@ const filter = (filters) => {
         </template>
 
         <div class="py-6 lg:py-16">
-            <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+            <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
 
                 <div class="flex flex-row gap-4 px-4 sm:px-0">
                     <PrimaryButton @click="showFilters = !showFilters">
@@ -148,7 +168,7 @@ const filter = (filters) => {
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <div
                                 v-for="photo in photos.data"
                                 :key="photo.id"
@@ -164,7 +184,12 @@ const filter = (filters) => {
                                         @click.shift.exact="selectPhotos(photo.id)"
                                         @click.exact="selectPhoto(photo.id)"
                                     >
-                                        <img :src="photo.full_path" :alt="photo.id" class="w-full h-64 object-cover rounded-lg">
+                                        <img
+                                            :src="photo.full_path"
+                                            :alt="photo.id"
+                                            class="w-full h-64 object-cover rounded-lg"
+                                            loading="lazy"
+                                        >
                                     </a>
 
                                     <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
@@ -190,7 +215,13 @@ const filter = (filters) => {
                                 />
                             </div>
                             <div class="flex justify-center space-x-2 items-center pt-4 sm:pt-0">
-                                <div v-for="link in photos.links" :key="link.url">
+                                <div v-for="link in photos.links" :key="link.url" class="group relative">
+                                    <Tooltip v-if="link.url && link.url === photos.prev_page_url">
+                                        <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &larr;</span>
+                                    </Tooltip>
+                                    <Tooltip v-else-if="link.url && link.url === photos.next_page_url">
+                                        <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &rarr;</span>
+                                    </Tooltip>
                                     <Link
                                         v-if="link.url"
                                         :href="link.url"
