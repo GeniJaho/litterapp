@@ -33,7 +33,7 @@ import {Link} from "@inertiajs/vue3";
 
                 <div v-if="$page.props.auth?.user?.id == 1" class="pt-32 w-full">
                     <iframe class="w-full"
-                            src="https://litterapp.net/grafana/d-solo/aadcc1c0-7a57-4d18-87cb-f13448fb1d45/main-dashboard?orgId=1&from=1709037342679&to=1711629342680&panelId=38"
+                            src="https://globalmap.litterapp.net/"
                             width="450"
                             height="350"
                             frameborder="0"
