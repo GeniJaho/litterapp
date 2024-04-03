@@ -3,6 +3,7 @@
 use App\DTO\PhotoFilters;
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\PhotoItem;
 use App\Models\PhotoItemTag;
 use App\Models\Tag;
 use App\Models\TagShortcut;
@@ -20,6 +21,7 @@ test('a user can see the photo tagging page', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $items = Item::factory()->count(2)->create();
+    $deprecatedItem = Item::factory()->create(['deleted_at' => now()]);
     $brand = TagType::factory()->create(['name' => 'Brand']);
     $material = TagType::factory()->create(['name' => 'Material']);
     $brandTags = Tag::factory()->count(2)->sequence(
@@ -31,6 +33,7 @@ test('a user can see the photo tagging page', function (): void {
         ['name' => 'A material'],
         ['name' => 'C material'],
     )->create(['tag_type_id' => $material->id]);
+    $deprecatedTag = Tag::factory()->create(['tag_type_id' => $material->id, 'deleted_at' => now()]);
 
     $response = $this->get(route('photos.show', $photo));
 
@@ -43,6 +46,7 @@ test('a user can see the photo tagging page', function (): void {
             $brand->slug => $brandTags->sortBy('name')->values()->toArray(),
             $material->slug => $materialTags->sortBy('name')->values()->toArray(),
         ])
+        ->has("tags.{$material->slug}", 3)
         ->has('items', 2)
     );
 });
@@ -145,12 +149,13 @@ test('a user can see a photo', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    $photo->items()->sync($item);
+    $deprecatedItem = Item::factory()->create(['deleted_at' => now()]);
+    $photoItemA = PhotoItem::factory()->create(['photo_id' => $photo->id, 'item_id' => $item->id]);
+    $photoItemB = PhotoItem::factory()->create(['photo_id' => $photo->id, 'item_id' => $deprecatedItem->id]);
     $tag = Tag::factory()->create();
-    PhotoItemTag::create([
-        'photo_item_id' => $photo->photoItems()->first()->id,
-        'tag_id' => $tag->id,
-    ]);
+    PhotoItemTag::create(['photo_item_id' => $photoItemA->id, 'tag_id' => $tag->id]);
+    $deprecatedTag = Tag::factory()->create(['deleted_at' => now()]);
+    PhotoItemTag::create(['photo_item_id' => $photoItemA->id, 'tag_id' => $deprecatedTag->id]);
 
     $response = $this->getJson(route('photos.show', $photo));
 
@@ -158,12 +163,16 @@ test('a user can see a photo', function (): void {
     $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
         ->where('photo.id', $photo->id)
         ->where('photo.full_path', $photo->full_path)
-        ->has('photo.photo_items', 1)
-        ->where('photo.photo_items.0.item.id', $item->id)
-        ->where('photo.photo_items.0.item.name', $item->name)
-        ->has('photo.photo_items.0.tags', 1)
-        ->where('photo.photo_items.0.tags.0.id', $tag->id)
-        ->where('photo.photo_items.0.tags.0.name', $tag->name)
+        ->has('photo.photo_items', 2)
+        ->where('photo.photo_items.0.item.id', $deprecatedItem->id)
+        ->where('photo.photo_items.0.item.name', $deprecatedItem->name)
+        ->where('photo.photo_items.1.item.id', $item->id)
+        ->where('photo.photo_items.1.item.name', $item->name)
+        ->has('photo.photo_items.1.tags', 2)
+        ->where('photo.photo_items.1.tags.0.id', $tag->id)
+        ->where('photo.photo_items.1.tags.0.name', $tag->name)
+        ->where('photo.photo_items.1.tags.1.id', $deprecatedTag->id)
+        ->where('photo.photo_items.1.tags.1.name', $deprecatedTag->name)
         ->has('photo.photo_items.0.picked_up')
         ->has('photo.photo_items.0.recycled')
         ->has('photo.photo_items.0.deposit')

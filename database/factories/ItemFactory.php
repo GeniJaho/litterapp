@@ -19,6 +19,7 @@ class ItemFactory extends Factory
     {
         return [
             'name' => fake()->unique()->sentence(),
+            'deleted_at' => null,
         ];
     }
 }

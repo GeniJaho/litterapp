@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\Tag;
+use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -22,6 +23,10 @@ test('a user can see their photos', function (): void {
     $photoB = Photo::factory()->for($user)->create(['created_at' => now()->addMinute()]);
     $item = Item::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
+    $brand = TagType::factory()->create(['slug' => 'brand']);
+    $tag = Tag::factory()->create(['tag_type_id' => $brand]);
+    $deprecatedTag = Tag::factory()->create(['deleted_at' => now(), 'tag_type_id' => $brand]);
+    $deprecatedItem = Item::factory()->create(['deleted_at' => now()]);
 
     $response = $this->get('/my-photos');
 
@@ -34,6 +39,8 @@ test('a user can see their photos', function (): void {
         ->where('photos.data.1.id', $photoA->id)
         ->where('photos.data.1.full_path', $photoA->full_path)
         ->where('photos.data.1.items_exists', false)
+        ->has('items', 2)
+        ->has('tags.brand', 2)
         ->etc()
     );
 });

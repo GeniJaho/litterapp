@@ -12,11 +12,11 @@ class GetTagsAndItemsAction
     /**
      * @return array<string, mixed>
      */
-    public function run(): array
+    public function run(bool $withTrashed = false): array
     {
         $tagTypes = TagType::query()->get();
 
-        $tags = Tag::query()
+        $tags = Tag::withTrashed($withTrashed)
             ->orderBy('name')
             ->get()
             ->groupBy('tag_type_id')
@@ -29,7 +29,7 @@ class GetTagsAndItemsAction
 
         return [
             'tags' => $tags,
-            'items' => Item::query()->orderBy('name')->get(),
+            'items' => Item::withTrashed($withTrashed)->orderBy('name')->get(),
         ];
     }
 }

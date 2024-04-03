@@ -44,7 +44,7 @@ class PhotosController extends Controller
 
         $photos = $filterPhotosAction->run($user);
 
-        $tagsAndItems = $getTagsAndItemsAction->run();
+        $tagsAndItems = $getTagsAndItemsAction->run(withTrashed: true);
 
         return Inertia::render('Photos/Index', [
             'photos' => $photos,
@@ -66,7 +66,7 @@ class PhotosController extends Controller
         }
 
         if (! request()->wantsJson()) {
-            $tagsAndItems = $getTagsAndItemsAction->run();
+            $tagsAndItems = $getTagsAndItemsAction->run(withTrashed: false);
 
             $tagShortcuts = $user
                 ->tagShortcuts()
@@ -88,8 +88,10 @@ class PhotosController extends Controller
         $photo
             ->append('full_path')
             ->load(['photoItems' => fn (Builder $q) => $q
-                ->with('item:id,name')
-                ->with('tags:id,name')
+                ->with([
+                    'item' => fn (Builder $q2) => $q2->withTrashed()->select('id', 'name'),
+                    'tags' => fn (Builder $q2) => $q2->withTrashed()->select('tags.id', 'tags.name'),
+                ])
                 ->orderByDesc('id'),
             ]);
 

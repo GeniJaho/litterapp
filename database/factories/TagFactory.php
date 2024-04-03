@@ -21,6 +21,7 @@ class TagFactory extends Factory
         return [
             'tag_type_id' => TagType::factory(),
             'name' => fake()->unique()->word(),
+            'deleted_at' => null,
         ];
     }
 }
