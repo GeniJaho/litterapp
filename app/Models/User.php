@@ -72,6 +72,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
         return in_array($this->email, [
             'admin@litterhero.com',
             'admin@litterapp.com',
+            'suzefred@gmail.com',
         ]);
     }
 
