@@ -73,6 +73,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
             'admin@litterhero.com',
             'admin@litterapp.com',
             'suzefred@gmail.com',
+            'pjhummelen@gmail.com',
         ]);
     }
 
