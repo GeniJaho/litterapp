@@ -16,7 +16,7 @@ class StorePhotoItemTagRequest extends FormRequest
     {
         return [
             'tag_ids' => 'required|array',
-            'tag_ids.*' => 'required|integer|exists:tags,id',
+            'tag_ids.*' => 'required|integer|exists:tags,id,deleted_at,null',
         ];
     }
 }

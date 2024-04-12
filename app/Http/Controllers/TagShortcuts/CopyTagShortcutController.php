@@ -5,6 +5,7 @@ namespace App\Http\Controllers\TagShortcuts;
 use App\Http\Controllers\Controller;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 
@@ -19,7 +20,11 @@ class CopyTagShortcutController extends Controller
             abort(404);
         }
 
-        $tagShortcut->load('tagShortcutItems.tags');
+        $tagShortcut->load([
+            'tagShortcutItems' => fn (Builder $q) => $q->with([
+                'tags' => fn (Builder $q2) => $q2->withTrashed(), // @phpstan-ignore-line
+            ]),
+        ]);
 
         DB::transaction(function () use ($user, $tagShortcut): void {
             /** @var TagShortcut $newTagShortcut */

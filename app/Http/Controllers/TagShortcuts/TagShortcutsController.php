@@ -25,7 +25,7 @@ class TagShortcutsController extends Controller
             ->orderBy('shortcut')
             ->get();
 
-        $tagsAndItems = $getTagsAndItemsAction->run();
+        $tagsAndItems = $getTagsAndItemsAction->run(withTrashed: false);
 
         return Inertia::render('TagShortcuts/Index', [
             'tagShortcuts' => $tagShortcuts,

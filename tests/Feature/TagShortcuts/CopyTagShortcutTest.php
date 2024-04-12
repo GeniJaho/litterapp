@@ -35,6 +35,22 @@ test('a user can duplicate a tag shortcut', function (): void {
     $this->assertEquals($tag->id, $latestTagShortcutItemTag->tag_id);
 });
 
+test('a user can not duplicate deprecated items', function (): void {
+    $user = User::factory()->create();
+    $tagShortcut = TagShortcut::factory()->for($user)->create();
+    $deprecatedItem = Item::factory()->create(['deleted_at' => now()]);
+    $tagShortcutItem = TagShortcutItem::factory()->for($deprecatedItem)->for($tagShortcut)->create();
+    $tag = Tag::factory()->create();
+    TagShortcutItemTag::factory()->for($tagShortcutItem)->for($tag)->create();
+
+    $response = $this->actingAs($user)->postJson("/user/tag-shortcuts/{$tagShortcut->id}/copy");
+
+    $response->assertOk();
+    $this->assertDatabaseCount('tag_shortcuts', 2);
+    $this->assertDatabaseCount('tag_shortcut_items', 1);
+    $this->assertDatabaseCount('tag_shortcut_item_tag', 1);
+});
+
 test('a user can not duplicate a tag shortcut of another user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();

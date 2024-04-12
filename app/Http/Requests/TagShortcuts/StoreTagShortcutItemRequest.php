@@ -15,7 +15,7 @@ class StoreTagShortcutItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'item_id' => ['required', 'exists:items,id'],
+            'item_id' => ['required', 'exists:items,id,deleted_at,null'],
         ];
     }
 }

@@ -30,7 +30,7 @@ test('a user can add tags to an item of a tag shortcut', function (): void {
     ]);
 });
 
-test('the request is validated', function (): void {
+test('the tags must exist', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->for($user)->create();
     $item = Item::factory()->create();
@@ -38,6 +38,22 @@ test('the request is validated', function (): void {
 
     $response = $this->actingAs($user)->postJson("/user/tag-shortcut-items/{$tagShortcutItem->id}/tags", [
         'tag_ids' => ['12345'],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('tag_ids.0');
+    $this->assertDatabaseCount('tag_shortcut_item_tag', 0);
+});
+
+test('the tags must not be deprecated', function (): void {
+    $user = User::factory()->create();
+    $tagShortcut = TagShortcut::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $tagShortcutItem = TagShortcutItem::factory()->for($item)->for($tagShortcut)->create();
+    $tag = Tag::factory()->create(['deleted_at' => now()]);
+
+    $response = $this->actingAs($user)->postJson("/user/tag-shortcut-items/{$tagShortcutItem->id}/tags", [
+        'tag_ids' => [$tag->id],
     ]);
 
     $response->assertStatus(422);

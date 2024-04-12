@@ -25,7 +25,12 @@ class TagShortcut extends Model
     {
         return [
             'tagShortcutItems' => fn (Builder $q) => $q
-                ->with('item:id,name', 'tags:id,name')
+                ->with([
+                    // @phpstan-ignore-next-line
+                    'item' => fn (Builder $q2) => $q2->withTrashed()->select('id', 'name'),
+                    // @phpstan-ignore-next-line
+                    'tags' => fn (Builder $q2) => $q2->withTrashed()->select('tags.id', 'tags.name'),
+                ])
                 ->orderByDesc('id'),
         ];
     }

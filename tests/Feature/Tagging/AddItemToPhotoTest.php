@@ -100,12 +100,25 @@ test('if the user has enabled settings to deposit by default the item should be 
     ]);
 });
 
-test('the request is validated', function (): void {
+test('the items must exist', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
 
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
         'item_ids' => ['1'],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('item_ids.0');
+});
+
+test('the items must not be deprecated', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create(['deleted_at' => now()]);
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_ids' => [$item->id],
     ]);
 
     $response->assertStatus(422);

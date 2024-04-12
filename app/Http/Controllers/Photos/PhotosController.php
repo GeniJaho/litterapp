@@ -89,7 +89,9 @@ class PhotosController extends Controller
             ->append('full_path')
             ->load(['photoItems' => fn (Builder $q) => $q
                 ->with([
+                    // @phpstan-ignore-next-line
                     'item' => fn (Builder $q2) => $q2->withTrashed()->select('id', 'name'),
+                    // @phpstan-ignore-next-line
                     'tags' => fn (Builder $q2) => $q2->withTrashed()->select('tags.id', 'tags.name'),
                 ])
                 ->orderByDesc('id'),

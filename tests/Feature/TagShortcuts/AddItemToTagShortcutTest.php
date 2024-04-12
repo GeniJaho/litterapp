@@ -65,12 +65,25 @@ test('if the user has enabled settings to pick up or recycled or deposit by defa
     ]);
 });
 
-test('the request is validated', function (): void {
+test('the item must exist', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
 
     $response = $this->actingAs($user)->postJson("/user/tag-shortcuts/{$tagShortcut->id}/items", [
         'item_id' => '1',
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('item_id');
+});
+
+test('the item must not be deprecated', function (): void {
+    $user = User::factory()->create();
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create(['deleted_at' => now()]);
+
+    $response = $this->actingAs($user)->postJson("/user/tag-shortcuts/{$tagShortcut->id}/items", [
+        'item_id' => $item->id,
     ]);
 
     $response->assertStatus(422);
