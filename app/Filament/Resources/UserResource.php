@@ -51,6 +51,7 @@ class UserResource extends Resource
             ->filtersTriggerAction(fn (Action $action): Action => $action->button()->label('Filters'))
             ->columns([
                 TextColumn::make('id')
+                    ->label('ID')
                     ->sortable()
                     ->searchable(),
                 ImageColumn::make('profile_photo_path')
@@ -63,6 +64,12 @@ class UserResource extends Resource
                 TextColumn::make('email')
                     ->sortable()
                     ->searchable(),
+                TextColumn::make('photos_count')
+                    ->counts('photos')
+                    ->label('Photos Uploaded')
+                    ->sortable()
+                    ->toggleable()
+                    ->numeric(),
                 TextColumn::make('currentTeam.name')
                     ->searchable()
                     ->sortable(),

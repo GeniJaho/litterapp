@@ -32,7 +32,8 @@ class PhotoResource extends Resource
             ->columns([
                 TextColumn::make('id')
                     ->label('ID')
-                    ->sortable(),
+                    ->sortable()
+                    ->searchable(),
                 TextColumn::make('user.name')
                     ->numeric()
                     ->searchable()
