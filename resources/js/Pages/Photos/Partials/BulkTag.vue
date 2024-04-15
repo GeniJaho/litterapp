@@ -8,11 +8,14 @@ import TagBox from "@/Components/TagBox.vue";
 import NewPhotoItem from "@/Pages/Photos/Partials/NewPhotoItem.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 import Tooltip from "@/Components/Tooltip.vue";
+import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 
 const props = defineProps({
     photoIds: Array,
     items: Array,
     tags: Object,
+    tagShortcuts: Array,
+    tagShortcutsEnabled: Boolean,
 });
 
 const emit = defineEmits(['closeModalWithSuccess'])
@@ -24,6 +27,7 @@ const form = useForm({
     items: []
 });
 const message = ref('');
+const tagShortcut = ref(null);
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
@@ -78,6 +82,27 @@ const save = () => {
         });
 };
 
+const applyTagShortcut = () => {
+    if (! tagShortcut.value) {
+        return;
+    }
+
+    for (const tagShortcutItem of tagShortcut.value.tag_shortcut_items) {
+        form.items.push({
+            key: Math.floor(Math.random() * 100000) + 1, // random int 1 to 100'000
+            id: tagShortcutItem.item.id,
+            name: tagShortcutItem.item.name,
+            tag_ids: tagShortcutItem.tags.map(tag => tag.id),
+            picked_up: tagShortcutItem.picked_up,
+            recycled: tagShortcutItem.recycled,
+            deposit: tagShortcutItem.deposit,
+            quantity: tagShortcutItem.quantity,
+        });
+    }
+
+    tagShortcut.value = null;
+};
+
 const closeModalWithSuccess = () => {
     form.reset();
     message.value = 'Tagged successfully!';
@@ -128,12 +153,35 @@ const onKeyDown = (event) => {
 
         <template #content>
             <div class="mt-4 w-full h-full min-h-96 px-4">
+                <div
+                    v-if="tagShortcutsEnabled"
+                    class="flex flex-col md:flex-row mt-6 md:mt-0 mb-4"
+                >
+                    <TagShortcutBox
+                        class="w-full md:w-96"
+                        v-model="tagShortcut"
+                        :items="tagShortcuts"
+                        :autofocus="true"
+                        layout="bulk"
+                        placeholder="Tag Shortcuts"
+                    ></TagShortcutBox>
+                    <div class="ml-auto md:ml-4 mt-4 md:mt-0.5">
+                        <PrimaryButton
+                            class="whitespace-nowrap"
+                            @click="applyTagShortcut"
+                            :disabled="!tagShortcut"
+                        >
+                            Apply Shortcut
+                        </PrimaryButton>
+                    </div>
+                </div>
                 <div class="flex flex-col md:flex-row mt-6 md:mt-0">
                     <TagBox
                         class="w-full md:w-96"
                         :items="items"
                         v-model="selectedItem"
-                        :autofocus="true"
+                        :autofocus="! tagShortcutsEnabled"
+                        placeholder="Litter Objects"
                     ></TagBox>
                     <div class="md:ml-4 mt-4 md:mt-0.5 ml-auto">
                         <PrimaryButton

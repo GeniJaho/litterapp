@@ -24,6 +24,10 @@ const props = defineProps({
         type: String,
         default: '',
     },
+    layout: {
+        type: String,
+        default: 'default',
+    },
 });
 
 defineEmits(['update:modelValue']);
@@ -131,8 +135,21 @@ onMounted(() => {
                     </ComboboxOptions>
                 </TransitionRoot>
 
-                <div class="fixed md:absolute bottom-0 md:top-0 md:right-full transform transition-all min-w-full md:min-w-96 z-10" v-if="activeOption">
-                    <div class="mb-4 md:mb-0 mr-8 sm:mr-20 md:mr-4 bg-white/50 dark:bg-gray-800/30 backdrop-blur-xl rounded-lg shadow-xl overflow-hidden">
+                <div
+                    class="fixed md:absolute bottom-0 md:top-0 transform transition-all md:min-w-96 z-10"
+                    :class="{
+                        'min-w-full md:right-full': layout === 'default',
+                        'min-w-64 md:left-full': layout === 'bulk',
+                    }"
+                    v-if="activeOption"
+                >
+                    <div
+                        class="mb-4 md:mb-0 bg-white/50 dark:bg-gray-800/30 backdrop-blur-xl rounded-lg shadow-xl overflow-hidden"
+                        :class="{
+                            'mr-8 sm:mr-20 md:mr-4': layout === 'default',
+                            'md:ml-4': layout === 'bulk',
+                        }"
+                    >
                         <div class="px-3 py-4">
                             <div class="grid grid-cols-1 gap-3 max-h-36 md:max-h-144 overflow-y-auto ">
                                 <SimpleTagShortcutItem
