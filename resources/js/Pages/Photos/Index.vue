@@ -11,12 +11,15 @@ import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import ZoomIcon from "@/Components/ZoomIcon.vue";
 import Modal from "@/Components/Modal.vue";
+import Dropdown from "@/Components/Dropdown.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
 
 const props = defineProps({
     photos: Object,
     tags: Object,
     items: Array,
     filters: Object,
+    tagShortcuts: Array,
 });
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
@@ -30,6 +33,7 @@ const perPageOptions = [
 ];
 const perPage = ref(perPageOptions.find(option => option.value === props.photos.per_page));
 const zoomedImage = ref(null);
+const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
 
 watch(perPage, (value) => {
     router.get(window.location.pathname, {
@@ -45,6 +49,14 @@ watch(isSelecting, (value) => {
 watch(showFilters, (value) => {
     localStorage.setItem('showFilters', value ? 'true' : 'false');
 });
+
+watch(tagShortcutsEnabled, (value) => {
+    localStorage.setItem('tagShortcutsEnabled', value ? 'true' : 'false');
+});
+
+const toggleTagShortcutsEnabled = (enabled) => {
+    tagShortcutsEnabled.value = enabled;
+};
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
@@ -131,9 +143,35 @@ const filter = (filters) => {
 <template>
     <AppLayout title="See Your Photos">
         <template #header>
-            <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                My Photos
-            </h2>
+            <div class="flex justify-between relative">
+                <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
+                    My Photos
+                </h2>
+
+                <!-- Settings Dropdown -->
+                <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
+                <Dropdown align="right" width="64">
+                    <template #trigger>
+                        <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                            <i class="fas fa-gear text-lg text-gray-800 dark:text-gray-200 mt-0.5 sm:ml-[1px]"></i>
+                        </button>
+                    </template>
+
+                    <template #content>
+                        <div>
+                            <ToggleInput
+                                v-model="tagShortcutsEnabled"
+                                @update:modelValue="toggleTagShortcutsEnabled"
+                                class="block w-full px-4 py-2"
+                            >
+                                <template #label>Tag Shortcuts enabled</template>
+                            </ToggleInput>
+                        </div>
+                    </template>
+                </Dropdown>
+            </div>
+
+            </div>
         </template>
 
         <div class="py-6 lg:py-16">
@@ -156,6 +194,8 @@ const filter = (filters) => {
                         :photoIds="selectedPhotos"
                         :tags="tags"
                         :items="items"
+                        :tagShortcuts="tagShortcuts"
+                        :tagShortcutsEnabled="tagShortcutsEnabled"
                         @closeModalWithSuccess="clearSelection"
                     ></BulkTag>
                 </div>

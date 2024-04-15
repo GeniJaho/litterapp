@@ -10,6 +10,7 @@ use App\Models\Photo;
 use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -51,6 +52,7 @@ class PhotosController extends Controller
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
+            'tagShortcuts' => $this->getTagShortcuts($user),
         ]);
     }
 
@@ -68,20 +70,13 @@ class PhotosController extends Controller
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
 
-            $tagShortcuts = $user
-                ->tagShortcuts()
-                ->whereHas('tagShortcutItems')
-                ->with(TagShortcut::commonEagerLoads())
-                ->orderBy('shortcut')
-                ->get();
-
             return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
                 'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
                 'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
-                'tagShortcuts' => $tagShortcuts,
+                'tagShortcuts' => $this->getTagShortcuts($user),
             ]);
         }
 
@@ -141,5 +136,18 @@ class PhotosController extends Controller
         }
 
         return route('photos.show', $previousPhoto);
+    }
+
+    /**
+     * @return Collection<int, TagShortcut>
+     */
+    public function getTagShortcuts(User $user): Collection
+    {
+        return $user
+            ->tagShortcuts()
+            ->whereHas('tagShortcutItems')
+            ->with(TagShortcut::commonEagerLoads())
+            ->orderBy('shortcut')
+            ->get();
     }
 }

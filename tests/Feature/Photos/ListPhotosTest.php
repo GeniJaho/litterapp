@@ -6,6 +6,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\Tag;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -21,7 +22,17 @@ test('a user can see their photos', function (): void {
     $photoA = Photo::factory()->for($user)->create(['created_at' => now()]);
     $photoB = Photo::factory()->for($user)->create(['created_at' => now()->addMinute()]);
     $item = Item::factory()->create();
+    $tag = Tag::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
+    $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($item, [
+        'picked_up' => false,
+        'recycled' => false,
+        'deposit' => true,
+        'quantity' => 3,
+    ]);
+    $tagShortcut->tagShortcutItems()->first()->tags()->attach($tag);
 
     $response = $this->get('/my-photos');
 
@@ -34,6 +45,13 @@ test('a user can see their photos', function (): void {
         ->where('photos.data.1.id', $photoA->id)
         ->where('photos.data.1.full_path', $photoA->full_path)
         ->where('photos.data.1.items_exists', false)
+        ->has('tagShortcuts', 1)
+        ->where('tagShortcuts.0.id', $tagShortcut->id)
+        ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.id', $item->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.item.name', $item->name)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.id', $tag->id)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.name', $tag->name)
         ->etc()
     );
 });
