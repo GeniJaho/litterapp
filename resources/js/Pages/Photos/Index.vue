@@ -209,6 +209,10 @@ const filter = (filters) => {
                     class="mt-6"
                 />
 
+                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 text-gray-700 dark:text-white text-sm">
+                    Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
+                </div>
+
                 <div v-if="photos.data.length" class="mt-6 mb-24">
                     <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
