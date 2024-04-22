@@ -41,6 +41,16 @@ class PhotosController extends Controller
                 : 25;
             $user->settings->per_page = $perPage;
             $user->save();
+        } elseif ($request->boolean('set_sort')) {
+            $sortColumn = in_array($request->string('sort_column'), ['id', 'taken_at_local', 'original_file_name'])
+                ? $request->string('sort_column')
+                : 'id';
+            $sortDirection = in_array($request->string('sort_direction'), ['asc', 'desc'])
+                ? $request->string('sort_direction')
+                : 'desc';
+            $user->settings->sort_column = $sortColumn;
+            $user->settings->sort_direction = $sortDirection;
+            $user->save();
         }
 
         $photos = $filterPhotosAction->run($user);
@@ -108,11 +118,15 @@ class PhotosController extends Controller
 
     private function getNextPhotoUrl(User $user, Photo $photo): ?string
     {
+        $attribute = $photo->getAttribute($user->settings->sort_column);
+
         $nextPhoto = $user
             ->photos()
             ->filter($user->settings->photo_filters)
-            ->where('id', '<', $photo->id)
-            ->orderByDesc('id')
+            ->when($attribute, fn (Builder $q) => $q
+                ->where($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? '<' : '>', $attribute)
+            )
+            ->orderBy($user->settings->sort_column, $user->settings->sort_direction)
             ->first();
 
         if (! $nextPhoto) {
@@ -124,11 +138,17 @@ class PhotosController extends Controller
 
     private function getPreviousPhotoUrl(User $user, Photo $photo): ?string
     {
+        // wip handle cases when there is no taken_at_local
+        // maybe default to sorting by id
+        $attribute = $photo->getAttribute($user->settings->sort_column);
+
         $previousPhoto = $user
             ->photos()
             ->filter($user->settings->photo_filters)
-            ->where('id', '>', $photo->id)
-            ->orderBy('id')
+            ->when($attribute, fn (Builder $q) => $q
+                ->where($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? '>' : '<', $attribute)
+            )
+            ->orderBy($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? 'asc' : 'desc')
             ->first();
 
         if (! $previousPhoto) {

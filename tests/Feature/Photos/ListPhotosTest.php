@@ -97,6 +97,61 @@ test('a user can choose the number of photos per page', function (): void {
     );
 });
 
+test('a user can sort their photos by id', function (string $sortDirection): void {
+    $this->actingAs($user = User::factory()->create());
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $photoC = Photo::factory()->for($user)->create();
+
+    $response = $this->get("/my-photos?set_sort=true&sort_column=id&sort_direction={$sortDirection}");
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 3)
+        ->where('photos.data.0.id', $sortDirection === 'asc' ? $photoA->id : $photoC->id)
+        ->where('photos.data.1.id', $photoB->id)
+        ->where('photos.data.2.id', $sortDirection === 'asc' ? $photoC->id : $photoA->id)
+        ->etc()
+    );
+})->with([['asc'], ['desc']]);
+
+test('a user can sort their photos by date taken', function (string $sortDirection): void {
+    $this->actingAs($user = User::factory()->create());
+    $photoA = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinute()]);
+    $photoC = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinutes(2)]);
+
+    $response = $this->get("/my-photos?set_sort=true&sort_column=taken_at_local&sort_direction={$sortDirection}");
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')->has('photos.data', 3)
+        ->where('photos.data.0.id', $sortDirection === 'asc' ? $photoA->id : $photoC->id)
+        ->where('photos.data.1.id', $photoB->id)
+        ->where('photos.data.2.id', $sortDirection === 'asc' ? $photoC->id : $photoA->id)
+        ->etc()
+    );
+})->with([['asc'], ['desc']]);
+
+test('a user can sort their photos by file name', function (string $sortDirection): void {
+    $this->actingAs($user = User::factory()->create());
+    $photoA = Photo::factory()->for($user)->create(['original_file_name' => 'a name']);
+    $photoB = Photo::factory()->for($user)->create(['original_file_name' => 'b name']);
+    $photoC = Photo::factory()->for($user)->create(['original_file_name' => 'c name']);
+
+    $response = $this->get("/my-photos?set_sort=true&sort_column=original_file_name&sort_direction={$sortDirection}");
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')->has('photos.data', 3)
+        ->where('photos.data.0.id', $sortDirection === 'asc' ? $photoA->id : $photoC->id)
+        ->where('photos.data.1.id', $photoB->id)
+        ->where('photos.data.2.id', $sortDirection === 'asc' ? $photoC->id : $photoA->id)
+        ->etc()
+    );
+})->with([['asc'], ['desc']]);
+
 test('a user can filter their photos by items on the photos', function (): void {
     $this->actingAs($user = User::factory()->create());
 

@@ -141,6 +141,25 @@ test('a user can not see the previous untagged photo link if there are no more u
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page->where('previousPhotoUrl', null));
 });
 
+test('a user can see the next and previous photo link according to their ordering settings', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $user->settings->sort_column = 'taken_at_local';
+    $user->settings->sort_direction = 'asc';
+    $user->save();
+
+    $previousPhoto = Photo::factory()->for($user)->create(['taken_at_local' => now()->subDay()]);
+    $photo = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    $nextPhoto = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('nextPhotoUrl', route('photos.show', $nextPhoto))
+        ->where('previousPhotoUrl', route('photos.show', $previousPhoto))
+    );
+});
+
 test('a user can see a photo', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();
