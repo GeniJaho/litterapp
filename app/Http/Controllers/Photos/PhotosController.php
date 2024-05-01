@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
+use App\Actions\Photos\GetNextPhotoAction;
+use App\Actions\Photos\GetPreviousPhotoAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
@@ -69,6 +71,8 @@ class PhotosController extends Controller
     public function show(
         Photo $photo,
         GetTagsAndItemsAction $getTagsAndItemsAction,
+        GetNextPhotoAction $getNextPhotoAction,
+        GetPreviousPhotoAction $getPreviousPhotoAction,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -84,8 +88,8 @@ class PhotosController extends Controller
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
-                'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
-                'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
+                'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo),
+                'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo),
                 'tagShortcuts' => $this->getTagShortcuts($user),
             ]);
         }
@@ -114,48 +118,6 @@ class PhotosController extends Controller
         Storage::delete($photo->path);
 
         return redirect()->route('my-photos');
-    }
-
-    private function getNextPhotoUrl(User $user, Photo $photo): ?string
-    {
-        $attribute = $photo->getAttribute($user->settings->sort_column);
-
-        $nextPhoto = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
-            ->when($attribute, fn (Builder $q) => $q
-                ->where($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? '<' : '>', $attribute)
-            )
-            ->orderBy($user->settings->sort_column, $user->settings->sort_direction)
-            ->first();
-
-        if (! $nextPhoto) {
-            return null;
-        }
-
-        return route('photos.show', $nextPhoto);
-    }
-
-    private function getPreviousPhotoUrl(User $user, Photo $photo): ?string
-    {
-        // wip handle cases when there is no taken_at_local
-        // maybe default to sorting by id
-        $attribute = $photo->getAttribute($user->settings->sort_column);
-
-        $previousPhoto = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
-            ->when($attribute, fn (Builder $q) => $q
-                ->where($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? '>' : '<', $attribute)
-            )
-            ->orderBy($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? 'asc' : 'desc')
-            ->first();
-
-        if (! $previousPhoto) {
-            return null;
-        }
-
-        return route('photos.show', $previousPhoto);
     }
 
     /**
