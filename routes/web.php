@@ -7,6 +7,7 @@ use App\Http\Controllers\DocsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
+use App\Http\Controllers\Photos\ExportPhotosController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
@@ -50,6 +51,7 @@ Route::middleware([
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
+    Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
 
