@@ -141,6 +141,147 @@ test('a user can not see the previous untagged photo link if there are no more u
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page->where('previousPhotoUrl', null));
 });
 
+test('a user can see the next and previous photo link according to their ordering settings', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $user->settings->sort_column = 'taken_at_local';
+    $user->settings->sort_direction = 'asc';
+    $user->save();
+
+    $previousPhoto = Photo::factory()->for($user)->create(['taken_at_local' => now()->subDay()]);
+    $photo = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    $nextPhoto = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+
+    $response = $this->get(route('photos.show', $photo));
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('nextPhotoUrl', route('photos.show', $nextPhoto))
+        ->where('previousPhotoUrl', route('photos.show', $previousPhoto))
+    );
+});
+
+test('a user can see the next and previous photo links in ascending order accounting for null values', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $user->settings->sort_column = 'taken_at_local';
+    $user->settings->sort_direction = 'asc';
+    $user->save();
+
+    // they have incrementing ids
+    $photoA = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoC = Photo::factory()->for($user)->create(['taken_at_local' => now()->subDay()]);
+    $photoD = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    $photoE = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+    $photoF = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoG = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+
+    // sorted by taken_at_local asc then id asc, the rank would be
+    // photoA, photoB, photoF, photoG, photoC, photoD, photoE
+
+    $response = $this->get(route('photos.show', $photoA));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', null)
+        ->where('nextPhotoUrl', route('photos.show', $photoB))
+    );
+
+    $response = $this->get(route('photos.show', $photoB));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoA))
+        ->where('nextPhotoUrl', route('photos.show', $photoF))
+    );
+
+    $response = $this->get(route('photos.show', $photoF));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoB))
+        ->where('nextPhotoUrl', route('photos.show', $photoG))
+    );
+
+    $response = $this->get(route('photos.show', $photoG));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoF))
+        ->where('nextPhotoUrl', route('photos.show', $photoC))
+    );
+
+    $response = $this->get(route('photos.show', $photoC));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoG))
+        ->where('nextPhotoUrl', route('photos.show', $photoD))
+    );
+
+    $response = $this->get(route('photos.show', $photoD));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoC))
+        ->where('nextPhotoUrl', route('photos.show', $photoE))
+    );
+
+    $response = $this->get(route('photos.show', $photoE));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoD))
+        ->where('nextPhotoUrl', null)
+    );
+});
+
+test('a user can see the next and previous photo links in descending order accounting for null values', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $user->settings->sort_column = 'taken_at_local';
+    $user->settings->sort_direction = 'desc';
+    $user->save();
+
+    // they have incrementing ids
+    $photoA = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoB = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoC = Photo::factory()->for($user)->create(['taken_at_local' => now()->subDay()]);
+    $photoD = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    $photoE = Photo::factory()->for($user)->create(['taken_at_local' => now()->addDay()]);
+    $photoF = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+    $photoG = Photo::factory()->for($user)->create(['taken_at_local' => null]);
+
+    // sorted by taken_at_local desc then id asc, the rank would be
+    // photoE, photoD, photoC, photoA, photoB, photoF, photoG
+
+    $response = $this->get(route('photos.show', $photoE));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', null)
+        ->where('nextPhotoUrl', route('photos.show', $photoD))
+    );
+
+    $response = $this->get(route('photos.show', $photoD));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoE))
+        ->where('nextPhotoUrl', route('photos.show', $photoC))
+    );
+
+    $response = $this->get(route('photos.show', $photoC));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoD))
+        ->where('nextPhotoUrl', route('photos.show', $photoA))
+    );
+
+    $response = $this->get(route('photos.show', $photoA));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoC))
+        ->where('nextPhotoUrl', route('photos.show', $photoB))
+    );
+
+    $response = $this->get(route('photos.show', $photoB));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoA))
+        ->where('nextPhotoUrl', route('photos.show', $photoF))
+    );
+
+    $response = $this->get(route('photos.show', $photoF));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoB))
+        ->where('nextPhotoUrl', route('photos.show', $photoG))
+    );
+
+    $response = $this->get(route('photos.show', $photoG));
+    $response->assertOk()->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('previousPhotoUrl', route('photos.show', $photoF))
+        ->where('nextPhotoUrl', null)
+    );
+});
+
 test('a user can see a photo', function (): void {
     $this->actingAs($user = User::factory()->create());
     $photo = Photo::factory()->for($user)->create();

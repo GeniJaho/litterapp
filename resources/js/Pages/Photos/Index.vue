@@ -1,6 +1,6 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue';
-import {Link, router} from '@inertiajs/vue3';
+import {Link, router, usePage} from '@inertiajs/vue3';
 import Filters from "@/Components/Filters.vue";
 import BulkTag from "@/Pages/Photos/Partials/BulkTag.vue";
 import {onMounted, onUnmounted, ref, watch} from "vue";
@@ -13,6 +13,7 @@ import ZoomIcon from "@/Components/ZoomIcon.vue";
 import Modal from "@/Components/Modal.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
+import InputLabel from "@/Components/InputLabel.vue";
 
 const props = defineProps({
     photos: Object,
@@ -32,14 +33,31 @@ const perPageOptions = [
     {label: '200 per page', value: 200},
 ];
 const perPage = ref(perPageOptions.find(option => option.value === props.photos.per_page));
+const sortColumnOptions = [
+    {label: 'Date Uploaded', value: 'id'},
+    {label: 'Date taken (local)', value: 'taken_at_local'},
+    {label: 'File name', value: 'original_file_name'},
+];
+const sortDirectionOptions = [
+    {label: 'Ascending', value: 'asc'},
+    {label: 'Descending', value: 'desc'},
+];
+const page = usePage();
+const sortColumn = ref(sortColumnOptions.find(option => option.value === page.props.auth.user.settings.sort_column) || sortColumnOptions[0]);
+const sortDirection = ref(sortDirectionOptions.find(option => option.value === page.props.auth.user.settings.sort_direction) || sortDirectionOptions[1]);
 const zoomedImage = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
 
 watch(perPage, (value) => {
-    router.get(window.location.pathname, {
-        set_per_page: true,
-        per_page: value.value,
-    });
+    router.get(window.location.pathname, {set_per_page: true, per_page: value.value});
+});
+
+watch(sortColumn, (value) => {
+    router.get(window.location.pathname, {set_sort: true, sort_column: value.value, sort_direction: sortDirection.value.value});
+});
+
+watch(sortDirection, (value) => {
+    router.get(window.location.pathname, {set_sort: true, sort_column: sortColumn.value.value, sort_direction: value.value});
 });
 
 watch(isSelecting, (value) => {
@@ -209,8 +227,30 @@ const filter = (filters) => {
                     class="mt-6"
                 />
 
-                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 text-gray-700 dark:text-white text-sm">
-                    Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
+                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-between gap-4">
+                    <div class="flex items-center text-gray-700 dark:text-white text-sm">
+                        Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
+                    </div>
+                    <div class="flex flex-row gap-4">
+                        <div>
+                            <InputLabel for="sort-column" value="Order by" />
+                            <SelectInput
+                                id="sort-column"
+                                v-model="sortColumn"
+                                :options="sortColumnOptions"
+                                class="mt-1 block w-full max-w-48 sm:w-48"
+                            ></SelectInput>
+                        </div>
+                        <div>
+                            <InputLabel for="sort-direction" value="Order Direction" />
+                            <SelectInput
+                                id="sort-direction"
+                                v-model="sortDirection"
+                                :options="sortDirectionOptions"
+                                class="mt-1 block w-full max-w-36 sm:w-36"
+                            ></SelectInput>
+                        </div>
+                    </div>
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">

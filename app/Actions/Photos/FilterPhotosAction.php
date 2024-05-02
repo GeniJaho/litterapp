@@ -17,7 +17,13 @@ class FilterPhotosAction
             ->photos()
             ->filter($user->settings->photo_filters)
             ->withExists('items')
-            ->latest('id')
+            ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
+
+        if ($user->settings->sort_column !== 'id') {
+            $photos->orderBy('id');
+        }
+
+        $photos = $photos
             ->paginate($user->settings->getValidPerPage())
             ->withQueryString();
 
