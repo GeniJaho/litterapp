@@ -8,8 +8,12 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
+/** @phpstan-consistent-constructor */
 class PhotoExport extends Data
 {
+    /**
+     * @param  Collection<int, array<int, mixed>>  $items
+     */
     public function __construct(
         public int $id,
         public string $original_file_name,
@@ -30,8 +34,8 @@ class PhotoExport extends Data
             longitude: $photo->longitude,
             taken_at_local: $photo->taken_at_local,
             created_at: $photo->created_at,
-            items: $photo->photoItems->map(fn (PhotoItem $photoItem) => [
-                'name' => $photoItem->item->name,
+            items: $photo->photoItems->map(fn (PhotoItem $photoItem): array => [
+                'name' => $photoItem->item?->name,
                 'picked_up' => $photoItem->picked_up,
                 'recycled' => $photoItem->recycled,
                 'deposit' => $photoItem->deposit,
