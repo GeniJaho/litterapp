@@ -12,6 +12,8 @@ class UserSettings extends Data
         public bool $deposit_by_default = false,
         public ?PhotoFilters $photo_filters = null,
         public int $per_page = 25,
+        public string $sort_column = 'id',
+        public string $sort_direction = 'desc',
     ) {
     }
 

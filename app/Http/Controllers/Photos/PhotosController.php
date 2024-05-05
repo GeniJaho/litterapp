@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
+use App\Actions\Photos\GetNextPhotoAction;
+use App\Actions\Photos\GetPreviousPhotoAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
@@ -41,6 +43,16 @@ class PhotosController extends Controller
                 : 25;
             $user->settings->per_page = $perPage;
             $user->save();
+        } elseif ($request->boolean('set_sort')) {
+            $sortColumn = in_array($request->string('sort_column'), ['id', 'taken_at_local', 'original_file_name'])
+                ? $request->string('sort_column')
+                : 'id';
+            $sortDirection = in_array($request->string('sort_direction'), ['asc', 'desc'])
+                ? $request->string('sort_direction')
+                : 'desc';
+            $user->settings->sort_column = $sortColumn;
+            $user->settings->sort_direction = $sortDirection;
+            $user->save();
         }
 
         $photos = $filterPhotosAction->run($user);
@@ -59,6 +71,8 @@ class PhotosController extends Controller
     public function show(
         Photo $photo,
         GetTagsAndItemsAction $getTagsAndItemsAction,
+        GetNextPhotoAction $getNextPhotoAction,
+        GetPreviousPhotoAction $getPreviousPhotoAction,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -74,8 +88,8 @@ class PhotosController extends Controller
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
-                'nextPhotoUrl' => $this->getNextPhotoUrl($user, $photo),
-                'previousPhotoUrl' => $this->getPreviousPhotoUrl($user, $photo),
+                'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo),
+                'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo),
                 'tagShortcuts' => $this->getTagShortcuts($user),
             ]);
         }
@@ -104,38 +118,6 @@ class PhotosController extends Controller
         Storage::delete($photo->path);
 
         return redirect()->route('my-photos');
-    }
-
-    private function getNextPhotoUrl(User $user, Photo $photo): ?string
-    {
-        $nextPhoto = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
-            ->where('id', '<', $photo->id)
-            ->orderByDesc('id')
-            ->first();
-
-        if (! $nextPhoto) {
-            return null;
-        }
-
-        return route('photos.show', $nextPhoto);
-    }
-
-    private function getPreviousPhotoUrl(User $user, Photo $photo): ?string
-    {
-        $previousPhoto = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
-            ->where('id', '>', $photo->id)
-            ->orderBy('id')
-            ->first();
-
-        if (! $previousPhoto) {
-            return null;
-        }
-
-        return route('photos.show', $previousPhoto);
     }
 
     /**
