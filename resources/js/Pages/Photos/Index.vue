@@ -156,6 +156,10 @@ const filter = (filters) => {
     clearSelection();
     router.get(window.location.pathname, filters);
 }
+
+const exportData = () => {
+    window.location.href = route('photos.export');
+}
 </script>
 
 <template>
@@ -195,27 +199,35 @@ const filter = (filters) => {
         <div class="py-6 lg:py-16">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
 
-                <div class="flex flex-row gap-4 px-4 sm:px-0">
-                    <PrimaryButton @click="showFilters = !showFilters">
-                        {{ showFilters ? 'Hide' : 'Show' }} Filters
-                    </PrimaryButton>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                    <div class="flex flex-row gap-4">
+                        <PrimaryButton @click="showFilters = !showFilters">
+                            {{ showFilters ? 'Hide' : 'Show' }} Filters
+                        </PrimaryButton>
 
-                    <PrimaryButton @click="toggleSelecting">
+                        <PrimaryButton @click="toggleSelecting">
                         <span v-if="isSelecting">
                             Clear Selection {{ selectedPhotos.length ? `(${selectedPhotos.length})` : '' }}
                         </span>
-                        <span v-else>Select Photos</span>
-                    </PrimaryButton>
+                            <span v-else>Select Photos</span>
+                        </PrimaryButton>
 
-                    <BulkTag
-                        v-if="isSelecting && selectedPhotos.length"
-                        :photoIds="selectedPhotos"
-                        :tags="tags"
-                        :items="items"
-                        :tagShortcuts="tagShortcuts"
-                        :tagShortcutsEnabled="tagShortcutsEnabled"
-                        @closeModalWithSuccess="clearSelection"
-                    ></BulkTag>
+                        <BulkTag
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            :items="items"
+                            :tagShortcuts="tagShortcuts"
+                            :tagShortcutsEnabled="tagShortcutsEnabled"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkTag>
+                    </div>
+
+                    <div>
+                        <PrimaryButton @click="exportData">
+                            Export Data
+                        </PrimaryButton>
+                    </div>
                 </div>
 
                 <Filters
