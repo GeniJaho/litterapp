@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\Item;
+use App\Models\Photo;
 use App\Models\PhotoItem;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -18,7 +20,8 @@ class PhotoItemFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'photo_id' => Photo::factory(),
+            'item_id' => Item::factory(),
         ];
     }
 }
