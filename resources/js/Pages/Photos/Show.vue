@@ -26,6 +26,8 @@ const props = defineProps({
 });
 
 const photo = ref(null);
+const suggestedItem = ref(null);
+const suggestedItemScore = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
@@ -33,6 +35,8 @@ const zoomedPhoto = ref(false);
 
 onMounted(() => {
     getPhoto();
+
+    suggestItem();
 
     window.addEventListener('keydown', onKeyDown);
 });
@@ -51,6 +55,18 @@ const getPhoto = () => {
         })
 }
 
+
+const suggestItem = () => {
+    axios.get(route('litterbot.suggest', {photo: props.photoId}))
+        .then(response => {
+            suggestedItem.value = response.data.item;
+            suggestedItemScore.value = response.data.score;
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
+
 const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
 };
@@ -60,6 +76,16 @@ const addItems = () => {
         item_ids: [selectedItem.value.id],
     }).then(() => {
         selectedItem.value = null;
+        getPhoto();
+    });
+};
+
+const addSuggestedItem = () => {
+    axios.post(`/photos/${photo.value.id}/items`, {
+        item_ids: [suggestedItem.value.id],
+    }).then(() => {
+        suggestedItem.value = null;
+        suggestedItemScore.value = null;
         getPhoto();
     });
 };
@@ -270,6 +296,17 @@ const toggleTagShortcutsEnabled = (enabled) => {
                                     Add Object
                                 </PrimaryButton>
                             </div>
+                        </div>
+
+                        <div class="flex justify-end sm:justify-start">
+                            <PrimaryButton
+                                v-if="suggestedItem"
+                                class=""
+                                @click="addSuggestedItem"
+                            >
+                                <i class="fas fa-wand-magic-sparkles text-turqoFocus dark:text-gray-800"></i>
+                                <span class="ml-2">Add suggested: 1 {{ suggestedItem.name }} ({{ suggestedItemScore.toFixed() }}%)</span>
+                            </PrimaryButton>
                         </div>
 
                         <div v-if="photo.photo_items.length">
