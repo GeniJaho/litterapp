@@ -4,7 +4,6 @@ namespace App\DTO;
 
 use App\Models\Photo;
 use App\Models\PhotoItem;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
@@ -20,7 +19,7 @@ class PhotoExport extends Data
         public ?float $latitude,
         public ?float $longitude,
         public ?string $taken_at_local,
-        public Carbon $created_at,
+        public string $created_at,
         public Collection $items,
     ) {
     }
@@ -33,7 +32,7 @@ class PhotoExport extends Data
             latitude: $photo->latitude,
             longitude: $photo->longitude,
             taken_at_local: $photo->taken_at_local,
-            created_at: $photo->created_at,
+            created_at: $photo->created_at?->toIso8601String(),
             items: $photo->photoItems->map(fn (PhotoItem $photoItem): array => [
                 'name' => $photoItem->item?->name,
                 'picked_up' => $photoItem->picked_up,

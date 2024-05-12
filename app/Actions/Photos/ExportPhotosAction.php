@@ -4,15 +4,12 @@ namespace App\Actions\Photos;
 
 use App\DTO\PhotoExport;
 use App\Models\User;
+use Generator;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Support\LazyCollection;
 
 class ExportPhotosAction
 {
-    /**
-     * @return LazyCollection<int, PhotoExport>
-     */
-    public function run(User $user): LazyCollection
+    public function run(User $user): Generator
     {
         $photos = $user
             ->photos()
@@ -23,6 +20,8 @@ class ExportPhotosAction
             ])
             ->lazyById();
 
-        return PhotoExport::collect($photos);
+        foreach ($photos as $photo) {
+            yield PhotoExport::fromModel($photo);
+        }
     }
 }

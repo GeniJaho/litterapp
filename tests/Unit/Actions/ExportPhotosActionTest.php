@@ -9,7 +9,6 @@ use App\Models\PhotoItem;
 use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Collection;
-use Illuminate\Support\LazyCollection;
 
 use function Pest\Laravel\freezeTime;
 
@@ -30,15 +29,18 @@ it('exports photos with items and tags', function (): void {
     $exportPhotosAction = new ExportPhotosAction();
     $result = $exportPhotosAction->run($user);
 
-    expect($result)->toBeInstanceOf(LazyCollection::class)
-        ->and($result->count())->toBe(1)
-        ->and($result->first())->toBeInstanceOf(PhotoExport::class)
+    expect($result)->toBeInstanceOf(Generator::class);
+
+    $result = iterator_to_array($result);
+
+    expect($result)->toHaveCount(1)
+        ->and($result[0])->toBeInstanceOf(PhotoExport::class)
         ->id->toBe($photo->id)
         ->original_file_name->toBe($photo->original_file_name)
         ->latitude->toBe($photo->latitude)
         ->longitude->toBe($photo->longitude)
         ->taken_at_local->toBe($photo->taken_at_local)
-        ->created_at->toEqual($photo->created_at)
+        ->created_at->toEqual($photo->created_at->toIso8601String())
         ->items->toBeInstanceOf(Collection::class)
         ->items->toHaveCount(1)
         ->items->first()->toBe([
@@ -66,6 +68,10 @@ it('follows user defined filters when returning a response', function (): void {
     $exportPhotosAction = new ExportPhotosAction();
     $result = $exportPhotosAction->run($user);
 
+    expect($result)->toBeInstanceOf(Generator::class);
+
+    $result = iterator_to_array($result);
+
     expect($result)->toHaveCount(1)
-        ->and($result->first()->id)->toBe($pickedUpPhoto->id);
+        ->and($result[0]->id)->toBe($pickedUpPhoto->id);
 });

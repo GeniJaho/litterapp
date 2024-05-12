@@ -16,8 +16,9 @@ class ExportPhotosController extends Controller
 
         $photos = $action->run($user);
 
-        return response()->streamDownload(function () use ($photos): void {
-            echo $photos->toJson();
-        }, 'photos.json');
+        return response()->streamJson(['photos' => $photos], 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="photos.json"',
+        ]);
     }
 }
