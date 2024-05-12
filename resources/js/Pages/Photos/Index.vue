@@ -224,7 +224,15 @@ const exportData = () => {
                     </div>
 
                     <div>
-                        <PrimaryButton @click="exportData">
+                        <PrimaryButton @click="exportData" class="group relative">
+                            <Tooltip>
+                                <div class="w-full min-w-32">
+                                    <div class="dark:text-white">
+                                        Downloads a JSON file with all the items and
+                                        tags of the photos you have filtered
+                                    </div>
+                                </div>
+                            </Tooltip>
                             Export Data
                         </PrimaryButton>
                     </div>
