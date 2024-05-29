@@ -41,6 +41,14 @@ class Photo extends Model
     }
 
     /**
+     * @return BelongsToMany<Group>
+     */
+    public function groups(): BelongsToMany
+    {
+        return $this->belongsToMany(Group::class);
+    }
+
+    /**
      * @return BelongsToMany<Item>
      */
     public function items(): BelongsToMany
