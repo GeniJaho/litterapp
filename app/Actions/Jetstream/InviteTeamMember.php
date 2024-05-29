@@ -78,7 +78,7 @@ class InviteTeamMember implements InvitesTeamMembers
      */
     protected function ensureUserIsNotAlreadyOnTeam(Team $team, string $email): Closure
     {
-        return function (\Illuminate\Validation\Validator $validator) use ($team, $email): void {
+        return function (\Illuminate\Contracts\Validation\Validator $validator) use ($team, $email): void {
             $validator->errors()->addIf(
                 $team->hasUserWithEmail($email),
                 'email',
