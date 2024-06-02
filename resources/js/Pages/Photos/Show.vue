@@ -15,6 +15,8 @@ import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import ZoomIcon from "@/Components/ZoomIcon.vue";
 import Modal from "@/Components/Modal.vue";
+import VueMagnifier from '@websitebeaver/vue-magnifier';
+import '@websitebeaver/vue-magnifier/styles.css';
 
 const props = defineProps({
     photoId: Number,
@@ -193,13 +195,17 @@ const toggleTagShortcutsEnabled = (enabled) => {
         <div v-if="photo">
             <div class="max-w-9xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">
-                    <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4">
+                    <div class="w-full md:w-1/2 lg:w-1/3 px-4">
                         <div class="relative group overflow-hidden">
-                            <img
+                            <VueMagnifier
                                 :src="photo.full_path"
                                 :alt="photo.id"
+                                :zoomFactor="0.9"
+                                :mgWidth="350"
+                                :mgHeight="350"
+                                :mgBorderWidth="1"
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
-                            >
+                            />
 
                             <ZoomIcon @click="zoomedPhoto = true" class="absolute top-0 left-0" />
 
@@ -207,7 +213,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"
-                                class="absolute bottom-2 right-2"
+                                class="absolute bottom-4 right-2"
                             />
                         </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
@@ -230,7 +236,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 lg:w-2/3 xl:w-3/4 px-4 min-h-96 space-y-6 mt-6 md:mt-0 mb-36">
+                    <div class="w-full md:w-1/2 lg:w-2/3 px-4 min-h-96 space-y-6 mt-6 md:mt-0 mb-36">
                         <div
                             v-if="tagShortcutsEnabled"
                             class="flex flex-row items-center"
