@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\DocsController;
+use App\Http\Controllers\Groups\GroupsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
@@ -79,4 +80,8 @@ Route::middleware([
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}/tags', [TagShortcutItemTagsController::class, 'store'])->name('tag-shortcut-item-tags.store');
     Route::delete('/user/tag-shortcut-items/{tagShortcutItem}/tags/{tag}', [TagShortcutItemTagsController::class, 'destroy'])->name('tag-shortcut-item-tags.destroy');
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}/copy', CopyTagShortcutItemController::class)->name('tag-shortcut-items.copy');
+
+    Route::post('/user/groups', [GroupsController::class, 'store'])->name('groups.store');
+    Route::post('/user/groups/{group}', [GroupsController::class, 'update'])->name('groups.update');
+    Route::delete('/user/groups/{group}', [GroupsController::class, 'destroy'])->name('groups.destroy');
 });

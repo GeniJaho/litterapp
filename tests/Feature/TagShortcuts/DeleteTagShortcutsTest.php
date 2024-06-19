@@ -18,7 +18,7 @@ test('the shortcut must belong to the user', function (): void {
     $user = User::factory()->create();
     $tagShortcut = TagShortcut::factory()->create();
 
-    $response = $this->actingAs($user)->deleteJson(route('tag-shortcuts.update', $tagShortcut));
+    $response = $this->actingAs($user)->deleteJson(route('tag-shortcuts.destroy', $tagShortcut));
 
     $response->assertNotFound();
 
