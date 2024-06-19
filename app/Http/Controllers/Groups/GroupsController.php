@@ -8,9 +8,26 @@ use App\Http\Requests\Groups\UpdateGroupRequest;
 use App\Models\Group;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class GroupsController extends Controller
 {
+    public function index(): Response
+    {
+        /** @var User $user */
+        $user = auth()->user();
+
+        $groups = $user
+            ->groups()
+            ->orderBy('name')
+            ->get();
+
+        return Inertia::render('Groups/Index', [
+            'groups' => $groups,
+        ]);
+    }
+
     public function store(StoreGroupRequest $request): JsonResponse
     {
         /** @var User $user */

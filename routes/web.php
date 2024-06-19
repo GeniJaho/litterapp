@@ -81,6 +81,7 @@ Route::middleware([
     Route::delete('/user/tag-shortcut-items/{tagShortcutItem}/tags/{tag}', [TagShortcutItemTagsController::class, 'destroy'])->name('tag-shortcut-item-tags.destroy');
     Route::post('/user/tag-shortcut-items/{tagShortcutItem}/copy', CopyTagShortcutItemController::class)->name('tag-shortcut-items.copy');
 
+    Route::get('/user/groups', [GroupsController::class, 'index'])->name('groups.index');
     Route::post('/user/groups', [GroupsController::class, 'store'])->name('groups.store');
     Route::post('/user/groups/{group}', [GroupsController::class, 'update'])->name('groups.update');
     Route::delete('/user/groups/{group}', [GroupsController::class, 'destroy'])->name('groups.destroy');
