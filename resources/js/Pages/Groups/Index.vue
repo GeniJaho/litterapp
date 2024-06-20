@@ -4,6 +4,7 @@ import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {computed, ref} from "vue";
 import ConfirmDeleteButton from "@/Components/ConfirmDeleteButton.vue";
 import TextInput from "@/Components/TextInput.vue";
+import {router} from "@inertiajs/vue3";
 
 const props = defineProps({
     groups: Array,
@@ -22,7 +23,8 @@ const filteredGroups = computed(() => {
 });
 
 const deleteGroup = (groupId) => {
-    console.log('Delete group with id:', groupId);
+    axios.delete(route('groups.destroy', groupId))
+        .then(() => router.reload());
 };
 
 </script>

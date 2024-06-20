@@ -196,6 +196,10 @@ const logout = () => {
                                             Tag Shortcuts
                                         </DropdownLink>
 
+                                        <DropdownLink :href="route('groups.index')">
+                                            Groups
+                                        </DropdownLink>
+
                                         <DropdownLink v-if="$page.props.jetstream.hasApiFeatures"
                                                       :href="route('api-tokens.index')">
                                             API Tokens
@@ -328,6 +332,10 @@ const logout = () => {
 
                             <ResponsiveNavLink :href="route('tag-shortcuts.index')" :active="route().current('tag-shortcuts.index')">
                                 Tag Shortcuts
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink :href="route('groups.index')" :active="route().current('groups.index')">
+                                Groups
                             </ResponsiveNavLink>
 
                             <ResponsiveNavLink v-if="$page.props.jetstream.hasApiFeatures"

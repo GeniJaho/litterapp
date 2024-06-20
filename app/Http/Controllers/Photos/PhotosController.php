@@ -65,6 +65,7 @@ class PhotosController extends Controller
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
             'tagShortcuts' => $this->getTagShortcuts($user),
+            'groups' => $user->groups()->orderBy('name')->get(),
         ]);
     }
 
