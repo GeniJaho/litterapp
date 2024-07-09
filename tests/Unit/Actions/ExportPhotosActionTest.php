@@ -49,7 +49,10 @@ it('exports photos with items and tags', function (): void {
             'recycled' => $photoItem->recycled,
             'deposit' => $photoItem->deposit,
             'quantity' => $photoItem->quantity,
-            'tags' => [$tag->name],
+            'tags' => [[
+                'type' => $tag->type->name,
+                'name' => $tag->name,
+            ]],
         ]);
 });
 
