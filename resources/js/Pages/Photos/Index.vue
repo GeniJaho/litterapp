@@ -14,6 +14,7 @@ import Modal from "@/Components/Modal.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import AddToGroup from "@/Pages/Photos/Partials/AddToGroup.vue";
 
 const props = defineProps({
     photos: Object,
@@ -21,6 +22,7 @@ const props = defineProps({
     items: Array,
     filters: Object,
     tagShortcuts: Array,
+    groups: Array,
 });
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
@@ -211,6 +213,13 @@ const exportData = () => {
                         </span>
                             <span v-else>Select Photos</span>
                         </PrimaryButton>
+
+                        <AddToGroup
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :groups="groups"
+                            @closeModalWithSuccess="clearSelection"
+                        ></AddToGroup>
 
                         <BulkTag
                             v-if="isSelecting && selectedPhotos.length"
