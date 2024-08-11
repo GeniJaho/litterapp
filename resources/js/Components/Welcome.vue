@@ -1,5 +1,8 @@
 <script setup>
 import {Link} from "@inertiajs/vue3";
+
+const grafanaLink = import.meta.env.VITE_GRAFANA_MAP_LINK;
+
 </script>
 
 <template>
@@ -33,7 +36,7 @@ import {Link} from "@inertiajs/vue3";
 
                 <div class="pt-32 w-full">
                     <iframe class="w-full"
-                            src="https://globalmap.litterapp.net/"
+                            :src="grafanaLink"
                             width="450"
                             height="450"
                             frameborder="0"

@@ -15,6 +15,8 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
+const grafanaLink = import.meta.env.VITE_GRAFANA_NAV_LINK;
+
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
         team_id: team.id,
@@ -49,7 +51,7 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
-                                <NavLink href="https://globalmap.litterapp.net/"
+                                <NavLink :href="grafanaLink"
                                          :externalLink="true"
                                          target="_blank"
                                 >
@@ -265,7 +267,7 @@ const logout = () => {
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
 
-                        <ResponsiveNavLink href="https://globalmap.litterapp.net/"
+                        <ResponsiveNavLink :href="grafanaLink"
                                            as="externalLink"
                                            target="_blank"
                         >
