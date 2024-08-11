@@ -15,7 +15,7 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
-const grafanaLink = import.meta.env.VITE_GRAFANA_NAV_LINK;
+const grafanaLink = import.meta.env.VITE_GRAFANA_NAV_LINK || 'https://globalmap.litterapp.net/';
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {

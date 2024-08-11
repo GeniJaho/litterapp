@@ -1,7 +1,7 @@
 <script setup>
 import {Link} from "@inertiajs/vue3";
 
-const grafanaLink = import.meta.env.VITE_GRAFANA_MAP_LINK;
+const grafanaLink = import.meta.env.VITE_GRAFANA_MAP_LINK || 'https://globalmap.litterapp.net/';
 
 </script>
 
