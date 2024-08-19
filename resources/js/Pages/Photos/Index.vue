@@ -14,6 +14,7 @@ import Modal from "@/Components/Modal.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
 
 const props = defineProps({
     photos: Object,
@@ -157,8 +158,8 @@ const filter = (filters) => {
     router.get(window.location.pathname, filters);
 }
 
-const exportData = () => {
-    window.location.href = route('photos.export');
+const exportData = (format) => {
+    window.location.href = route('photos.export', {format});
 }
 </script>
 
@@ -224,17 +225,31 @@ const exportData = () => {
                     </div>
 
                     <div>
-                        <PrimaryButton @click="exportData" class="group relative">
-                            <Tooltip>
-                                <div class="w-full min-w-32">
-                                    <div class="dark:text-white">
-                                        Downloads a JSON file with all the items and
-                                        tags of the photos you have filtered
-                                    </div>
-                                </div>
-                            </Tooltip>
-                            Export Data
-                        </PrimaryButton>
+                        <Dropdown align="right" width="36">
+                            <template #trigger>
+                                <PrimaryButton class="group relative">
+                                    <Tooltip>
+                                        <div class="w-full min-w-32">
+                                            <div class="dark:text-white">
+                                                Downloads a file with all the items and
+                                                tags of the photos you have filtered
+                                            </div>
+                                        </div>
+                                    </Tooltip>
+                                    Export Data
+                                </PrimaryButton>
+                            </template>
+
+                            <template #content>
+                                <DropdownLink @click.prevent.stop="exportData('json')">
+                                    JSON
+                                </DropdownLink>
+                                <DropdownLink @click.prevent.stop="exportData('csv')">
+                                    CSV
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
+
                     </div>
                 </div>
 

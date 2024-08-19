@@ -16,7 +16,8 @@ class ExportPhotosAction
             ->filter($user->settings->photo_filters)
             ->with(['photoItems' => fn (Builder $q) => $q
                 ->with('item:id,name')
-                ->with('tags:id,name'),
+                ->with('tags:id,tag_type_id,name')
+                ->with('tags.type:id,name'),
             ])
             ->lazyById();
 

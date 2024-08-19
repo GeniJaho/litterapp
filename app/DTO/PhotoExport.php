@@ -4,6 +4,7 @@ namespace App\DTO;
 
 use App\Models\Photo;
 use App\Models\PhotoItem;
+use App\Models\Tag;
 use Illuminate\Support\Collection;
 use Spatie\LaravelData\Data;
 
@@ -39,7 +40,10 @@ class PhotoExport extends Data
                 'recycled' => $photoItem->recycled,
                 'deposit' => $photoItem->deposit,
                 'quantity' => $photoItem->quantity,
-                'tags' => $photoItem->tags->pluck('name')->toArray(),
+                'tags' => $photoItem->tags->map(fn (Tag $tag): array => [
+                    'type' => $tag->type->name,
+                    'name' => $tag->name,
+                ])->all(),
             ]),
         );
     }
