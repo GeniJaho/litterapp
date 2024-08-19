@@ -6,25 +6,22 @@ use App\Actions\Photos\ExportPhotosAction;
 use App\Exports\PhotosCsvExport;
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Http\Response;
+use Maatwebsite\Excel\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class ExportPhotosController extends Controller
 {
-    public function __invoke(ExportPhotosAction $action): StreamedResponse|BinaryFileResponse
+    public function __invoke(ExportPhotosAction $action): StreamedResponse|BinaryFileResponse|Response
     {
         /** @var User $user */
         $user = auth()->user();
 
         $photos = $action->run($user);
 
-        // todo doesn't really work well
         if (request()->input('format') === 'csv') {
-            return Excel::download(
-                new PhotosCsvExport($photos),
-                'photos.csv',
-            );
+            return (new PhotosCsvExport($photos))->download('photos.csv', Excel::CSV);
         }
 
         return response()->streamJson(['photos' => $photos], 200, [
