@@ -15,8 +15,7 @@ class DeleteUser implements DeletesUsers
      */
     public function __construct(
         protected DeletesTeams $deletesTeams,
-    ) {
-    }
+    ) {}
 
     /**
      * Delete the given user.

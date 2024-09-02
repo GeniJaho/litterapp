@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\TagShortcutFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class TagShortcut extends Model
 {
+    /** @use HasFactory<TagShortcutFactory> */
     use HasFactory;
 
     /**

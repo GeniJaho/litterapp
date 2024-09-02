@@ -15,9 +15,7 @@ readonly class PhotosCsvExport implements FromGenerator, WithHeadings
     /**
      * @param  Generator<PhotoExport>  $photos
      */
-    public function __construct(private Generator $photos)
-    {
-    }
+    public function __construct(private Generator $photos) {}
 
     public function generator(): Generator
     {
