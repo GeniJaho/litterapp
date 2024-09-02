@@ -41,6 +41,10 @@ class HandleInertiaRequests extends Middleware
                 'nav_link' => config('services.grafana.nav_link'),
                 'map_link' => config('services.grafana.map_link'),
             ],
+            'nav' => [
+                'facebook_link' => config('social.facebook_link'),
+                'twitter_link' => config('social.twitter_link'),
+            ],
         ]);
     }
 }
