@@ -26,7 +26,7 @@ it('exports photos with items and tags', function (): void {
     $tag = Tag::factory()->create();
     $photoItem->tags()->attach($tag->id);
 
-    $exportPhotosAction = new ExportPhotosAction();
+    $exportPhotosAction = new ExportPhotosAction;
     $result = $exportPhotosAction->run($user);
 
     expect($result)->toBeInstanceOf(Generator::class);
@@ -68,7 +68,7 @@ it('follows user defined filters when returning a response', function (): void {
     $notPickedUpPhoto = Photo::factory()->create(['user_id' => $user->id]);
     $notPickedUpPhotoItem = PhotoItem::factory()->create(['photo_id' => $notPickedUpPhoto->id, 'picked_up' => false]);
 
-    $exportPhotosAction = new ExportPhotosAction();
+    $exportPhotosAction = new ExportPhotosAction;
     $result = $exportPhotosAction->run($user);
 
     expect($result)->toBeInstanceOf(Generator::class);

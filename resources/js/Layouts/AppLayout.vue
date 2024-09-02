@@ -1,6 +1,6 @@
 <script setup>
-import {ref} from 'vue';
-import {Head, Link, router} from '@inertiajs/vue3';
+import {computed, ref} from 'vue';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -15,7 +15,11 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
-const grafanaLink = import.meta.env.VITE_GRAFANA_NAV_LINK || 'https://globalmap.litterapp.net/';
+const page = usePage()
+
+const grafanaLink = computed(() => page.props.grafana.nav_link)
+const facebookLink = computed(() => page.props.nav.facebook_link)
+const twitterLink = computed(() => page.props.nav.twitter_link)
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
@@ -81,12 +85,30 @@ const logout = () => {
 
                         <div class="hidden md:flex md:items-center md:ml-6">
                             <div class="ml-3 relative">
+                                <a :href="facebookLink"
+                                   target="_blank"
+                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-none"
+                                >
+                                    <i class="fab fa-facebook text-xl"></i>
+                                </a>
+                            </div>
+
+                            <div class="ml-3 relative">
+                                <a :href="twitterLink"
+                                   target="_blank"
+                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-none"
+                                >
+                                    <i class="fab fa-twitter text-xl"></i>
+                                </a>
+                            </div>
+
+                            <div class="ml-3 relative">
                                 <ThemeSwitcher/>
                             </div>
 
                             <div class="ml-3 relative">
                                 <!-- Teams Dropdown -->
-                                <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="60">
+                                <Dropdown v-if="$page.props.jetstream.hasTeamFeatures" align="right" width="64">
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"

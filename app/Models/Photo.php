@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\DTO\PhotoFilters;
 use Carbon\Carbon;
+use Database\Factories\PhotoFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
  */
 class Photo extends Model
 {
+    /** @use HasFactory<PhotoFactory> */
     use HasFactory;
 
     /**

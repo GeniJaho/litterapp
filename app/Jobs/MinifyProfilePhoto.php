@@ -19,9 +19,7 @@ class MinifyProfilePhoto implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
-    public function __construct(public readonly User $user)
-    {
-    }
+    public function __construct(public readonly User $user) {}
 
     public function handle(): void
     {

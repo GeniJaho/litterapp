@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\TagShortcutItemTagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class TagShortcutItemTag extends Pivot
 {
+    /** @use HasFactory<TagShortcutItemTagFactory> */
     use HasFactory;
 
     protected $table = 'tag_shortcut_item_tag';

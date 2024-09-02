@@ -14,8 +14,7 @@ class UserSettings extends Data
         public int $per_page = 25,
         public string $sort_column = 'id',
         public string $sort_direction = 'desc',
-    ) {
-    }
+    ) {}
 
     public function getValidPerPage(): int
     {

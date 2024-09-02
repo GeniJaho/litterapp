@@ -22,8 +22,7 @@ class PhotoExport extends Data
         public ?string $taken_at_local,
         public string $created_at,
         public Collection $items,
-    ) {
-    }
+    ) {}
 
     public static function fromModel(Photo $photo): static
     {

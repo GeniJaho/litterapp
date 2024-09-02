@@ -22,8 +22,7 @@ class BulkItem extends Data
         public int $quantity,
         #[Exists('tags', 'id')]
         public ?array $tag_ids = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @return string[]
