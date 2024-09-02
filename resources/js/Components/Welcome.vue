@@ -1,7 +1,10 @@
 <script setup>
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
+import {computed} from "vue";
 
-const grafanaLink = import.meta.env.VITE_GRAFANA_MAP_LINK || 'https://globalmap.litterapp.net/';
+const page = usePage()
+
+const grafanaLink = computed(() => page.props.grafana.map_link)
 
 </script>
 

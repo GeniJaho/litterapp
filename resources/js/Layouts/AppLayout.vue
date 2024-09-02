@@ -1,6 +1,6 @@
 <script setup>
-import {ref} from 'vue';
-import {Head, Link, router} from '@inertiajs/vue3';
+import {computed, ref} from 'vue';
+import {Head, Link, router, usePage} from '@inertiajs/vue3';
 import ApplicationMark from '@/Components/ApplicationMark.vue';
 import Banner from '@/Components/Banner.vue';
 import Dropdown from '@/Components/Dropdown.vue';
@@ -15,7 +15,9 @@ defineProps({
 
 const showingNavigationDropdown = ref(false);
 
-const grafanaLink = import.meta.env.VITE_GRAFANA_NAV_LINK || 'https://globalmap.litterapp.net/';
+const page = usePage()
+
+const grafanaLink = computed(() => page.props.grafana.nav_link)
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
