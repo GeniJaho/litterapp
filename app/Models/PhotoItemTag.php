@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\PhotoItemTagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class PhotoItemTag extends Pivot
 {
+    /** @use HasFactory<PhotoItemTagFactory> */
     use HasFactory;
 
     protected $table = 'photo_item_tag';

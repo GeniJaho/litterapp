@@ -15,6 +15,8 @@ import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import ZoomIcon from "@/Components/ZoomIcon.vue";
 import Modal from "@/Components/Modal.vue";
+import VueMagnifier from '@websitebeaver/vue-magnifier';
+import '@websitebeaver/vue-magnifier/styles.css';
 
 const props = defineProps({
     photoId: Number,
@@ -29,7 +31,10 @@ const photo = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
+const zoomingEnabled = ref(localStorage.getItem('zoomingEnabled') !== 'false');
 const zoomedPhoto = ref(false);
+const zoomLevel = ref(parseFloat(localStorage.getItem('zoomLevel')) || 0.9);
+const zoomMagnifierSize = ref(parseInt(localStorage.getItem('zoomMagnifierSize')) || 350);
 
 onMounted(() => {
     getPhoto();
@@ -152,8 +157,38 @@ watch(tagShortcutsEnabled, (value) => {
     localStorage.setItem('tagShortcutsEnabled', value ? 'true' : 'false');
 });
 
+watch(zoomingEnabled, (value) => {
+    localStorage.setItem('zoomingEnabled', value ? 'true' : 'false');
+});
+
+watch(zoomLevel, (value) => {
+    localStorage.setItem('zoomLevel', value);
+});
+
+watch(zoomMagnifierSize, (value) => {
+    localStorage.setItem('zoomMagnifierSize', value);
+});
+
 const toggleTagShortcutsEnabled = (enabled) => {
     tagShortcutsEnabled.value = enabled;
+};
+
+const toggleZoomingEnabled = (enabled) => {
+    zoomingEnabled.value = enabled;
+};
+
+const adjustZoomLevelWithMouseWheel = (event) => {
+    if (! event.ctrlKey && ! event.metaKey) {
+        return;
+    }
+
+    event.preventDefault();
+
+    zoomingEnabled.value = true;
+
+    let zoom = parseFloat(event.deltaY > 0 ? zoomLevel.value - 0.05 : zoomLevel.value + 0.05) || 0.9;
+
+    zoomLevel.value = Math.min(2, Math.max(0.4, zoom.toFixed(2)));
 };
 
 </script>
@@ -183,6 +218,13 @@ const toggleTagShortcutsEnabled = (enabled) => {
                                 >
                                     <template #label>Tag Shortcuts enabled</template>
                                 </ToggleInput>
+                                <ToggleInput
+                                    v-model="zoomingEnabled"
+                                    @update:modelValue="toggleZoomingEnabled"
+                                    class="block w-full px-4 py-2"
+                                >
+                                    <template #label>Zooming enabled</template>
+                                </ToggleInput>
                             </div>
                         </template>
                     </Dropdown>
@@ -193,13 +235,60 @@ const toggleTagShortcutsEnabled = (enabled) => {
         <div v-if="photo">
             <div class="max-w-9xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">
-                    <div class="w-full md:w-1/2 lg:w-1/3 xl:w-1/4 px-4">
-                        <div class="relative group overflow-hidden">
-                            <img
+                    <div class="w-full md:w-1/2 lg:w-1/3 px-4">
+
+                        <div
+                            v-if="zoomingEnabled"
+                            class="flex flex-row justify-between mb-6"
+                        >
+                            <div class="w-24 sm:w-28 xl:w-36">
+                                <label for="zoom-level" class="group relative block text-sm font-medium max-w-min whitespace-nowrap">
+                                    <Tooltip>
+                                        <span class="whitespace-nowrap text-white text-xs">
+                                            Ctrl (⌘) + <br class="xl:hidden"> Scroll on photo
+                                        </span>
+                                    </Tooltip>
+                                    <span class="text-gray-900 dark:text-gray-100">Zoom Level</span>
+                                </label>
+                                <input
+                                    id="zoom-level"
+                                    type="range"
+                                    v-model="zoomLevel"
+                                    min="0.4"
+                                    max="2"
+                                    step="0.05"
+                                    class="w-full h-1 bg-gray-200 accent-turqoFocus rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                >
+                            </div>
+                            <div class="w-24 sm:w-28 xl:w-36">
+                                <label for="zoom-magnifier-size" class="block text-sm font-medium text-gray-900 dark:text-gray-100">
+                                    Magnifier Size
+                                </label>
+                                <input
+                                    id="zoom-magnifier-size"
+                                    type="range"
+                                    v-model="zoomMagnifierSize"
+                                    min="100"
+                                    max="500"
+                                    step="10"
+                                    class="w-full h-1 bg-gray-200 accent-turqoFocus rounded-lg appearance-none cursor-pointer dark:bg-gray-700"
+                                >
+                            </div>
+                        </div>
+
+                        <div class="relative group overflow-hidden"
+                             v-on:wheel="adjustZoomLevelWithMouseWheel"
+                        >
+                            <VueMagnifier
                                 :src="photo.full_path"
                                 :alt="photo.id"
+                                :mg-show="zoomingEnabled"
+                                :zoomFactor="zoomLevel"
+                                :mgWidth="zoomMagnifierSize"
+                                :mgHeight="zoomMagnifierSize"
+                                :mgBorderWidth="1"
                                 class="w-full sm:max-w-2xl sm:overflow-hidden rounded-lg shadow-lg"
-                            >
+                            />
 
                             <ZoomIcon @click="zoomedPhoto = true" class="absolute top-0 left-0" />
 
@@ -207,7 +296,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"
-                                class="absolute bottom-2 right-2"
+                                class="absolute bottom-4 right-2"
                             />
                         </div>
                         <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
@@ -230,7 +319,7 @@ const toggleTagShortcutsEnabled = (enabled) => {
                         </div>
                     </div>
 
-                    <div class="w-full md:w-1/2 lg:w-2/3 xl:w-3/4 px-4 min-h-96 space-y-6 mt-6 md:mt-0 mb-36">
+                    <div class="w-full md:w-1/2 lg:w-2/3 px-4 min-h-96 space-y-6 mt-6 md:mt-0 mb-36">
                         <div
                             v-if="tagShortcutsEnabled"
                             class="flex flex-row items-center"

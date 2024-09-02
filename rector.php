@@ -3,12 +3,8 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
-use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\ClassMethod\MigrateToSimplifiedAttributeRector;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
@@ -45,10 +41,6 @@ return RectorConfig::configure()
         AddGenericReturnTypeToRelationsRector::class,
     ])
     ->withSkip([
-        AddLiteralSeparatorToNumberRector::class,
-        PostIncDecToPreIncDecRector::class,
-        StaticArrowFunctionRector::class,
-        StaticClosureRector::class,
         EncapsedStringsToSprintfRector::class,
         ReplaceFakerInstanceWithHelperRector::class,
         __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',

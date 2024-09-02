@@ -11,8 +11,7 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
     public function __construct(
         private readonly ExtractLocationFromPhotoAction $extractLocation,
         private readonly ExtractDateTakenFromPhotoAction $extractDateTaken,
-    ) {
-    }
+    ) {}
 
     public function run(UploadedFile $photo): array
     {
