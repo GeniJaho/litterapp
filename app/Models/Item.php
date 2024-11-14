@@ -20,7 +20,7 @@ class Item extends Model
     use HasFactory;
 
     /**
-     * @return BelongsToMany<Photo>
+     * @return BelongsToMany<Photo, $this>
      */
     public function photos(): BelongsToMany
     {
@@ -31,7 +31,7 @@ class Item extends Model
     }
 
     /**
-     * @return HasMany<PhotoItem>
+     * @return HasMany<PhotoItem, $this>
      */
     public function photoItems(): HasMany
     {

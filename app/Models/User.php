@@ -132,7 +132,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * @return HasMany<Photo>
+     * @return HasMany<Photo, $this>
      */
     public function photos(): HasMany
     {
@@ -140,7 +140,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * @return HasMany<TagShortcut>
+     * @return HasMany<TagShortcut, $this>
      */
     public function tagShortcuts(): HasMany
     {

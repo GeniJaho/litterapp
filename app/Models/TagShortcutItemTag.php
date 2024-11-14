@@ -17,7 +17,7 @@ class TagShortcutItemTag extends Pivot
     public $incrementing = true;
 
     /**
-     * @return BelongsTo<TagShortcutItem, TagShortcutItemTag>
+     * @return BelongsTo<TagShortcutItem, $this>
      */
     public function tagShortcutItem(): BelongsTo
     {
@@ -25,7 +25,7 @@ class TagShortcutItemTag extends Pivot
     }
 
     /**
-     * @return BelongsTo<Tag, TagShortcutItemTag>
+     * @return BelongsTo<Tag, $this>
      */
     public function tag(): BelongsTo
     {

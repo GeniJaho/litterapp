@@ -38,7 +38,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<TagShortcut, TagShortcutItem>
+     * @return BelongsTo<TagShortcut, $this>
      */
     public function tagShortcut(): BelongsTo
     {
@@ -46,7 +46,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Item, TagShortcutItem>
+     * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo
     {
@@ -54,7 +54,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {
@@ -72,7 +72,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return HasMany<TagShortcutItemTag>
+     * @return HasMany<TagShortcutItemTag, $this>
      */
     public function tagShortcutItemTags(): HasMany
     {

@@ -35,7 +35,7 @@ class Photo extends Model
     }
 
     /**
-     * @return BelongsTo<User, Photo>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -43,7 +43,7 @@ class Photo extends Model
     }
 
     /**
-     * @return BelongsToMany<Item>
+     * @return BelongsToMany<Item, $this>
      */
     public function items(): BelongsToMany
     {
@@ -54,7 +54,7 @@ class Photo extends Model
     }
 
     /**
-     * @return HasMany<PhotoItem>
+     * @return HasMany<PhotoItem, $this>
      */
     public function photoItems(): HasMany
     {

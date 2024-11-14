@@ -35,7 +35,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Item, PhotoItem>
+     * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo
     {
@@ -43,7 +43,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Photo, PhotoItem>
+     * @return BelongsTo<Photo, $this>
      */
     public function photo(): BelongsTo
     {
@@ -51,7 +51,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {

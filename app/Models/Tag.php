@@ -19,7 +19,7 @@ class Tag extends Model
     protected $guarded = [];
 
     /**
-     * @return BelongsTo<TagType, Tag>
+     * @return BelongsTo<TagType, $this>
      */
     public function type(): BelongsTo
     {
@@ -27,7 +27,7 @@ class Tag extends Model
     }
 
     /**
-     * @return HasMany<PhotoItemTag>
+     * @return HasMany<PhotoItemTag, $this>
      */
     public function photoItemTags(): HasMany
     {
