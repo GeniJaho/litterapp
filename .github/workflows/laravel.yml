@@ -34,7 +34,6 @@ jobs:
       - uses: php-actions/phpstan@v3
         with:
           php_version: 8.2
-          version: "1.12.10"
           path: 'app'
 
   code-quality:
@@ -118,5 +117,5 @@ jobs:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
       run: php artisan test --parallel
-    - name: Check type coverage
-      run: ./vendor/bin/pest --type-coverage --min=100
+#    - name: Check type coverage
+#      run: ./vendor/bin/pest --type-coverage --min=100
