@@ -25,10 +25,10 @@
         "tightenco/ziggy": "^1.0"
     },
     "require-dev": {
-        "driftingly/rector-laravel": "^1.0",
+        "driftingly/rector-laravel": "^2.0",
         "fakerphp/faker": "^1.9.1",
         "knuckleswtf/scribe": "^4.30",
-        "larastan/larastan": "^2.0",
+        "larastan/larastan": "^3.0",
         "laravel/pint": "^1.0",
         "laravel/sail": "^1.18",
         "mockery/mockery": "^1.4.4",
@@ -37,7 +37,7 @@
         "pestphp/pest-plugin-laravel": "^3.0",
         "pestphp/pest-plugin-type-coverage": "^3.1",
         "pestphp/pest-plugin-watch": "^3.0",
-        "rector/rector": "^1.0",
+        "rector/rector": "^2.0",
         "spatie/laravel-ignition": "^2.0"
     },
     "autoload": {

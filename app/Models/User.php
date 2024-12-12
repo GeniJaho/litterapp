@@ -26,6 +26,7 @@ use Laravel\Sanctum\HasApiTokens;
  * @property UserSettings $settings
  * @property Collection<int, Team> $ownedTeams
  * @property Collection<int, TagShortcut> $tagShortcuts
+ * @property-read string $profile_photo_url
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -42,7 +43,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     /**
      * The attributes that should be hidden for serialization.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $hidden = [
         'password',
@@ -54,7 +55,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     /**
      * The accessors to append to the model's array form.
      *
-     * @var array<int, string>
+     * @var list<string>
      */
     protected $appends = [
         'profile_photo_url',
@@ -104,7 +105,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     /**
      * @return Attribute<string|null, never>
      */
-    public function profilePhotoUrl(): Attribute
+    protected function profilePhotoUrl(): Attribute
     {
         return Attribute::get(function () {
             // path can sometimes be a full URL from Google or Facebook
