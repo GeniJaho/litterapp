@@ -1,0 +1,101 @@
+version: "3.8"
+services:
+  web:
+    image: ${REGISTRY_USER}/${APP_NAME_DOCKER}/web:${APP_VERSION}
+    container_name: ${APP_NAME_DOCKER}-web
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: ${ENVIRONMENT}
+      APP_NAME: ${APP_NAME}
+      APP_KEY: ${APP_KEY}
+    ports:
+      - 9000:9000
+    volumes:
+      - ./data/storage/app:/app/storage/app
+      - ./.env:/app/.env:ro
+      #- ./data/storage/logs:/app/storage/logs
+    working_dir: /app
+    depends_on:
+      - db
+  docs:
+    image: ${REGISTRY_USER}/${APP_NAME_DOCKER}/docs:${APP_VERSION}
+    container_name: ${APP_NAME_DOCKER}-docs
+    restart: unless-stopped
+    environment:
+      - ENVIRONMENT
+  db:
+    image: mysql:8.0
+    container_name: ${APP_NAME_DOCKER}-db
+    restart: unless-stopped
+    environment:
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql
+    # ports:
+    #   - 3306:3306
+    volumes:
+      - ./data/mysql/db:/var/lib/mysql
+  backup:
+    image: databack/mysql-backup
+    container_name: ${APP_NAME_DOCKER}-backup
+    restart: unless-stopped
+    command: dump
+    environment:
+      DB_USER: ${DB_USERNAME}
+      DB_PASS: ${DB_PASSWORD}
+      DB_PORT: ${DB_PORT}
+      DB_DUMP_FREQ: 1440
+      DB_DUMP_BEGIN: 2330
+      DB_SERVER: ${APP_NAME_DOCKER}-db
+      NO_DATABASE_NAME: true
+      RETENTION: 180
+      DB_DUMP_TARGET: s3://v1-prod-backup/mysql
+      AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID}
+      AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
+      AWS_DEFAULT_REGION: eu-west-1
+      AWS_CLI_S3_CP_OPTS: "--storage-class GLACIER"
+    volumes:
+      - ./data/mysql/backup:/db
+      - ./data/mysql/scripts:/scripts.d/pre-backup
+      - ./data/mysql/scripts:/scripts.d/post-backup
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    container_name: phpmyadmin
+    environment:
+      PMA_ARBITRARY: 1
+    ports:
+      - 8087:80
+    restart: unless-stopped
+  nginx:
+    image: nginx:stable-alpine-slim
+    container_name: ${APP_NAME_DOCKER}-proxy
+    restart: unless-stopped
+    ports:
+      #- 8080:80
+      - 80:80
+      - 443:443
+    volumes:
+      - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./cert:/etc/nginx/cert
+      - /v1/letsencrypt/certbot/www/:/var/www/certbot/:rw 
+    depends_on:
+      - web
+  grafana:
+    image: grafana/grafana-oss
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+     - GF_SERVER_ROOT_URL=https://litterapp.net/grafana
+     - GF_INSTALL_PLUGINS=grafana-clock-panel
+    ports:
+     - 3000:3000
+    volumes:
+      - ./data/grafana:/var/lib/grafana:rw
+
+networks:
+  network:
+    name: ${ENVIRONMENT}
+    driver: bridge
