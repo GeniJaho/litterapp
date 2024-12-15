@@ -6,7 +6,7 @@ docker run --rm --name temp_certbot \
     certbot/certbot:latest \
     certonly --webroot --agree-tos --renew-by-default \
     --preferred-challenges http-01 --server https://acme-v02.api.letsencrypt.org/directory \
-    --text --email litterapp@gmail.com \
+    --text --email ${CORRECT_MAIL_ADDRES}@gmail.com \
     -w /var/www/certbot -d ${SubDomain}.litterapp.net
 
 cp ./certbot/conf/live/${SubDomain}.litterapp.net/cert.pem /v1/littertagger/cert/server-${SubDomain}.crt
