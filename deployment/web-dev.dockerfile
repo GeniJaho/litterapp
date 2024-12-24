@@ -1,4 +1,5 @@
-FROM php:8.2.13-fpm
+#FROM php:8.2.13-fpm
+FROM php:8.2.27-fpm-alpine
 
 WORKDIR /app
 
@@ -21,8 +22,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y \
     zip \
     unzip \
     redis-tools \
-    default-mysql-client \
-    vim
+    default-mysql-client
 
 # Clear cache
 RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
