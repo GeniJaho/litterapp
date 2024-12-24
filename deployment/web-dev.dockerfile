@@ -21,13 +21,11 @@ RUN apk add --no-cache \
     libxml2-dev \
     libzip-dev \
     libwebp-dev \
-    #libjpeg \
     libjpeg-turbo-dev  \
     #libjpeg62-turbo-dev \
     freetype-dev \
     #libfreetype6-dev \
     libxpm-dev \
-    #icu \
     icu-dev
 
 # Clear cache
@@ -63,10 +61,14 @@ RUN set -eux; \
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 # Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer \
-    && chown -R $user:$user /home/$user \
-    && chown -R $user:$user /app
+RUN adduser -G www-data -u $uid $user \
+    && mkdir -p /home/$user/.composer \
+    && chown -R $user:$user /home/$user /app
+
+# RUN useradd -G www-data,root -u $uid -d /home/$user $user
+# RUN mkdir -p /home/$user/.composer \
+#     && chown -R $user:$user /home/$user \
+#     && chown -R $user:$user /app
 
 COPY --chown=$user . /app
 
