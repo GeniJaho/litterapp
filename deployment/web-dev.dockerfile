@@ -11,7 +11,7 @@ ARG uid=1000
 #RUN set -x \
 RUN apk update && apk upgrade
 RUN apk add --no-cache \
-    git 
+    git \
     curl \
     zip \
     unzip \
