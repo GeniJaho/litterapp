@@ -27,8 +27,8 @@ RUN apk add --no-cache \
     freetype-dev \
     #libfreetype6-dev \
     libxpm-dev \
-    icu \
-    libicu-dev
+    #icu \
+    icu-dev
 
 # Clear cache
 #RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
