@@ -9,7 +9,7 @@ ARG uid=1000
 
 # Install system dependencies
 #RUN set -x \
-RUN apk update
+#RUN apk update
 #RUN apk upgrade
 RUN apk add --no-cache \
     git \
