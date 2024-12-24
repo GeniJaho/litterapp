@@ -26,7 +26,8 @@ RUN apk add --no-cache \
     #libjpeg62-turbo-dev \
     freetype-dev \
     #libfreetype6-dev \
-    libxpm-dev
+    libxpm-dev \
+    icu
 
 # Clear cache
 #RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
