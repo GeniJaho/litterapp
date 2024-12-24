@@ -11,18 +11,18 @@ ARG uid=1000
 RUN apt-get upgrade && apt-get update && apt-get install -y \
     git \
     curl \
-    libpng-dev \
-    libonig-dev \
-    libxml2-dev \
-    libzip-dev \
-    libwebp-dev \
-    libjpeg62-turbo-dev \
-    libxpm-dev \
-    libfreetype6-dev \
     zip \
     unzip \
     redis-tools \
     default-mysql-client
+    # libpng-dev \
+    # libonig-dev \
+    # libxml2-dev \
+    # libzip-dev \
+    # libwebp-dev \
+    # libjpeg62-turbo-dev \
+    # libxpm-dev \
+    # libfreetype6-dev
 
 # Clear cache
 RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
