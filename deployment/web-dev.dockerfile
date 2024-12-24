@@ -8,9 +8,12 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-#RUN apt-get upgrade && 
-RUN apt-get update
-RUN apt-get install -y \
+RUN set -x \
+    && apk update \
+    && apk upgrade \
+    && apk add --no-cache \
+#RUN apt-get upgrade && apt-get update
+#RUN apt-get install -y \
     git \
     curl \
     zip \
