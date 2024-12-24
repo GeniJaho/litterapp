@@ -22,7 +22,8 @@ env:
 jobs:
   deploy:
     name: Deploy
-    runs-on: ubuntu-latest
+    #runs-on: ubuntu-latest
+    runs-on: ubuntu-latest-arm64
 
     steps:
       - name: Checkout
@@ -59,6 +60,7 @@ jobs:
           ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           IMAGE_TAG: arm-latest
         run: |
-          docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./deployment/web-dev.dockerfile .
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./deployment/web-dev.dockerfile .
+          #docker buildx build --platform linux/arm64 -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f ./deployment/web-dev.dockerfile .
 #          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
 #          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
