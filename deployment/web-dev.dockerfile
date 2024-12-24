@@ -21,7 +21,8 @@ RUN apk add --no-cache \
     libxml2-dev \
     libzip-dev \
     libwebp-dev \
-    libjpeg-dev \
+    #libjpeg \
+    libjpeg-turbo-dev  \
     #libjpeg62-turbo-dev \
     #libfreetype6-dev \
     libxpm-dev
