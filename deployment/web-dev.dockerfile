@@ -8,16 +8,15 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-RUN set -x \
-    && apk update \
-    && apk upgrade \
-    && apk add --no-cache \
-#RUN apt-get upgrade && apt-get update
-#RUN apt-get install -y \
+#RUN set -x \
+RUN apk update
+#RUN apk upgrade
+RUN apk add --no-cache \
     git \
     curl \
     zip \
-    unzip \
+    unzip
+RUN apk add --no-cache \
     redis-tools \
     default-mysql-client \
     libpng-dev \
