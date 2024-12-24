@@ -12,9 +12,9 @@ RUN apt-get upgrade && apt-get update && apt-get install -y \
     git \
     curl \
     zip \
-    unzip \
-    redis-tools \
-    default-mysql-client
+    unzip 
+    # redis-tools \
+    # default-mysql-client \
     # libpng-dev \
     # libonig-dev \
     # libxml2-dev \
