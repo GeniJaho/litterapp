@@ -62,6 +62,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 
 # Create system user to run Composer and Artisan Commands
 RUN adduser -G www-data -u $uid $user -D $user \
+    && addgroup $user \
     && mkdir -p /home/$user/.composer \
     && chown -R $user:$user /home/$user /app
 
