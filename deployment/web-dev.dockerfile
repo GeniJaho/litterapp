@@ -7,18 +7,14 @@ WORKDIR /app
 ARG user=laravel
 ARG uid=1000
 
-USER root
-
 # Install system dependencies
 #RUN set -x \
-RUN apk update
-#RUN apk upgrade
+RUN apk update && apk upgrade
 RUN apk add --no-cache \
     git 
-    # curl \
-    # zip \
-    # unzip
-RUN apk add --no-cache \
+    curl \
+    zip \
+    unzip \
     redis-tools \
     default-mysql-client \
     libpng-dev \
