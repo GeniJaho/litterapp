@@ -14,16 +14,16 @@ RUN apk add --no-cache \
     git \
     zip \
     unzip \
-    redis-tools \
-    default-mysql-client \
+    #redis-tools \
+    #default-mysql-client \
     libpng-dev \
-    libonig-dev \
+    #libonig-dev \
     libxml2-dev \
     libzip-dev \
     libwebp-dev \
-    #libjpeg \
-    libjpeg62-turbo-dev \
-    libfreetype6-dev \
+    libjpeg-dev \
+    #libjpeg62-turbo-dev \
+    #libfreetype6-dev \
     libxpm-dev
 
 # Clear cache
