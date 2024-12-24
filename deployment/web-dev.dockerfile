@@ -8,11 +8,12 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-RUN apt-get upgrade && apt-get update && apt-get install -y \
-    git \
-    curl \
-    zip \
-    unzip 
+RUN apt-get upgrade && apt-get update
+RUN apt-get install -y \
+    git
+    # curl \
+    # zip \
+    # unzip 
     # redis-tools \
     # default-mysql-client \
     # libpng-dev \
