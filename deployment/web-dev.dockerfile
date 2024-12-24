@@ -8,22 +8,23 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-RUN apt-get upgrade && apt-get update
+#RUN apt-get upgrade && 
+RUN apt-get update
 RUN apt-get install -y \
     git
-    # curl \
-    # zip \
-    # unzip 
-    # redis-tools \
-    # default-mysql-client \
-    # libpng-dev \
-    # libonig-dev \
-    # libxml2-dev \
-    # libzip-dev \
-    # libwebp-dev \
-    # libjpeg62-turbo-dev \
-    # libxpm-dev \
-    # libfreetype6-dev
+    curl \
+    zip \
+    unzip \
+    redis-tools \
+    default-mysql-client \
+    libpng-dev \
+    libonig-dev \
+    libxml2-dev \
+    libzip-dev \
+    libwebp-dev \
+    libjpeg62-turbo-dev \
+    libxpm-dev \
+    libfreetype6-dev
 
 # Clear cache
 RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
