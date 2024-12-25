@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Photos;
 
+use App\DTO\BulkDeletePhotoItems;
 use App\DTO\BulkPhotoItems;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
@@ -34,5 +35,13 @@ class BulkPhotoItemsController extends Controller
                 }
             }
         });
+    }
+
+    public function destroy(BulkDeletePhotoItems $bulkDeletePhotoItems): void
+    {
+        PhotoItem::query()
+            ->whereIn('photo_id', $bulkDeletePhotoItems->photo_ids)
+            ->whereIn('item_id', $bulkDeletePhotoItems->item_ids)
+            ->delete();
     }
 }
