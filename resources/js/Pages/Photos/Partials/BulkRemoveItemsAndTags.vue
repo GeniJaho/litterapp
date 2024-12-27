@@ -163,7 +163,7 @@ const onKeyDown = (event) => {
                     ></TagSelector>
                 </div>
 
-                <div class="w-full md:w-1/2">
+                <div class="w-full md:w-1/2 mt-8 md:mt-0">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                         To Remove
                     </h3>
