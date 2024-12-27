@@ -49,9 +49,9 @@ onUnmounted(() => {
 const saveDisabled = computed(() => form.processing || !form.item_ids.length && !form.tag_ids.length);
 
 const addItem = () => {
-    form.item_ids.unshift(selectedItem.value.id);
-
-    form.item_ids = form.item_ids.filter((value, index, self) => self.indexOf(value) === index);
+    if (! form.item_ids.includes(selectedItem.value.id)) {
+        form.item_ids.unshift(selectedItem.value.id);
+    }
 
     selectedItem.value = null;
 };
@@ -61,9 +61,9 @@ const removeItem = (key) => {
 };
 
 const addTag = (tag) => {
-    form.tag_ids.unshift(tag.id);
-
-    form.tag_ids = form.tag_ids.filter((value, index, self) => self.indexOf(value) === index);
+    if (! form.tag_ids.includes(tag.id)) {
+        form.tag_ids.unshift(tag.id);
+    }
 };
 
 const removeTag = (key) => {
@@ -123,7 +123,7 @@ const onKeyDown = (event) => {
                 Remove Items & Tags of Multiple Photos ({{ photoIds.length }} selected)
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
-                Clear items and tags from multiple photos at once.<br>
+                Remove items and tags from multiple photos at once.<br>
                 When you remove an Item, the tags that belong to it will also be removed.<br>
                 When you remove a Tag, it will be removed from all the Items it belongs to.<br><br>
                 After you have selected all the items and tags for removal,
@@ -132,63 +132,71 @@ const onKeyDown = (event) => {
         </template>
 
         <template #content>
-            <div class="mt-4 w-full h-full min-h-96 px-4">
-                <div class="flex flex-col md:flex-row mt-6 md:mt-0 mb-4">
-                    <TagBox
-                        class="w-full md:w-96"
-                        :items="items"
-                        v-model="selectedItem"
-                        :autofocus="true"
-                        placeholder="Items"
-                    ></TagBox>
-                    <div class="md:ml-4 mt-4 md:mt-0.5 ml-auto">
-                        <PrimaryButton
-                            class="whitespace-nowrap"
-                            @click="addItem"
-                            :disabled="!selectedItem"
-                        >
-                            Set Item for Removal
-                        </PrimaryButton>
+            <div class="mt-4 w-full h-full min-h-96 sm:px-4 flex flex-col md:flex-row">
+                <div class="w-full md:w-1/2">
+                    <div class="flex md:mt-0">
+                        <TagBox
+                            class="w-full md:w-96"
+                            :items="items"
+                            v-model="selectedItem"
+                            :autofocus="true"
+                            placeholder="Items"
+                        ></TagBox>
+                        <div class="ml-4 mt-0.5">
+                            <PrimaryButton
+                                class="whitespace-nowrap"
+                                @click="addItem"
+                                :disabled="!selectedItem"
+                            >
+                                Remove
+                            </PrimaryButton>
+                        </div>
                     </div>
-                </div>
-                <ul role="list" class="grid grid-cols-1 gap-6 lg:grid-cols-2 xl:grid-cols-3">
                     <TagSelector
                         :tags="tags"
                         @tag-selected="addTag"
                     ></TagSelector>
-                </ul>
-
-                <div class="mt-8" v-if="form.item_ids.length">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                        Items
-                    </h3>
-                    <div class="mt-2">
-                        <TransitionGroup tag="ul" name="items" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            <PrimaryButton
-                                v-for="itemId in form.item_ids"
-                                :key="itemId"
-                                @click="removeItem(itemId)"
-                            >
-                                {{ items.find(item => item.id === itemId)?.name }}
-                            </PrimaryButton>
-                        </TransitionGroup>
-                    </div>
                 </div>
 
-                <div class="mt-8" v-if="form.tag_ids.length">
+                <div class="w-full md:w-1/2">
                     <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
-                        Tags
+                        To Remove
                     </h3>
-                    <div class="mt-2">
-                        <TransitionGroup tag="ul" name="tags" role="list" class="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-                            <PrimaryButton
-                                v-for="tagId in form.tag_ids"
-                                :key="tagId"
-                                @click="removeTag(tagId)"
-                            >
-                                {{ allTags.find(tag => tag.id === tagId)?.name }}
-                            </PrimaryButton>
-                        </TransitionGroup>
+
+                    <div class="mt-4" v-if="form.item_ids.length">
+                        <h3 class="text-md leading-5 font-medium text-gray-900 dark:text-gray-100">
+                            Items
+                        </h3>
+                        <div class="mt-2">
+                            <TransitionGroup tag="div" name="items" role="list" class="flex flex-col gap-3">
+                                <SecondaryButton
+                                    v-for="itemId in form.item_ids"
+                                    :key="itemId"
+                                    @click="removeItem(itemId)"
+                                    class="whitespace-nowrap max-w-min hover:cursor-cross"
+                                >
+                                    {{ items.find(item => item.id === itemId)?.name }}
+                                </SecondaryButton>
+                            </TransitionGroup>
+                        </div>
+                    </div>
+
+                    <div class="mt-4" v-if="form.tag_ids.length">
+                        <h3 class="text-md leading-5 font-medium text-gray-900 dark:text-gray-100">
+                            Tags
+                        </h3>
+                        <div class="mt-2">
+                            <TransitionGroup tag="div" name="items" role="list" class="flex flex-col gap-3">
+                                <SecondaryButton
+                                    v-for="tagId in form.tag_ids"
+                                    :key="tagId"
+                                    @click="removeTag(tagId)"
+                                    class="whitespace-nowrap max-w-min"
+                                >
+                                    {{ allTags.find(tag => tag.id === tagId)?.name }}
+                                </SecondaryButton>
+                            </TransitionGroup>
+                        </div>
                     </div>
                 </div>
             </div>

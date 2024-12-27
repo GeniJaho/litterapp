@@ -10,12 +10,13 @@ class BulkDeletePhotoItems extends Data
     /**
      * @param  int[]  $photo_ids
      * @param  int[]  $item_ids
+     * @param  int[]  $tag_ids
      */
     public function __construct(
         public array $photo_ids,
         public array $item_ids = [],
-    ) {
-    }
+        public array $tag_ids = [],
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -31,6 +32,8 @@ class BulkDeletePhotoItems extends Data
             'photo_ids.*' => ['required', 'exists:photos,id'],
             'item_ids' => ['array'],
             'item_ids.*' => ['required', 'exists:items,id'],
+            'tag_ids' => ['array'],
+            'tag_ids.*' => ['required', 'exists:tags,id'],
         ];
     }
 

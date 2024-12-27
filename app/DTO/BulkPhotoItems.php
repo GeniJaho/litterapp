@@ -2,9 +2,7 @@
 
 namespace App\DTO;
 
-use App\Models\Photo;
 use App\Rules\PhotosBelongToUser;
-use Closure;
 use Spatie\LaravelData\Data;
 
 class BulkPhotoItems extends Data

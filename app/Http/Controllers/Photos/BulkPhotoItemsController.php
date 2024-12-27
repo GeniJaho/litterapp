@@ -7,6 +7,7 @@ use App\DTO\BulkPhotoItems;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\PhotoItem;
+use App\Models\PhotoItemTag;
 use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
@@ -39,9 +40,20 @@ class BulkPhotoItemsController extends Controller
 
     public function destroy(BulkDeletePhotoItems $bulkDeletePhotoItems): void
     {
-        PhotoItem::query()
-            ->whereIn('photo_id', $bulkDeletePhotoItems->photo_ids)
-            ->whereIn('item_id', $bulkDeletePhotoItems->item_ids)
-            ->delete();
+        DB::transaction(function () use ($bulkDeletePhotoItems): void {
+            PhotoItem::query()
+                ->whereIn('photo_id', $bulkDeletePhotoItems->photo_ids)
+                ->whereIn('item_id', $bulkDeletePhotoItems->item_ids)
+                ->delete();
+
+            $photoItems = PhotoItem::query()
+                ->whereIn('photo_id', $bulkDeletePhotoItems->photo_ids)
+                ->pluck('id');
+
+            PhotoItemTag::query()
+                ->whereIn('photo_item_id', $photoItems)
+                ->whereIn('tag_id', $bulkDeletePhotoItems->tag_ids)
+                ->delete();
+        });
     }
 }

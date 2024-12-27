@@ -13,17 +13,6 @@ const props = defineProps({
 
 const emit = defineEmits(['tag-selected']);
 
-const selectedTagIds = computed(() => {
-    return [
-        selectedMaterialTag.value?.id,
-        selectedBrandTag.value?.id,
-        selectedEventTag.value?.id,
-        selectedStateTag.value?.id,
-        selectedContentTag.value?.id,
-        selectedSizeTag.value?.id,
-    ].filter(tag => tag);
-});
-
 const selectedMaterialTag = ref(null);
 const selectedBrandTag = ref(null);
 const selectedEventTag = ref(null);
@@ -31,91 +20,160 @@ const selectedStateTag = ref(null);
 const selectedContentTag = ref(null);
 const selectedSizeTag = ref(null);
 
-const selectTag = (tag) => {
-    if (selectedMaterialTag.value) {
-        emit("tag-selected", selectedMaterialTag.value);
-    }
-    if (selectedBrandTag.value) emit("tag-selected", selectedBrandTag.value);
-    if (selectedEventTag.value) emit("tag-selected", selectedEventTag.value);
-    if (selectedStateTag.value) emit("tag-selected", selectedStateTag.value);
-    if (selectedContentTag.value) emit("tag-selected", selectedContentTag.value);
-    if (selectedSizeTag.value) emit("tag-selected", selectedSizeTag.value);
-
+const removeMaterialTag = () => {
+    if (!selectedMaterialTag.value) return;
+    emit("tag-selected", selectedMaterialTag.value);
     selectedMaterialTag.value = null;
+};
+
+const removeBrandTag = () => {
+    if (!selectedBrandTag.value) return;
+    emit("tag-selected", selectedBrandTag.value);
     selectedBrandTag.value = null;
+};
+
+const removeEventTag = () => {
+    if (!selectedEventTag.value) return;
+    emit("tag-selected", selectedEventTag.value);
     selectedEventTag.value = null;
+};
+
+const removeStateTag = () => {
+    if (!selectedStateTag.value) return;
+    emit("tag-selected", selectedStateTag.value);
     selectedStateTag.value = null;
+};
+
+const removeContentTag = () => {
+    if (!selectedContentTag.value) return;
+    emit("tag-selected", selectedContentTag.value);
     selectedContentTag.value = null;
+};
+
+const removeSizeTag = () => {
+    if (!selectedSizeTag.value) return;
+    emit("tag-selected", selectedSizeTag.value);
     selectedSizeTag.value = null;
 };
 
 </script>
 
 <template>
-    <li class="col-span-1 rounded-lg bg-white dark:bg-gray-800 shadow">
-        <div class="px-4 py-5 sm:p-6 flex-1">
-            <div>
-                <div class="space-y-2">
-                    <TagBox
-                        :items="tags.material"
-                        :nullable="true"
-                        placeholder="Material"
-                        v-model="selectedMaterialTag"
-                        @change="selectTag"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.brand"
-                        :nullable="true"
-                        placeholder="Brand"
-                        v-model="selectedBrandTag"
-                        @change="selectTag"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.content"
-                        :nullable="true"
-                        placeholder="Content"
-                        v-model="selectedContentTag"
-                        @change="selectTag"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.size"
-                        :nullable="true"
-                        placeholder="Size"
-                        v-model="selectedSizeTag"
-                        @change="selectTag"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.state"
-                        :nullable="true"
-                        placeholder="State"
-                        v-model="selectedStateTag"
-                        @change="selectTag"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.event"
-                        :nullable="true"
-                        placeholder="Event"
-                        v-model="selectedEventTag"
-                        @change="selectTag"
-                    ></TagBox>
-                </div>
-
-                <div v-if="selectedTagIds.length" class="mt-4 flex justify-center">
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="selectTag"
-                    >
-                        Add Selected Tags
-                    </PrimaryButton>
-                </div>
+    <div class="mt-8 space-y-2">
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.material"
+                :nullable="true"
+                placeholder="Material"
+                v-model="selectedMaterialTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedMaterialTag"
+                    @click="removeMaterialTag"
+                >
+                    Remove
+                </PrimaryButton>
             </div>
         </div>
-    </li>
+
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.brand"
+                :nullable="true"
+                placeholder="Brand"
+                v-model="selectedBrandTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedBrandTag"
+                    @click="removeBrandTag"
+                >
+                    Remove
+                </PrimaryButton>
+            </div>
+        </div>
+
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.content"
+                :nullable="true"
+                placeholder="Content"
+                v-model="selectedContentTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedContentTag"
+                    @click="removeContentTag"
+                >
+                    Remove
+                </PrimaryButton>
+            </div>
+        </div>
+
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.size"
+                :nullable="true"
+                placeholder="Size"
+                v-model="selectedSizeTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedSizeTag"
+                    @click="removeSizeTag"
+                >
+                    Remove
+                </PrimaryButton>
+            </div>
+        </div>
+
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.state"
+                :nullable="true"
+                placeholder="State"
+                v-model="selectedStateTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedStateTag"
+                    @click="removeStateTag"
+                >
+                    Remove
+                </PrimaryButton>
+            </div>
+        </div>
+
+        <div class="flex">
+            <TagBox
+                class="w-full md:w-96"
+                :items="tags.event"
+                :nullable="true"
+                placeholder="Event"
+                v-model="selectedEventTag"
+            ></TagBox>
+            <div class="ml-4 mt-0.5">
+                <PrimaryButton
+                    class="whitespace-nowrap"
+                    :disabled="!selectedEventTag"
+                    @click="removeEventTag"
+                >
+                    Remove
+                </PrimaryButton>
+            </div>
+        </div>
+    </div>
 </template>
 
 <style scoped>
