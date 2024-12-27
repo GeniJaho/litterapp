@@ -10,6 +10,8 @@ import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 import TagSelector from "@/Pages/Photos/Partials/TagSelector.vue";
+import DangerButton from "@/Components/DangerButton.vue";
+import ConfirmationModal from "@/Components/ConfirmationModal.vue";
 
 const props = defineProps({
     photoIds: Array,
@@ -32,6 +34,7 @@ const allTags = computed(() => {
 
 const selectedItem = ref(null);
 const showModal = ref(false);
+const showConfirmationModal = ref(false);
 const form = useForm({
     item_ids: [],
     tag_ids: [],
@@ -71,6 +74,8 @@ const removeTag = (key) => {
 };
 
 const save = () => {
+    showConfirmationModal.value = false;
+
     form
         .transform((data) => ({
             ...data,
@@ -219,7 +224,7 @@ const onKeyDown = (event) => {
                 class="ml-3 group relative"
                 :class="{ 'opacity-25': form.processing }"
                 :disabled="saveDisabled"
-                @click="save"
+                @click="showConfirmationModal = true"
             >
                 <Tooltip>
                     <div>
@@ -231,6 +236,32 @@ const onKeyDown = (event) => {
             </PrimaryButton>
         </template>
     </BulkTagModal>
+
+    <ConfirmationModal :show="showConfirmationModal" @close="showConfirmationModal = false">
+        <template #title>
+            Confirm Removal
+        </template>
+
+        <template #content>
+            Are you sure you want to remove the items and tags from the selected photos?<br>
+            You have selected {{ form.item_ids.length }} item(s) and {{ form.tag_ids.length }} tag(s).
+        </template>
+
+        <template #footer>
+            <SecondaryButton @click="showConfirmationModal = false">
+                Cancel
+            </SecondaryButton>
+
+            <DangerButton
+                class="ml-3"
+                :class="{ 'opacity-25': form.processing }"
+                :disabled="form.processing"
+                @click="save"
+            >
+                Remove
+            </DangerButton>
+        </template>
+    </ConfirmationModal>
 </template>
 
 <style scoped>
