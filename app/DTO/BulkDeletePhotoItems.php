@@ -5,15 +5,17 @@ namespace App\DTO;
 use App\Rules\PhotosBelongToUser;
 use Spatie\LaravelData\Data;
 
-class BulkPhotoItems extends Data
+class BulkDeletePhotoItems extends Data
 {
     /**
      * @param  int[]  $photo_ids
-     * @param  BulkItem[]  $items
+     * @param  int[]  $item_ids
+     * @param  int[]  $tag_ids
      */
     public function __construct(
         public array $photo_ids,
-        public array $items = [],
+        public array $item_ids = [],
+        public array $tag_ids = [],
     ) {}
 
     /**
@@ -28,6 +30,10 @@ class BulkPhotoItems extends Data
                 new PhotosBelongToUser,
             ],
             'photo_ids.*' => ['required', 'exists:photos,id'],
+            'item_ids' => ['array'],
+            'item_ids.*' => ['required', 'exists:items,id'],
+            'tag_ids' => ['array'],
+            'tag_ids.*' => ['required', 'exists:tags,id'],
         ];
     }
 

@@ -15,6 +15,7 @@ import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
+import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
 
 const props = defineProps({
     photos: Object,
@@ -222,6 +223,14 @@ const exportData = (format) => {
                             :tagShortcutsEnabled="tagShortcutsEnabled"
                             @closeModalWithSuccess="clearSelection"
                         ></BulkTag>
+
+                        <BulkRemoveItemsAndTags
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            :items="items"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkRemoveItemsAndTags>
                     </div>
 
                     <div>
