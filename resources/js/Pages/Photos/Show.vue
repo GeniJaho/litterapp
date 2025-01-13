@@ -30,7 +30,7 @@ const props = defineProps({
 const photo = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
-const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || false);
+const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || localStorage.getItem('tagShortcutsEnabled') === null);
 const zoomingEnabled = ref(localStorage.getItem('zoomingEnabled') !== 'false');
 const zoomedPhoto = ref(false);
 const zoomLevel = ref(parseFloat(localStorage.getItem('zoomLevel')) || 0.9);
