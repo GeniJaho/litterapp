@@ -7,6 +7,7 @@ use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\ClassMethod\MigrateToSimplifiedAttributeRector;
+use RectorLaravel\Rector\MethodCall\WhereToWhereLikeRector;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
@@ -39,6 +40,7 @@ return RectorConfig::configure()
     ->withRules([
         MigrateToSimplifiedAttributeRector::class,
         AddGenericReturnTypeToRelationsRector::class,
+        WhereToWhereLikeRector::class,
     ])
     ->withSkip([
         EncapsedStringsToSprintfRector::class,
