@@ -17,6 +17,7 @@ import ZoomIcon from "@/Components/ZoomIcon.vue";
 import Modal from "@/Components/Modal.vue";
 import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
+import LocationIcon from "@/Components/LocationIcon.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -292,7 +293,10 @@ const adjustZoomLevelWithMouseWheel = (event) => {
 
                             <ZoomIcon @click="zoomedPhoto = true" class="absolute top-0 left-0" />
 
-                            <TaggedIcon v-if="photo.photo_items.length" class="absolute top-2 right-2" />
+                            <div class="absolute top-2 right-2 flex gap-2">
+                                <LocationIcon v-if="photo.latitude && photo.longitude"/>
+                                <TaggedIcon v-if="photo.photo_items.length"/>
+                            </div>
 
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"

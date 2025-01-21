@@ -16,6 +16,7 @@ import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
+import LocationIcon from "@/Components/LocationIcon.vue";
 
 const props = defineProps({
     photos: Object,
@@ -325,7 +326,10 @@ const exportData = (format) => {
 
                                     <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
 
-                                    <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
+                                    <div class="absolute top-2 right-2 flex gap-2">
+                                        <LocationIcon v-if="photo.latitude && photo.longitude"/>
+                                        <TaggedIcon v-if="photo.items_exists"/>
+                                    </div>
 
                                     <ConfirmDeleteButton
                                         v-if="! isSelecting"
