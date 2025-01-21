@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\PhotoItemFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -10,10 +11,11 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
  * @property Collection<int, Tag> $tags
- * @property Photo $photo
+ * @property-read Photo $photo
  */
 class PhotoItem extends Pivot
 {
+    /** @use HasFactory<PhotoItemFactory> */
     use HasFactory;
 
     protected $table = 'photo_items';
@@ -33,7 +35,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Item, PhotoItem>
+     * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo
     {
@@ -41,7 +43,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Photo, PhotoItem>
+     * @return BelongsTo<Photo, $this>
      */
     public function photo(): BelongsTo
     {
@@ -49,7 +51,7 @@ class PhotoItem extends Pivot
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {

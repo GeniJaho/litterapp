@@ -40,7 +40,7 @@ class PhotoResource extends Resource
                     ->sortable(),
                 ImageColumn::make('full_path')
                     ->label('Photo')
-                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->where('path', 'like', "%{$search}%")),
+                    ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereLike('path', "%{$search}%")),
                 TextColumn::make('gps')
                     ->label('GPS')
                     ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
@@ -48,8 +48,8 @@ class PhotoResource extends Resource
                         : null
                     )
                     ->searchable(query: fn (Builder $query, string $search): Builder => $query
-                        ->where('latitude', 'like', "%{$search}%")
-                        ->orWhere('longitude', 'like', "%{$search}%")
+                        ->whereLike('latitude', "%{$search}%")
+                        ->orWhereLike('longitude', "%{$search}%")
                     ),
                 TextColumn::make('original_file_name')
                     ->sortable()

@@ -14,6 +14,9 @@ import Modal from "@/Components/Modal.vue";
 import Dropdown from "@/Components/Dropdown.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
+import DropdownLink from "@/Components/DropdownLink.vue";
+import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
+import LocationIcon from "@/Components/LocationIcon.vue";
 
 const props = defineProps({
     photos: Object,
@@ -156,6 +159,10 @@ const filter = (filters) => {
     clearSelection();
     router.get(window.location.pathname, filters);
 }
+
+const exportData = (format) => {
+    window.location.href = route('photos.export', {format});
+}
 </script>
 
 <template>
@@ -195,27 +202,65 @@ const filter = (filters) => {
         <div class="py-6 lg:py-16">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8">
 
-                <div class="flex flex-row gap-4 px-4 sm:px-0">
-                    <PrimaryButton @click="showFilters = !showFilters">
-                        {{ showFilters ? 'Hide' : 'Show' }} Filters
-                    </PrimaryButton>
+                <div class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                    <div class="flex flex-row gap-4">
+                        <PrimaryButton @click="showFilters = !showFilters">
+                            {{ showFilters ? 'Hide' : 'Show' }} Filters
+                        </PrimaryButton>
 
-                    <PrimaryButton @click="toggleSelecting">
+                        <PrimaryButton @click="toggleSelecting">
                         <span v-if="isSelecting">
                             Clear Selection {{ selectedPhotos.length ? `(${selectedPhotos.length})` : '' }}
                         </span>
-                        <span v-else>Select Photos</span>
-                    </PrimaryButton>
+                            <span v-else>Select Photos</span>
+                        </PrimaryButton>
 
-                    <BulkTag
-                        v-if="isSelecting && selectedPhotos.length"
-                        :photoIds="selectedPhotos"
-                        :tags="tags"
-                        :items="items"
-                        :tagShortcuts="tagShortcuts"
-                        :tagShortcutsEnabled="tagShortcutsEnabled"
-                        @closeModalWithSuccess="clearSelection"
-                    ></BulkTag>
+                        <BulkTag
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            :items="items"
+                            :tagShortcuts="tagShortcuts"
+                            :tagShortcutsEnabled="tagShortcutsEnabled"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkTag>
+
+                        <BulkRemoveItemsAndTags
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            :items="items"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkRemoveItemsAndTags>
+                    </div>
+
+                    <div>
+                        <Dropdown align="right" width="36">
+                            <template #trigger>
+                                <PrimaryButton class="group relative">
+                                    <Tooltip>
+                                        <div class="w-full min-w-32">
+                                            <div class="dark:text-white">
+                                                Downloads a file with all the items and
+                                                tags of the photos you have filtered
+                                            </div>
+                                        </div>
+                                    </Tooltip>
+                                    Export Data
+                                </PrimaryButton>
+                            </template>
+
+                            <template #content>
+                                <DropdownLink @click.prevent.stop="exportData('json')">
+                                    JSON
+                                </DropdownLink>
+                                <DropdownLink @click.prevent.stop="exportData('csv')">
+                                    CSV
+                                </DropdownLink>
+                            </template>
+                        </Dropdown>
+
+                    </div>
                 </div>
 
                 <Filters
@@ -281,7 +326,10 @@ const filter = (filters) => {
 
                                     <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
 
-                                    <TaggedIcon v-if="photo.items_exists" class="absolute top-2 right-2" />
+                                    <div class="absolute top-2 right-2 flex gap-2">
+                                        <LocationIcon v-if="photo.latitude && photo.longitude"/>
+                                        <TaggedIcon v-if="photo.items_exists"/>
+                                    </div>
 
                                     <ConfirmDeleteButton
                                         v-if="! isSelecting"

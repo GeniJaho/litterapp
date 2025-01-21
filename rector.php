@@ -3,14 +3,13 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodingStyle\Rector\ArrowFunction\StaticArrowFunctionRector;
-use Rector\CodingStyle\Rector\Closure\StaticClosureRector;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
-use Rector\CodingStyle\Rector\PostInc\PostIncDecToPreIncDecRector;
 use Rector\Config\RectorConfig;
-use Rector\Php74\Rector\LNumber\AddLiteralSeparatorToNumberRector;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
 use RectorLaravel\Rector\ClassMethod\MigrateToSimplifiedAttributeRector;
+use RectorLaravel\Rector\MethodCall\WhereToWhereLikeRector;
+use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
+use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
 return RectorConfig::configure()
@@ -33,7 +32,7 @@ return RectorConfig::configure()
         strictBooleans: true,
     )
     ->withSets([
-        LaravelSetList::LARAVEL_110,
+        LaravelLevelSetList::UP_TO_LARAVEL_110,
         LaravelSetList::LARAVEL_CODE_QUALITY,
         LaravelSetList::LARAVEL_ARRAY_STR_FUNCTION_TO_STATIC_CALL,
         LaravelSetList::LARAVEL_FACADE_ALIASES_TO_FULL_NAMES,
@@ -41,13 +40,11 @@ return RectorConfig::configure()
     ->withRules([
         MigrateToSimplifiedAttributeRector::class,
         AddGenericReturnTypeToRelationsRector::class,
+        WhereToWhereLikeRector::class,
     ])
     ->withSkip([
-        AddLiteralSeparatorToNumberRector::class,
-        PostIncDecToPreIncDecRector::class,
-        StaticArrowFunctionRector::class,
-        StaticClosureRector::class,
         EncapsedStringsToSprintfRector::class,
+        ReplaceFakerInstanceWithHelperRector::class,
         __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',
     ])
     ->withCache(

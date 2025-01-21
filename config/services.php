@@ -31,6 +31,11 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    'grafana' => [
+        'nav_link' => env('GRAFANA_NAV_LINK', 'https://globalmap.litterapp.net/'),
+        'map_link' => env('GRAFANA_MAP_LINK', 'https://globalmap.litterapp.net/'),
+    ],
+
     // Social
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),

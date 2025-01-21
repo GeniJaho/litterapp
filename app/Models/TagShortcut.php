@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Closure;
+use Database\Factories\TagShortcutFactory;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -16,10 +18,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class TagShortcut extends Model
 {
+    /** @use HasFactory<TagShortcutFactory> */
     use HasFactory;
 
     /**
-     * @return array<string, callable>
+     * @return array<string, Closure>
      */
     public static function commonEagerLoads(): array
     {
@@ -31,7 +34,7 @@ class TagShortcut extends Model
     }
 
     /**
-     * @return BelongsTo<User, TagShortcut>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -39,7 +42,7 @@ class TagShortcut extends Model
     }
 
     /**
-     * @return BelongsToMany<Item>
+     * @return BelongsToMany<Item, $this>
      */
     public function items(): BelongsToMany
     {
@@ -50,7 +53,7 @@ class TagShortcut extends Model
     }
 
     /**
-     * @return HasMany<TagShortcutItem>
+     * @return HasMany<TagShortcutItem, $this>
      */
     public function tagShortcutItems(): HasMany
     {

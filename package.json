@@ -6,20 +6,21 @@
         "build": "vite build"
     },
     "devDependencies": {
-        "@inertiajs/vue3": "^1.0.0",
-        "@tailwindcss/forms": "^0.5.2",
-        "@tailwindcss/typography": "^0.5.2",
-        "@vitejs/plugin-vue": "^4.0.0",
-        "autoprefixer": "^10.4.7",
-        "axios": "^1.1.2",
-        "laravel-vite-plugin": "^1.0.1",
-        "postcss": "^8.4.14",
-        "tailwindcss": "^3.3.3",
-        "vite": "^5.0.10",
-        "vue": "^3.3.4"
+        "@inertiajs/vue3": "^2.0",
+        "@tailwindcss/forms": "^0.5",
+        "@tailwindcss/typography": "^0.5",
+        "@vitejs/plugin-vue": "^4.0",
+        "autoprefixer": "^10.4",
+        "axios": "^1.1",
+        "laravel-vite-plugin": "^1.0",
+        "postcss": "^8.4",
+        "tailwindcss": "^3.3",
+        "vite": "^5.0",
+        "vue": "^3.3"
     },
     "dependencies": {
         "@headlessui/vue": "^1.7.17",
+        "@websitebeaver/vue-magnifier": "^1.1.0",
         "filepond": "^4.30.4",
         "filepond-plugin-file-validate-size": "^2.2.8",
         "filepond-plugin-file-validate-type": "^1.2.8",

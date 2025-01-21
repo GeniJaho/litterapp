@@ -34,6 +34,7 @@ jobs:
       - uses: php-actions/phpstan@v3
         with:
           php_version: 8.2
+          path: 'app'
 
   code-quality:
     runs-on: ubuntu-latest

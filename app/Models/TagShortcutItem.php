@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\TagShortcutItemFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  */
 class TagShortcutItem extends Pivot
 {
+    /** @use HasFactory<TagShortcutItemFactory> */
     use HasFactory;
 
     protected $table = 'tag_shortcut_items';
@@ -36,7 +38,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<TagShortcut, TagShortcutItem>
+     * @return BelongsTo<TagShortcut, $this>
      */
     public function tagShortcut(): BelongsTo
     {
@@ -44,7 +46,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsTo<Item, TagShortcutItem>
+     * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo
     {
@@ -52,7 +54,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return BelongsToMany<Tag>
+     * @return BelongsToMany<Tag, $this>
      */
     public function tags(): BelongsToMany
     {
@@ -70,7 +72,7 @@ class TagShortcutItem extends Pivot
     }
 
     /**
-     * @return HasMany<TagShortcutItemTag>
+     * @return HasMany<TagShortcutItemTag, $this>
      */
     public function tagShortcutItemTags(): HasMany
     {

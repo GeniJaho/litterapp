@@ -1,5 +1,11 @@
 <script setup>
-import {Link} from "@inertiajs/vue3";
+import {Link, usePage} from "@inertiajs/vue3";
+import {computed} from "vue";
+
+const page = usePage()
+
+const grafanaLink = computed(() => page.props.grafana.map_link)
+
 </script>
 
 <template>
@@ -31,11 +37,11 @@ import {Link} from "@inertiajs/vue3";
                     </div>
                 </div>
 
-                <div v-if="$page.props.auth?.user?.id == 1" class="pt-32 w-full">
+                <div class="pt-32 w-full">
                     <iframe class="w-full"
-                            src="https://globalmap.litterapp.net/"
+                            :src="grafanaLink"
                             width="450"
-                            height="350"
+                            height="450"
                             frameborder="0"
                     >
                     </iframe>
@@ -45,8 +51,7 @@ import {Link} from "@inertiajs/vue3";
                     <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
                     <div
                         class="text-center text-2xl leading-8 font-black tracking-widest-xl dark:text-mainWhite text-darkBlue pt-8">
-                        A
-                        common procedure
+                        A common procedure
                     </div>
                 </div>
             </div>
@@ -212,12 +217,12 @@ import {Link} from "@inertiajs/vue3";
                     Interested? Join our slack workspace:
                 </div>
                 <a
-                    href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2c81hu09y-Edwy2o74yk7FulbHACjnGw"
+                    href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2ykmkvdvk-hI94GonH46xrWN9NBhp_vA"
                     target="_blank"
                 >
                     <button
                         class="whitespace-nowrap inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
-                        Go to litterapp
+                        Go to Litterapp
                     </button>
                 </a>
             </div>

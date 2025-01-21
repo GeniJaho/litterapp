@@ -3,9 +3,9 @@
 namespace App\Http\Requests\Photos;
 
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Validation\Validator;
 
 class StorePhotosRequest extends FormRequest
 {

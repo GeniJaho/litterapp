@@ -111,6 +111,13 @@ setInterval(() => {
                 <span v-if="uploadProgress > 0">{{ uploadProgress.toFixed() }}%</span>
             </h1>
 
+            <h2 class="mt-2 text-sm text-gray-700 dark:text-gray-200">
+                <a href="https://docs.litterapp.net/en/20_Taking-Pictures/" target="_blank">
+                    <i class="fas fa-lightbulb mr-2"></i>
+                    <span class="underline">Tips for taking and uploading photos</span>
+                </a>
+            </h2>
+
             <div class="mt-6 text-gray-500 dark:text-gray-400">
                 <div class="mt-2">
                     <div v-if="uploadProgress > 0"

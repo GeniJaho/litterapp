@@ -16,6 +16,6 @@ abstract class TestCase extends BaseTestCase
 
         $this->withoutVite();
 
-        $this->swap(ExtractsExifFromPhoto::class, new FakeExtractExifFromPhotoAction());
+        $this->swap(ExtractsExifFromPhoto::class, new FakeExtractExifFromPhotoAction);
     }
 }

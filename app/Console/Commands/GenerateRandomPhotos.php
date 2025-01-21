@@ -16,7 +16,7 @@ class GenerateRandomPhotos extends Command
     {
         /** @var User $user */
         $user = User::query()
-            ->where('email', 'trashkiller@litterhero.com')
+            ->where('email', 'trashkiller@litterapp.com')
             ->first();
 
         $bar = progress('Generating 1M photos with tags...', 1_000_000);
@@ -34,6 +34,7 @@ class GenerateRandomPhotos extends Command
                 $photos[] = [
                     'user_id' => $user->id,
                     'path' => 'photos/default.jpg',
+                    'original_file_name' => fake()->unique()->sentence().'default.jpg',
                     'created_at' => $now,
                     'updated_at' => $now,
                 ];

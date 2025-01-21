@@ -2,8 +2,7 @@
 
 namespace App\DTO;
 
-use App\Models\Photo;
-use Closure;
+use App\Rules\PhotosBelongToUser;
 use Spatie\LaravelData\Data;
 
 class BulkPhotoItems extends Data
@@ -15,8 +14,7 @@ class BulkPhotoItems extends Data
     public function __construct(
         public array $photo_ids,
         public array $items = [],
-    ) {
-    }
+    ) {}
 
     /**
      * @return array<string, mixed>
@@ -27,20 +25,7 @@ class BulkPhotoItems extends Data
             'photo_ids' => [
                 'required',
                 'array',
-                function (string $attribute, mixed $value, Closure $fail): void {
-                    if (! is_array($value)) {
-                        return;
-                    }
-
-                    $photosBelongsToOthers = Photo::query()
-                        ->whereIn('id', $value)
-                        ->where('user_id', '!=', auth()->id())
-                        ->exists();
-
-                    if ($photosBelongsToOthers) {
-                        $fail('You are not the owner of the photos.');
-                    }
-                },
+                new PhotosBelongToUser,
             ],
             'photo_ids.*' => ['required', 'exists:photos,id'],
         ];

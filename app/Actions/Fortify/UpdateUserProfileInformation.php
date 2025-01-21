@@ -4,7 +4,6 @@ namespace App\Actions\Fortify;
 
 use App\Jobs\MinifyProfilePhoto;
 use App\Models\User;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
@@ -34,8 +33,7 @@ class UpdateUserProfileInformation implements UpdatesUserProfileInformation
             MinifyProfilePhoto::dispatch($user);
         }
 
-        if ($input['email'] !== $user->email &&
-            $user instanceof MustVerifyEmail) {
+        if ($input['email'] !== $user->email) {
             $this->updateVerifiedUser($user, $input);
         } else {
             $user->forceFill([

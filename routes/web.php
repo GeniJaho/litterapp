@@ -8,6 +8,7 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LitterBotController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
+use App\Http\Controllers\Photos\ExportPhotosController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
@@ -50,11 +51,14 @@ Route::middleware([
     Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 
+    Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
+    Route::delete('/photos/items', [BulkPhotoItemsController::class, 'destroy'])->name('bulk-photo-items.destroy');
+
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
+    Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
 
-    Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
     Route::post('/photo-items/{photoItem}', [PhotoItemsController::class, 'update']);

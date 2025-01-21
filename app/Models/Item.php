@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Database\Factories\ItemFactory;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,10 +16,11 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Item extends Model
 {
+    /** @use HasFactory<ItemFactory> */
     use HasFactory;
 
     /**
-     * @return BelongsToMany<Photo>
+     * @return BelongsToMany<Photo, $this>
      */
     public function photos(): BelongsToMany
     {
@@ -29,7 +31,7 @@ class Item extends Model
     }
 
     /**
-     * @return HasMany<PhotoItem>
+     * @return HasMany<PhotoItem, $this>
      */
     public function photoItems(): HasMany
     {

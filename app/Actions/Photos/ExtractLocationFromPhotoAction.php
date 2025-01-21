@@ -64,10 +64,6 @@ class ExtractLocationFromPhotoAction
 
         $parts = explode('/', $coordinates);
 
-        if ($parts == []) {
-            return 0.0;
-        }
-
         if (count($parts) === 1) {
             return (float) $parts[0];
         }

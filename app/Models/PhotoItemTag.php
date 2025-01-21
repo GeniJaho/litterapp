@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
+use Database\Factories\PhotoItemTagFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 class PhotoItemTag extends Pivot
 {
+    /** @use HasFactory<PhotoItemTagFactory> */
     use HasFactory;
 
     protected $table = 'photo_item_tag';
@@ -15,7 +17,7 @@ class PhotoItemTag extends Pivot
     public $incrementing = true;
 
     /**
-     * @return BelongsTo<PhotoItem, PhotoItemTag>
+     * @return BelongsTo<PhotoItem, $this>
      */
     public function photoItem(): BelongsTo
     {
@@ -23,7 +25,7 @@ class PhotoItemTag extends Pivot
     }
 
     /**
-     * @return BelongsTo<Tag, PhotoItemTag>
+     * @return BelongsTo<Tag, $this>
      */
     public function tag(): BelongsTo
     {
