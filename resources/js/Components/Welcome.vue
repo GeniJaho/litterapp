@@ -217,12 +217,12 @@ const grafanaLink = computed(() => page.props.grafana.map_link)
                     Interested? Join our slack workspace:
                 </div>
                 <a
-                    href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2c81hu09y-Edwy2o74yk7FulbHACjnGw"
+                    href="https://join.slack.com/t/helpingearthtogether/shared_invite/zt-2ykmkvdvk-hI94GonH46xrWN9NBhp_vA"
                     target="_blank"
                 >
                     <button
                         class="whitespace-nowrap inline-flex items-center px-4 py-3 bg-turqoFocus border border-transparent rounded-md font-black text-sm tracking-widest-xl text-darkBlue hover:bg-turqo focus:bg-turqoFocus active:bg-turqoFocus focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 transition ease-in-out duration-150 uppercase">
-                        Go to litterapp
+                        Go to Litterapp
                     </button>
                 </a>
             </div>
