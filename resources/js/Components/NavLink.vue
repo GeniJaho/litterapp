@@ -13,8 +13,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'inline-flex items-center px-1 pt-1 border-b-4 border-darkBlue dark:border-mainWhite text-sm tracking-widest font-semibold leading-4 text-darkBlue focus:outline-none focus:border-darkblue transition duration-150 ease-in-out'
-        : 'inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm tracking-widest font-semibold leading-4 text-darkBlue hover:text-gray-700 hover:border-darkBlue hover:dark:border-mainWhite focus:outline-none focus:text-gray-700 focus:border-darkBlue focus:dark:border-white transition duration-150 ease-in-out';
+        ? 'inline-flex items-center px-1 pt-1 border-b-4 border-darkBlue dark:border-mainWhite text-sm tracking-widest font-semibold leading-4 text-darkBlue focus:outline-hidden focus:border-darkblue transition duration-150 ease-in-out'
+        : 'inline-flex items-center px-1 pt-1 border-b-4 border-transparent text-sm tracking-widest font-semibold leading-4 text-darkBlue hover:text-gray-700 hover:border-darkBlue dark:hover:border-mainWhite focus:outline-hidden focus:text-gray-700 focus:border-darkBlue dark:focus:border-white transition duration-150 ease-in-out';
 });
 </script>
 

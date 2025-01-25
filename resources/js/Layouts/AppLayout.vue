@@ -87,7 +87,7 @@ const logout = () => {
                             <div class="ml-3 relative">
                                 <a :href="facebookLink"
                                    target="_blank"
-                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-none"
+                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-hidden"
                                 >
                                     <i class="fab fa-facebook text-xl"></i>
                                 </a>
@@ -96,7 +96,7 @@ const logout = () => {
                             <div class="ml-3 relative">
                                 <a :href="twitterLink"
                                    target="_blank"
-                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-none"
+                                   class="inline-flex items-center p-1 border border-transparent text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-hidden"
                                 >
                                     <i class="fab fa-twitter text-xl"></i>
                                 </a>
@@ -112,7 +112,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-hidden focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team?.name ?? 'My Teams' }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -185,7 +185,7 @@ const logout = () => {
                                 <Dropdown align="right" width="48">
                                     <template #trigger>
                                         <button v-if="$page.props.jetstream.managesProfilePhotos"
-                                                class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                                                class="flex text-sm border-2 border-transparent rounded-full focus:outline-hidden focus:border-gray-300 transition">
                                             <img class="h-8 w-8 rounded-full object-cover"
                                                  :src="$page.props.auth.user.profile_photo_url"
                                                  :alt="$page.props.auth.user.name">
@@ -193,7 +193,7 @@ const logout = () => {
 
                                         <span v-else class="inline-flex rounded-md">
                                             <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-hidden focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -256,7 +256,7 @@ const logout = () => {
 
                             <!-- Hamburger -->
                             <button
-                                class="ml-2 inline-flex items-center justify-center p-1 rounded-md text-darkBlue hover:text-slate-900 hover:bg-mainWhite hover:opacity-75 focus:outline-none focus:bg-mainWhite focus:text-slate-900 transition duration-150 ease-in-out"
+                                class="ml-2 inline-flex items-center justify-center p-1 rounded-md text-darkBlue hover:text-slate-900 hover:bg-mainWhite hover:opacity-75 focus:outline-hidden focus:bg-mainWhite focus:text-slate-900 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = ! showingNavigationDropdown">
                                 <svg
                                     class="h-10 w-10 font-black"
@@ -420,7 +420,7 @@ const logout = () => {
             </nav>
 
             <!-- Page Heading -->
-            <header v-if="$slots.header" class=" dark:bg-darkBlue shadow">
+            <header v-if="$slots.header" class=" dark:bg-darkBlue shadow-sm">
                 <div class="max-w-9xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
                     <slot name="header"/>
                 </div>

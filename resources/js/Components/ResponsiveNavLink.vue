@@ -14,8 +14,8 @@ const props = defineProps({
 
 const classes = computed(() => {
     return props.active
-        ? 'block w-full pl-3 pr-4 py-2 border-l-4 border-darkBlue text-left text-base font-medium text-darkBlue bg-mainWhite focus:outline-none focus:text-darkBlue focus:bg-mainWhite focus:border-darkBlue focus:opacity-100 transition duration-150 ease-in-out'
-        : 'block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-darkBlue hover:text-slate-900 hover:bg-mainwhite hover:border-slate-800 focus:outline-none focus:text-darkBlue focus:bg-mainWhite focus:border-slate-600 transition duration-150 ease-in-out';
+        ? 'block w-full pl-3 pr-4 py-2 border-l-4 border-darkBlue text-left text-base font-medium text-darkBlue bg-mainWhite focus:outline-hidden focus:text-darkBlue focus:bg-mainWhite focus:border-darkBlue focus:opacity-100 transition duration-150 ease-in-out'
+        : 'block w-full pl-3 pr-4 py-2 border-l-4 border-transparent text-left text-base font-medium text-darkBlue hover:text-slate-900 hover:bg-mainwhite hover:border-slate-800 focus:outline-hidden focus:text-darkBlue focus:bg-mainWhite focus:border-slate-600 transition duration-150 ease-in-out';
 });
 </script>
 

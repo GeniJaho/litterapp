@@ -61,7 +61,7 @@ onMounted(() => {
             <span class="inline-flex rounded-md">
                 <button type="button"
                         @click="toggleDropdown"
-                        class="inline-flex items-center p-1 border border-transparent font-medium rounded-md text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-none focus:bg-mainWhite active:bg-mainWhite transition ease-in-out duration-150"
+                        class="inline-flex items-center p-1 border border-transparent font-medium rounded-md text-darkBlue bg-turqoFocus hover:text-gray-700 focus:outline-hidden focus:bg-mainWhite active:bg-mainWhite transition ease-in-out duration-150"
                 >
                     <i class="far fa-sun h-6 w-8 text-base" v-if="option === 'light'"></i>
                     <i class="far fa-moon h-6 w-8 text-base" v-if="option === 'dark'"></i>

@@ -177,7 +177,7 @@ const exportData = (format) => {
                 <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
                 <Dropdown align="right" width="64">
                     <template #trigger>
-                        <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
+                        <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-hidden focus:border-gray-300 transition">
                             <i class="fas fa-gear text-lg text-gray-800 dark:text-gray-200 mt-0.5 sm:ml-[1px]"></i>
                         </button>
                     </template>
@@ -299,7 +299,7 @@ const exportData = (format) => {
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
-                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
+                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-linear-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <div
                                 v-for="photo in photos.data"
@@ -363,9 +363,9 @@ const exportData = (format) => {
                                         v-if="link.url"
                                         :href="link.url"
                                         v-html="link.label"
-                                        :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"
+                                        :class="`px-4 py-2 rounded-sm ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"
                                     ></Link>
-                                    <span v-else v-html="link.label" :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"></span>
+                                    <span v-else v-html="link.label" :class="`px-4 py-2 rounded-sm ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"></span>
                                 </div>
                             </div>
                         </div>

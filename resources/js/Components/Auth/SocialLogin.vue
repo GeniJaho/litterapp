@@ -14,13 +14,13 @@
 
         <div class="mt-6 grid grid-cols-2 gap-4">
             <a :href="route('auth.google.redirect')"
-               class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent">
+               class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent">
                 <i class="fab fa-google text-lg"></i>
                 <span class="text-sm font-semibold leading-6">Google</span>
             </a>
 
             <a :href="route('auth.github.redirect')"
-               class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent">
+               class="flex w-full items-center justify-center gap-3 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus-visible:ring-transparent">
                 <i class="fab fa-github text-lg"></i>
                 <span class="text-sm font-semibold leading-6">GitHub</span>
             </a>
