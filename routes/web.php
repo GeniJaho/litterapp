@@ -42,13 +42,15 @@ Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 Route::get('/auth/twitter/redirect', [TwitterController::class, 'redirect'])->name('auth.twitter.redirect');
 Route::get('/auth/twitter/callback', [TwitterController::class, 'callback']);
 
+Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(function () {
+    Route::impersonate();
+});
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::impersonate();
-
     Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 

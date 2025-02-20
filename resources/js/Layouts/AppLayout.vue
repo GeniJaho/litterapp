@@ -246,7 +246,11 @@ const logout = () => {
 
                                         <!-- Authentication -->
 
-                                        <DropdownLink v-if="isImpersonating" :href="route('impersonate.leave')">
+                                        <DropdownLink
+                                            v-if="isImpersonating"
+                                            :href="route('impersonate.leave')"
+                                            as="a"
+                                        >
                                             Leave Impersonation
                                         </DropdownLink>
 
@@ -390,7 +394,11 @@ const logout = () => {
                                 Admin Panel
                             </ResponsiveNavLink>
 
-                            <ResponsiveNavLink v-if="isImpersonating" :href="route('impersonate.leave')">
+                            <ResponsiveNavLink
+                                v-if="isImpersonating"
+                                :href="route('impersonate.leave')"
+                                as="externalLink"
+                            >
                                 Leave Impersonation
                             </ResponsiveNavLink>
 
