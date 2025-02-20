@@ -45,6 +45,9 @@ class HandleInertiaRequests extends Middleware
                 'facebook_link' => config('social.facebook_link'),
                 'twitter_link' => config('social.twitter_link'),
             ],
+            'auth.user' => fn () => $request->user()
+                ? $request->user()->append(['is_admin', 'is_being_impersonated'])
+                : null,
         ]);
     }
 }

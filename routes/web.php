@@ -47,6 +47,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
+    Route::impersonate();
+
     Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 

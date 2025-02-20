@@ -16,6 +16,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Lab404\Impersonate\Models\Impersonate;
 use Laravel\Fortify\TwoFactorAuthenticatable;
 use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
@@ -27,6 +28,8 @@ use Laravel\Sanctum\HasApiTokens;
  * @property Collection<int, Team> $ownedTeams
  * @property Collection<int, TagShortcut> $tagShortcuts
  * @property-read string $profile_photo_url
+ * @property-read bool $is_admin
+ * @property-read bool $is_being_impersonated
  */
 class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 {
@@ -37,6 +40,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     use HasProfilePhoto;
     use HasTeams;
+    use Impersonate;
     use Notifiable;
     use TwoFactorAuthenticatable;
 
@@ -74,12 +78,38 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
 
     public function canAccessPanel(Panel $panel): bool
     {
-        return in_array($this->email, [
+        return $this->is_admin;
+    }
+
+    public function canImpersonate(): bool
+    {
+        return $this->is_admin;
+    }
+
+    public function canBeImpersonated(): bool
+    {
+        return ! $this->is_admin;
+    }
+
+    /**
+     * @return Attribute<bool, never>
+     */
+    protected function isBeingImpersonated(): Attribute
+    {
+        return Attribute::get(fn () => $this->isImpersonated());
+    }
+
+    /**
+     * @return Attribute<bool, never>
+     */
+    protected function isAdmin(): Attribute
+    {
+        return Attribute::get(fn (): bool => in_array($this->email, [
             'admin@litterhero.com',
             'admin@litterapp.com',
             'suzefred@gmail.com',
             'pjhummelen@gmail.com',
-        ]);
+        ]));
     }
 
     /**

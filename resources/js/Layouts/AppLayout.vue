@@ -20,6 +20,8 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.nav_link)
 const facebookLink = computed(() => page.props.nav.facebook_link)
 const twitterLink = computed(() => page.props.nav.twitter_link)
+const isAdmin = computed(() => page.props.auth.user?.is_admin)
+const isImpersonating = computed(() => page.props.auth.user?.is_being_impersonated)
 
 const switchToTeam = (team) => {
     router.put(route('current-team.update'), {
@@ -41,6 +43,11 @@ const logout = () => {
         <Banner/>
 
         <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
+            <div v-if="isImpersonating"
+                 class="fixed w-full z-10 bg-gray-900 py-1 xl:py-2 text-center text-turqoFocus"
+            >
+                Impersonating {{ $page.props.auth.user.name }}.
+            </div>
             <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
                 <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-40">
@@ -227,7 +234,22 @@ const logout = () => {
 
                                         <div class="border-t border-gray-200 dark:border-gray-600"/>
 
+                                        <DropdownLink
+                                            v-if="isAdmin"
+                                            :href="route('filament.admin.pages.dashboard')"
+                                            as="a"
+                                        >
+                                            Admin Panel
+                                        </DropdownLink>
+
+                                        <div class="border-t border-gray-200 dark:border-gray-600"/>
+
                                         <!-- Authentication -->
+
+                                        <DropdownLink v-if="isImpersonating" :href="route('impersonate.leave')">
+                                            Leave Impersonation
+                                        </DropdownLink>
+
                                         <form @submit.prevent="logout">
                                             <DropdownLink as="button">
                                                 Log Out
@@ -358,6 +380,18 @@ const logout = () => {
                                                :href="route('api-tokens.index')"
                                                :active="route().current('api-tokens.index')">
                                 API Tokens
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink
+                                v-if="isAdmin"
+                                :href="route('filament.admin.pages.dashboard')"
+                                as="externalLink"
+                            >
+                                Admin Panel
+                            </ResponsiveNavLink>
+
+                            <ResponsiveNavLink v-if="isImpersonating" :href="route('impersonate.leave')">
+                                Leave Impersonation
                             </ResponsiveNavLink>
 
                             <!-- Authentication -->

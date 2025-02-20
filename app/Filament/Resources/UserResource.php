@@ -95,6 +95,10 @@ class UserResource extends Resource
             ])
             ->actions([
                 EditAction::make(),
+                Action::make('impersonate')
+                    ->visible(fn (User $user): bool => $user->canBeImpersonated())
+                    ->icon('heroicon-o-user-circle')
+                    ->url(fn (User $user): string => route('impersonate', $user)),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
