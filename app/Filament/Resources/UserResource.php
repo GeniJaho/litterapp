@@ -56,6 +56,7 @@ class UserResource extends Resource
                     ->searchable(),
                 ImageColumn::make('profile_photo_path')
                     ->label('Avatar')
+                    ->disk(config()->string('jetstream.profile_photo_disk'))
                     ->circular()
                     ->defaultImageUrl(fn (User $user): string => 'https://ui-avatars.com/api/?background=0D8ABC&color=fff&name='.urlencode((string) $user->name)),
                 TextColumn::make('name')
