@@ -34,6 +34,7 @@ return [
     'grafana' => [
         'nav_link' => env('GRAFANA_NAV_LINK', 'https://globalmap.litterapp.net/'),
         'map_link' => env('GRAFANA_MAP_LINK', 'https://globalmap.litterapp.net/'),
+        'events_map_link' => env('GRAFANA_EVENTS_MAP_LINK', 'https://globalmap.litterapp.net/'),
     ],
 
     // Social

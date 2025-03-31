@@ -143,7 +143,7 @@ const addTagsToItem = () => {
                         id="quantity"
                         type="number"
                         :model-value="pivotItem.quantity"
-                        class="w-12 mr-2"
+                        class="w-14 px-2 mr-2"
                         required
                         min="1"
                         max="1000"

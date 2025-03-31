@@ -61,12 +61,17 @@ const logout = () => {
                             </div>
 
                             <!-- Navigation Links -->
-                            <div class="hidden sm:space-x-8 lg:space-x-24 sm:-my-px ml-12 lg:ml-14 md:flex">
+                            <div class="hidden sm:space-x-8 md:space-x-6 lg:space-x-12 sm:-my-px ml-12 lg:ml-14 md:flex">
                                 <NavLink :href="grafanaLink"
                                          :externalLink="true"
                                          target="_blank"
                                 >
                                     Global Data
+                                </NavLink>
+                                <NavLink :href="route('events')"
+                                         :active="route().current('events')"
+                                >
+                                    Events
                                 </NavLink>
                                 <NavLink v-if="$page.props.auth.user"
                                          :href="route('my-photos')"
@@ -320,6 +325,12 @@ const logout = () => {
                                            target="_blank"
                         >
                             Global Data
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink :href="route('events')"
+                                           :active="route().current('events')"
+                        >
+                            Events
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user"

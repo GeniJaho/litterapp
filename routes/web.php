@@ -4,6 +4,7 @@ use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\DocsController;
+use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
@@ -34,6 +35,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', HomeController::class)->name('home');
 Route::get('/docs/en/', DocsController::class)->name('docs');
+Route::get('/events', EventsController::class)->name('events');
 
 Route::get('/auth/google/redirect', [GoogleController::class, 'redirect'])->name('auth.google.redirect');
 Route::get('/auth/google/callback', [GoogleController::class, 'callback']);
