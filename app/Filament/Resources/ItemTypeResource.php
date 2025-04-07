@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\ItemResource\Pages\ListItems;
-use App\Models\Item;
-use Filament\Forms\Components\Select;
+use App\Filament\Resources\ItemTypeResource\Pages\ListItemTypes;
+use App\Models\ItemType;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
@@ -15,9 +14,9 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
-class ItemResource extends Resource
+class ItemTypeResource extends Resource
 {
-    protected static ?string $model = Item::class;
+    protected static ?string $model = ItemType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
@@ -25,9 +24,6 @@ class ItemResource extends Resource
     {
         return $form
             ->schema([
-                Select::make('item_type_id')
-                    ->nullable()
-                    ->relationship(name: 'type', titleAttribute: 'name'),
                 TextInput::make('name')
                     ->required()
                     ->unique(ignoreRecord: true)
@@ -39,19 +35,11 @@ class ItemResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('id')
-                    ->label('ID')
-                    ->sortable()
-                    ->searchable(),
                 TextColumn::make('name')
-                    ->sortable()
                     ->searchable(),
-                TextColumn::make('type.name')
-                    ->sortable()
-                    ->searchable(),
-                TextColumn::make('photo_items_count')
-                    ->counts('photoItems')
-                    ->label('Times used')
+                TextColumn::make('items_count')
+                    ->counts('items')
+                    ->label('Total Items')
                     ->sortable()
                     ->toggleable()
                     ->numeric(),
@@ -75,8 +63,7 @@ class ItemResource extends Resource
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),
-            ])
-            ->defaultSort('name');
+            ]);
     }
 
     public static function getRelations(): array
@@ -89,7 +76,7 @@ class ItemResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListItems::route('/'),
+            'index' => ListItemTypes::route('/'),
         ];
     }
 }
