@@ -1,0 +1,31 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Models\\Item\:\:photos\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Photo, \$this\(App\\Models\\Item\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Photo, \$this\(App\\Models\\Item\), App\\Models\\PhotoItem, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Item.php
+
+		-
+			message: '#^Method App\\Models\\Photo\:\:items\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Item, \$this\(App\\Models\\Photo\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Item, \$this\(App\\Models\\Photo\), App\\Models\\PhotoItem, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/Photo.php
+
+		-
+			message: '#^Method App\\Models\\PhotoItem\:\:tags\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Tag, \$this\(App\\Models\\PhotoItem\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Tag, \$this\(App\\Models\\PhotoItem\), App\\Models\\PhotoItemTag, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/PhotoItem.php
+
+		-
+			message: '#^Method App\\Models\\TagShortcut\:\:items\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Item, \$this\(App\\Models\\TagShortcut\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Item, \$this\(App\\Models\\TagShortcut\), App\\Models\\TagShortcutItem, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/TagShortcut.php
+
+		-
+			message: '#^Method App\\Models\\TagShortcutItem\:\:tags\(\) should return Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Tag, \$this\(App\\Models\\TagShortcutItem\), Illuminate\\Database\\Eloquent\\Relations\\Pivot, ''pivot''\> but returns Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany\<App\\Models\\Tag, \$this\(App\\Models\\TagShortcutItem\), App\\Models\\TagShortcutItemTag, ''pivot''\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Models/TagShortcutItem.php

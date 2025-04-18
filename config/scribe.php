@@ -19,6 +19,7 @@ use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseAttributes;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseFileTag;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseResponseTag;
 use Knuckles\Scribe\Extracting\Strategies\Responses\UseTransformerTags;
+use Knuckles\Scribe\Extracting\Strategies\StaticData;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromLaravelAPI;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamAttribute;
 use Knuckles\Scribe\Extracting\Strategies\UrlParameters\GetFromUrlParamTag;
@@ -242,10 +243,12 @@ INTRO
             GetFromHeaderAttribute::class,
             GetFromHeaderTag::class,
             [
-                'override',
+                StaticData::class,
                 [
-                    'Content-Type' => 'application/json',
-                    'Accept' => 'application/json',
+                    'data' => [
+                        'Content-Type' => 'application/json',
+                        'Accept' => 'application/json',
+                    ],
                 ],
             ],
         ],
