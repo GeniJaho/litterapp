@@ -50,7 +50,7 @@ RUN set -eux; \
 		opcache \
 		pdo_mysql \
 		zip \
-        exif 
+        exif
 
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
@@ -67,7 +67,7 @@ COPY --chown=$user . /app
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install --optimize-autoloader
-RUN php artisan config:clear && php artisan cache:clear && php artisan storage:link
+RUN php artisan optimize && php artisan storage:link
 
 RUN npm install && npm run build
 

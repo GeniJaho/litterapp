@@ -78,7 +78,7 @@ COPY --chown=$user . /app
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install --optimize-autoloader --no-dev
-RUN php artisan config:clear && php artisan cache:clear && php artisan storage:link
+RUN php artisan optimize && php artisan storage:link
 
 RUN npm install && npm run build
 

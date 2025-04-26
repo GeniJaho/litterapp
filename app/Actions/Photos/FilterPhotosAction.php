@@ -9,7 +9,7 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 class FilterPhotosAction
 {
     /**
-     * @return LengthAwarePaginator<Photo>
+     * @return LengthAwarePaginator<int, Photo>
      */
     public function run(User $user): LengthAwarePaginator
     {
