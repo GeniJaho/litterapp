@@ -41,7 +41,7 @@ const grafanaLink = computed(() => page.props.grafana.map_link)
                     <iframe class="w-full"
                             :src="grafanaLink"
                             width="450"
-                            height="450"
+                            height="750"
                             frameborder="0"
                     >
                     </iframe>

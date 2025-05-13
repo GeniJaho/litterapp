@@ -331,6 +331,14 @@ const exportData = (format) => {
                                         <TaggedIcon v-if="photo.items_exists"/>
                                     </div>
 
+                                    <div
+                                        v-if="photo.taken_at_local"
+                                        class="absolute bottom-2 left-2 text-xs shadow bg-black/50 rounded px-2 py-1 text-white"
+                                    >
+                                        <i class="fas fa-camera mr-1"></i>
+                                        {{ photo.taken_at_local }}
+                                    </div>
+
                                     <ConfirmDeleteButton
                                         v-if="! isSelecting"
                                         @delete="deletePhoto(photo.id)"

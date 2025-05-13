@@ -298,6 +298,14 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 <TaggedIcon v-if="photo.photo_items.length"/>
                             </div>
 
+                            <div
+                                v-if="photo.taken_at_local"
+                                class="absolute bottom-4 left-2 text-xs shadow bg-black/50 rounded px-2 py-1 text-white"
+                            >
+                                <i class="fas fa-camera mr-1"></i>
+                                {{ photo.taken_at_local }}
+                            </div>
+
                             <ConfirmDeleteButton
                                 @delete="deletePhoto"
                                 class="absolute bottom-4 right-2"
