@@ -39,6 +39,7 @@ return RectorConfig::configure()
     ->withRules([
         AddGenericReturnTypeToRelationsRector::class,
         WhereToWhereLikeRector::class,
+        \RectorLaravel\Rector\MethodCall\ValidationRuleArrayStringValueToArrayRector::class,
     ])
     ->withSkip([
         EncapsedStringsToSprintfRector::class,

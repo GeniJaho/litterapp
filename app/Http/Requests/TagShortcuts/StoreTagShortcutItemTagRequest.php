@@ -15,8 +15,8 @@ class StoreTagShortcutItemTagRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'tag_ids' => 'required|array',
-            'tag_ids.*' => 'required|integer|exists:tags,id',
+            'tag_ids' => ['required', 'array'],
+            'tag_ids.*' => ['required', 'integer', 'exists:tags,id'],
         ];
     }
 }

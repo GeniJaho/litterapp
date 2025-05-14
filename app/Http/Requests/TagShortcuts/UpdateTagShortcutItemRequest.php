@@ -15,10 +15,10 @@ class UpdateTagShortcutItemRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'picked_up' => 'nullable|boolean',
-            'recycled' => 'nullable|boolean',
-            'deposit' => 'nullable|boolean',
-            'quantity' => 'nullable|integer|min:1|max:1000',
+            'picked_up' => ['nullable', 'boolean'],
+            'recycled' => ['nullable', 'boolean'],
+            'deposit' => ['nullable', 'boolean'],
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:1000'],
         ];
     }
 }
