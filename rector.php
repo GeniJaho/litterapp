@@ -6,6 +6,7 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
+use RectorLaravel\Rector\MethodCall\ValidationRuleArrayStringValueToArrayRector;
 use RectorLaravel\Rector\MethodCall\WhereToWhereLikeRector;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
 use RectorLaravel\Set\LaravelLevelSetList;
@@ -39,7 +40,7 @@ return RectorConfig::configure()
     ->withRules([
         AddGenericReturnTypeToRelationsRector::class,
         WhereToWhereLikeRector::class,
-        \RectorLaravel\Rector\MethodCall\ValidationRuleArrayStringValueToArrayRector::class,
+        ValidationRuleArrayStringValueToArrayRector::class,
     ])
     ->withSkip([
         EncapsedStringsToSprintfRector::class,
