@@ -23,6 +23,7 @@ class PhotoItemSuggestionFactory extends Factory
             'photo_id' => Photo::factory(),
             'item_id' => Item::factory(),
             'score' => fake()->randomFloat(2, 0, 1),
+            'is_accepted' => null,
         ];
     }
 }

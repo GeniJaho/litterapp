@@ -11,12 +11,12 @@ use Illuminate\Support\Facades\Log;
 class ClassifyPhotoAction
 {
     public function __construct(
-        #[Config('services.litterbot.url')] protected string $url,
+        #[Config('services.litterbot.url')] protected string $litterBotUrl,
     ) {}
 
     public function run(Photo $photo): ?PhotoItemPrediction
     {
-        $response = Http::timeout(5)->post("{$this->url}/predict", [
+        $response = Http::timeout(5)->post("{$this->litterBotUrl}/predict", [
             'image_path' => $photo->full_path,
         ]);
 
