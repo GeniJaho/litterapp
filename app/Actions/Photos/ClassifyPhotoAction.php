@@ -8,7 +8,7 @@ use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class ClassifyPhotoAction
+class ClassifyPhotoAction implements ClassifiesPhoto
 {
     public function __construct(
         #[Config('services.litterbot.url')] protected string $litterBotUrl,

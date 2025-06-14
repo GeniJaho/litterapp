@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Photos\ClassifyPhotoAction;
+use App\Actions\Photos\ClassifiesPhoto;
 use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
@@ -10,8 +10,12 @@ use Illuminate\Http\JsonResponse;
 
 class LitterBotController extends Controller
 {
-    public function suggest(Photo $photo, ClassifyPhotoAction $action): JsonResponse
+    public function suggest(Photo $photo, ClassifiesPhoto $action): JsonResponse
     {
+        if ($photo->user_id !== auth()->id()) {
+            abort(404);
+        }
+
         $prediction = $action->run($photo);
 
         if (! $prediction instanceof PhotoItemPrediction) {
@@ -46,6 +50,10 @@ class LitterBotController extends Controller
             'drink-pouch' => 'Drink Pouch',
             'straw' => 'Straw',
         ];
+
+        if (! isset($itemClassNames[$prediction->class_name])) {
+            return null;
+        }
 
         return Item::query()->where('name', $itemClassNames[$prediction->class_name])->first();
     }

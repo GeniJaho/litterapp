@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Actions\Photos\ClassifiesPhoto;
+use App\Actions\Photos\ClassifyPhotoAction;
 use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Database\Eloquent\Model;
@@ -30,5 +32,6 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
 
         $this->app->bind(ExtractsExifFromPhoto::class, ExtractExifFromPhotoAction::class);
+        $this->app->bind(ClassifiesPhoto::class, ClassifyPhotoAction::class);
     }
 }
