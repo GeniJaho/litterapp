@@ -9,6 +9,7 @@ use App\Models\Photo;
 class FakeClassifyPhotoAction implements ClassifiesPhoto
 {
     private ?PhotoItemPrediction $result = null;
+
     private bool $shouldFail = false;
 
     public function run(Photo $photo): ?PhotoItemPrediction
@@ -23,12 +24,14 @@ class FakeClassifyPhotoAction implements ClassifiesPhoto
     public function shouldReturnPrediction(PhotoItemPrediction $prediction): self
     {
         $this->result = $prediction;
+
         return $this;
     }
 
     public function shouldFail(): self
     {
         $this->shouldFail = true;
+
         return $this;
     }
 }

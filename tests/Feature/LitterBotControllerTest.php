@@ -20,7 +20,7 @@ test('it suggests an item for a photo', function (): void {
     $response = $this->getJson(route('litterbot.suggest', $photo));
 
     $response->assertOk();
-    $response->assertJson(fn (AssertableJson $json) => $json
+    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
         ->has('id')
         ->where('item.id', $item->id)
         ->where('item.name', $item->name)

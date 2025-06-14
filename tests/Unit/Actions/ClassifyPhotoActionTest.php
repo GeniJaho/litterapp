@@ -16,10 +16,8 @@ it('classifies a photo successfully', function (): void {
 
     $result = app(ClassifyPhotoAction::class)->run($photo);
 
-    Http::assertSent(function (Request $request) use ($photo) {
-        return $request->url() === config('services.litterbot.url').'/predict' &&
-            $request['image_path'] === $photo->full_path;
-    });
+    Http::assertSent(fn (Request $request): bool => $request->url() === config('services.litterbot.url').'/predict' &&
+        $request['image_path'] === $photo->full_path);
 
     expect($result)->toBeInstanceOf(PhotoItemPrediction::class)
         ->class_name->toBe('bottle')
