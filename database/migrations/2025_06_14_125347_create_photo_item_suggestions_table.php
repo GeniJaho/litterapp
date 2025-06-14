@@ -13,6 +13,7 @@ return new class extends Migration
             $table->foreignId('photo_id')->constrained()->cascadeOnDelete();
             $table->foreignId('item_id')->constrained()->cascadeOnDelete();
             $table->decimal('score', 5, 2)->default(0.00);
+            $table->boolean('is_accepted')->nullable();
         });
     }
 
