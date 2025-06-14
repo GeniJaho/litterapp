@@ -7,6 +7,7 @@ use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\LitterBotController;
+use App\Http\Controllers\PhotoItemSuggestionsController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\ExportPhotosController;
@@ -73,6 +74,8 @@ Route::middleware([
     Route::delete('/photo-items/{photoItem}/tags/{tag}', [PhotoItemTagsController::class, 'destroy']);
 
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
+
+    Route::post('/photo-item-suggestions/{photoItemSuggestion}/reject', [PhotoItemSuggestionsController::class, 'reject'])->name('photo-item-suggestions.reject');
 
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
 
