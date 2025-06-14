@@ -11,7 +11,9 @@ class LitterBotController extends Controller
 {
     public function suggest(Photo $photo): JsonResponse
     {
-        $response = Http::get("http://127.0.0.1:8001/?image_path={$photo->full_path}");
+        $response = Http::timeout(10)->post('http://127.0.0.1:8001/predict', [
+            'image_path' => $photo->full_path,
+        ]);
 
         if ($response->failed()) {
             return response()->json([
