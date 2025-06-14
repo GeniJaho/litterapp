@@ -18,6 +18,7 @@ import Modal from "@/Components/Modal.vue";
 import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
+import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -71,7 +72,7 @@ const getPhoto = () => {
 const suggestItem = () => {
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
-            suggestedItem.value = response.data;
+            suggestedItem.value = response.data.id ? response.data : null;
         })
         .catch(error => {
             console.log(error);
@@ -93,7 +94,7 @@ const addItems = () => {
 
 const addSuggestedItem = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_ids: [suggestedItem.value.item.id],
+        item_ids: [suggestedItem.value.item_id],
         suggestion_id: suggestedItem.value.id,
     }).then(() => {
         suggestedItem.value = null;
@@ -170,6 +171,9 @@ const onKeyDown = (event) => {
         } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
             event.preventDefault();
             router.visit(props.nextPhotoUrl);
+        } else if ((event.code === "Enter" || event.code === "NumpadEnter") && suggestedItem.value?.id) {
+            event.preventDefault();
+            addSuggestedItem();
         }
     }
 };
@@ -327,6 +331,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             <div class="absolute top-2 right-2 flex gap-2">
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                 <TaggedIcon v-if="photo.photo_items.length"/>
+                                <MagicWandIcon v-if="suggestedItem && suggestedItem.id"/>
                             </div>
 
                             <div
@@ -407,9 +412,12 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                         <div class="flex justify-end sm:justify-start">
                             <PrimaryButton
                                 v-if="suggestedItem && suggestedItem.id"
-                                class=""
+                                class="group relative"
                                 @click="addSuggestedItem"
                             >
+                                <Tooltip>
+                                    <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</span>
+                                </Tooltip>
                                 <i class="fas fa-wand-magic-sparkles text-turqoFocus dark:text-gray-800"></i>
                                 <span class="ml-2">Add suggested: 1 {{ suggestedItem.item.name }} ({{ suggestedItem.score.toFixed() }}%)</span>
                             </PrimaryButton>

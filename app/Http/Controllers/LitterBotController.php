@@ -23,11 +23,7 @@ class LitterBotController extends Controller
         $item = $this->findItem($prediction);
 
         if (! $item instanceof Item || $photo->items()->where('item_id', $item->id)->exists()) {
-            return response()->json([
-                'id' => null,
-                'item' => null,
-                'score' => null,
-            ]);
+            return response()->json();
         }
 
         $suggestion = $photo->photoItemSuggestions()->create([
@@ -35,11 +31,7 @@ class LitterBotController extends Controller
             'score' => $prediction->score,
         ]);
 
-        return response()->json([
-            'id' => $suggestion->id,
-            'item' => $item,
-            'score' => $prediction->score,
-        ]);
+        return response()->json($suggestion->load('item'));
     }
 
     private function findItem(PhotoItemPrediction $prediction): ?Item

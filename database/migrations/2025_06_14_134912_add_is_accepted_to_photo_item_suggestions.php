@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('photo_item_suggestions', function (Blueprint $table) {
+        Schema::table('photo_item_suggestions', function (Blueprint $table): void {
             $table->boolean('is_accepted')->nullable();
         });
     }
@@ -21,7 +21,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('photo_item_suggestions', function (Blueprint $table) {
+        Schema::table('photo_item_suggestions', function (Blueprint $table): void {
             $table->dropColumn('is_accepted');
         });
     }

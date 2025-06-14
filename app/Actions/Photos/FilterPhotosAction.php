@@ -16,7 +16,10 @@ class FilterPhotosAction
         $photos = $user
             ->photos()
             ->filter($user->settings->photo_filters)
-            ->withExists('items')
+            ->withExists([
+                'items',
+                'photoItemSuggestions' => fn ($query) => $query->whereNull('is_accepted'),
+            ])
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
         if ($user->settings->sort_column !== 'id') {
