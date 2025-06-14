@@ -22,6 +22,7 @@ class PhotoFilters extends Data
         public ?bool $picked_up = null,
         public ?bool $recycled = null,
         public ?bool $deposit = null,
+        public ?bool $has_item_suggestions = null,
     ) {
         $this->item_ids = array_map(fn (int|string $id): int => $id, $this->item_ids);
         $this->tag_ids = array_map(fn (int|string $id): int => $id, $this->tag_ids);
@@ -46,6 +47,7 @@ class PhotoFilters extends Data
             'picked_up' => ['nullable', 'boolean'],
             'recycled' => ['nullable', 'boolean'],
             'deposit' => ['nullable', 'boolean'],
+            'has_item_suggestions' => ['nullable', 'boolean'],
         ];
     }
 }

@@ -114,6 +114,8 @@ class Photo extends Model
             ->when($filters->has_gps === false, fn (Builder $query) => $query->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('items'))
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
+            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoItemSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')))
+            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoItemSuggestions'))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 }

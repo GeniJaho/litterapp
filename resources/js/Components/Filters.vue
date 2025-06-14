@@ -34,6 +34,7 @@ const filters = ref({
     picked_up: props.defaultFilters?.picked_up ?? null,
     recycled: props.defaultFilters?.recycled ?? null,
     deposit: props.defaultFilters?.deposit ?? null,
+    has_item_suggestions: props.defaultFilters?.has_item_suggestions ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -48,6 +49,7 @@ const isTagged = ref(yesOrNoOptions.find(option => option.value === filters.valu
 const pickedUp = ref(yesOrNoOptions.find(option => option.value === filters.value.picked_up));
 const recycled = ref(yesOrNoOptions.find(option => option.value === filters.value.recycled));
 const deposit = ref(yesOrNoOptions.find(option => option.value === filters.value.deposit));
+const hasItemSuggestions = ref(yesOrNoOptions.find(option => option.value === filters.value.has_item_suggestions));
 
 const emit = defineEmits(['change']);
 
@@ -66,6 +68,7 @@ const filter = () => {
     filters.value.picked_up = pickedUp.value.value !== null ? (pickedUp.value.value === true ? 1 : 0) : null;
     filters.value.recycled = recycled.value.value !== null ? (recycled.value.value === true ? 1 : 0) : null;
     filters.value.deposit = deposit.value.value !== null ? (deposit.value.value === true ? 1 : 0) : null;
+    filters.value.has_item_suggestions = hasItemSuggestions.value.value !== null ? (hasItemSuggestions.value.value === true ? 1 : 0) : null;
     emit('change', {...filters.value, store_filters: 1});
 }
 
@@ -82,6 +85,7 @@ const clear = () => {
     pickedUp.value = yesOrNoOptions[0];
     recycled.value = yesOrNoOptions[0];
     deposit.value = yesOrNoOptions[0];
+    hasItemSuggestions.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -95,6 +99,7 @@ const clear = () => {
         picked_up: null,
         recycled: null,
         deposit: null,
+        has_item_suggestions: null,
     };
 
     emit('change', {...filters.value, clear_filters: 1});
@@ -253,6 +258,15 @@ const clear = () => {
                         v-model="deposit"
                         :options="yesOrNoOptions"
                         id="deposit"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="has-item-suggestions" value="Has Item Suggestions" />
+                    <SelectInput
+                        v-model="hasItemSuggestions"
+                        :options="yesOrNoOptions"
+                        id="has-item-suggestions"
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>
