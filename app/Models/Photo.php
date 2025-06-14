@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
+ * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
+ * @property-read string $full_path
  */
 class Photo extends Model
 {
@@ -59,6 +61,14 @@ class Photo extends Model
     public function photoItems(): HasMany
     {
         return $this->hasMany(PhotoItem::class);
+    }
+
+    /**
+     * @return HasMany<PhotoItemSuggestion, $this>
+     */
+    public function photoItemSuggestions(): HasMany
+    {
+        return $this->hasMany(PhotoItemSuggestion::class);
     }
 
     /**
