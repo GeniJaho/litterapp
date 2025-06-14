@@ -30,7 +30,6 @@ const props = defineProps({
 
 const photo = ref(null);
 const suggestedItem = ref(null);
-const suggestedItemScore = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || localStorage.getItem('tagShortcutsEnabled') === null);
@@ -41,8 +40,6 @@ const zoomMagnifierSize = ref(parseInt(localStorage.getItem('zoomMagnifierSize')
 
 onMounted(() => {
     getPhoto();
-
-    suggestItem();
 
     window.addEventListener('keydown', onKeyDown);
 });
@@ -55,6 +52,15 @@ const getPhoto = () => {
     axios.get(`/photos/${props.photoId}`)
         .then(response => {
             photo.value = response.data.photo;
+
+            if (photo.value.photo_item_suggestions.length) {
+                const firstSuggestion = photo.value.photo_item_suggestions[0];
+                if (firstSuggestion.is_accepted === null) {
+                    suggestedItem.value = firstSuggestion;
+                }
+            } else {
+                suggestItem();
+            }
         })
         .catch(error => {
             console.log(error);
@@ -65,8 +71,7 @@ const getPhoto = () => {
 const suggestItem = () => {
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
-            suggestedItem.value = response.data.item;
-            suggestedItemScore.value = response.data.score;
+            suggestedItem.value = response.data;
         })
         .catch(error => {
             console.log(error);
@@ -88,10 +93,10 @@ const addItems = () => {
 
 const addSuggestedItem = () => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_ids: [suggestedItem.value.id],
+        item_ids: [suggestedItem.value.item.id],
+        suggestion_id: suggestedItem.value.id,
     }).then(() => {
         suggestedItem.value = null;
-        suggestedItemScore.value = null;
         getPhoto();
     });
 };
@@ -401,12 +406,12 @@ const adjustZoomLevelWithMouseWheel = (event) => {
 
                         <div class="flex justify-end sm:justify-start">
                             <PrimaryButton
-                                v-if="suggestedItem"
+                                v-if="suggestedItem && suggestedItem.id"
                                 class=""
                                 @click="addSuggestedItem"
                             >
                                 <i class="fas fa-wand-magic-sparkles text-turqoFocus dark:text-gray-800"></i>
-                                <span class="ml-2">Add suggested: 1 {{ suggestedItem.name }} ({{ suggestedItemScore.toFixed() }}%)</span>
+                                <span class="ml-2">Add suggested: 1 {{ suggestedItem.item.name }} ({{ suggestedItem.score.toFixed() }}%)</span>
                             </PrimaryButton>
                         </div>
 

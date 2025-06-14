@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $item_id
  * @property int $photo_id
  * @property float $score
+ * @property bool $is_accepted
  * @property Item $item
  * @property Photo $photo
  */
@@ -23,6 +24,14 @@ class PhotoItemSuggestion extends Model
     public $timestamps = false;
 
     protected $guarded = [];
+
+    protected function casts(): array
+    {
+        return [
+            'score' => 'float',
+            'is_accepted' => 'boolean',
+        ];
+    }
 
     /**
      * @return BelongsTo<Item, $this>
