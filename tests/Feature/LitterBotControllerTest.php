@@ -9,7 +9,7 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Doubles\FakeClassifyPhotoAction;
 
 test('it suggests an item for a photo', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $this->actingAs($user = admin());
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
 
@@ -30,7 +30,7 @@ test('it suggests an item for a photo', function (): void {
 });
 
 test('it returns error when classification fails', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $this->actingAs($user = admin());
     $photo = Photo::factory()->for($user)->create();
 
     $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldFail());
@@ -56,7 +56,7 @@ test('it returns empty response when item not found', function (): void {
 });
 
 test('it returns empty response when item already exists in photo', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $this->actingAs($user = admin());
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
     $photo->items()->attach($item);
@@ -72,7 +72,7 @@ test('it returns empty response when item already exists in photo', function ():
 });
 
 test('it returns 404 when photo does not belong to user', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $this->actingAs($user = admin());
     $otherUser = User::factory()->create();
     $photo = Photo::factory()->for($otherUser)->create();
 
