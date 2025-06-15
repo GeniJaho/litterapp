@@ -7,15 +7,20 @@ use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 
 class LitterBotController extends Controller
 {
-    public function suggest(Photo $photo, ClassifiesPhoto $action, #[CurrentUser] User $user): JsonResponse
-    {
-        // This feature is only available to admins
-        if (! $user->is_admin) {
+    public function suggest(
+        Photo $photo,
+        ClassifiesPhoto $action,
+        #[CurrentUser] User $user,
+        #[Config('services.litterbot.enabled')] bool $litterBotEnabled
+    ): JsonResponse {
+        // This feature is only available to admins when it is enabled
+        if (! $litterBotEnabled || ! $user->is_admin) {
             return response()->json();
         }
 

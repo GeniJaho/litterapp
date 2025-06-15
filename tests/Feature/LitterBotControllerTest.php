@@ -8,6 +8,10 @@ use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Doubles\FakeClassifyPhotoAction;
 
+beforeEach(function (): void {
+    config(['services.litterbot.enabled' => true]);
+});
+
 test('it suggests an item for a photo', function (): void {
     $this->actingAs($user = admin());
     $photo = Photo::factory()->for($user)->create();
@@ -76,9 +80,28 @@ test('it returns 404 when photo does not belong to user', function (): void {
     $otherUser = User::factory()->create();
     $photo = Photo::factory()->for($otherUser)->create();
 
-    $this->swap(ClassifiesPhoto::class, new FakeClassifyPhotoAction);
-
     $response = $this->getJson(route('litterbot.suggest', $photo));
 
     $response->assertNotFound();
+});
+
+test('it returns empty response when LitterBot is disabled', function (): void {
+    config(['services.litterbot.enabled' => false]);
+    $this->actingAs($user = admin());
+    $photo = Photo::factory()->for($user)->create();
+
+    $response = $this->getJson(route('litterbot.suggest', $photo));
+
+    $response->assertOk();
+    $response->assertJson([]);
+});
+
+test('it returns empty response when user is not admin', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+
+    $response = $this->getJson(route('litterbot.suggest', $photo));
+
+    $response->assertOk();
+    $response->assertJson([]);
 });

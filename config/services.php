@@ -38,6 +38,7 @@ return [
     ],
 
     'litterbot' => [
+        'enabled' => env('LITTERBOT_ENABLED', false),
         'url' => env('LITTERBOT_URL', 'http://127.0.0.1:8000'),
     ],
 
