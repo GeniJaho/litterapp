@@ -5,6 +5,7 @@ namespace App\Actions\Photos;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
+use Illuminate\Database\Eloquent\Builder;
 
 class FilterPhotosAction
 {
@@ -18,7 +19,7 @@ class FilterPhotosAction
             ->filter($user->settings->photo_filters)
             ->withExists([
                 'items',
-                'photoItemSuggestions' => fn ($query) => $query->whereNull('is_accepted'),
+                'photoItemSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted'),
             ])
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
