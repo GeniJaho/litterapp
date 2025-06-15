@@ -33,6 +33,27 @@ test('it suggests an item for a photo', function (): void {
     );
 });
 
+test('it returns existing suggestion if available', function (): void {
+    $this->actingAs($user = admin());
+    $photo = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create(['name' => 'Bottle']);
+    $suggestion = $photo->photoItemSuggestions()->create([
+        'item_id' => $item->id,
+        'score' => 0.95,
+    ]);
+
+    $response = $this->getJson(route('litterbot.suggest', $photo));
+
+    $response->assertOk();
+    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
+        ->has('id')
+        ->where('item.id', $item->id)
+        ->where('item.name', $item->name)
+        ->where('score', 0.95)
+        ->etc()
+    );
+});
+
 test('it returns error when classification fails', function (): void {
     $this->actingAs($user = admin());
     $photo = Photo::factory()->for($user)->create();

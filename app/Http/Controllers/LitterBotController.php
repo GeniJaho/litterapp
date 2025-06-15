@@ -6,6 +6,7 @@ use App\Actions\Photos\ClassifiesPhoto;
 use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\PhotoItemSuggestion;
 use App\Models\User;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Container\Attributes\CurrentUser;
@@ -26,6 +27,12 @@ class LitterBotController extends Controller
 
         if ($photo->user_id !== $user->id) {
             abort(404);
+        }
+
+        $existingSuggestion = $photo->photoItemSuggestions()->with('item')->first();
+
+        if ($existingSuggestion instanceof PhotoItemSuggestion) {
+            return response()->json($existingSuggestion);
         }
 
         $prediction = $action->run($photo);
