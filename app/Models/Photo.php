@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 /**
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
+ * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
+ * @property-read string $full_path
  */
 class Photo extends Model
 {
@@ -59,6 +61,14 @@ class Photo extends Model
     public function photoItems(): HasMany
     {
         return $this->hasMany(PhotoItem::class);
+    }
+
+    /**
+     * @return HasMany<PhotoItemSuggestion, $this>
+     */
+    public function photoItemSuggestions(): HasMany
+    {
+        return $this->hasMany(PhotoItemSuggestion::class);
     }
 
     /**
@@ -104,6 +114,8 @@ class Photo extends Model
             ->when($filters->has_gps === false, fn (Builder $query) => $query->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('items'))
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
+            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoItemSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')))
+            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoItemSuggestions'))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 }

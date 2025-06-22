@@ -9,6 +9,7 @@ use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 class PhotoItemsController extends Controller
 {
@@ -21,11 +22,19 @@ class PhotoItemsController extends Controller
             abort(404);
         }
 
-        $photo->items()->attach($request->item_ids, [
-            'picked_up' => $user->settings->picked_up_by_default,
-            'recycled' => $user->settings->recycled_by_default,
-            'deposit' => $user->settings->deposit_by_default,
-        ]);
+        DB::transaction(function () use ($user, $photo, $request): void {
+            $photo->items()->attach($request->item_ids, [
+                'picked_up' => $user->settings->picked_up_by_default,
+                'recycled' => $user->settings->recycled_by_default,
+                'deposit' => $user->settings->deposit_by_default,
+            ]);
+
+            if ($request->suggestion_id) {
+                $photo->photoItemSuggestions()
+                    ->where('id', $request->suggestion_id)
+                    ->update(['is_accepted' => true]);
+            }
+        });
 
         return response()->json();
     }

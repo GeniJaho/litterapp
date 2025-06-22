@@ -4,6 +4,7 @@ namespace Tests;
 
 use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use Illuminate\Support\Facades\Http;
 use Tests\Doubles\FakeExtractExifFromPhotoAction;
 
 abstract class TestCase extends BaseTestCase
@@ -17,5 +18,7 @@ abstract class TestCase extends BaseTestCase
         $this->withoutVite();
 
         $this->swap(ExtractsExifFromPhoto::class, new FakeExtractExifFromPhotoAction);
+
+        Http::preventStrayRequests();
     }
 }

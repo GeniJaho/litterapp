@@ -195,4 +195,6 @@ return [
         // 'Example' => App\Facades\Example::class,
     ])->toArray(),
 
+    'admin_emails' => array_filter(explode(',', (string) env('ADMIN_EMAILS', ''))),
+
 ];

@@ -100,16 +100,40 @@ test('if the user has enabled settings to deposit by default the item should be 
     ]);
 });
 
+test('a user can add suggested items to a photo', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+    $photoItemSuggestion = $photo->photoItemSuggestions()->create([
+        'item_id' => $item->id,
+    ]);
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_ids' => [$item->id],
+        'suggestion_id' => $photoItemSuggestion->id,
+    ]);
+
+    $response->assertOk();
+    $this->assertDatabaseCount('photo_items', 1);
+    $this->assertDatabaseHas('photo_items', [
+        'photo_id' => $photo->id,
+        'item_id' => $item->id,
+    ]);
+    expect($photoItemSuggestion->fresh()->is_accepted)->toBeTrue();
+});
+
 test('the request is validated', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
 
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
         'item_ids' => ['1'],
+        'suggestion_id' => 1,
     ]);
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('item_ids.0');
+    $response->assertJsonValidationErrors('suggestion_id');
 });
 
 test('a user can not add an item to another users photo', function (): void {

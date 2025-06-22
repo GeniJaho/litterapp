@@ -96,10 +96,12 @@ class PhotosController extends Controller
 
         $photo
             ->append('full_path')
-            ->load(['photoItems' => fn (Builder $q) => $q
-                ->with('item:id,name')
-                ->with('tags:id,name')
-                ->orderByDesc('id'),
+            ->load([
+                'photoItems' => fn (Builder $q) => $q
+                    ->with('item:id,name')
+                    ->with('tags:id,name')
+                    ->orderByDesc('id'),
+                'photoItemSuggestions.item:id,name',
             ]);
 
         return response()->json([

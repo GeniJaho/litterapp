@@ -17,6 +17,7 @@ import InputLabel from "@/Components/InputLabel.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
 import LocationIcon from "@/Components/LocationIcon.vue";
+import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
 const props = defineProps({
     photos: Object,
@@ -329,6 +330,7 @@ const exportData = (format) => {
                                     <div class="absolute top-2 right-2 flex gap-2">
                                         <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                         <TaggedIcon v-if="photo.items_exists"/>
+                                        <MagicWandIcon v-if="photo.photo_item_suggestions_exists"/>
                                     </div>
 
                                     <div

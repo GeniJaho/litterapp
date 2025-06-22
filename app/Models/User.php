@@ -104,12 +104,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
      */
     protected function isAdmin(): Attribute
     {
-        return Attribute::get(fn (): bool => in_array($this->email, [
-            'admin@litterhero.com',
-            'admin@litterapp.com',
-            'suzefred@gmail.com',
-            'pjhummelen@gmail.com',
-        ]));
+        return Attribute::get(fn (): bool => in_array(
+            $this->email,
+            config()->array('app.admin_emails')
+        ));
     }
 
     /**

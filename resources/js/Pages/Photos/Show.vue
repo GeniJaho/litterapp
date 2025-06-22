@@ -18,6 +18,8 @@ import Modal from "@/Components/Modal.vue";
 import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
+import MagicWandIcon from "@/Components/MagicWandIcon.vue";
+import IconDangerButton from "@/Components/IconDangerButton.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -29,6 +31,7 @@ const props = defineProps({
 });
 
 const photo = ref(null);
+const suggestedItem = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || localStorage.getItem('tagShortcutsEnabled') === null);
@@ -51,6 +54,30 @@ const getPhoto = () => {
     axios.get(`/photos/${props.photoId}`)
         .then(response => {
             photo.value = response.data.photo;
+
+            if (photo.value.photo_item_suggestions.length) {
+                const firstSuggestion = photo.value.photo_item_suggestions[0];
+                const photoDoesNotHaveItem = photo.value.photo_items.findIndex(item => item.item_id === firstSuggestion.item_id) === -1;
+
+                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem) {
+                    suggestedItem.value = firstSuggestion;
+                } else {
+                    suggestedItem.value = null;
+                }
+            } else {
+                suggestItem();
+            }
+        })
+        .catch(error => {
+            console.log(error);
+        })
+}
+
+
+const suggestItem = () => {
+    axios.get(route('litterbot.suggest', {photo: props.photoId}))
+        .then(response => {
+            suggestedItem.value = response.data.id ? response.data : null;
         })
         .catch(error => {
             console.log(error);
@@ -62,12 +89,35 @@ const deletePhoto = () => {
 };
 
 const addItems = () => {
+    const suggestionId = selectedItem.value.id === suggestedItem.value?.item_id
+        ? suggestedItem.value.id
+        : null;
+
     axios.post(`/photos/${photo.value.id}/items`, {
         item_ids: [selectedItem.value.id],
+        suggestion_id: suggestionId,
     }).then(() => {
         selectedItem.value = null;
         getPhoto();
     });
+};
+
+const addSuggestedItem = () => {
+    axios.post(`/photos/${photo.value.id}/items`, {
+        item_ids: [suggestedItem.value.item_id],
+        suggestion_id: suggestedItem.value.id,
+    }).then(() => {
+        suggestedItem.value = null;
+        getPhoto();
+    });
+};
+
+const rejectSuggestedItem = () => {
+    axios.post(`/photo-item-suggestions/${suggestedItem.value.id}/reject`)
+        .then(() => {
+            suggestedItem.value = null;
+            getPhoto();
+        });
 };
 
 const removeItem = (photoItemId) => {
@@ -139,6 +189,9 @@ const onKeyDown = (event) => {
         } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
             event.preventDefault();
             router.visit(props.nextPhotoUrl);
+        } else if ((event.code === "Enter" || event.code === "NumpadEnter") && suggestedItem.value?.id) {
+            event.preventDefault();
+            addSuggestedItem();
         }
     }
 };
@@ -296,6 +349,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             <div class="absolute top-2 right-2 flex gap-2">
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                 <TaggedIcon v-if="photo.photo_items.length"/>
+                                <MagicWandIcon v-if="suggestedItem && suggestedItem.id"/>
                             </div>
 
                             <div
@@ -371,6 +425,26 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                     Add Object
                                 </PrimaryButton>
                             </div>
+                        </div>
+
+                        <div
+                            v-if="suggestedItem && suggestedItem.id"
+                            class="flex justify-end sm:justify-start items-center"
+                        >
+                            <PrimaryButton class="group relative" @click="addSuggestedItem">
+                                <Tooltip>
+                                    <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</span>
+                                </Tooltip>
+                                <i class="fas fa-wand-magic-sparkles text-turqoFocus dark:text-gray-800"></i>
+                                <span class="ml-2">Add suggested: 1 {{ suggestedItem.item.name }} ({{ suggestedItem.score.toFixed() }}%)</span>
+                            </PrimaryButton>
+
+                            <IconDangerButton class="ml-2 h-8 w-8 group relative" @click="rejectSuggestedItem">
+                                <Tooltip>
+                                    <span class="whitespace-nowrap dark:text-white normal-case tracking-normal">Reject incorrect suggestion</span>
+                                </Tooltip>
+                                <i class="fas fa-fw fa-xmark text-sm"></i>
+                            </IconDangerButton>
                         </div>
 
                         <div v-if="photo.photo_items.length">

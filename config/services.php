@@ -37,6 +37,11 @@ return [
         'events_map_link' => env('GRAFANA_EVENTS_MAP_LINK', 'https://globalmap.litterapp.net/'),
     ],
 
+    'litterbot' => [
+        'enabled' => env('LITTERBOT_ENABLED', false),
+        'url' => env('LITTERBOT_URL', 'http://127.0.0.1:8000'),
+    ],
+
     // Social
     'github' => [
         'client_id' => env('GITHUB_CLIENT_ID'),

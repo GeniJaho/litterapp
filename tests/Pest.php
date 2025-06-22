@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Pest\Arch\Expectations\Targeted;
 use Pest\Arch\SingleArchExpectation;
@@ -54,7 +55,10 @@ expect()->extend('toNotEagerLoadByDefault', fn (): SingleArchExpectation => Targ
 |
 */
 
-function something(): void
+function admin(array $overrides = []): User
 {
-    // ..
+    return User::factory()->create([
+        'email' => 'admin@litterapp.net',
+        ...$overrides,
+    ]);
 }

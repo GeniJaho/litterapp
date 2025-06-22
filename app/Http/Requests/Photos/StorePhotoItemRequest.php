@@ -17,6 +17,7 @@ class StorePhotoItemRequest extends FormRequest
         return [
             'item_ids' => ['required', 'array'],
             'item_ids.*' => ['required', 'exists:items,id'],
+            'suggestion_id' => ['nullable', 'exists:photo_item_suggestions,id'],
         ];
     }
 }

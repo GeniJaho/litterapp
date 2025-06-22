@@ -5,6 +5,7 @@ use App\DTO\UserSettings;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
+use App\Models\PhotoItemSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
@@ -24,6 +25,8 @@ test('a user can see their photos', function (): void {
     $item = Item::factory()->create();
     $tag = Tag::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
+    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['is_accepted' => null]); // Only consider pending suggestions
+    PhotoItemSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true]);
     $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut->items()->attach($item, [
@@ -42,9 +45,11 @@ test('a user can see their photos', function (): void {
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.full_path', $photoB->full_path)
         ->where('photos.data.0.items_exists', true)
+        ->where('photos.data.0.photo_item_suggestions_exists', true)
         ->where('photos.data.1.id', $photoA->id)
         ->where('photos.data.1.full_path', $photoA->full_path)
         ->where('photos.data.1.items_exists', false)
+        ->where('photos.data.1.photo_item_suggestions_exists', false)
         ->has('tagShortcuts', 1)
         ->where('tagShortcuts.0.id', $tagShortcut->id)
         ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
@@ -382,6 +387,44 @@ test('a user can filter their photos by having tags or not', function (): void {
     );
 
     $response = $this->get('/my-photos?store_filters=1&is_tagged=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by having item suggestions or not', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create();
+
+    $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
