@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Photos;
 
-use App\Actions\Photos\ExtractsExifFromPhoto;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Photos\StorePhotosRequest;
 use App\Models\Photo;
@@ -19,17 +18,15 @@ class UploadPhotosController extends Controller
         return Inertia::render('Upload');
     }
 
-    public function store(
-        StorePhotosRequest $request,
-        ExtractsExifFromPhoto $extractExif,
-    ): JsonResponse {
+    public function store(StorePhotosRequest $request): JsonResponse
+    {
         /** @var User $user */
         $user = auth()->user();
 
         /** @var UploadedFile $photo */
         $photo = $request->file('photo');
 
-        $exif = $extractExif->run($photo);
+        $exif = $request->getExifData();
 
         $path = $photo->store('photos');
 
