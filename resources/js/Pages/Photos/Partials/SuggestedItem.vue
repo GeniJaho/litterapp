@@ -38,7 +38,7 @@ const rejectSuggestedItem = () => {
                     1 {{ suggestedItem.item.name }}
                 </h3>
                 <div class="mt-6 text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
-                    <i class="fas fa-wand-magic-sparkles text-turqoFocus mr-2"></i>
+                    <i class="fas fa-wand-magic-sparkles text-gray-900 dark:text-turqoFocus mr-2"></i>
                     {{ suggestedItem.score.toFixed() }}%
                     AI Confidence
                 </div>

@@ -64,7 +64,7 @@ const getPhoto = () => {
                 } else {
                     suggestedItem.value = null;
                 }
-            } else {
+            } else if (! photo.value.photo_items.length) {
                 suggestItem();
             }
         })
