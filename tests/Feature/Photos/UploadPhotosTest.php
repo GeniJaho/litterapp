@@ -6,9 +6,13 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Tests\Doubles\FakeExtractExifFromPhotoAction;
+
+use function Pest\Laravel\freezeTime;
 
 beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
+    freezeTime();
 });
 
 test('a user can upload photos', function (): void {
@@ -91,10 +95,47 @@ test('only images can be uploaded', function (): void {
     expect($user->photos()->count())->toBeZero();
 });
 
-test('a user can not upload the same photo twice', function (): void {
+test('a user can upload a photo with the same name twice if different date taken', function (): void {
     $user = User::factory()->create();
     Photo::factory()->for($user)->create([
         'original_file_name' => 'photo.jpg',
+        'taken_at_local' => now()->subDay()->toDateTimeString(),
+    ]);
+
+    $response = $this->actingAs($user)->post('/upload', [
+        'photo' => UploadedFile::fake()->image('photo.jpg'),
+    ]);
+
+    $response->assertOk();
+
+    expect($user->photos()->count())->toBe(2);
+});
+
+test('a user can not upload the same photo twice', function (): void {
+    $this->swap(
+        ExtractsExifFromPhoto::class,
+        app(FakeExtractExifFromPhotoAction::class)->withExif([]),
+    );
+    $user = User::factory()->create();
+    Photo::factory()->for($user)->create([
+        'original_file_name' => 'photo.jpg',
+        'taken_at_local' => null,
+    ]);
+
+    $response = $this->actingAs($user)->post('/upload', [
+        'photo' => UploadedFile::fake()->image('photo.jpg'),
+    ]);
+
+    $response->assertSessionHasErrors('photo');
+
+    expect($user->photos()->count())->toBe(1);
+});
+
+test('a user can not upload the same photo with same date taken twice', function (): void {
+    $user = User::factory()->create();
+    Photo::factory()->for($user)->create([
+        'original_file_name' => 'photo.jpg',
+        'taken_at_local' => now()->toDateTimeString(),
     ]);
 
     $response = $this->actingAs($user)->post('/upload', [
