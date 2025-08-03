@@ -5,7 +5,7 @@ namespace App\Actions\Photos;
 use App\Models\Item;
 use App\Models\Tag;
 use App\Models\TagType;
-use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Collection;
 
 class GetTagsAndItemsAction
 {
@@ -16,7 +16,8 @@ class GetTagsAndItemsAction
     {
         $tagTypes = TagType::query()->get();
 
-        $tags = Tag::query()
+        $tags = Tag::toBase()
+            ->select(['id', 'name', 'tag_type_id'])
             ->orderBy('name')
             ->get()
             ->groupBy('tag_type_id')
@@ -29,7 +30,7 @@ class GetTagsAndItemsAction
 
         return [
             'tags' => $tags,
-            'items' => Item::query()->orderBy('name')->get(),
+            'items' => Item::toBase()->select(['id', 'name'])->orderBy('name')->get(),
         ];
     }
 }
