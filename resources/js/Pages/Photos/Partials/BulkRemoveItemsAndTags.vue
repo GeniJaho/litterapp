@@ -1,14 +1,12 @@
 <script setup>
 
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import {useForm, usePage} from "@inertiajs/vue3";
+import {useForm} from "@inertiajs/vue3";
 import {computed, onMounted, onUnmounted, ref} from "vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
-import NewPhotoItem from "@/Pages/Photos/Partials/NewPhotoItem.vue";
 import BulkTagModal from "@/Pages/Photos/Partials/BulkTagModal.vue";
 import Tooltip from "@/Components/Tooltip.vue";
-import TagShortcutBox from "@/Components/TagShortcutBox.vue";
 import TagSelector from "@/Pages/Photos/Partials/TagSelector.vue";
 import DangerButton from "@/Components/DangerButton.vue";
 import ConfirmationModal from "@/Components/ConfirmationModal.vue";

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Actions\Photos\ClassifiesPhoto;
+use App\Actions\Photos\GetItemFromPredictionAction;
 use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
@@ -17,6 +18,7 @@ class LitterBotController extends Controller
     public function suggest(
         Photo $photo,
         ClassifiesPhoto $action,
+        GetItemFromPredictionAction $getItemFromPredictionAction,
         #[CurrentUser] User $user,
         #[Config('services.litterbot.enabled')] bool $litterBotEnabled
     ): JsonResponse {
@@ -43,7 +45,7 @@ class LitterBotController extends Controller
             ], 422);
         }
 
-        $item = $this->findItem($prediction);
+        $item = $getItemFromPredictionAction->run($prediction);
 
         if (! $item instanceof Item || $photo->items()->where('item_id', $item->id)->exists()) {
             return response()->json();
@@ -55,25 +57,5 @@ class LitterBotController extends Controller
         ]);
 
         return response()->json($suggestion->load('item'));
-    }
-
-    private function findItem(PhotoItemPrediction $prediction): ?Item
-    {
-        $itemClassNames = [
-            'aluminium-foil' => 'Aluminium Foil',
-            'balloon' => 'Balloon',
-            'bottle' => 'Bottle',
-            'can' => 'Can',
-            'cap' => 'Cap (Bottle Cap/-Lid/-Top)',
-            'cigarette-butt' => 'Cigarette Butt',
-            'drink-pouch' => 'Drink Pouch',
-            'straw' => 'Straw',
-        ];
-
-        if (! isset($itemClassNames[$prediction->class_name])) {
-            return null;
-        }
-
-        return Item::query()->where('name', $itemClassNames[$prediction->class_name])->first();
     }
 }

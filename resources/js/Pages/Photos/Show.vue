@@ -2,10 +2,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import debounce from 'lodash.debounce'
-import { router } from '@inertiajs/vue3'
+import debounce from 'lodash.debounce';
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
@@ -19,7 +18,7 @@ import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
-import IconDangerButton from "@/Components/IconDangerButton.vue";
+import SuggestedItem from "@/Pages/Photos/Partials/SuggestedItem.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -28,6 +27,7 @@ const props = defineProps({
     nextPhotoUrl: String,
     previousPhotoUrl: String,
     tagShortcuts: Array,
+    suggestionsEnabled: Boolean,
 });
 
 const photo = ref(null);
@@ -64,7 +64,7 @@ const getPhoto = () => {
                 } else {
                     suggestedItem.value = null;
                 }
-            } else {
+            } else if (! photo.value.photo_items.length) {
                 suggestItem();
             }
         })
@@ -75,6 +75,10 @@ const getPhoto = () => {
 
 
 const suggestItem = () => {
+    if (! props.suggestionsEnabled) {
+        return;
+    }
+
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
             suggestedItem.value = response.data.id ? response.data : null;
@@ -427,27 +431,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             </div>
                         </div>
 
-                        <div
-                            v-if="suggestedItem && suggestedItem.id"
-                            class="flex justify-end sm:justify-start items-center"
-                        >
-                            <PrimaryButton class="group relative" @click="addSuggestedItem">
-                                <Tooltip>
-                                    <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + Enter</span>
-                                </Tooltip>
-                                <i class="fas fa-wand-magic-sparkles text-turqoFocus dark:text-gray-800"></i>
-                                <span class="ml-2">Add suggested: 1 {{ suggestedItem.item.name }} ({{ suggestedItem.score.toFixed() }}%)</span>
-                            </PrimaryButton>
-
-                            <IconDangerButton class="ml-2 h-8 w-8 group relative" @click="rejectSuggestedItem">
-                                <Tooltip>
-                                    <span class="whitespace-nowrap dark:text-white normal-case tracking-normal">Reject incorrect suggestion</span>
-                                </Tooltip>
-                                <i class="fas fa-fw fa-xmark text-sm"></i>
-                            </IconDangerButton>
-                        </div>
-
-                        <div v-if="photo.photo_items.length">
+                        <div v-if="photo.photo_items.length || (suggestedItem && suggestedItem.id)">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
@@ -467,6 +451,13 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                         @toggle-deposit="toggleItemDeposit"
                                         @update-quantity="updateItemQuantity"
                                     />
+
+                                    <SuggestedItem
+                                        v-if="suggestedItem && suggestedItem.id"
+                                        :suggestedItem="suggestedItem"
+                                        @add-suggested-item="addSuggestedItem"
+                                        @reject-suggested-item="rejectSuggestedItem"
+                                    ></SuggestedItem>
                                 </TransitionGroup>
                             </div>
                         </div>

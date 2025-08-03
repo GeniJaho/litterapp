@@ -9,6 +9,7 @@ use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\TagType;
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
@@ -45,6 +46,22 @@ test('a user can see the photo tagging page', function (): void {
             $material->slug => $materialTags->sortBy('name')->values()->toArray(),
         ])
         ->has('items', 2)
+        ->where('suggestionsEnabled', false)
+    );
+});
+
+test('a user has suggestions enabled if they are admins and litterbot service is enabled', function (): void {
+    $user = User::factory()->create();
+    Config::set('app.admin_emails', [$user->email]);
+    Config::set('services.litterbot.enabled', true);
+    $photo = Photo::factory()->for($user)->create();
+
+    $response = $this->actingAs($user)->get(route('photos.show', $photo));
+
+    $response->assertOk();
+
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->where('suggestionsEnabled', true)
     );
 });
 

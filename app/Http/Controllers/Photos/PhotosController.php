@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Photo;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Container\Attributes\Config;
 use Illuminate\Contracts\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
@@ -73,6 +74,7 @@ class PhotosController extends Controller
         GetTagsAndItemsAction $getTagsAndItemsAction,
         GetNextPhotoAction $getNextPhotoAction,
         GetPreviousPhotoAction $getPreviousPhotoAction,
+        #[Config('services.litterbot.enabled')] bool $litterBotEnabled,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -91,6 +93,7 @@ class PhotosController extends Controller
                 'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo),
                 'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo),
                 'tagShortcuts' => $this->getTagShortcuts($user),
+                'suggestionsEnabled' => $litterBotEnabled && $user->is_admin,
             ]);
         }
 
