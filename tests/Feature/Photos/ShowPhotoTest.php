@@ -42,8 +42,8 @@ test('a user can see the photo tagging page', function (): void {
         ->component('Photos/Show')
         ->where('photoId', $photo->id)
         ->where('tags', [
-            $brand->slug => $brandTags->sortBy('name')->values()->toArray(),
-            $material->slug => $materialTags->sortBy('name')->values()->toArray(),
+            $brand->slug => $brandTags->sortBy('name')->select(['id', 'name', 'tag_type_id'])->values()->toArray(),
+            $material->slug => $materialTags->sortBy('name')->select(['id', 'name', 'tag_type_id'])->values()->toArray(),
         ])
         ->has('items', 2)
         ->where('suggestionsEnabled', false)
