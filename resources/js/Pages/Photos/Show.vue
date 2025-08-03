@@ -2,10 +2,9 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
-import {Link} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
-import debounce from 'lodash.debounce'
-import { router } from '@inertiajs/vue3'
+import debounce from 'lodash.debounce';
 import TagBox from "@/Components/TagBox.vue";
 import Tooltip from "@/Components/Tooltip.vue";
 import TaggedIcon from "@/Components/TaggedIcon.vue";
@@ -28,6 +27,7 @@ const props = defineProps({
     nextPhotoUrl: String,
     previousPhotoUrl: String,
     tagShortcuts: Array,
+    suggestionsEnabled: Boolean,
 });
 
 const photo = ref(null);
@@ -75,6 +75,10 @@ const getPhoto = () => {
 
 
 const suggestItem = () => {
+    if (! props.suggestionsEnabled) {
+        return;
+    }
+
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
             suggestedItem.value = response.data.id ? response.data : null;

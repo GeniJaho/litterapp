@@ -43,7 +43,7 @@ class UploadPhotosController extends Controller
             'taken_at_local' => $exif['taken_at_local'] ?? null,
         ]);
 
-        if ($litterBotEnabled && $user->is_admin && $photo->photoItemSuggestions()->doesntExist()) {
+        if ($litterBotEnabled && $user->is_admin) {
             SuggestPhotoItem::dispatch($photo);
         }
 

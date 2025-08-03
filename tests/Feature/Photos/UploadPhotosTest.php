@@ -2,9 +2,12 @@
 
 use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
+use App\Jobs\SuggestPhotoItem;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Tests\Doubles\FakeExtractExifFromPhotoAction;
 
@@ -12,6 +15,7 @@ use function Pest\Laravel\freezeTime;
 
 beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
+    Bus::fake();
     freezeTime();
 });
 
@@ -160,4 +164,39 @@ test('a user can upload a photo with the same name as another users photo', func
     $response->assertOk();
 
     expect($user->photos()->count())->toBe(1);
+});
+
+test('the SuggestPhotoItem job is dispatched when all conditions are met', function (): void {
+    $user = User::factory()->create();
+    Config::set('app.admin_emails', [$user->email]);
+    Config::set('services.litterbot.enabled', true);
+    $file = UploadedFile::fake()->image('photo.jpg');
+
+    $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
+
+    $photo = $user->photos()->first();
+
+    Bus::assertDispatched(fn (SuggestPhotoItem $job): bool => $job->photo->id === $photo->id);
+});
+
+test('the SuggestPhotoItem job is not dispatched when litterBotEnabled is false', function (): void {
+    $user = User::factory()->create();
+    Config::set('app.admin_emails', [$user->email]);
+    Config::set('services.litterbot.enabled', false);
+    $file = UploadedFile::fake()->image('photo.jpg');
+
+    $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
+
+    Bus::assertNotDispatched(SuggestPhotoItem::class);
+});
+
+test('the SuggestPhotoItem job is not dispatched when user is not admin', function (): void {
+    $user = User::factory()->create();
+    Config::set('app.admin_emails', ['different-email@example.com']); // User's email not in admin_emails
+    Config::set('services.litterbot.enabled', true);
+    $file = UploadedFile::fake()->image('photo.jpg');
+
+    $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
+
+    Bus::assertNotDispatched(SuggestPhotoItem::class);
 });
