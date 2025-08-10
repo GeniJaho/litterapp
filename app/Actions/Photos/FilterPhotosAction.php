@@ -14,9 +14,14 @@ class FilterPhotosAction
      */
     public function run(User $user): LengthAwarePaginator
     {
-        $photos = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
+        $filters = $user->settings->photo_filters;
+
+        $photos = Photo::query()
+            ->when(
+                $user->is_admin && ! empty($filters?->user_ids),
+                fn (Builder $query) => $query->whereIn('user_id', $filters->user_ids),
+                fn (Builder $query) => $query->where('user_id', $user->id)
+            )
             ->withExists([
                 'items',
                 'photoItemSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted'),

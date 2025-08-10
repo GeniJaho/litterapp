@@ -136,6 +136,10 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     protected function profilePhotoUrl(): Attribute
     {
         return Attribute::get(function () {
+            if (! $this->hasAttribute('profile_photo_path')) {
+                return '';
+            }
+
             // path can sometimes be a full URL from Google or Facebook
             if (Str::isUrl($this->profile_photo_path)) {
                 return $this->profile_photo_path;

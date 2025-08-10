@@ -6,10 +6,13 @@ import TagBox from "@/Components/TagBox.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import SelectInput from "@/Components/SelectInput.vue";
+import UserDropdown from "@/Components/UserDropdown.vue";
 
 const props = defineProps({
     tags: Object,
     items: Array,
+    users: Array,
+    isAdmin: Boolean,
     defaultFilters: {
         type: Object,
         required: false,
@@ -25,6 +28,7 @@ const yesOrNoOptions = [
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
     tag_ids: props.defaultFilters?.tag_ids ?? [],
+    user_ids: props.defaultFilters?.user_ids ?? [],
     uploaded_from: props.defaultFilters?.uploaded_from ?? null,
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
@@ -38,6 +42,7 @@ const filters = ref({
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
+const selectedUsers = ref(props.isAdmin ? (props.defaultFilters?.user_ids.map(id => props.users.find(user => user.id === parseInt(id))) ?? []) : []);
 const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
@@ -55,6 +60,7 @@ const emit = defineEmits(['change']);
 
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
+    filters.value.user_ids = props.isAdmin ? selectedUsers.value.map(user => user.id) : [];
     filters.value.tag_ids = [
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
@@ -74,6 +80,7 @@ const filter = () => {
 
 const clear = () => {
     selectedItems.value = [];
+    selectedUsers.value = [];
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
@@ -90,6 +97,7 @@ const clear = () => {
     filters.value = {
         item_ids: [],
         tag_ids: [],
+        user_ids: [],
         uploaded_from: null,
         uploaded_until: null,
         taken_from_local: null,
@@ -269,6 +277,16 @@ const clear = () => {
                         id="has-item-suggestions"
                         class="block w-full mt-1"
                     ></SelectInput>
+                </div>
+                <div v-if="isAdmin">
+                    <InputLabel for="user-filter" value="Users" />
+                    <UserDropdown
+                        id="user-filter"
+                        v-model="selectedUsers"
+                        :items="users"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></UserDropdown>
                 </div>
             </div>
         </div>

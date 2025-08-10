@@ -60,12 +60,18 @@ class PhotosController extends Controller
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
+        $users = $user->is_admin
+            ? User::query()->whereHas('photos')->select(['id', 'name', 'email'])->orderBy('name')->get()
+            : [];
+
         return Inertia::render('Photos/Index', [
             'photos' => $photos,
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
             'tagShortcuts' => $this->getTagShortcuts($user),
+            'users' => $users,
+            'isAdmin' => $user->is_admin,
         ]);
     }
 
@@ -79,7 +85,7 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id) {
+        if ($user->id !== $photo->user_id && ! $user->is_admin) {
             abort(404);
         }
 
@@ -114,7 +120,10 @@ class PhotosController extends Controller
 
     public function destroy(Photo $photo): RedirectResponse
     {
-        if (auth()->id() !== $photo->user_id) {
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->id !== $photo->user_id && ! $user->is_admin) {
             abort(404);
         }
 

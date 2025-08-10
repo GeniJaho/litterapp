@@ -9,10 +9,12 @@ class PhotoFilters extends Data
     /**
      * @param  int[]  $item_ids
      * @param  int[]  $tag_ids
+     * @param  int[]  $user_ids
      */
     public function __construct(
         public array $item_ids = [],
         public array $tag_ids = [],
+        public array $user_ids = [],
         public ?string $uploaded_from = null,
         public ?string $uploaded_until = null,
         public ?string $taken_from_local = null,
@@ -26,6 +28,7 @@ class PhotoFilters extends Data
     ) {
         $this->item_ids = array_map(fn (int|string $id): int => $id, $this->item_ids);
         $this->tag_ids = array_map(fn (int|string $id): int => $id, $this->tag_ids);
+        $this->user_ids = array_map(fn (int|string $id): int => $id, $this->user_ids);
     }
 
     /**
@@ -38,6 +41,8 @@ class PhotoFilters extends Data
             'item_ids.*' => ['integer', 'exists:items,id'],
             'tag_ids' => ['nullable', 'array'],
             'tag_ids.*' => ['integer', 'exists:tags,id'],
+            'user_ids' => ['nullable', 'array'],
+            'user_ids.*' => ['integer', 'exists:users,id'],
             'uploaded_from' => ['nullable', 'date_format:Y-m-d\\TH:i'],
             'uploaded_until' => ['nullable', 'date_format:Y-m-d\\TH:i'],
             'taken_from_local' => ['nullable', 'date_format:Y-m-d\\TH:i'],
