@@ -349,3 +349,20 @@ test('a user can not see another users photo', function (): void {
 
     $response->assertNotFound();
 });
+
+test("an admin can view any user's photo", function (): void {
+    Config::set('app.admin_emails', ['admin@example.com']);
+    $admin = User::factory()->create(['email' => 'admin@example.com']);
+
+    $user = User::factory()->create();
+    $photo = Photo::factory()->for($user)->create();
+
+    $response = $this->actingAs($admin)->get("/photos/{$photo->id}");
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Show')
+        ->where('photoId', $photo->id)
+        ->etc()
+    );
+});

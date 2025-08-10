@@ -111,6 +111,7 @@ class PhotosController extends Controller
                     ->with('tags:id,name')
                     ->orderByDesc('id'),
                 'photoItemSuggestions.item:id,name',
+                'user:id,name',
             ]);
 
         return response()->json([
@@ -123,7 +124,7 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id && ! $user->is_admin) {
+        if ($user->id !== $photo->user_id) {
             abort(404);
         }
 
@@ -137,7 +138,7 @@ class PhotosController extends Controller
     /**
      * @return Collection<int, TagShortcut>
      */
-    public function getTagShortcuts(User $user): Collection
+    private function getTagShortcuts(User $user): Collection
     {
         return $user
             ->tagShortcuts()

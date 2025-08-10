@@ -290,6 +290,14 @@ const adjustZoomLevelWithMouseWheel = (event) => {
             </div>
         </template>
 
+        <div class="bg-turqoFocus shadow">
+            <div class="max-w-9xl mx-auto py-2 px-4 sm:px-6 lg:px-8">
+                <h2 class="font-semibold text-xl text-darkBlue leading-none">
+                    {{ photo?.user?.name }}'s Photo
+                </h2>
+            </div>
+        </div>
+
         <div v-if="photo">
             <div class="max-w-9xl mx-auto py-10 sm:px-6 lg:px-8">
                 <div class="flex flex-col md:flex-row md:space-x-8">

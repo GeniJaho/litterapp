@@ -9,6 +9,7 @@ use App\Models\PhotoItemSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
@@ -559,6 +560,166 @@ test('a user can filter their photos by being deposit or not', function (): void
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('admin can see user selection in the filters', function (): void {
+    // Ensure we have predictable admin email configuration
+    Config::set('app.admin_emails', ['admin@example.com']);
+
+    // Create an admin user
+    $admin = User::factory()->create(['email' => 'admin@example.com']);
+
+    // Create some regular users with photos
+    $user1 = User::factory()->create(['name' => 'User One']);
+    $user2 = User::factory()->create(['name' => 'User Two']);
+    Photo::factory()->for($user1)->create();
+    Photo::factory()->for($user2)->create();
+
+    // Act as the admin and visit the photos page
+    $response = $this->actingAs($admin)->get('/my-photos');
+
+    // Assert success and check that users are passed to the component
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('users', 2) // Only users with photos are loaded (not the admin)
+        ->where('isAdmin', true)
+        ->etc()
+    );
+});
+
+test('regular user cannot see user selection in the filters', function (): void {
+    // Create a regular user
+    $user = User::factory()->create();
+
+    // Create another user with photos
+    $otherUser = User::factory()->create();
+    Photo::factory()->for($otherUser)->create();
+
+    // Act as the regular user and visit the photos page
+    $response = $this->actingAs($user)->get('/my-photos');
+
+    // Assert success and check that users array is empty
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->where('users', [])
+        ->where('isAdmin', false)
+        ->etc()
+    );
+});
+
+test('admin can filter photos by a single user', function (): void {
+    // Ensure we have predictable admin email configuration
+    Config::set('app.admin_emails', ['admin@example.com']);
+
+    // Create an admin user
+    $admin = User::factory()->create(['email' => 'admin@example.com']);
+
+    // Create some regular users with photos
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $photo1 = Photo::factory()->for($user1)->create();
+    $photo2 = Photo::factory()->for($user2)->create();
+
+    // Act as the admin and filter photos by user1
+    $response = $this->actingAs($admin)->get('/my-photos?store_filters=1&user_ids[]='.$user1->id);
+
+    // Assert success and check that only user1's photos are returned
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photo1->id)
+        ->where('filters.user_ids.0', $user1->id)
+        ->etc()
+    );
+});
+
+test('admin can filter photos by multiple users', function (): void {
+    // Ensure we have predictable admin email configuration
+    Config::set('app.admin_emails', ['admin@example.com']);
+
+    // Create an admin user
+    $admin = User::factory()->create(['email' => 'admin@example.com']);
+
+    // Create some regular users with photos
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+    $user3 = User::factory()->create();
+
+    $photo1 = Photo::factory()->for($user1)->create();
+    $photo2 = Photo::factory()->for($user2)->create();
+    $photo3 = Photo::factory()->for($user3)->create();
+
+    // Act as the admin and filter photos by user1 and user2
+    $response = $this->actingAs($admin)
+        ->get('/my-photos?store_filters=1&user_ids[]='.$user1->id.'&user_ids[]='.$user2->id);
+
+    // Assert success and check that user1's and user2's photos are returned (but not user3's)
+    $response->assertOk();
+
+    // Verify that we have 2 photos in the response
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->where('filters.user_ids', [$user1->id, $user2->id])
+        // Check that the photos belong to the expected users
+        ->where('photos.data.0.user_id', fn ($userId) => $userId === $user1->id || $userId === $user2->id)
+        ->where('photos.data.1.user_id', fn ($userId) => $userId === $user1->id || $userId === $user2->id)
+        ->etc()
+    );
+});
+
+test('regular user cannot filter photos by user_ids', function (): void {
+    // Create regular users
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    // Create photos for both users
+    $photo1 = Photo::factory()->for($user1)->create();
+    $photo2 = Photo::factory()->for($user2)->create();
+
+    // Act as user1 and try to filter by user2
+    $response = $this->actingAs($user1)
+        ->get('/my-photos?store_filters=1&user_ids[]='.$user2->id);
+
+    // Assert success but check that only user1's photos are returned
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photo1->id)
+        ->etc()
+    );
+});
+
+test('admin can see all photos when no user filter is applied', function (): void {
+    // Ensure we have predictable admin email configuration
+    Config::set('app.admin_emails', ['admin@example.com']);
+
+    // Create an admin user
+    $admin = User::factory()->create(['email' => 'admin@example.com']);
+
+    // Create some regular users with photos
+    $user1 = User::factory()->create();
+    $user2 = User::factory()->create();
+
+    $photo1 = Photo::factory()->for($user1)->create();
+    $photo2 = Photo::factory()->for($user2)->create();
+    $photoAdmin = Photo::factory()->for($admin)->create();
+
+    // Act as the admin and visit photos page without filters
+    $response = $this->actingAs($admin)->get('/my-photos');
+
+    // Assert success and check that only admin's photos are shown by default
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoAdmin->id)
         ->etc()
     );
 });
