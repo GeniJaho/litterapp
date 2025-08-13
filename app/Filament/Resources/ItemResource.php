@@ -21,6 +21,8 @@ class ItemResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
 
+    protected static ?int $navigationSort = 3;
+
     public static function form(Form $form): Form
     {
         return $form
