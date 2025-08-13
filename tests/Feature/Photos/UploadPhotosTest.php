@@ -2,12 +2,12 @@
 
 use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
+use App\DTO\UserSettings;
 use App\Jobs\SuggestPhotoItem;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Storage;
 use Tests\Doubles\FakeExtractExifFromPhotoAction;
 
@@ -167,9 +167,7 @@ test('a user can upload a photo with the same name as another users photo', func
 });
 
 test('the SuggestPhotoItem job is dispatched when all conditions are met', function (): void {
-    $user = User::factory()->create();
-    Config::set('app.admin_emails', [$user->email]);
-    Config::set('services.litterbot.enabled', true);
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
     $file = UploadedFile::fake()->image('photo.jpg');
 
     $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
@@ -180,20 +178,7 @@ test('the SuggestPhotoItem job is dispatched when all conditions are met', funct
 });
 
 test('the SuggestPhotoItem job is not dispatched when litterBotEnabled is false', function (): void {
-    $user = User::factory()->create();
-    Config::set('app.admin_emails', [$user->email]);
-    Config::set('services.litterbot.enabled', false);
-    $file = UploadedFile::fake()->image('photo.jpg');
-
-    $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
-
-    Bus::assertNotDispatched(SuggestPhotoItem::class);
-});
-
-test('the SuggestPhotoItem job is not dispatched when user is not admin', function (): void {
-    $user = User::factory()->create();
-    Config::set('app.admin_emails', ['different-email@example.com']); // User's email not in admin_emails
-    Config::set('services.litterbot.enabled', true);
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: false)]);
     $file = UploadedFile::fake()->image('photo.jpg');
 
     $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();

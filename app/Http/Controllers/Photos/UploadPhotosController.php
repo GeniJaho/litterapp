@@ -7,7 +7,6 @@ use App\Http\Requests\Photos\StorePhotosRequest;
 use App\Jobs\SuggestPhotoItem;
 use App\Models\Photo;
 use App\Models\User;
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Inertia\Inertia;
@@ -22,7 +21,6 @@ class UploadPhotosController extends Controller
 
     public function store(
         StorePhotosRequest $request,
-        #[Config('services.litterbot.enabled')] bool $litterBotEnabled
     ): JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -43,7 +41,7 @@ class UploadPhotosController extends Controller
             'taken_at_local' => $exif['taken_at_local'] ?? null,
         ]);
 
-        if ($litterBotEnabled && $user->is_admin) {
+        if ($user->settings->litterbot_enabled) {
             SuggestPhotoItem::dispatch($photo);
         }
 

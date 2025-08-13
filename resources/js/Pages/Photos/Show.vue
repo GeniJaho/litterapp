@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
-import {Link, router} from "@inertiajs/vue3";
+import {Link, router, usePage} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce';
 import TagBox from "@/Components/TagBox.vue";
@@ -27,9 +27,9 @@ const props = defineProps({
     nextPhotoUrl: String,
     previousPhotoUrl: String,
     tagShortcuts: Array,
-    suggestionsEnabled: Boolean,
 });
 
+const page = usePage();
 const photo = ref(null);
 const suggestedItem = ref(null);
 const selectedItem = ref(null);
@@ -75,7 +75,7 @@ const getPhoto = () => {
 
 
 const suggestItem = () => {
-    if (! props.suggestionsEnabled) {
+    if (! page.props.auth.user.settings?.litterbot_enabled) {
         return;
     }
 

@@ -2,6 +2,7 @@
 
 use App\Actions\Photos\ClassifiesPhoto;
 use App\DTO\PhotoItemPrediction;
+use App\DTO\UserSettings;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
@@ -103,9 +104,7 @@ test('it returns 404 when photo does not belong to user', function (): void {
 });
 
 test('it returns empty response when LitterBot is disabled', function (): void {
-    $user = User::factory()->create();
-    $user->settings->litterbot_enabled = false;
-    $user->save();
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: false)]);
     $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 

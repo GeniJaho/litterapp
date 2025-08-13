@@ -95,7 +95,7 @@ const save = () => {
                     </template>
                     <template #description>
                         When enabled, LitterBot will analyze your photos and suggest items to tag.
-                        You can always accept or reject these suggestions.
+                        You can always accept or reject these suggestions. Your photos are not used for training.
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.litterbot_enabled" class="mt-2" />
