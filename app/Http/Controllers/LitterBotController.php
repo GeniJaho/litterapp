@@ -9,7 +9,6 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItemSuggestion;
 use App\Models\User;
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 
@@ -21,8 +20,7 @@ class LitterBotController extends Controller
         GetItemFromPredictionAction $getItemFromPredictionAction,
         #[CurrentUser] User $user
     ): JsonResponse {
-        // This feature is only available to admins when it is enabled in user settings
-        if (! $user->settings->litterbot_enabled || ! $user->is_admin) {
+        if (! $user->settings->litterbot_enabled) {
             return response()->json();
         }
 
