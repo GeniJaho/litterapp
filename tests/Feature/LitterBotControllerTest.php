@@ -8,12 +8,11 @@ use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Doubles\FakeClassifyPhotoAction;
 
-beforeEach(function (): void {
-    config(['services.litterbot.enabled' => true]);
-});
-
 test('it suggests an item for a photo', function (): void {
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = true;
+    $user->save();
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
 
@@ -34,7 +33,10 @@ test('it suggests an item for a photo', function (): void {
 });
 
 test('it returns existing suggestion if available', function (): void {
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = true;
+    $user->save();
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
     $suggestion = $photo->photoItemSuggestions()->create([
@@ -55,7 +57,10 @@ test('it returns existing suggestion if available', function (): void {
 });
 
 test('it returns error when classification fails', function (): void {
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = true;
+    $user->save();
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 
     $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldFail());
@@ -81,7 +86,10 @@ test('it returns empty response when item not found', function (): void {
 });
 
 test('it returns empty response when item already exists in photo', function (): void {
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = true;
+    $user->save();
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
     $photo->items()->attach($item);
@@ -97,7 +105,10 @@ test('it returns empty response when item already exists in photo', function ():
 });
 
 test('it returns 404 when photo does not belong to user', function (): void {
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = true;
+    $user->save();
+    $this->actingAs($user);
     $otherUser = User::factory()->create();
     $photo = Photo::factory()->for($otherUser)->create();
 
@@ -107,8 +118,10 @@ test('it returns 404 when photo does not belong to user', function (): void {
 });
 
 test('it returns empty response when LitterBot is disabled', function (): void {
-    config(['services.litterbot.enabled' => false]);
-    $this->actingAs($user = admin());
+    $user = admin();
+    $user->settings->litterbot_enabled = false;
+    $user->save();
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 
     $response = $this->getJson(route('litterbot.suggest', $photo));

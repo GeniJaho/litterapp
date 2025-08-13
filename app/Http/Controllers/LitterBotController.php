@@ -19,11 +19,10 @@ class LitterBotController extends Controller
         Photo $photo,
         ClassifiesPhoto $action,
         GetItemFromPredictionAction $getItemFromPredictionAction,
-        #[CurrentUser] User $user,
-        #[Config('services.litterbot.enabled')] bool $litterBotEnabled
+        #[CurrentUser] User $user
     ): JsonResponse {
-        // This feature is only available to admins when it is enabled
-        if (! $litterBotEnabled || ! $user->is_admin) {
+        // This feature is only available to admins when it is enabled in user settings
+        if (! $user->settings->litterbot_enabled || ! $user->is_admin) {
             return response()->json();
         }
 
