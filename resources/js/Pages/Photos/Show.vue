@@ -59,7 +59,7 @@ const getPhoto = () => {
                 const firstSuggestion = photo.value.photo_item_suggestions[0];
                 const photoDoesNotHaveItem = photo.value.photo_items.findIndex(item => item.item_id === firstSuggestion.item_id) === -1;
 
-                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem) {
+                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.score >= 80) {
                     suggestedItem.value = firstSuggestion;
                 } else {
                     suggestedItem.value = null;
@@ -81,7 +81,7 @@ const suggestItem = () => {
 
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
-            suggestedItem.value = response.data.id ? response.data : null;
+            suggestedItem.value = response.data.id && response.data.score >= 80 ? response.data : null;
         })
         .catch(error => {
             console.log(error);
