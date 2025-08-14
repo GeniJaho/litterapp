@@ -296,6 +296,7 @@ test('a user can see a photo', function (): void {
     $photoItemSuggestion = PhotoItemSuggestion::factory()->create([
         'photo_id' => $photo->id,
         'item_id' => $item->id,
+        'score' => 0.95,
     ]);
 
     $response = $this->getJson(route('photos.show', $photo));
