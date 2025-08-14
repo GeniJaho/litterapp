@@ -2,6 +2,7 @@
 
 use App\Actions\Photos\ClassifyPhotoAction;
 use App\DTO\PhotoItemPrediction;
+use App\Models\AppSetting;
 use App\Models\Photo;
 use Illuminate\Http\Client\Request;
 use Illuminate\Support\Facades\Http;
@@ -17,6 +18,27 @@ it('classifies a photo successfully', function (): void {
     $result = app(ClassifyPhotoAction::class)->run($photo);
 
     Http::assertSent(fn (Request $request): bool => $request->url() === config('services.litterbot.url').'/predict' &&
+        $request['image_path'] === $photo->full_path);
+
+    expect($result)->toBeInstanceOf(PhotoItemPrediction::class)
+        ->class_name->toBe('bottle')
+        ->score->toBe(0.95);
+});
+
+it('gets the litterbot url from settings', function (): void {
+    $appSettings = AppSetting::query()->create([
+        'key' => 'litterbot_url',
+        'value' => 'https://litterbot.test',
+    ]);
+    Http::fake([
+        '*/predict' => Http::response(['class_name' => 'bottle', 'score' => 0.95]),
+    ]);
+
+    $photo = Photo::factory()->create();
+
+    $result = app(ClassifyPhotoAction::class)->run($photo);
+
+    Http::assertSent(fn (Request $request): bool => $request->url() === 'https://litterbot.test/predict' &&
         $request['image_path'] === $photo->full_path);
 
     expect($result)->toBeInstanceOf(PhotoItemPrediction::class)

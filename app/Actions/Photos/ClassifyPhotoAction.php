@@ -3,6 +3,7 @@
 namespace App\Actions\Photos;
 
 use App\DTO\PhotoItemPrediction;
+use App\Models\AppSetting;
 use App\Models\Photo;
 use Illuminate\Container\Attributes\Config;
 use Illuminate\Support\Facades\Http;
@@ -10,13 +11,15 @@ use Illuminate\Support\Facades\Log;
 
 class ClassifyPhotoAction implements ClassifiesPhoto
 {
+    private const LITTERBOT_URL_CACHE_KEY = 'classify_photo_action_litterbot_url';
+
     public function __construct(
         #[Config('services.litterbot.url')] protected string $litterBotUrl,
     ) {}
 
     public function run(Photo $photo): ?PhotoItemPrediction
     {
-        $response = Http::timeout(5)->post("{$this->litterBotUrl}/predict", [
+        $response = Http::timeout(5)->post("{$this->getLitterBotUrl()}/predict", [
             'image_path' => $photo->full_path,
         ]);
 
@@ -35,5 +38,20 @@ class ClassifyPhotoAction implements ClassifiesPhoto
         $score = $response->json('score');
 
         return new PhotoItemPrediction($className, $score);
+    }
+
+    private function getLitterBotUrl(): string
+    {
+        $valueFromSettings = cache()->remember(
+            self::LITTERBOT_URL_CACHE_KEY,
+            now()->addSeconds(10),
+            fn () => AppSetting::query()->where('key', 'litterbot_url')->value('value')
+        );
+
+        if (is_string($valueFromSettings) && $valueFromSettings !== '') {
+            return $valueFromSettings;
+        }
+
+        return $this->litterBotUrl;
     }
 }

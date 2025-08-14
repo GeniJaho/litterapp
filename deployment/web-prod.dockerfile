@@ -79,6 +79,7 @@ ENV COMPOSER_ALLOW_SUPERUSER=1
 
 RUN composer install --optimize-autoloader --no-dev
 RUN php artisan optimize && php artisan storage:link
+RUN php artisan filament:optimize
 
 RUN npm install && npm run build
 
