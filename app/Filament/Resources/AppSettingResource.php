@@ -31,7 +31,7 @@ class AppSettingResource extends Resource
                     ->required()
                     ->maxLength(191)
                     ->unique(ignoreRecord: true)
-                    ->readOnly(fn ($record): bool => $record !== null),
+                    ->readOnly(fn (?AppSetting $record): bool => $record instanceof AppSetting),
                 TextInput::make('value')
                     ->maxLength(191)
                     ->required(),
