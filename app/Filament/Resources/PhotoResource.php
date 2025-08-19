@@ -24,6 +24,8 @@ class PhotoResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-photo';
 
+    protected static ?int $navigationSort = 2;
+
     public static function table(Table $table): Table
     {
         return $table
@@ -116,7 +118,8 @@ class PhotoResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('id', 'desc');
+            ->defaultSort('id', 'desc')
+            ->persistFiltersInSession();
     }
 
     public static function getRelations(): array

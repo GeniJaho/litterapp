@@ -17,6 +17,7 @@ const form = useForm({
     picked_up_by_default: props.user.settings.picked_up_by_default,
     recycled_by_default: props.user.settings.recycled_by_default,
     deposit_by_default: props.user.settings.deposit_by_default,
+    litterbot_enabled: props.user.settings.litterbot_enabled,
 });
 
 
@@ -83,6 +84,21 @@ const save = () => {
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.deposit_by_default" class="mt-2" />
+
+                <ToggleInput
+                    id="litterbot_enabled"
+                    v-model="form.litterbot_enabled"
+                    class="mt-4 block w-full"
+                >
+                    <template #label>
+                        LitterBot enabled
+                    </template>
+                    <template #description>
+                        When enabled, LitterBot will analyze your photos and suggest items to tag.
+                        You can always accept or reject these suggestions. Your photos are not used for training.
+                    </template>
+                </ToggleInput>
+                <InputError :message="form.errors.litterbot_enabled" class="mt-2" />
 
             </div>
         </template>
