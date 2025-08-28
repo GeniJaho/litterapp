@@ -10,7 +10,7 @@ class UserSettings extends Data
         public bool $picked_up_by_default = true,
         public bool $recycled_by_default = false,
         public bool $deposit_by_default = false,
-        public bool $litterbot_enabled = true,
+        public bool $litterbot_enabled = false,
         public ?PhotoFilters $photo_filters = null,
         public int $per_page = 25,
         public string $sort_column = 'id',
