@@ -14,6 +14,7 @@ class GetRelevantTagShortcutAction
             ->where('user_id', $user->id)
             ->whereHas('items', fn (Builder $q) => $q->where('items.id', $itemId))
             ->with(TagShortcut::commonEagerLoads())
+            ->orderByDesc('used_times')
             ->orderByDesc('updated_at')
             ->orderByDesc('id')
             ->first();

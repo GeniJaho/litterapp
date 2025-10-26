@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::table('tag_shortcuts', function (Blueprint $table) {
+        Schema::table('tag_shortcuts', function (Blueprint $table): void {
             $table->unsignedInteger('used_times')->default(0)->after('shortcut');
         });
     }

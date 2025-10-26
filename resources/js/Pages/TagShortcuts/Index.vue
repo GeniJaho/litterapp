@@ -82,6 +82,7 @@ provide('tags', readonly(props.tags));
                                 <thead class="bg-gray-50 dark:bg-gray-800">
                                 <tr>
                                     <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">Shortcut</th>
+                                    <th scope="col" class="py-3.5 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 dark:text-gray-100 sm:pl-6">Used Times</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Items & Tags</th>
                                     <th scope="col" class="px-3 py-3.5 text-left text-sm font-semibold text-gray-900 dark:text-gray-100">Actions</th>
                                 </tr>
@@ -96,6 +97,11 @@ provide('tags', readonly(props.tags));
                                         class="whitespace-nowrap cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-gray-700 dark:text-gray-200 sm:pl-6"
                                     >
                                         {{ tagShortcut.shortcut }}
+                                    </td>
+                                    <td @click="openModal(tagShortcut)"
+                                        class="whitespace-nowrap cursor-pointer py-4 pl-4 pr-3 text-sm font-medium text-gray-700 dark:text-gray-200 sm:pl-6"
+                                    >
+                                        {{ tagShortcut.used_times }}
                                     </td>
                                     <td @click="openModal(tagShortcut)"
                                         class="cursor-pointer px-3 py-4 w-full min-w-[24rem]"

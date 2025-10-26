@@ -2,7 +2,6 @@
 
 namespace App\Rules;
 
-use App\Models\Photo;
 use App\Models\TagShortcut;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
