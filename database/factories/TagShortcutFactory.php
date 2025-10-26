@@ -21,6 +21,7 @@ class TagShortcutFactory extends Factory
         return [
             'user_id' => User::factory(),
             'shortcut' => fake()->unique()->word(),
+            'used_times' => 0,
         ];
     }
 }

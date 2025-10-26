@@ -320,6 +320,7 @@ test('a user can see a photo', function (): void {
         ->where('photo.photo_item_suggestions.0.id', $photoItemSuggestion->id)
         ->where('photo.photo_item_suggestions.0.item.id', $item->id)
         ->where('photo.photo_item_suggestions.0.item.name', $item->name)
+        ->where('photo.photo_item_suggestions.0.shortcut', null)
         ->etc()
     );
 });

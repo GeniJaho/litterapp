@@ -3,6 +3,7 @@
 namespace App\DTO;
 
 use App\Rules\PhotosBelongToUser;
+use App\Rules\TagShortcutsBelongToUser;
 use Spatie\LaravelData\Data;
 
 class BulkPhotoItems extends Data
@@ -10,10 +11,12 @@ class BulkPhotoItems extends Data
     /**
      * @param  int[]  $photo_ids
      * @param  BulkItem[]  $items
+     * @param  int[]  $used_shortcuts
      */
     public function __construct(
         public array $photo_ids,
         public array $items = [],
+        public array $used_shortcuts = [],
     ) {}
 
     /**
@@ -28,6 +31,8 @@ class BulkPhotoItems extends Data
                 new PhotosBelongToUser,
             ],
             'photo_ids.*' => ['required', 'exists:photos,id'],
+            'used_shortcuts' => ['array', new TagShortcutsBelongToUser],
+            'used_shortcuts.*' => ['required', 'exists:tag_shortcuts,id'],
         ];
     }
 

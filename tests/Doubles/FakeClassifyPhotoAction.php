@@ -18,7 +18,7 @@ class FakeClassifyPhotoAction implements ClassifiesPhoto
             return null;
         }
 
-        return $this->result ?? new PhotoItemPrediction('bottle', 0.95);
+        return $this->result ?? new PhotoItemPrediction('bottle', 95);
     }
 
     public function shouldReturnPrediction(PhotoItemPrediction $prediction): self

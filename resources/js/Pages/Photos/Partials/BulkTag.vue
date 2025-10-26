@@ -24,7 +24,8 @@ const page = usePage();
 const selectedItem = ref(null);
 const showModal = ref(false);
 const form = useForm({
-    items: []
+    items: [],
+    used_shortcuts: [],
 });
 const message = ref('');
 const tagShortcut = ref(null);
@@ -98,6 +99,10 @@ const applyTagShortcut = () => {
             deposit: tagShortcutItem.deposit,
             quantity: tagShortcutItem.quantity,
         });
+    }
+
+    if (! form.used_shortcuts.includes(tagShortcut.value.id)) {
+        form.used_shortcuts.push(tagShortcut.value.id);
     }
 
     tagShortcut.value = null;
