@@ -10,7 +10,8 @@ use Illuminate\Testing\Fluent\AssertableJson;
 use Tests\Doubles\FakeClassifyPhotoAction;
 
 test('it suggests an item for a photo', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
 
@@ -22,16 +23,17 @@ test('it suggests an item for a photo', function (): void {
 
     $response->assertOk();
     $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
-        ->has('id')
-        ->where('item.id', $item->id)
-        ->where('item.name', $item->name)
-        ->where('score', 0.95)
+        ->has('suggestion.id')
+        ->where('suggestion.item.id', $item->id)
+        ->where('suggestion.item.name', $item->name)
+        ->where('suggestion.score', 0.95)
         ->etc()
     );
 });
 
 test('it returns existing suggestion if available', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
     $suggestion = $photo->photoItemSuggestions()->create([
@@ -43,16 +45,17 @@ test('it returns existing suggestion if available', function (): void {
 
     $response->assertOk();
     $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
-        ->has('id')
-        ->where('item.id', $item->id)
-        ->where('item.name', $item->name)
-        ->where('score', 0.95)
+        ->has('suggestion.id')
+        ->where('suggestion.item.id', $item->id)
+        ->where('suggestion.item.name', $item->name)
+        ->where('suggestion.score', 0.95)
         ->etc()
     );
 });
 
 test('it returns error when classification fails', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 
     $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldFail());
@@ -64,7 +67,8 @@ test('it returns error when classification fails', function (): void {
 });
 
 test('it returns empty response when item not found', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 
     $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
@@ -78,7 +82,8 @@ test('it returns empty response when item not found', function (): void {
 });
 
 test('it returns empty response when item already exists in photo', function (): void {
-    $this->actingAs($user = User::factory()->create());
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
     $item = Item::factory()->create(['name' => 'Bottle']);
     $photo->items()->attach($item);
@@ -94,7 +99,7 @@ test('it returns empty response when item already exists in photo', function ():
 });
 
 test('it returns 404 when photo does not belong to user', function (): void {
-    $this->actingAs(User::factory()->create());
+    $this->actingAs(User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]));
     $otherUser = User::factory()->create();
     $photo = Photo::factory()->for($otherUser)->create();
 

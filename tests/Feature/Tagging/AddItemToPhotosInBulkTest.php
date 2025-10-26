@@ -3,6 +3,7 @@
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\Tag;
+use App\Models\TagShortcut;
 use App\Models\User;
 
 use function Pest\Laravel\assertDatabaseCount;
@@ -202,4 +203,78 @@ test('a user can not add an item to another users photo', function (): void {
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('photo_ids');
+});
+
+test('used shortcuts usage is tracked per photo', function (): void {
+    $user = User::factory()->create();
+    $photoA = Photo::factory()->create(['user_id' => $user->id]);
+    $photoB = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $shortcutA = TagShortcut::factory()->create(['user_id' => $user->id, 'used_times' => 0]);
+    $shortcutB = TagShortcut::factory()->create(['user_id' => $user->id, 'used_times' => 1]);
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photoA->id, $photoB->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
+        'used_shortcuts' => [$shortcutA->id, $shortcutB->id],
+    ]);
+
+    $response->assertOk();
+
+    expect($shortcutA->fresh()->used_times)->toBe(2);
+    expect($shortcutB->fresh()->used_times)->toBe(3);
+});
+
+test('the used shortcuts are validated', function ($value, $errorKey): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
+        'used_shortcuts' => $value,
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors($errorKey);
+})->with([
+    'used_shortcuts must be an array' => ['string', 'used_shortcuts'],
+    'used_shortcuts entries must exist' => [[999], 'used_shortcuts.0'],
+]);
+
+test('the used shortcuts must belong to the user', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+
+    $shortcutFromAnotherUser = TagShortcut::factory()->create();
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photo->id],
+        'items' => [[
+            'id' => $item->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
+        'used_shortcuts' => [$shortcutFromAnotherUser->id],
+    ]);
+
+    $response->assertStatus(422);
+    $response->assertJsonValidationErrors('used_shortcuts');
 });

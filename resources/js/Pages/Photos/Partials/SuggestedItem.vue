@@ -37,29 +37,29 @@ const rejectSuggestedItem = () => {
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
                     1 {{ suggestedItem.item.name }}
                 </h3>
-                <div class="mt-6 text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
-                    <i class="fas fa-wand-magic-sparkles text-gray-900 dark:text-turqoFocus mr-2"></i>
-                    {{ suggestedItem.score.toFixed() }}%
-                    AI Confidence
+                <div class="mt-6 flex justify-between gap-2">
+                    <SecondaryButton
+                        class="group relative w-full justify-center"
+                        @click="addSuggestedItem"
+                    >
+                        <Tooltip>
+                            <span class="whitespace-nowrap text-white">Ctrl (⌘) + Enter</span>
+                        </Tooltip>
+                        Accept
+                    </SecondaryButton>
+                    <DangerButton
+                        @click="rejectSuggestedItem"
+                        class="w-full"
+                    >
+                        Reject
+                    </DangerButton>
                 </div>
             </div>
 
-            <div class="mt-6 flex justify-between gap-2">
-                <SecondaryButton
-                    class="group relative w-full justify-center"
-                    @click="addSuggestedItem"
-                >
-                    <Tooltip>
-                        <span class="whitespace-nowrap text-white">Ctrl (⌘) + Enter</span>
-                    </Tooltip>
-                    Accept
-                </SecondaryButton>
-                <DangerButton
-                    @click="rejectSuggestedItem"
-                    class="w-full"
-                >
-                    Reject
-                </DangerButton>
+            <div class="mt-6 text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
+                <i class="fas fa-wand-magic-sparkles text-gray-900 dark:text-turqoFocus mr-2"></i>
+                <span class="font-bold">{{ suggestedItem.score.toFixed() }}%</span>
+                AI Confidence
             </div>
         </div>
         <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">

@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\PhotoItem;
 use App\Models\PhotoItemTag;
+use App\Models\TagShortcut;
 use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
@@ -15,8 +16,9 @@ class BulkPhotoItemsController extends Controller
     public function store(BulkPhotoItems $bulkPhotoItems): void
     {
         $items = Item::query()->find(array_column($bulkPhotoItems->items, 'id'))->keyBy('id');
+        $usedShortcuts = TagShortcut::query()->find($bulkPhotoItems->used_shortcuts)->keyBy('id');
 
-        DB::transaction(function () use ($items, $bulkPhotoItems): void {
+        DB::transaction(function () use ($items, $usedShortcuts, $bulkPhotoItems): void {
             foreach ($bulkPhotoItems->items as $requestItem) {
                 /** @var Item $item */
                 $item = $items[$requestItem->id];
@@ -34,6 +36,13 @@ class BulkPhotoItemsController extends Controller
 
                     $photoItem->tags()->attach($requestItem->tag_ids);
                 }
+            }
+
+            foreach ($bulkPhotoItems->used_shortcuts as $shortcutId) {
+                /** @var TagShortcut $tagShortcut */
+                $tagShortcut = $usedShortcuts[$shortcutId];
+
+                $tagShortcut->increment('used_times', count($bulkPhotoItems->photo_ids));
             }
         });
     }

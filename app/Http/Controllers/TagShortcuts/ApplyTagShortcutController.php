@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\TagShortcuts;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Photos\ApplyTagShortcutRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\TagShortcut;
@@ -12,8 +13,11 @@ use Illuminate\Support\Facades\DB;
 
 class ApplyTagShortcutController extends Controller
 {
-    public function __invoke(Photo $photo, TagShortcut $tagShortcut): JsonResponse
-    {
+    public function __invoke(
+        Photo $photo,
+        TagShortcut $tagShortcut,
+        ApplyTagShortcutRequest $request,
+    ): JsonResponse {
         /** @var User $user */
         $user = auth()->user();
 
@@ -27,7 +31,7 @@ class ApplyTagShortcutController extends Controller
 
         $tagShortcut->loadMissing('tagShortcutItems.tagShortcutItemTags');
 
-        DB::transaction(function () use ($tagShortcut, $photo): void {
+        DB::transaction(function () use ($tagShortcut, $photo, $request): void {
             foreach ($tagShortcut->tagShortcutItems as $shortcut) {
                 /** @var PhotoItem $photoItem */
                 $photoItem = PhotoItem::query()->create([
@@ -41,6 +45,14 @@ class ApplyTagShortcutController extends Controller
 
                 $photoItem->tags()->attach($shortcut->tagShortcutItemTags->pluck('tag_id'));
             }
+
+            if ($request->suggestion_id) {
+                $photo->photoItemSuggestions()
+                    ->where('id', $request->suggestion_id)
+                    ->update(['is_accepted' => true]);
+            }
+
+            $tagShortcut->increment('used_times');
         });
 
         return response()->json();

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Actions\Photos\ClassifiesPhoto;
 use App\Actions\Photos\GetItemFromPredictionAction;
+use App\Actions\Photos\GetRelevantTagShortcutAction;
 use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
@@ -18,6 +19,7 @@ class LitterBotController extends Controller
         Photo $photo,
         ClassifiesPhoto $action,
         GetItemFromPredictionAction $getItemFromPredictionAction,
+        GetRelevantTagShortcutAction $getRelevantTagShortcutAction,
         #[CurrentUser] User $user
     ): JsonResponse {
         if (! $user->settings->litterbot_enabled) {
@@ -31,7 +33,10 @@ class LitterBotController extends Controller
         $existingSuggestion = $photo->photoItemSuggestions()->with('item')->first();
 
         if ($existingSuggestion instanceof PhotoItemSuggestion) {
-            return response()->json($existingSuggestion);
+            return response()->json([
+                'suggestion' => $existingSuggestion,
+                'shortcut' => $getRelevantTagShortcutAction->run($user, $existingSuggestion->item_id),
+            ]);
         }
 
         $prediction = $action->run($photo);
@@ -51,8 +56,11 @@ class LitterBotController extends Controller
         $suggestion = $photo->photoItemSuggestions()->create([
             'item_id' => $item->id,
             'score' => $prediction->score,
-        ]);
+        ])->load('item');
 
-        return response()->json($suggestion->load('item'));
+        return response()->json([
+            'suggestion' => $suggestion,
+            'shortcut' => $getRelevantTagShortcutAction->run($user, $item->id),
+        ]);
     }
 }
