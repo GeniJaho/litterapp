@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class ClassifyPhotoAction implements ClassifiesPhoto
 {
-    private const LITTERBOT_URL_CACHE_KEY = 'classify_photo_action_litterbot_url';
+    public const LITTERBOT_URL_CACHE_KEY = 'classify_photo_action_litterbot_url';
 
     public function __construct(
         #[Config('services.litterbot.url')] protected string $litterBotUrl,
