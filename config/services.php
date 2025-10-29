@@ -39,6 +39,7 @@ return [
 
     'litterbot' => [
         'url' => env('LITTERBOT_URL', 'http://127.0.0.1:8000'),
+        'update_key' => env('LITTERBOT_UPDATE_KEY', ''),
     ],
 
     // Social
