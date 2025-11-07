@@ -219,7 +219,9 @@ const applyTagShortcut = () => {
         return;
     }
 
-    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${tagShortcut.value.id}`)
+    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${tagShortcut.value.id}`, {
+        suggestion_id: suggestedItem.value?.id,
+    })
         .then(() => getPhoto());
 
     tagShortcut.value = null;
