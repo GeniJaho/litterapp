@@ -7,6 +7,7 @@ use App\DTO\BulkPhotoItems;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
 use App\Models\PhotoItem;
+use App\Models\PhotoItemSuggestion;
 use App\Models\PhotoItemTag;
 use App\Models\TagShortcut;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,12 @@ class BulkPhotoItemsController extends Controller
 
                     $photoItem->tags()->attach($requestItem->tag_ids);
                 }
+
+                PhotoItemSuggestion::query()
+                    ->where('item_id', $item->id)
+                    ->whereIn('photo_id', $bulkPhotoItems->photo_ids)
+                    ->whereNull('is_accepted')
+                    ->update(['is_accepted' => true]);
             }
 
             foreach ($bulkPhotoItems->used_shortcuts as $shortcutId) {

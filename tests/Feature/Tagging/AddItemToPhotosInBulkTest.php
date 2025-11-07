@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\PhotoItemSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
@@ -277,4 +278,75 @@ test('the used shortcuts must belong to the user', function (): void {
 
     $response->assertStatus(422);
     $response->assertJsonValidationErrors('used_shortcuts');
+});
+
+test('adding items to photos in bulk updates matching item suggestions', function (): void {
+    $user = User::factory()->create();
+    $photoA = Photo::factory()->create(['user_id' => $user->id]);
+    $photoB = Photo::factory()->create(['user_id' => $user->id]);
+    $photoC = Photo::factory()->create(['user_id' => $user->id]);
+
+    $itemToAdd = Item::factory()->create();
+    $otherItem = Item::factory()->create();
+
+    // Suggestions that should be updated (is_accepted is null, matches item and photos)
+    $suggestionA = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoA->id,
+        'item_id' => $itemToAdd->id,
+        'is_accepted' => null,
+    ]);
+    $suggestionB = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoB->id,
+        'item_id' => $itemToAdd->id,
+        'is_accepted' => null,
+    ]);
+
+    // Suggestions that should NOT be updated
+    // Already accepted suggestion
+    $alreadyAccepted = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoA->id,
+        'item_id' => $itemToAdd->id,
+        'is_accepted' => true,
+    ]);
+    // Already rejected suggestion
+    $alreadyRejected = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoB->id,
+        'item_id' => $itemToAdd->id,
+        'is_accepted' => false,
+    ]);
+    // Different item
+    $differentItem = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoA->id,
+        'item_id' => $otherItem->id,
+        'is_accepted' => null,
+    ]);
+    // Different photo (not in the bulk operation)
+    $differentPhoto = PhotoItemSuggestion::factory()->create([
+        'photo_id' => $photoC->id,
+        'item_id' => $itemToAdd->id,
+        'is_accepted' => null,
+    ]);
+
+    $response = $this->actingAs($user)->postJson('/photos/items', [
+        'photo_ids' => [$photoA->id, $photoB->id],
+        'items' => [[
+            'id' => $itemToAdd->id,
+            'picked_up' => true,
+            'recycled' => true,
+            'deposit' => true,
+            'quantity' => 1,
+        ]],
+    ]);
+
+    $response->assertOk();
+
+    // Verify suggestions that should be updated are now accepted
+    expect($suggestionA->fresh()->is_accepted)->toBeTrue();
+    expect($suggestionB->fresh()->is_accepted)->toBeTrue();
+
+    // Verify suggestions that should NOT be updated remain unchanged
+    expect($alreadyAccepted->fresh()->is_accepted)->toBeTrue();
+    expect($alreadyRejected->fresh()->is_accepted)->toBeFalse();
+    expect($differentItem->fresh()->is_accepted)->toBeNull();
+    expect($differentPhoto->fresh()->is_accepted)->toBeNull();
 });
