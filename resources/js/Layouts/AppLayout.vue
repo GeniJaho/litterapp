@@ -20,6 +20,7 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.nav_link)
 const facebookLink = computed(() => page.props.nav.facebook_link)
 const twitterLink = computed(() => page.props.nav.twitter_link)
+const latestNewsLink = '/grafana/public-dashboards/a7d260cf38ff439ea19d39e1fba7f3bd';
 const isAdmin = computed(() => page.props.auth.user?.is_admin)
 const isImpersonating = computed(() => page.props.auth.user?.is_being_impersonated)
 
@@ -93,8 +94,8 @@ const logout = () => {
                                     Docs
                                 </NavLink>
 
-                                <!-- New menu item: Latest News (reuses grafanaLink) -->
-                                <NavLink :href="grafanaLink"
+                                <!-- Latest News -->
+                                <NavLink :href="latestNewsLink"
                                          :externalLink="true"
                                          target="_blank"
                                 >
@@ -132,7 +133,7 @@ const logout = () => {
                                     <template #trigger>
                                         <span class="inline-flex rounded-md">
                                             <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 b[...]"
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.current_team?.name ?? 'My Teams' }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -180,7 +181,8 @@ const logout = () => {
                                                                     <svg
                                                                         v-if="team.id == $page.props.auth.user.current_team_id"
                                                                         class="mr-2 h-5 w-5 text-green-400"
-                                                                        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                                        xmlns="http://www.w3.org/2000/svg"
+                                                                        fill="none" viewBox="0 0 24 24"
                                                                         stroke-width="1.5" stroke="currentColor">
                                                                         <path stroke-linecap="round"
                                                                               stroke-linejoin="round"
@@ -212,7 +214,7 @@ const logout = () => {
 
                                         <span v-else class="inline-flex rounded-md">
                                             <button type="button"
-                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 b[...]"
+                                                    class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none focus:bg-gray-50 dark:focus:bg-gray-700 active:bg-gray-50 dark:active:bg-gray-700 transition ease-in-out duration-150">
                                                 {{ $page.props.auth.user.name }}
 
                                                 <svg class="ml-2 -mr-0.5 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -294,7 +296,7 @@ const logout = () => {
 
                             <!-- Hamburger -->
                             <button
-                                class="ml-2 inline-flex items-center justify-center p-1 rounded-md text-darkBlue hover:text-slate-900 hover:bg-mainWhite hover:opacity-75 focus:outline-none focus:[...]"
+                                class="ml-2 inline-flex items-center justify-center p-1 rounded-md text-darkBlue hover:text-slate-900 hover:bg-mainWhite hover:opacity-75 focus:outline-none focus:bg-mainWhite focus:text-slate-900 transition duration-150 ease-in-out"
                                 @click="showingNavigationDropdown = ! showingNavigationDropdown">
                                 <svg
                                     class="h-10 w-10 font-black"
@@ -360,8 +362,8 @@ const logout = () => {
                             Docs
                         </ResponsiveNavLink>
 
-                        <!-- New mobile menu item: Latest News (reuses grafanaLink) -->
-                        <ResponsiveNavLink :href="grafanaLink"
+                        <!-- Latest News -->
+                        <ResponsiveNavLink :href="latestNewsLink"
                                            as="externalLink"
                                            target="_blank"
                         >
@@ -470,7 +472,8 @@ const logout = () => {
                                                 <div class="flex items-center">
                                                     <svg v-if="team.id == $page.props.auth.user.current_team_id"
                                                          class="mr-2 h-5 w-5 text-green-400"
-                                                         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                                         xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                         viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                                         <path stroke-linecap="round" stroke-linejoin="round"
                                                               d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
                                                     </svg>
