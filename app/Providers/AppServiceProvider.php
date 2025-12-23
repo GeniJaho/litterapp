@@ -3,12 +3,12 @@
 namespace App\Providers;
 
 use App\Actions\Photos\ClassifiesPhoto;
-use App\Actions\Photos\ClassifyPhotoAction;
 use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Tests\Doubles\FakeClassifyPhotoAction;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -32,6 +32,6 @@ class AppServiceProvider extends ServiceProvider
         Model::shouldBeStrict();
 
         $this->app->bind(ExtractsExifFromPhoto::class, ExtractExifFromPhotoAction::class);
-        $this->app->bind(ClassifiesPhoto::class, ClassifyPhotoAction::class);
+        $this->app->bind(ClassifiesPhoto::class, FakeClassifyPhotoAction::class);
     }
 }

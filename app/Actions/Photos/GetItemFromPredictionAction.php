@@ -10,7 +10,7 @@ class GetItemFromPredictionAction
     /**
      * @var array<string, string>
      */
-    private array $itemClassNames = [
+    public const ITEM_CLASS_NAMES = [
         'aluminium-foil' => 'Aluminium Foil',
         'balloon' => 'Balloon',
         'bottle' => 'Bottle',
@@ -43,7 +43,7 @@ class GetItemFromPredictionAction
 
     public function run(PhotoItemPrediction $prediction): ?Item
     {
-        if (! isset($this->itemClassNames[$prediction->class_name])) {
+        if (! isset(self::ITEM_CLASS_NAMES[$prediction->class_name])) {
             logger()->error('Unknown item class name', [
                 'class_name' => $prediction->class_name,
                 'score' => $prediction->score,
@@ -52,13 +52,13 @@ class GetItemFromPredictionAction
             return null;
         }
 
-        $foundItem = Item::query()->where('name', $this->itemClassNames[$prediction->class_name])->first();
+        $foundItem = Item::query()->where('name', self::ITEM_CLASS_NAMES[$prediction->class_name])->first();
 
         if (! $foundItem instanceof Item) {
             logger()->error('Item not found', [
                 'class_name' => $prediction->class_name,
                 'score' => $prediction->score,
-                'item_name' => $this->itemClassNames[$prediction->class_name],
+                'item_name' => self::ITEM_CLASS_NAMES[$prediction->class_name],
             ]);
         }
 
