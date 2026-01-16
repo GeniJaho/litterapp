@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
+ * @property int<0, max> $id
  * @property Collection<int, Item> $items
  * @property Collection<int, TagShortcutItem> $tagShortcutItems
  */

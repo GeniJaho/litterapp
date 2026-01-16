@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
+ * @property int<0, max> $id
  * @property TagShortcut $tagShortcut
  * @property Collection<int, Item> $items
  * @property Collection<int, Tag> $tags

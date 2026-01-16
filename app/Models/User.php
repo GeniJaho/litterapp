@@ -23,6 +23,7 @@ use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
+ * @property int<0, max> $id
  * @property Collection<int, Photo> $photos
  * @property UserSettings $settings
  * @property Collection<int, Team> $ownedTeams
@@ -131,7 +132,7 @@ class User extends Authenticatable implements FilamentUser, MustVerifyEmail
     }
 
     /**
-     * @return Attribute<string|null, never>
+     * @return Attribute<string, never>
      */
     protected function profilePhotoUrl(): Attribute
     {
