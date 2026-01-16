@@ -1,6 +1,7 @@
 <script setup>
 import ApiTokenManager from '@/Pages/API/Partials/ApiTokenManager.vue';
 import AppLayout from '@/Layouts/AppLayout.vue';
+import {Link} from "@inertiajs/vue3";
 
 defineProps({
     tokens: Array,
@@ -13,7 +14,7 @@ defineProps({
     <AppLayout title="API Tokens">
         <template #header>
             <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                API Tokens
+                API Tokens (<a href="/api-docs" target="_blank" class="underline">Docs</a>)
             </h2>
         </template>
 

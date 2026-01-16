@@ -22,7 +22,7 @@
     </script>
 
             <script>
-            var tryItOutBaseUrl = "http://litterapp.test";
+            var tryItOutBaseUrl = "https://litterapp.net";
             var useCsrf = Boolean(1);
             var csrfUrl = "/sanctum/csrf-cookie";
         </script>
@@ -669,7 +669,7 @@
 
         </div>
         <div class="sl-flex sl-items-center sl-px-4 sl-py-3 sl-border-t">
-            Last updated: January 7, 2026
+            Last updated: January 16, 2026
         </div>
 
         <div class="sl-flex sl-items-center sl-px-4 sl-py-3 sl-border-t">
@@ -698,7 +698,7 @@
             <div class="sl-prose sl-markdown-viewer sl-my-4">
                 <h1 id="introduction">Introduction</h1>
 <aside>
-    <strong>Base URL</strong>: <code>http://litterapp.test</code>
+    <strong>Base URL</strong>: <code>https://litterapp.net</code>
 </aside>
 <p>This documentation aims to provide all the information you need to work with our API. It will get better with time... we promise!</p>
 <aside>As you scroll, you'll see code examples for working with the API in different programming languages in the dark area to the right (or as part of the content on mobile).
@@ -731,7 +731,7 @@ You can switch the language used with the tabs at the top right (or from the nav
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/upload"
+            <div title="https://litterapp.net/upload"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -741,7 +741,7 @@ You can switch the language used with the tabs at the top right (or from the nav
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/upload</div>
                     </div>
 
@@ -1008,7 +1008,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/upload" \
+    --get "https://litterapp.net/upload" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -1019,7 +1019,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/upload"
+    "https://litterapp.net/upload"
 );
 
 const headers = {
@@ -1088,7 +1088,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6Im04SjY2a0hQWkx1WXd4MlF4bXVQeWc9PSIsInZhbHVlIjoidDRkeVczd0dSL2pOd2NMS1o3bEUwWDg1OTdTaTBTUXR6WEw3YzVmem5GU2lPaXR5TTE4T0ZpTU9VNkpTTWk3L0JaeW5IdnVoSzVqbnRvNURMRzFnNkt4VUtzU1JsSXl5aE5kejhJU0dtSXd2Z0RKWmJMRlJrb1BQekRBT1M3QTEiLCJtYWMiOiJiZmM1NGFiMjc0NWVjNTRlMTkxM2ViMWI5NmE0NWY1NDI0YWNmMmJiNDMwNDdjNzUzYjgxNzM3NDY4NWI3NzNlIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6IkdDcWJpOG44RmdZZjFnSkFBYnlEZ0E9PSIsInZhbHVlIjoiKzhxeENJUlUrYjdMSWxsNGJRdjB4dUYwSmlZeWpCRFo4SzdtdVA0VmFEOU1FYWFCQVVUcjRicXcwVnBaTGdJU3k1eG9EcFJOb1dEbEZWcHJEcHkxRUxDRjZBeUw4Tldwc00wRGM0V0hoTE4yU01QOUZUUUdTczRTenlFM0Q5N24iLCJtYWMiOiI2ODViMzJjOGM3NWIwMmY3ZDg4OGMyNTVmZTk0MjgxMzhhOWFkOTMwYTcwNDczMWU5ODY2ZTY3YWU1OTAxODBiIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6IjBOTlVvd0NRK2dxMlRWY3dMUUZoaWc9PSIsInZhbHVlIjoiendVU1phUmdlU3U1bjBTWHFVSi9Obnh2NkdWTlY4S0FNeGhGVXhkbi9EbTRnK1BWY0VMOC9IV1dLQ3ZROHRNaU9ocHkyUFYrV0IzaUVzQkh1Qll3SHlWRENyUUgvZXRqUlJ5WVZ3TUZJWHg0SFBhYytQeENXSmFUMEY0M090a2UiLCJtYWMiOiJiMjNjY2QyZmEzOWJhOTA4NzZiODBkOGNhMzJhMTQ4ODQwZDdhODlkZmQ2OTFkOTBhNDY4MDM5NmU5MmI5NDY4IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6IkJkdFZYS096MGRrSkZock5XMVl0cGc9PSIsInZhbHVlIjoialpDdm5uclBJcU9Sd1NwbFYwZzdMWDA0bzVwNVN6LzdHQ0c4blEwSFZPZnlhaVlvWDhaR0NFU2hwR0xUaEdvWWxSOHN0K1dVNnFtci9UOHI3VnZibEI3bDJsMVFwQm1BZU83UHFhaDV5MlNSUW5jbEV6a0xrUG1zTHE5ODg0T04iLCJtYWMiOiIzNTJkYjllZDZiZjVlZDBkYWIwZjcxNjQzZmNjYWRmZDEyZDE3ODY5ZTk3NTcyZjgyYTQ4NWVkNDAyYzkxY2U1IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -1115,7 +1115,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/upload"
+            <div title="https://litterapp.net/upload"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -1125,7 +1125,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/upload</div>
                     </div>
 
@@ -1230,7 +1230,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        jtweyikbgnmrbnslipuq
+                        xcmwmtpq
                     </div>
                 </div>
             </div>
@@ -1360,7 +1360,7 @@ fetch(url, {
                                      id="json-body-POSTupload"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "photo": "jtweyikbgnmrbnslipuq"
+    "photo": "xcmwmtpq"
 }</div>
                             </div>
                                             </div>
@@ -1452,12 +1452,12 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/upload" \
+    "https://litterapp.net/upload" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"photo\": \"jtweyikbgnmrbnslipuq\"
+    \"photo\": \"xcmwmtpq\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -1467,7 +1467,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/upload"
+    "https://litterapp.net/upload"
 );
 
 const headers = {
@@ -1477,7 +1477,7 @@ const headers = {
 };
 
 let body = {
-    "photo": "jtweyikbgnmrbnslipuq"
+    "photo": "xcmwmtpq"
 };
 
 fetch(url, {
@@ -1505,7 +1505,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/items"
+            <div title="https://litterapp.net/photos/items"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -1515,7 +1515,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/items</div>
                     </div>
 
@@ -1782,7 +1782,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photos/items" \
+    "https://litterapp.net/photos/items" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -1793,7 +1793,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/items"
+    "https://litterapp.net/photos/items"
 );
 
 const headers = {
@@ -1826,7 +1826,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/items"
+            <div title="https://litterapp.net/photos/items"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -1836,7 +1836,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/items</div>
                     </div>
 
@@ -2103,7 +2103,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/photos/items" \
+    "https://litterapp.net/photos/items" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -2114,7 +2114,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/items"
+    "https://litterapp.net/photos/items"
 );
 
 const headers = {
@@ -2147,7 +2147,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/my-photos"
+            <div title="https://litterapp.net/my-photos"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -2157,7 +2157,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/my-photos</div>
                     </div>
 
@@ -2424,7 +2424,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/my-photos" \
+    --get "https://litterapp.net/my-photos" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -2435,7 +2435,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/my-photos"
+    "https://litterapp.net/my-photos"
 );
 
 const headers = {
@@ -2504,7 +2504,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6IkRjZmlqOUdDWkZOK1hxMmlCcjllMXc9PSIsInZhbHVlIjoiTEJtUng4OTRCTUVWZSs2QjhTeWV1UmxjK1UycUhTdk9Jd2ZTUGZiZzlCNWdKbS9sb0dBa2pHdkpVZytuM0Ztenh3TzJVOEtQbmx5UEtTRVp3RmxyZFRNWmNDSTFXODlkdHBHenZ5bEpQZWdlV2tGUEdGVEdjYWE2dDJqb0xaOHkiLCJtYWMiOiJjMjM5NTg5OTAzNzUyODdlYzhlOWI4MjQ0YzIxZjQ5ZmI1MTdlMDNkZGIzZThhNGI3NDQxNDY3ZTIyZTZkYTc3IiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6IkYxZG1teTlpczMzZXo4NUpWODBQVVE9PSIsInZhbHVlIjoiY2ZvclpkZmgzSGNrbzNhNHZjUElFeDlydlU0RWtKQk5mY21CWjdEVHZJYjlQYWpMbkFaVjdoK3Y5OFVnUzZjN1AwUjFwVllPOSs1QkNZYWx1Z05KbUlodE1kZEhocGh0OGk1dUN2dm5EUFBnRDFkcHJJYnNBL1JRZFdUN2s5M0UiLCJtYWMiOiJjOGQ1NWYwOWQxZmViNDRiOWRhOGI3ZWEyNzE0ZmI2MmExNWJiNzg3Y2UxNTg4MzRjOGEwMzdiMjQ5NTFjYzZiIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6IldrRngzamhHSVN6RjZISzZVYnB0VEE9PSIsInZhbHVlIjoiZFZqR1UrZXVqL3MrdjFEdTVmQU1QN3UvNzNndHpOeUhlV3YzaGFjbGcrVkdWYk9qSHF2cFNLajZsUWd4RUg1TFVDTUhzUGx1d1Mvcm9YeG83dThZV1FFSVYrK0t1blJKVTFYUjFINWJXckpXZ2RkalI5TG45UmdhaXZ2VkVibGQiLCJtYWMiOiIyYWJiMmIyMGEyMGIxOWMxNmQ2ZmM4NDljNDNlZDBlOGMzODhmZjcxYjIxZjk2NjkzODk1OTMzOWY2ZGE0OWM4IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6Ii8wc2xqQjhZMzllY0pYa2QrSm9ydmc9PSIsInZhbHVlIjoiUHkxcmFKR1Ewd3RtQ3llYXZRUGJZZzZnbmV0SGxNK2ExUjk2dmtxRWFKam9DdGRldWtBbWFmZUtMUDh2eHZERVpTSTNiU1RUYmIrRlc4dG1MYXp1bFNFSkIvenFzT2I3RlUxSnBXZ2pldmlkUEREVStEemU2NWVKRXUrbEZuejAiLCJtYWMiOiIzZTAwMDE5YWNhZGRiODEwZDc1OGZhNzFlMTY3ZmQ0NzZlNWIxY2MzMDQ2ZTBhYjA3NjJkZTA4NGFlMTdkMjA4IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -2531,7 +2531,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/export"
+            <div title="https://litterapp.net/photos/export"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -2541,7 +2541,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/export</div>
                     </div>
 
@@ -2808,7 +2808,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/photos/export" \
+    --get "https://litterapp.net/photos/export" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -2819,7 +2819,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/export"
+    "https://litterapp.net/photos/export"
 );
 
 const headers = {
@@ -2888,7 +2888,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6IjE0ck9kcCtSN1RWOGZOMXVMbkJkbmc9PSIsInZhbHVlIjoiZkVzV01xdlZUcDNCYnZpSjZiTU82b3l5TS9WelVYSFBFNDhMWTQxampBM0Y2Y1ltQUJMRUhMVnM3K3BXNVQ3NHdtY0lBU3RaZUxHWTlXSlNqT24rQTNJZXpzdFBzNFFDbldjaXV6SlJNTkdhMit6KzdqdkdoZmNkWEQ2UkJDQ00iLCJtYWMiOiI2MDA1N2VjODY2YTk4YjBiMjcwNTVhMmEzOGUxZmMwYmEyMjZlMWE4YjZlNGM0YjYwOWQ0MGNkYmRiZWJmYzJkIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6IllnaFdwc3RmZzVFUEw1alJodVlUOUE9PSIsInZhbHVlIjoidE8ycGlaOWdmNUR6V1lVZTBLcTV5ZGJ5UExOYUhzbExEVlZTRzVnTjRmSGdaSzdQNEF3V3dTcWVwK0tRT08wcEJUTk5NakNRdnBIZzZhUThqVUZxMlAwNDJlL2tUWXVKNW84OWJRTXlBeDM2Z2lBd1cvdVVxbytpeTZlK0N1SnkiLCJtYWMiOiIxN2I5OGVmN2I0MTYyNWU2NDYyMjRhNjczNGYxZTQ1MTI2MjY5ZWNiZGI0ZjNmNDM4YjBjMDliMzk2ZjI0MWZlIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6ImpzN1FhUEVqa0JyYzkvOUI0dDN2OHc9PSIsInZhbHVlIjoicysrMXJ0eVRUMXFaM1pEemZXdi8vTlNwRVljSUc5YlRSZkNKVVhPTUF2SWFqSmx0OG95dUJqR3JWYituejJNR0JqSTRJb0VjNkdHbU1ZNzB1U2o3aTdEc09hMFplbDh4TXdieGF2dHlybWJKMEJGTUhsbFFwdUxTbWwzZFNHNFQiLCJtYWMiOiJiMDE2NmVlNWZiNzk1OTFmZTQ1NGNlM2Q4YmE1NDcyZDdmNzg3MDM1NmRhMWNlMTRlOTgyOWM1MTU1MDYzMjhlIiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6IjJpazlWenhhQUluSDhXNW1CRy9RaEE9PSIsInZhbHVlIjoiMnBYd0lteWFiZlp0VldObGVqbGllZVdlL29RUm96VXRGTEpoQ2toOTB5NHBGczFMejZsUHUyUWNtc0pqYUFrUFVQTkdnRkZhN041TytSVDNLWVA0ZkY1WWdsT3c1by9EdTZLT0h6cW01UGMvQURIclpJbW9hRDhnMndnbjhFSEYiLCJtYWMiOiI2NjU2MmIwNzU0MTk2MTBiN2IyYjIxZDUyODJmNjQ4N2I1MmUyMGUxN2FiNDVlMzViMDRkMTk2YWQzZmI4Mzk5IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -2915,7 +2915,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/{id}"
+            <div title="https://litterapp.net/photos/{id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -2925,7 +2925,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/{id}</div>
                     </div>
 
@@ -3255,7 +3255,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/photos/1" \
+    --get "https://litterapp.net/photos/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -3266,7 +3266,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/1"
+    "https://litterapp.net/photos/1"
 );
 
 const headers = {
@@ -3335,7 +3335,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6ImlreC9JNkVqdVp0YkdnN2kwMXp2N0E9PSIsInZhbHVlIjoiU0RKM2hFeHlZaXhOMk5qRWZkUDBkaTA2b0VISXZqakxVQzdoZU9GbkJnZ2tQYU9kdzdyL2JMdnVIeTFwZ2NxNzd0V2VjcGtjMnF5N1VjMHNVVnAyaDZndFFhL0dKUE5PeTgxbDgwSGV6YUNtY0l0MGVpSHJ6MGszYlkvOUZqM3EiLCJtYWMiOiJlOWNhYjhlZTMwZGZiNGE4OTlhYzQ1ZTM4NDMzZTEwNDI3NzEzYzIyMTUwNzY4ZDg4OWQ1MDM2NWFkNzkwMWYwIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6ImZ3Rmx6c044Tlh2R21BNE5CUCtjSUE9PSIsInZhbHVlIjoiMEtUTW5oQTlXTHJqUFRpOC9xZjdKdy82cExmSjFuQXpESUpnZ3dZOHVQS2NWMC9vdGQ1OWhBTjZsemZDbXhPZUc1bThjb20vTVRLZHhwcGsxVGsxanRjUXU3aFVnekF3Z01FUVloRGhsWWpxbnlvSG5aVk9QUThJSEdBdTRUQzUiLCJtYWMiOiI4M2Q4MTE0NjdiMGNhMzMxMWU5NTMxYzhlNzQwNzM4YTQ1OTI1NzIxYzBmOWQyZjI5MTk4MWQ2NjcxOTAzYzYwIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6IkY4dWowaldOc0R2Y21ZYW10MFdubXc9PSIsInZhbHVlIjoiZUFnMUhLbVJBdjF4RnVNUktCWDlHVDVhN0lZTHdZZDRHZVgxRWpEZUV5bi9STDQ0bC9pOGdBTlVQby9MS3o5UzRpS2VGSi9YU3B6dktVWlFBYWFSblpXYjVCNXovUGdFK08ra01YNFBZK3JHOWp5dng4MzdWcysvc1JEVllPclgiLCJtYWMiOiJkZjZmOGRjYTVkODVlMWQwY2YwZDNkZjU0YzdiODJiYmFmZGM1Yjg3NDRiMGFlNWE1OTkyZDBkODJkOTNiYmFiIiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6InJqWml3c1lzNkZvMkVRbFF5a0hJQUE9PSIsInZhbHVlIjoiVVlCVnpCbGRvUklnRlFXS3U2Q0d5Y09sVUNPOW44SU1MUVVRWmNSQU9neXg3bTFqSjMzZmhsKzhFS042QUVGQ1Q4SUR1akJEU1BqT0Jtdnhzc21MRFpCb2pCcVJPYTVQYnRrTUw1TmIzZ29XM09UaFdNRTZneUpyTDJ6eWNwQmoiLCJtYWMiOiJiZWE3YmE2NTZhNDAxODg5ZTUwZDg3NTk0YTZhNGVhNTRlMzFiMTgyZGU4NDM0M2NmOWY5MjUwMmVhZWU4NjA3IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -3362,7 +3362,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/{id}"
+            <div title="https://litterapp.net/photos/{id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -3372,7 +3372,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/{id}</div>
                     </div>
 
@@ -3702,7 +3702,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/photos/1" \
+    "https://litterapp.net/photos/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -3713,7 +3713,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/1"
+    "https://litterapp.net/photos/1"
 );
 
 const headers = {
@@ -3746,7 +3746,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/{photo_id}/tag-shortcuts/{tagShortcut_id}"
+            <div title="https://litterapp.net/photos/{photo_id}/tag-shortcuts/{tagShortcut_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -3756,7 +3756,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/{photo_id}/tag-shortcuts/{tagShortcut_id}</div>
                     </div>
 
@@ -3881,7 +3881,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        5
+                        1
                     </div>
                 </div>
             </div>
@@ -4049,7 +4049,7 @@ fetch(url, {
                                         <input aria-label="tagShortcut_id" name="tagShortcut_id"
                                                id="urlparam-POSTphotos--photo_id--tag-shortcuts--tagShortcut_id--tagShortcut_id"
                                                placeholder="The ID of the tagShortcut."
-                                               value="5" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -4172,7 +4172,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photos/1/tag-shortcuts/5" \
+    "https://litterapp.net/photos/1/tag-shortcuts/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
@@ -4184,7 +4184,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/1/tag-shortcuts/5"
+    "https://litterapp.net/photos/1/tag-shortcuts/1"
 );
 
 const headers = {
@@ -4217,7 +4217,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photos/{photo_id}/items"
+            <div title="https://litterapp.net/photos/{photo_id}/items"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -4227,7 +4227,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photos/{photo_id}/items</div>
                     </div>
 
@@ -4362,7 +4362,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        [&quot;excepturi&quot;]
+                        [&quot;et&quot;]
                     </div>
                 </div>
             </div>
@@ -4543,7 +4543,7 @@ fetch(url, {
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "item_ids": [
-        "excepturi"
+        "et"
     ],
     "suggestion_id": null
 }</div>
@@ -4637,13 +4637,13 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photos/1/items" \
+    "https://litterapp.net/photos/1/items" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"item_ids\": [
-        \"excepturi\"
+        \"et\"
     ]
 }"
 </code></pre>                                        </div>
@@ -4654,7 +4654,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photos/1/items"
+    "https://litterapp.net/photos/1/items"
 );
 
 const headers = {
@@ -4665,7 +4665,7 @@ const headers = {
 
 let body = {
     "item_ids": [
-        "excepturi"
+        "et"
     ]
 };
 
@@ -4694,7 +4694,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-items/{photoItem_id}"
+            <div title="https://litterapp.net/photo-items/{photoItem_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -4704,7 +4704,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-items/{photoItem_id}</div>
                     </div>
 
@@ -4856,7 +4856,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        false
+                        true
                     </div>
                 </div>
             </div>
@@ -4878,7 +4878,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        false
+                        true
                     </div>
                 </div>
             </div>
@@ -4903,7 +4903,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        4
+                        19
                     </div>
                 </div>
             </div>
@@ -5067,9 +5067,9 @@ fetch(url, {
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "picked_up": false,
-    "recycled": false,
-    "deposit": false,
-    "quantity": 4
+    "recycled": true,
+    "deposit": true,
+    "quantity": 19
 }</div>
                             </div>
                                             </div>
@@ -5161,15 +5161,15 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photo-items/1" \
+    "https://litterapp.net/photo-items/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"picked_up\": false,
-    \"recycled\": false,
-    \"deposit\": false,
-    \"quantity\": 4
+    \"recycled\": true,
+    \"deposit\": true,
+    \"quantity\": 19
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -5179,7 +5179,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-items/1"
+    "https://litterapp.net/photo-items/1"
 );
 
 const headers = {
@@ -5190,9 +5190,9 @@ const headers = {
 
 let body = {
     "picked_up": false,
-    "recycled": false,
-    "deposit": false,
-    "quantity": 4
+    "recycled": true,
+    "deposit": true,
+    "quantity": 19
 };
 
 fetch(url, {
@@ -5220,7 +5220,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-items/{photoItem_id}"
+            <div title="https://litterapp.net/photo-items/{photoItem_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -5230,7 +5230,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-items/{photoItem_id}</div>
                     </div>
 
@@ -5560,7 +5560,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/photo-items/1" \
+    "https://litterapp.net/photo-items/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -5571,7 +5571,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-items/1"
+    "https://litterapp.net/photo-items/1"
 );
 
 const headers = {
@@ -5604,7 +5604,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-items/{photoItem_id}/tags"
+            <div title="https://litterapp.net/photo-items/{photoItem_id}/tags"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -5614,7 +5614,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-items/{photoItem_id}/tags</div>
                     </div>
 
@@ -5749,7 +5749,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        [16]
+                        [8]
                     </div>
                 </div>
             </div>
@@ -5913,7 +5913,7 @@ fetch(url, {
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "tag_ids": [
-        16
+        8
     ]
 }</div>
                             </div>
@@ -6006,13 +6006,13 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photo-items/1/tags" \
+    "https://litterapp.net/photo-items/1/tags" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"tag_ids\": [
-        16
+        8
     ]
 }"
 </code></pre>                                        </div>
@@ -6023,7 +6023,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-items/1/tags"
+    "https://litterapp.net/photo-items/1/tags"
 );
 
 const headers = {
@@ -6034,7 +6034,7 @@ const headers = {
 
 let body = {
     "tag_ids": [
-        16
+        8
     ]
 };
 
@@ -6063,7 +6063,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-items/{photoItem_id}/tags/{tag_id}"
+            <div title="https://litterapp.net/photo-items/{photoItem_id}/tags/{tag_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -6073,7 +6073,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-items/{photoItem_id}/tags/{tag_id}</div>
                     </div>
 
@@ -6439,7 +6439,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/photo-items/1/tags/1" \
+    "https://litterapp.net/photo-items/1/tags/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -6450,7 +6450,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-items/1/tags/1"
+    "https://litterapp.net/photo-items/1/tags/1"
 );
 
 const headers = {
@@ -6483,7 +6483,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-items/{photoItem_id}/copy"
+            <div title="https://litterapp.net/photo-items/{photoItem_id}/copy"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -6493,7 +6493,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-items/{photoItem_id}/copy</div>
                     </div>
 
@@ -6823,7 +6823,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photo-items/1/copy" \
+    "https://litterapp.net/photo-items/1/copy" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -6834,7 +6834,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-items/1/copy"
+    "https://litterapp.net/photo-items/1/copy"
 );
 
 const headers = {
@@ -6867,7 +6867,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/photo-item-suggestions/{photoItemSuggestion_id}/reject"
+            <div title="https://litterapp.net/photo-item-suggestions/{photoItemSuggestion_id}/reject"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -6877,7 +6877,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/photo-item-suggestions/{photoItemSuggestion_id}/reject</div>
                     </div>
 
@@ -6978,7 +6978,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        5
+                        1
                     </div>
                 </div>
             </div>
@@ -7111,7 +7111,7 @@ fetch(url, {
                                         <input aria-label="photoItemSuggestion_id" name="photoItemSuggestion_id"
                                                id="urlparam-POSTphoto-item-suggestions--photoItemSuggestion_id--reject-photoItemSuggestion_id"
                                                placeholder="The ID of the photoItemSuggestion."
-                                               value="5" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -7207,7 +7207,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/photo-item-suggestions/5/reject" \
+    "https://litterapp.net/photo-item-suggestions/1/reject" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -7218,7 +7218,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/photo-item-suggestions/5/reject"
+    "https://litterapp.net/photo-item-suggestions/1/reject"
 );
 
 const headers = {
@@ -7251,7 +7251,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/settings"
+            <div title="https://litterapp.net/settings"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -7261,7 +7261,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/settings</div>
                     </div>
 
@@ -7528,7 +7528,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/settings" \
+    "https://litterapp.net/settings" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -7539,7 +7539,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/settings"
+    "https://litterapp.net/settings"
 );
 
 const headers = {
@@ -7572,7 +7572,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts"
+            <div title="https://litterapp.net/user/tag-shortcuts"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -7582,7 +7582,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts</div>
                     </div>
 
@@ -7849,7 +7849,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/user/tag-shortcuts" \
+    --get "https://litterapp.net/user/tag-shortcuts" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -7860,7 +7860,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts"
+    "https://litterapp.net/user/tag-shortcuts"
 );
 
 const headers = {
@@ -7929,7 +7929,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6IkQ3TVh5Uk5EVERvaU9Wa291SjYxZFE9PSIsInZhbHVlIjoidVloTkFjMEVvUmd5eEs0R091dm8xcGFEUXVmUWpIdUkzWnRncHlOQkdiM1VqQXFuRXpCUDBEalhWRzVsK0FJRzZqckRPdmRyYWtIZFh1RFQ2U0kyVHdOckpXRTVrcTU5Z2NndEhQVENmckFBSjZwemxoMENoZ3AzN3NiL0I1b0giLCJtYWMiOiI0OGYxMTEyNDdiMmMzOTY1NjNiMzAyOGMyYWVjMmY0NDNkOWRlZmM2NTU1ODRhYjM3NjY0NDg1YzYxZDVhYTljIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6Ik5QVGlKQzVmV3phQngvaUlKY0c2aUE9PSIsInZhbHVlIjoiWFFLYnhuZXg2aVplcDBiSlpwcHlIam03cTU4dXo0eWJ0dkw3ZEFjczhER2dhZE4wZzlWUm1xeCsxa3NlNWVrdnVrTjEvNG4vYUZ6Zk4xeUhVbVVMK0xMZXhpODZ5MkQ3OHh0YVdDcWFRZE9BaDYyQ3hZV09TbytqSG9hMUNiZE0iLCJtYWMiOiI3YTQyZTM2MTllMzVkNGUxYTJhOGRkNDdmMDE2NmY2ZDhkOGE1MWMyNzZhOTFjODE2NTU0YmRmODQ5NThiNGVjIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6InVya1lud3ZwVWlHeG5nNnJsTGRSdGc9PSIsInZhbHVlIjoiejRnaWppZHFhK0lMVDQ0OFQycmFncTA4ejNrUmpVUHUxTDVlN0xiRHh5VFl6bmxORWFETlk2RGsyTllTL1pFTXEwVmFsK200U2s4MEFRN2FFS21MVzJFY3dhTEQzeXpkWllLYmNWa3YxYzlHaGFQL1R6MFZ4VGVZREE5UUFPdm4iLCJtYWMiOiIzYjUwZWQzNTEwNTU1MWEyMWRlMzQ3NWM5ODkzZWU2ODNlMzhhZDEzMWIwOTE3N2ZlYjRlMWY0ZmE5ZWY1Y2NkIiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6Im01bjBOcWg5TENob1RqSlYyMU5aemc9PSIsInZhbHVlIjoiNzVqNlVsaXhOQnQ5d2tmbnM4TVIvbFlTME9tU2w0NWR6RlFXR1VxemJabVYzdUlicWNYUDVQTWhFSWpGdkdMMlR6cUFZWVNIN1VoT3h6aHp2T0J5Z3NmQUwreWdBRXJxOHcxcis1eTBCTjhFd1pXNXBBMExXZXR1MTdaSWcxVGsiLCJtYWMiOiIxZDU2YjhhODU3YjlmY2ZmZjczY2Q4OGNkMzI5YTJmNzc4YzM4ZTM0NjQwM2Q0MzRkNGQ5ODhjMmY4MTllYTc2IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -7956,7 +7956,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts"
+            <div title="https://litterapp.net/user/tag-shortcuts"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -7966,7 +7966,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts</div>
                     </div>
 
@@ -8071,7 +8071,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        qawiqhlo
+                        rmrfcrqtw
                     </div>
                 </div>
             </div>
@@ -8201,7 +8201,7 @@ fetch(url, {
                                      id="json-body-POSTuser-tag-shortcuts"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "shortcut": "qawiqhlo"
+    "shortcut": "rmrfcrqtw"
 }</div>
                             </div>
                                             </div>
@@ -8293,12 +8293,12 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcuts" \
+    "https://litterapp.net/user/tag-shortcuts" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"shortcut\": \"qawiqhlo\"
+    \"shortcut\": \"rmrfcrqtw\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -8308,7 +8308,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts"
+    "https://litterapp.net/user/tag-shortcuts"
 );
 
 const headers = {
@@ -8318,7 +8318,7 @@ const headers = {
 };
 
 let body = {
-    "shortcut": "qawiqhlo"
+    "shortcut": "rmrfcrqtw"
 };
 
 fetch(url, {
@@ -8346,7 +8346,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts/{tagShortcut_id}"
+            <div title="https://litterapp.net/user/tag-shortcuts/{tagShortcut_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -8356,7 +8356,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts/{tagShortcut_id}</div>
                     </div>
 
@@ -8457,7 +8457,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        13
+                        1
                     </div>
                 </div>
             </div>
@@ -8590,7 +8590,7 @@ fetch(url, {
                                         <input aria-label="tagShortcut_id" name="tagShortcut_id"
                                                id="urlparam-GETuser-tag-shortcuts--tagShortcut_id--tagShortcut_id"
                                                placeholder="The ID of the tagShortcut."
-                                               value="13" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -8686,7 +8686,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request GET \
-    --get "http://litterapp.test/user/tag-shortcuts/13" \
+    --get "https://litterapp.net/user/tag-shortcuts/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -8697,7 +8697,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts/13"
+    "https://litterapp.net/user/tag-shortcuts/1"
 );
 
 const headers = {
@@ -8766,7 +8766,7 @@ fetch(url, {
                                                                                                                     content-type
                                                             : application/json
                                                                                                                     set-cookie
-                                                            : XSRF-TOKEN=eyJpdiI6ImdoMTdtK2F6NlZLWGcxZEZYK0FvbUE9PSIsInZhbHVlIjoiVjVGTjRCV3I1cFFoQXNYaFR5TWlBZEN5UFJGTFlOY0Zya3QrV3ZtVFNUeUUzWENHakVOZlJxUllMU3p2RzRQY2dlMGJXaXhTYmhhWm45NEM3bEVvNHh2cS9lWmtLUGRBd2s4QmhnN2QxaVVwRWRlWUJUREU3aHl1SEpGVFhBNUMiLCJtYWMiOiJiZjViYmU5YmQ0NGY1ZTY2NDI1MDEyNTg3OTc2NWI5OTM3MjY4ZWFjOTA5MzliM2RkNjI5NDlhMjg0YzY3Y2VjIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; samesite=lax; litterapp_session=eyJpdiI6ImxlME1GY0p5SFZDeGp0ZmxmUnVJaWc9PSIsInZhbHVlIjoidUprQVMzeGVnaStyWi91LzRUaGJiSDRXSE96N2luUldPUGU0MDdLWlNacW5yc1A5V2NIMDV0NkNRYVZVazltZW1MbytRVnh3dWhWUFlKSER1SVYrOEZvd2N2UXc2bUdXblBIT2FFUTlCZWZRNStQV0hiditjRXdvMkxheVNDaVYiLCJtYWMiOiI4MTFmYzU3YmY5ZDZmMWUxNTYxNDIzOWI3MGIyMTljYWY5YjhkN2M4ZGNkOTJjZGMyYTY4NmU0ZWQ1MDhhMGVjIiwidGFnIjoiIn0%3D; expires=Wed, 07 Jan 2026 23:46:34 GMT; Max-Age=7200; path=/; httponly; samesite=lax
+                                                            : XSRF-TOKEN=eyJpdiI6InZQdDJ3U1pHVitWMHhsTHhjd2VEZ3c9PSIsInZhbHVlIjoiUkxQdmJRNytTOUhEQ1E0RkhCVzFaM0JxcUdqT05jaXZTWnlQRWtUMXcyZEVlY0hETEpZRnNhNExxY08yelY1dDdyU2xSdHYrUVZvdTc4OTNrSjFoS09KcC9jaWlsR1FkWTBqWEgyNjhKaDlVZG1OMXl2UkFVaHM5KzJDMm1yRjgiLCJtYWMiOiIxOGNkMDcwOTQ1YjBiM2JlYmIwZDZkMjM0MmRhZjFlMzFkZWNkZDJmYTA0ZWI3Zjk5YTQ0Nzg0YWM4NWU5ZTMxIiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; samesite=lax; litterapp_session=eyJpdiI6ImJ2cHU5aDJMWkxOQmRrTGc0bDViMGc9PSIsInZhbHVlIjoicWcycmZjdWloOXl6K05Da2ZibG1CcnJNK0FhWWxlWnZFVzRNc3pjWUozRUZ2Zlhya2tDWmRkZEZDZFdSd0l0VzZ0WFgvZFRmT0s1L1hPMFRMNXRueXZSc2xRWk93Mk55ZGpXekFJdUwyR2gramduR3FxdDVXcDlWOTRoMVdxd1IiLCJtYWMiOiI3ZDRkMzMxNWJkZDc4NWM4NzAxMzk2MjA1NzkwODMwNGY5NzlkZTliZDAxMjQ2OWY4ZTZkNjJmYWYzNzYzYmQ1IiwidGFnIjoiIn0%3D; expires=Fri, 23 Jan 2026 14:49:24 GMT; Max-Age=604800; path=/; httponly; samesite=lax
                                                          </code></pre>
                                             </details>
                                                                                                                                                                         
@@ -8793,7 +8793,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts/{tagShortcut_id}"
+            <div title="https://litterapp.net/user/tag-shortcuts/{tagShortcut_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -8803,7 +8803,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts/{tagShortcut_id}</div>
                     </div>
 
@@ -8938,7 +8938,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        vqbfiwp
+                        eacvzonggdegzmohkhklpbdzt
                     </div>
                 </div>
             </div>
@@ -9101,7 +9101,7 @@ fetch(url, {
                                      id="json-body-POSTuser-tag-shortcuts--tagShortcut_id-"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "shortcut": "vqbfiwp"
+    "shortcut": "eacvzonggdegzmohkhklpbdzt"
 }</div>
                             </div>
                                             </div>
@@ -9193,12 +9193,12 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcuts/1" \
+    "https://litterapp.net/user/tag-shortcuts/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"shortcut\": \"vqbfiwp\"
+    \"shortcut\": \"eacvzonggdegzmohkhklpbdzt\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -9208,7 +9208,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts/1"
+    "https://litterapp.net/user/tag-shortcuts/1"
 );
 
 const headers = {
@@ -9218,7 +9218,7 @@ const headers = {
 };
 
 let body = {
-    "shortcut": "vqbfiwp"
+    "shortcut": "eacvzonggdegzmohkhklpbdzt"
 };
 
 fetch(url, {
@@ -9246,7 +9246,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts/{tagShortcut_id}"
+            <div title="https://litterapp.net/user/tag-shortcuts/{tagShortcut_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -9256,7 +9256,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts/{tagShortcut_id}</div>
                     </div>
 
@@ -9357,7 +9357,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        3
+                        1
                     </div>
                 </div>
             </div>
@@ -9490,7 +9490,7 @@ fetch(url, {
                                         <input aria-label="tagShortcut_id" name="tagShortcut_id"
                                                id="urlparam-DELETEuser-tag-shortcuts--tagShortcut_id--tagShortcut_id"
                                                placeholder="The ID of the tagShortcut."
-                                               value="3" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -9586,7 +9586,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/user/tag-shortcuts/3" \
+    "https://litterapp.net/user/tag-shortcuts/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -9597,7 +9597,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts/3"
+    "https://litterapp.net/user/tag-shortcuts/1"
 );
 
 const headers = {
@@ -9630,7 +9630,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts/{tagShortcut_id}/copy"
+            <div title="https://litterapp.net/user/tag-shortcuts/{tagShortcut_id}/copy"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -9640,7 +9640,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts/{tagShortcut_id}/copy</div>
                     </div>
 
@@ -9741,7 +9741,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        13
+                        1
                     </div>
                 </div>
             </div>
@@ -9874,7 +9874,7 @@ fetch(url, {
                                         <input aria-label="tagShortcut_id" name="tagShortcut_id"
                                                id="urlparam-POSTuser-tag-shortcuts--tagShortcut_id--copy-tagShortcut_id"
                                                placeholder="The ID of the tagShortcut."
-                                               value="13" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -9970,7 +9970,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcuts/13/copy" \
+    "https://litterapp.net/user/tag-shortcuts/1/copy" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -9981,7 +9981,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts/13/copy"
+    "https://litterapp.net/user/tag-shortcuts/1/copy"
 );
 
 const headers = {
@@ -10014,7 +10014,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcuts/{tagShortcut_id}/items"
+            <div title="https://litterapp.net/user/tag-shortcuts/{tagShortcut_id}/items"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -10024,7 +10024,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcuts/{tagShortcut_id}/items</div>
                     </div>
 
@@ -10125,7 +10125,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        3
+                        1
                     </div>
                 </div>
             </div>
@@ -10159,7 +10159,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        ducimus
+                        voluptas
                     </div>
                 </div>
             </div>
@@ -10291,7 +10291,7 @@ fetch(url, {
                                         <input aria-label="tagShortcut_id" name="tagShortcut_id"
                                                id="urlparam-POSTuser-tag-shortcuts--tagShortcut_id--items-tagShortcut_id"
                                                placeholder="The ID of the tagShortcut."
-                                               value="3" data-component="url"
+                                               value="1" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -10322,7 +10322,7 @@ fetch(url, {
                                      id="json-body-POSTuser-tag-shortcuts--tagShortcut_id--items"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "item_id": "ducimus"
+    "item_id": "voluptas"
 }</div>
                             </div>
                                             </div>
@@ -10414,12 +10414,12 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcuts/3/items" \
+    "https://litterapp.net/user/tag-shortcuts/1/items" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"item_id\": \"ducimus\"
+    \"item_id\": \"voluptas\"
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -10429,7 +10429,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcuts/3/items"
+    "https://litterapp.net/user/tag-shortcuts/1/items"
 );
 
 const headers = {
@@ -10439,7 +10439,7 @@ const headers = {
 };
 
 let body = {
-    "item_id": "ducimus"
+    "item_id": "voluptas"
 };
 
 fetch(url, {
@@ -10467,7 +10467,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcut-items/{tagShortcutItem_id}"
+            <div title="https://litterapp.net/user/tag-shortcut-items/{tagShortcutItem_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -10477,7 +10477,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcut-items/{tagShortcutItem_id}</div>
                     </div>
 
@@ -10578,7 +10578,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        4
+                        3
                     </div>
                 </div>
             </div>
@@ -10607,7 +10607,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        false
+                        true
                     </div>
                 </div>
             </div>
@@ -10629,7 +10629,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        true
+                        false
                     </div>
                 </div>
             </div>
@@ -10651,7 +10651,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        false
+                        true
                     </div>
                 </div>
             </div>
@@ -10676,7 +10676,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        13
+                        11
                     </div>
                 </div>
             </div>
@@ -10808,7 +10808,7 @@ fetch(url, {
                                         <input aria-label="tagShortcutItem_id" name="tagShortcutItem_id"
                                                id="urlparam-POSTuser-tag-shortcut-items--tagShortcutItem_id--tagShortcutItem_id"
                                                placeholder="The ID of the tagShortcutItem."
-                                               value="4" data-component="url"
+                                               value="3" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -10839,10 +10839,10 @@ fetch(url, {
                                      id="json-body-POSTuser-tag-shortcut-items--tagShortcutItem_id-"
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
-    "picked_up": false,
-    "recycled": true,
-    "deposit": false,
-    "quantity": 13
+    "picked_up": true,
+    "recycled": false,
+    "deposit": true,
+    "quantity": 11
 }</div>
                             </div>
                                             </div>
@@ -10934,15 +10934,15 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcut-items/4" \
+    "https://litterapp.net/user/tag-shortcut-items/3" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
-    \"picked_up\": false,
-    \"recycled\": true,
-    \"deposit\": false,
-    \"quantity\": 13
+    \"picked_up\": true,
+    \"recycled\": false,
+    \"deposit\": true,
+    \"quantity\": 11
 }"
 </code></pre>                                        </div>
                                     </div>
@@ -10952,7 +10952,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcut-items/4"
+    "https://litterapp.net/user/tag-shortcut-items/3"
 );
 
 const headers = {
@@ -10962,10 +10962,10 @@ const headers = {
 };
 
 let body = {
-    "picked_up": false,
-    "recycled": true,
-    "deposit": false,
-    "quantity": 13
+    "picked_up": true,
+    "recycled": false,
+    "deposit": true,
+    "quantity": 11
 };
 
 fetch(url, {
@@ -10993,7 +10993,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcut-items/{tagShortcutItem_id}"
+            <div title="https://litterapp.net/user/tag-shortcut-items/{tagShortcutItem_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -11003,7 +11003,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcut-items/{tagShortcutItem_id}</div>
                     </div>
 
@@ -11104,7 +11104,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        6
+                        3
                     </div>
                 </div>
             </div>
@@ -11237,7 +11237,7 @@ fetch(url, {
                                         <input aria-label="tagShortcutItem_id" name="tagShortcutItem_id"
                                                id="urlparam-DELETEuser-tag-shortcut-items--tagShortcutItem_id--tagShortcutItem_id"
                                                placeholder="The ID of the tagShortcutItem."
-                                               value="6" data-component="url"
+                                               value="3" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -11333,7 +11333,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/user/tag-shortcut-items/6" \
+    "https://litterapp.net/user/tag-shortcut-items/3" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -11344,7 +11344,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcut-items/6"
+    "https://litterapp.net/user/tag-shortcut-items/3"
 );
 
 const headers = {
@@ -11377,7 +11377,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcut-items/{tagShortcutItem_id}/tags"
+            <div title="https://litterapp.net/user/tag-shortcut-items/{tagShortcutItem_id}/tags"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -11387,7 +11387,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcut-items/{tagShortcutItem_id}/tags</div>
                     </div>
 
@@ -11488,7 +11488,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        16
+                        3
                     </div>
                 </div>
             </div>
@@ -11522,7 +11522,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        [1]
+                        [11]
                     </div>
                 </div>
             </div>
@@ -11654,7 +11654,7 @@ fetch(url, {
                                         <input aria-label="tagShortcutItem_id" name="tagShortcutItem_id"
                                                id="urlparam-POSTuser-tag-shortcut-items--tagShortcutItem_id--tags-tagShortcutItem_id"
                                                placeholder="The ID of the tagShortcutItem."
-                                               value="16" data-component="url"
+                                               value="3" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -11686,7 +11686,7 @@ fetch(url, {
                                      style="font-family: var(--font-code); font-size: 12px; line-height: var(--lh-code);"
                                 >{
     "tag_ids": [
-        1
+        11
     ]
 }</div>
                             </div>
@@ -11779,13 +11779,13 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcut-items/16/tags" \
+    "https://litterapp.net/user/tag-shortcut-items/3/tags" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json" \
     --data "{
     \"tag_ids\": [
-        1
+        11
     ]
 }"
 </code></pre>                                        </div>
@@ -11796,7 +11796,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcut-items/16/tags"
+    "https://litterapp.net/user/tag-shortcut-items/3/tags"
 );
 
 const headers = {
@@ -11807,7 +11807,7 @@ const headers = {
 
 let body = {
     "tag_ids": [
-        1
+        11
     ]
 };
 
@@ -11836,7 +11836,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcut-items/{tagShortcutItem_id}/tags/{tag_id}"
+            <div title="https://litterapp.net/user/tag-shortcut-items/{tagShortcutItem_id}/tags/{tag_id}"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -11846,7 +11846,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcut-items/{tagShortcutItem_id}/tags/{tag_id}</div>
                     </div>
 
@@ -11947,7 +11947,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        20
+                        3
                     </div>
                 </div>
             </div>
@@ -12104,7 +12104,7 @@ fetch(url, {
                                         <input aria-label="tagShortcutItem_id" name="tagShortcutItem_id"
                                                id="urlparam-DELETEuser-tag-shortcut-items--tagShortcutItem_id--tags--tag_id--tagShortcutItem_id"
                                                placeholder="The ID of the tagShortcutItem."
-                                               value="20" data-component="url"
+                                               value="3" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -12212,7 +12212,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request DELETE \
-    "http://litterapp.test/user/tag-shortcut-items/20/tags/1" \
+    "https://litterapp.net/user/tag-shortcut-items/3/tags/1" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -12223,7 +12223,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcut-items/20/tags/1"
+    "https://litterapp.net/user/tag-shortcut-items/3/tags/1"
 );
 
 const headers = {
@@ -12256,7 +12256,7 @@ fetch(url, {
         </div>
 
         <div class="sl-relative">
-            <div title="http://litterapp.test/user/tag-shortcut-items/{tagShortcutItem_id}/copy"
+            <div title="https://litterapp.net/user/tag-shortcut-items/{tagShortcutItem_id}/copy"
                      class="sl-stack sl-stack--horizontal sl-stack--3 sl-inline-flex sl-flex-row sl-items-center sl-max-w-full sl-font-mono sl-py-2 sl-pr-4 sl-bg-canvas-50 sl-rounded-lg"
                 >
                                             <div class="sl-text-lg sl-font-semibold sl-px-2.5 sl-py-1 sl-text-on-primary sl-rounded-lg"
@@ -12266,7 +12266,7 @@ fetch(url, {
                         </div>
                                         <div class="sl-flex sl-overflow-x-hidden sl-text-lg sl-select-all">
                         <div dir="rtl"
-                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">http://litterapp.test</div>
+                             class="sl-overflow-x-hidden sl-truncate sl-text-muted">https://litterapp.net</div>
                         <div class="sl-flex-1 sl-font-semibold">/user/tag-shortcut-items/{tagShortcutItem_id}/copy</div>
                     </div>
 
@@ -12367,7 +12367,7 @@ fetch(url, {
                 <span>Example:</span> <!-- <span> important for spacing -->
                 <div class="sl-flex sl-flex-1 sl-flex-wrap" style="gap: 4px;">
                     <div class="sl-max-w-full sl-break-all sl-px-1 sl-bg-canvas-tint sl-text-muted sl-rounded sl-border">
-                        4
+                        3
                     </div>
                 </div>
             </div>
@@ -12500,7 +12500,7 @@ fetch(url, {
                                         <input aria-label="tagShortcutItem_id" name="tagShortcutItem_id"
                                                id="urlparam-POSTuser-tag-shortcut-items--tagShortcutItem_id--copy-tagShortcutItem_id"
                                                placeholder="The ID of the tagShortcutItem."
-                                               value="4" data-component="url"
+                                               value="3" data-component="url"
                                                class="sl-relative sl-w-full sl-h-md sl-text-base sl-pr-2.5 sl-pl-2.5 sl-rounded sl-border-transparent hover:sl-border-input focus:sl-border-primary sl-border">
                                     </div>
                                 </div>
@@ -12596,7 +12596,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-bash">curl --request POST \
-    "http://litterapp.test/user/tag-shortcut-items/4/copy" \
+    "https://litterapp.net/user/tag-shortcut-items/3/copy" \
     --header "Authorization: Bearer {YOUR_API_TOKEN}" \
     --header "Content-Type: application/json" \
     --header "Accept: application/json"</code></pre>                                        </div>
@@ -12607,7 +12607,7 @@ You can check the Dev Tools console for debugging information.</p>
                                     <div class="sl-px-0 sl-py-1">
                                         <div style="max-height: 400px;" class="sl-overflow-y-auto sl-rounded">
                                             <pre><code class="language-javascript">const url = new URL(
-    "http://litterapp.test/user/tag-shortcut-items/4/copy"
+    "https://litterapp.net/user/tag-shortcut-items/3/copy"
 );
 
 const headers = {
