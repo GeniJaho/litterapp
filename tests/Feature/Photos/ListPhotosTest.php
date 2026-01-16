@@ -25,8 +25,8 @@ test('a user can see their photos', function (): void {
     $item = Item::factory()->create();
     $tag = Tag::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
-    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['is_accepted' => null]); // Only consider pending suggestions
-    PhotoItemSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true]);
+    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['is_accepted' => null, 'score' => 80]); // Only consider pending suggestions
+    PhotoItemSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true, 'score' => 80]);
     $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut->items()->attach($item, [
@@ -402,7 +402,7 @@ test('a user can filter their photos by having item suggestions or not', functio
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create();
+    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['score' => 80]);
 
     $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=1');
 

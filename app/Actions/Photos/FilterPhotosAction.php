@@ -19,7 +19,7 @@ class FilterPhotosAction
             ->filter($user->settings->photo_filters)
             ->withExists([
                 'items',
-                'photoItemSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted'),
+                'photoItemSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted')->where('score', '>=', 80),
             ])
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
