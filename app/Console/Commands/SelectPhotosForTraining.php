@@ -5,9 +5,9 @@ namespace App\Console\Commands;
 use App\Actions\Photos\GetItemFromPredictionAction;
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use ZipArchive;
 
 class SelectPhotosForTraining extends Command
@@ -26,10 +26,10 @@ class SelectPhotosForTraining extends Command
 
         // Preload all items at once to avoid N+1 queries
         $items = Item::whereIn('name', GetItemFromPredictionAction::ITEM_CLASS_NAMES)->get()->keyBy('name');
+        $usersConsentingToTrain = User::query()->where('settings->consent_to_training', true)->pluck('id');
 
         $totalPhotos = 0;
         $results = [];
-        $maxPhotosPerUser = (int) ceil($limit / 2);
 
         foreach (GetItemFromPredictionAction::ITEM_CLASS_NAMES as $itemSlug => $itemName) {
             $item = $items->get($itemName);
@@ -43,29 +43,28 @@ class SelectPhotosForTraining extends Command
             $this->components->info("Processing item: {$itemName}");
 
             // Select photos from users who consented, ensuring diversity across users
-            // Limit to max 50% of photos from any single user
+            $photos = Photo::query()
+                ->whereIn('user_id', $usersConsentingToTrain)
+                ->whereHas('items', fn ($query) => $query->where('items.id', $item->id))
+                ->with('user:id,name')
+                ->get();
+
+            $photosGroupedByUser = $photos
+                ->groupBy('user_id')
+                ->sortByDesc(fn ($userPhotos) => $userPhotos->count());
+
+            $totalPhotosForItem = $photos->count();
+            $ratio = $totalPhotosForItem > 0 ? $limit / $totalPhotosForItem : 0;
+
             $selectedPhotos = collect();
 
-            $photosGroupedByUser = Photo::query()
-                ->whereHas('user', function ($query) {
-                    $query->whereRaw("JSON_EXTRACT(settings, '$.consent_to_training') = true");
-                })
-                ->whereHas('items', function ($query) use ($item) {
-                    $query->where('items.id', $item->id);
-                })
-                ->with('user:id,name')
-                ->get()
-                ->groupBy('user_id');
+            // Distribute photos across users, taking max 10 users per item
+            foreach ($photosGroupedByUser->take(10) as $userPhotos) {
+                $takeCount = (int) floor($userPhotos->count() * min(1.0, $ratio));
 
-            // Distribute photos across users, taking max 50% from any single user
-            foreach ($photosGroupedByUser as $userPhotos) {
-                $takeCount = min($maxPhotosPerUser, $limit - $selectedPhotos->count());
-
-                if ($takeCount <= 0) {
-                    break;
+                if ($takeCount > 0) {
+                    $selectedPhotos = $selectedPhotos->concat($userPhotos->take($takeCount));
                 }
-
-                $selectedPhotos = $selectedPhotos->concat($userPhotos->take($takeCount));
             }
 
             $userCount = $selectedPhotos->pluck('user_id')->unique()->count();
@@ -104,7 +103,7 @@ class SelectPhotosForTraining extends Command
         $bar = $this->output->createProgressBar($totalPhotos);
         $bar->start();
 
-        $zip = new ZipArchive();
+        $zip = new ZipArchive;
 
         if ($zip->open($zipFilePathOnDisk, ZipArchive::CREATE) !== true) {
             $this->components->error("Failed to create zip file: {$zipFilePathOnDisk}");
@@ -115,8 +114,7 @@ class SelectPhotosForTraining extends Command
             foreach ($result['photos'] as $photoPath) {
                 $zip->addFile(
                     Storage::disk('public')->path($photoPath),
-                    "/{$result['item_slug']}/".Str::uuid()->toString().'.jpg',
-                    //                    "/{$result['item_slug']}/".basename($photoPath),
+                    "/{$result['item_slug']}/".basename($photoPath),
                 );
 
                 $bar->advance();
