@@ -7,14 +7,14 @@ use App\Models\PhotoItem;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 
-beforeEach(function () {
+beforeEach(function (): void {
     Storage::fake('local');
     Storage::fake('public');
     Storage::fake('s3');
     Storage::disk('local')->makeDirectory('zips');
 });
 
-it('test it selects photos proportionally and limits users', function () {
+it('test it selects photos proportionally and limits users', function (): void {
     // Create 15 users, all consenting to training
     $users = User::factory(15)->create([
         'settings' => ['consent_to_training' => true],
@@ -34,20 +34,17 @@ it('test it selects photos proportionally and limits users', function () {
     for ($i = 2; $i < 15; $i++) {
         createPhotosForUserReal($users[$i], $item, 23);
     }
+
     // Total = 400 + 300 + 13*23 = 700 + 299 = 999 photos
 
     // Run command with limit 100
     $this->artisan('app:select-photos-for-training', ['--limit' => 100])
         ->expectsOutputToContain('Bottle')
-        ->expectsOutputToContain('86') // Ratio = 100/999 = 0.1001.
-        // User 0 (400) -> 40.
-        // User 1 (300) -> 30.
-        // User 2..9 (8 users) -> 23 * 0.1001 = 2.3 -> 2 each.
-        // Total = 40 + 30 + 8*2 = 86.
+        ->expectsOutputToContain('100')
         ->assertExitCode(0);
 });
 
-it('test it only selects photos from consenting users', function () {
+it('test it only selects photos from consenting users', function (): void {
     $consentingUser = User::factory()->create(['settings' => ['consent_to_training' => true]]);
     $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training' => false]]);
 
@@ -61,7 +58,7 @@ it('test it only selects photos from consenting users', function () {
         ->assertExitCode(0);
 });
 
-it('test it handles items with no photos', function () {
+it('test it handles items with no photos', function (): void {
     Item::factory()->create(['name' => 'Bottle']);
 
     $this->artisan('app:select-photos-for-training', ['--limit' => 100])
@@ -71,7 +68,7 @@ it('test it handles items with no photos', function () {
         ->assertExitCode(0);
 });
 
-it('test it takes all photos if below limit', function () {
+it('test it takes all photos if below limit', function (): void {
     $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
     createPhotosForUserReal($user, $item, 50);
@@ -82,7 +79,7 @@ it('test it takes all photos if below limit', function () {
         ->assertExitCode(0);
 });
 
-it('test it handles rounding to zero due to small proportions', function () {
+it('test it handles rounding to zero due to small proportions', function (): void {
     $users = User::factory(10)->create(['settings' => ['consent_to_training' => true]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
 
@@ -95,11 +92,11 @@ it('test it handles rounding to zero due to small proportions', function () {
 
     $this->artisan('app:select-photos-for-training', ['--limit' => 5])
         ->expectsOutputToContain('Bottle')
-        ->expectsOutputToContain('0') // This highlights a potential "bug"/limitation
+        ->expectsOutputToContain('5') // Should be 5, not 0
         ->assertExitCode(0);
 });
 
-it('test it processes multiple items', function () {
+it('test it processes multiple items', function (): void {
     $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
     $item1 = Item::factory()->create(['name' => 'Bottle']);
     $item2 = Item::factory()->create(['name' => 'Can']);
@@ -115,7 +112,7 @@ it('test it processes multiple items', function () {
         ->assertExitCode(0);
 });
 
-it('test it skips missing items', function () {
+it('test it skips missing items', function (): void {
     // Don't create any items in DB
 
     $this->artisan('app:select-photos-for-training', ['--limit' => 100])
@@ -123,7 +120,7 @@ it('test it skips missing items', function () {
         ->assertExitCode(0);
 });
 
-it('test it fails to reach limit when many users exist due to ratio calculation', function () {
+it('test it fails to reach limit when many users exist due to ratio calculation', function (): void {
     $users = User::factory(20)->create(['settings' => ['consent_to_training' => true]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
 
@@ -139,7 +136,7 @@ it('test it fails to reach limit when many users exist due to ratio calculation'
 
     $this->artisan('app:select-photos-for-training', ['--limit' => 100])
         ->expectsOutputToContain('Bottle')
-        ->expectsOutputToContain('50') // Shows the "Top 10 Bias" limitation
+        ->expectsOutputToContain('100') // Should reach the limit
         ->assertExitCode(0);
 });
 

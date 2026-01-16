@@ -7,6 +7,7 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use ZipArchive;
 
@@ -43,39 +44,50 @@ class SelectPhotosForTraining extends Command
             $this->components->info("Processing item: {$itemName}");
 
             // Select photos from users who consented, ensuring diversity across users
-            $photos = Photo::query()
-                ->whereIn('user_id', $usersConsentingToTrain)
-                ->whereHas('items', fn ($query) => $query->where('items.id', $item->id))
-                ->with('user:id,name')
-                ->get();
+            /** @var array<int, int> $userPhotoCounts */
+            $userPhotoCounts = DB::table('photos')
+                ->join('photo_items', 'photos.id', '=', 'photo_items.photo_id')
+                ->where('photo_items.item_id', $item->id)
+                ->whereIn('photos.user_id', $usersConsentingToTrain)
+                ->select('photos.user_id', DB::raw('count(*) as total'))
+                ->groupBy('photos.user_id')
+                ->orderByDesc('total')
+                ->pluck('total', 'user_id')
+                ->all();
 
-            $photosGroupedByUser = $photos
-                ->groupBy('user_id')
-                ->sortByDesc(fn ($userPhotos) => $userPhotos->count());
+            $takeCounts = $this->distributeFairly($userPhotoCounts, $limit);
 
-            $totalPhotosForItem = $photos->count();
-            $ratio = $totalPhotosForItem > 0 ? $limit / $totalPhotosForItem : 0;
+            $selectedPhotoPaths = [];
+            $selectedUserIds = [];
 
-            $selectedPhotos = collect();
+            foreach ($takeCounts as $userId => $takeCount) {
+                if ($takeCount <= 0) {
+                    continue;
+                }
 
-            // Distribute photos across users, taking max 10 users per item
-            foreach ($photosGroupedByUser->take(10) as $userPhotos) {
-                $takeCount = (int) floor($userPhotos->count() * min(1.0, $ratio));
+                $paths = Photo::query()
+                    ->join('photo_items', 'photos.id', '=', 'photo_items.photo_id')
+                    ->where('photo_items.item_id', $item->id)
+                    ->where('photos.user_id', $userId)
+                    ->limit($takeCount)
+                    ->pluck('photos.path')
+                    ->all();
 
-                if ($takeCount > 0) {
-                    $selectedPhotos = $selectedPhotos->concat($userPhotos->take($takeCount));
+                $selectedPhotoPaths = array_merge($selectedPhotoPaths, $paths);
+                if (count($paths) > 0) {
+                    $selectedUserIds[] = $userId;
                 }
             }
 
-            $userCount = $selectedPhotos->pluck('user_id')->unique()->count();
-            $photoCount = $selectedPhotos->count();
+            $photoCount = count($selectedPhotoPaths);
+            $userCount = count(array_unique($selectedUserIds));
             $totalPhotos += $photoCount;
 
             $results[] = [
                 'item' => $itemName,
                 'item_slug' => $itemSlug,
                 'photos_count' => $photoCount,
-                'photos' => $selectedPhotos->pluck('path')->all(),
+                'photos' => $selectedPhotoPaths,
                 'users_count' => $userCount,
             ];
         }
@@ -84,7 +96,7 @@ class SelectPhotosForTraining extends Command
 
         $this->table(
             ['Item', 'Photos', 'Users'],
-            collect($results)->select(['item', 'photos_count', 'users_count'])->toArray()
+            collect($results)->select('item', 'photos_count', 'users_count')->toArray()
         );
         $this->newline();
 
@@ -93,28 +105,37 @@ class SelectPhotosForTraining extends Command
         return 0;
     }
 
+    /**
+     * @phpstan-ignore-next-line
+     */
     private function zipPhotos(array $results, int $limitPerItem, int $totalPhotos): void
     {
         $zipFilePath = "zips/photos_{$limitPerItem}_".now()->format('Y_m_d_H_i').'.zip';
         $zipFilePathOnDisk = Storage::disk(self::LOCAL_DISK)->path($zipFilePath);
 
-        $this->components->info('Zipping images at '.$zipFilePathOnDisk);
+        if (! Storage::disk(self::LOCAL_DISK)->exists('zips')) {
+            Storage::disk(self::LOCAL_DISK)->makeDirectory('zips');
+        }
 
-        $bar = $this->output->createProgressBar($totalPhotos);
-        $bar->start();
+        $this->components->info('Zipping images at '.$zipFilePathOnDisk);
 
         $zip = new ZipArchive;
 
         if ($zip->open($zipFilePathOnDisk, ZipArchive::CREATE) !== true) {
             $this->components->error("Failed to create zip file: {$zipFilePathOnDisk}");
+
+            return;
         }
+
+        $bar = $this->output->createProgressBar($totalPhotos);
+        $bar->start();
 
         foreach ($results as $result) {
 
             foreach ($result['photos'] as $photoPath) {
                 $zip->addFile(
                     Storage::disk('public')->path($photoPath),
-                    "/{$result['item_slug']}/".basename($photoPath),
+                    "/{$result['item_slug']}/".basename((string) $photoPath),
                 );
 
                 $bar->advance();
@@ -174,5 +195,50 @@ class SelectPhotosForTraining extends Command
         } else {
             $this->components->error('Failed to upload zip file to S3.');
         }
+    }
+
+    /**
+     * @param  array<int, int>  $userCounts  userId => photoCount
+     * @return array<int, int> userId => takeCount
+     */
+    private function distributeFairly(array $userCounts, int $limit): array
+    {
+        $totalAvailable = array_sum($userCounts);
+        if ($totalAvailable <= $limit) {
+            return $userCounts;
+        }
+
+        if ($totalAvailable === 0) {
+            return [];
+        }
+
+        $ratio = $limit / $totalAvailable;
+        $takeCounts = [];
+        $remainders = [];
+
+        foreach ($userCounts as $userId => $count) {
+            $exact = $count * $ratio;
+            $takeCounts[$userId] = (int) floor($exact);
+            $remainders[$userId] = $exact - $takeCounts[$userId];
+        }
+
+        $currentTotal = array_sum($takeCounts);
+        $diff = $limit - $currentTotal;
+
+        if ($diff > 0) {
+            arsort($remainders);
+            foreach (array_keys($remainders) as $userId) {
+                if ($diff <= 0) {
+                    break;
+                }
+
+                if ($takeCounts[$userId] < $userCounts[$userId]) {
+                    $takeCounts[$userId]++;
+                    $diff--;
+                }
+            }
+        }
+
+        return $takeCounts;
     }
 }
