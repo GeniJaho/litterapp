@@ -150,8 +150,6 @@ class SelectPhotosForTraining extends Command
 
         $zip->close();
 
-        $this->newline(2);
-
         $this->components->info(sprintf(
             'Peak memory used: [%s]',
             $this->formatStorageSize(memory_get_peak_usage(true))
