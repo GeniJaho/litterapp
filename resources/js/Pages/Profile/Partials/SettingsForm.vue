@@ -18,6 +18,7 @@ const form = useForm({
     recycled_by_default: props.user.settings.recycled_by_default,
     deposit_by_default: props.user.settings.deposit_by_default,
     litterbot_enabled: props.user.settings.litterbot_enabled,
+    consent_to_training: props.user.settings.consent_to_training,
 });
 
 
@@ -95,10 +96,25 @@ const save = () => {
                     </template>
                     <template #description>
                         When enabled, LitterBot will analyze your photos and suggest items to tag.
-                        You can always accept or reject these suggestions. Your photos are not used for training.
+                        You can always accept or reject these suggestions.
                     </template>
                 </ToggleInput>
                 <InputError :message="form.errors.litterbot_enabled" class="mt-2" />
+
+                <ToggleInput
+                    id="consent_to_training"
+                    v-model="form.consent_to_training"
+                    class="mt-4 block w-full"
+                >
+                    <template #label>
+                        Allow photos for LitterBot training
+                    </template>
+                    <template #description>
+                        When enabled, your photos may be used to train and improve the LitterBot model.
+                        This helps make LitterBot more accurate for everyone.
+                    </template>
+                </ToggleInput>
+                <InputError :message="form.errors.consent_to_training" class="mt-2" />
 
             </div>
         </template>
