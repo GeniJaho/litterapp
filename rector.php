@@ -6,9 +6,11 @@ use Rector\Caching\ValueObject\Storage\FileCacheStorage;
 use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
-use RectorLaravel\Rector\MethodCall\ValidationRuleArrayStringValueToArrayRector;
+use RectorLaravel\Rector\FuncCall\AppToResolveRector;
 use RectorLaravel\Rector\MethodCall\WhereToWhereLikeRector;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
+use RectorLaravel\Rector\StaticCall\CarbonToDateFacadeRector;
+use RectorLaravel\Rector\StaticCall\DispatchToHelperFunctionsRector;
 use RectorLaravel\Set\LaravelLevelSetList;
 use RectorLaravel\Set\LaravelSetList;
 
@@ -29,7 +31,6 @@ return RectorConfig::configure()
         privatization: true,
         instanceOf: true,
         earlyReturn: true,
-        strictBooleans: true,
     )
     ->withSets([
         LaravelLevelSetList::UP_TO_LARAVEL_110,
@@ -40,11 +41,13 @@ return RectorConfig::configure()
     ->withRules([
         AddGenericReturnTypeToRelationsRector::class,
         WhereToWhereLikeRector::class,
-        ValidationRuleArrayStringValueToArrayRector::class,
     ])
     ->withSkip([
         EncapsedStringsToSprintfRector::class,
         ReplaceFakerInstanceWithHelperRector::class,
+        AppToResolveRector::class,
+        CarbonToDateFacadeRector::class,
+        DispatchToHelperFunctionsRector::class,
         __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',
     ])
     ->withCache(

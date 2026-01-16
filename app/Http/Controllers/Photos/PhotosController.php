@@ -127,7 +127,7 @@ class PhotosController extends Controller
 
         Storage::delete($photo->path);
 
-        return redirect()->route('my-photos');
+        return to_route('my-photos');
     }
 
     /**

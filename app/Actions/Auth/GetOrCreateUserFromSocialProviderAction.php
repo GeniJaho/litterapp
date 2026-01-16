@@ -10,6 +10,7 @@ class GetOrCreateUserFromSocialProviderAction
 {
     public function run(\Laravel\Socialite\Contracts\User $socialUser): User
     {
+        /** @var User $user */
         $user = User::firstOrCreate([
             'email' => $socialUser->getEmail(),
         ], [
@@ -27,7 +28,7 @@ class GetOrCreateUserFromSocialProviderAction
             $user->profile_photo_path = $socialUser->getAvatar();
         }
 
-        if ($user->password === null) {
+        if ($user->password === '') {
             $user->password = Hash::make(Str::random(20));
         }
 

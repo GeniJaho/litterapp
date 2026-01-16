@@ -20,7 +20,7 @@ class PhotoExport extends Data
         public ?float $latitude,
         public ?float $longitude,
         public ?string $taken_at_local,
-        public string $created_at,
+        public ?string $created_at,
         public Collection $items,
     ) {}
 
@@ -33,6 +33,7 @@ class PhotoExport extends Data
             longitude: $photo->longitude,
             taken_at_local: $photo->taken_at_local,
             created_at: $photo->created_at?->toIso8601String(),
+            /** @phpstan-ignore-next-line argument.type */
             items: $photo->photoItems->map(fn (PhotoItem $photoItem): array => [
                 'name' => $photoItem->item?->name,
                 'picked_up' => $photoItem->picked_up,
