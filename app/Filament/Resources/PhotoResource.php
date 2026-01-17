@@ -12,6 +12,7 @@ use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\TextInputColumn;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -43,12 +44,27 @@ class PhotoResource extends Resource
                 ImageColumn::make('full_path')
                     ->label('Photo')
                     ->searchable(query: fn (Builder $query, string $search): Builder => $query->whereLike('path', "%{$search}%")),
-                TextColumn::make('gps')
+                TextInputColumn::make('gps')
                     ->label('GPS')
                     ->getStateUsing(fn (Photo $photo): ?string => $photo->latitude && $photo->longitude
                         ? "{$photo->latitude}, {$photo->longitude}"
                         : null
                     )
+                    ->rules(['nullable', 'regex:/^-?\d{1,2}\.\d+,\s?-?\d{1,3}\.\d+$/'])
+                    ->updateStateUsing(function (Photo $record, ?string $state): void {
+                        if ($state === null) {
+                            $record->latitude = null;
+                            $record->longitude = null;
+                            $record->save();
+
+                            return;
+                        }
+
+                        [$latitude, $longitude] = explode(',', $state);
+                        $record->latitude = (float) $latitude;
+                        $record->longitude = (float) $longitude;
+                        $record->save();
+                    })
                     ->searchable(query: fn (Builder $query, string $search): Builder => $query
                         ->whereLike('latitude', "%{$search}%")
                         ->orWhereLike('longitude', "%{$search}%")
@@ -57,8 +73,8 @@ class PhotoResource extends Resource
                     ->sortable()
                     ->searchable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                TextColumn::make('taken_at_local')
-                    ->dateTime()
+                TextInputColumn::make('taken_at_local')
+                    ->type('datetime-local')
                     ->label('Date taken (Local time)')
                     ->sortable(),
                 TextColumn::make('created_at')
