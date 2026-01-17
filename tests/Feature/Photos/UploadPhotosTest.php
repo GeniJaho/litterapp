@@ -32,7 +32,8 @@ test('a user can upload photos', function (): void {
     expect($user->photos()->count())->toBe(1);
 
     $photo = $user->photos()->first();
-    expect($photo->path)->toBe('photos/'.$file->hashName());
+    expect($photo->path)->toBe('photos/'.$file->hashName())
+        ->and($photo->size_kb)->toBe(1);
 
     Storage::assertExists('photos/'.$file->hashName());
 });
@@ -54,7 +55,8 @@ test('a user can upload photos with location data', function (): void {
 
     $photo = $user->photos()->first();
     expect($photo->latitude)->toBe(40.053030045789)
-        ->and($photo->longitude)->toBe(-77.15449870066);
+        ->and($photo->longitude)->toBe(-77.15449870066)
+        ->and($photo->size_kb)->toBe(1);
 })->group('slow');
 
 test('a user can upload photos with the date the photo is taken', function (): void {

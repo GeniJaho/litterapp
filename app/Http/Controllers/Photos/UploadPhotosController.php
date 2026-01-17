@@ -36,6 +36,7 @@ class UploadPhotosController extends Controller
             'user_id' => $user->id,
             'path' => $path,
             'original_file_name' => $photo->getClientOriginalName(),
+            'size_kb' => $this->getFileSize($photo),
             'latitude' => $exif['latitude'] ?? null,
             'longitude' => $exif['longitude'] ?? null,
             'taken_at_local' => $exif['taken_at_local'] ?? null,
@@ -46,5 +47,16 @@ class UploadPhotosController extends Controller
         }
 
         return response()->json();
+    }
+
+    private function getFileSize(UploadedFile $photo): ?int
+    {
+        $size = $photo->getSize();
+
+        if ($size === false) {
+            return null;
+        }
+
+        return (int) round($size / 1024);
     }
 }

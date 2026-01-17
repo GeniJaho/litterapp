@@ -22,6 +22,7 @@ class PhotoFactory extends Factory
             'path' => $this->faker->imageUrl(),
             'original_file_name' => "{$this->faker->unique()->word()}.jpg",
             'user_id' => User::factory(),
+            'size_kb' => $this->faker->numberBetween(1, 500),
         ];
     }
 }

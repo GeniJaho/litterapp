@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
+ * @property ?int $size_kb
  * @property-read string $full_path
  */
 class Photo extends Model
@@ -33,6 +34,7 @@ class Photo extends Model
     {
         return [
             'user_id' => 'integer',
+            'size_kb' => 'integer',
         ];
     }
 
