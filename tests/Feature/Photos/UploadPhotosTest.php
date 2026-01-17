@@ -21,7 +21,7 @@ beforeEach(function (): void {
 
 test('a user can upload photos', function (): void {
     $this->actingAs($user = User::factory()->create());
-    $file = UploadedFile::fake()->image('photo.jpg');
+    $file = UploadedFile::fake()->image('photo.jpg')->size(10);
 
     $response = $this->post('/upload', [
         'photo' => $file,
@@ -33,7 +33,25 @@ test('a user can upload photos', function (): void {
 
     $photo = $user->photos()->first();
     expect($photo->path)->toBe('photos/'.$file->hashName())
-        ->and($photo->size_kb)->toBe(1);
+        ->and($photo->size_kb)->toBe(10);
+
+    Storage::assertExists('photos/'.$file->hashName());
+});
+
+test('photos larger than 300kb are minified', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $file = UploadedFile::fake()->image('photo.jpg', 1200, 1200)->size(301);
+
+    $response = $this->post('/upload', [
+        'photo' => $file,
+    ]);
+
+    $response->assertOk();
+
+    $photo = $user->photos()->first();
+
+    expect($photo->size_kb)->toBeLessThan(301);
 
     Storage::assertExists('photos/'.$file->hashName());
 });

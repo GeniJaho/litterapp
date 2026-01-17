@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Actions\Photos\MinifyPhotoAction;
 use App\Models\Photo;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,8 +10,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
-use Intervention\Image\Encoders\AutoEncoder;
-use Intervention\Image\ImageManager;
 
 class MinifyPhoto implements ShouldQueue
 {
@@ -21,7 +20,7 @@ class MinifyPhoto implements ShouldQueue
 
     public function __construct(public readonly Photo $photo) {}
 
-    public function handle(): void
+    public function handle(MinifyPhotoAction $minifyPhoto): void
     {
         if ($this->photo->path === '') {
             return;
@@ -33,9 +32,7 @@ class MinifyPhoto implements ShouldQueue
             return;
         }
 
-        $image = ImageManager::gd()->read($content);
-
-        $minified = $image->encode(new AutoEncoder(quality: 50));
+        $minified = $minifyPhoto->run($content);
 
         Storage::put($this->photo->path, $minified);
 

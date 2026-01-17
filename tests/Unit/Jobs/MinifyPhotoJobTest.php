@@ -16,8 +16,7 @@ test('it minifies the photo and updates size_kb', function (): void {
     ]);
     $previousSize = Storage::size($photo->path);
 
-    $job = new MinifyPhoto($photo);
-    $job->handle();
+    MinifyPhoto::dispatch($photo);
 
     Storage::assertExists($photo->path);
     $newSize = Storage::size($photo->path);
