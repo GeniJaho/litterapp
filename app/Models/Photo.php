@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Facades\Storage;
 
 /**
+ * @property int<0, max> $id
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions

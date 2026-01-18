@@ -2,6 +2,7 @@
 
 namespace App\Actions\Auth;
 
+use App\Jobs\CopyDefaultTagShortcutsAndPhotosJob;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -33,6 +34,8 @@ class GetOrCreateUserFromSocialProviderAction
         }
 
         $user->save();
+
+        CopyDefaultTagShortcutsAndPhotosJob::dispatch($user);
 
         return $user;
     }
