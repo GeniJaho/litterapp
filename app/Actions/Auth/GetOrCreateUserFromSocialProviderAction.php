@@ -35,7 +35,9 @@ class GetOrCreateUserFromSocialProviderAction
 
         $user->save();
 
-        CopyDefaultTagShortcutsAndPhotosJob::dispatch($user);
+        if ($user->wasRecentlyCreated) {
+            CopyDefaultTagShortcutsAndPhotosJob::dispatch($user);
+        }
 
         return $user;
     }

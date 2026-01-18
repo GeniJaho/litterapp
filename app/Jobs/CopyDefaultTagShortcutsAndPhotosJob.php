@@ -76,7 +76,7 @@ class CopyDefaultTagShortcutsAndPhotosJob implements ShouldQueue
                 continue;
             }
 
-            $newPath = 'photos/'.Str::uuid()->toString().'.'.basename((string) $photo->path);
+            $newPath = 'photos/'.Str::uuid()->toString().'.'.pathinfo((string) $photo->path, PATHINFO_EXTENSION);
 
             Storage::put($newPath, $content);
 

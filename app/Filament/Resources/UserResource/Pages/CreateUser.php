@@ -19,7 +19,7 @@ class CreateUser extends CreateRecord
         return $data;
     }
 
-    protected function after(): void
+    protected function afterCreate(): void
     {
         /** @phpstan-ignore-next-line argument.type */
         CopyDefaultTagShortcutsAndPhotosJob::dispatch($this->record);
