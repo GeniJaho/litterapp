@@ -7,11 +7,15 @@ use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 
 /**
+ * @property int<0, max> $id
+ * @property int<0, max> $photo_id
  * @property Collection<int, Tag> $tags
  * @property-read Photo $photo
+ * @property Collection<int, PhotoItemTag> $photoItemTags
  */
 class PhotoItem extends Pivot
 {
@@ -66,5 +70,13 @@ class PhotoItem extends Pivot
             ->withPivot('id')
             ->using(PhotoItemTag::class)
             ->withTimestamps();
+    }
+
+    /**
+     * @return HasMany<PhotoItemTag, $this>
+     */
+    public function photoItemTags(): HasMany
+    {
+        return $this->hasMany(PhotoItemTag::class, 'photo_item_id');
     }
 }
