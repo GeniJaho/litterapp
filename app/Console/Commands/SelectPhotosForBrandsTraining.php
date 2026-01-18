@@ -9,7 +9,6 @@ use App\Models\TagType;
 use App\Models\User;
 use App\Traits\Training\ZipsPhotos;
 use Illuminate\Console\Command;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
@@ -39,7 +38,7 @@ class SelectPhotosForBrandsTraining extends Command
         $topBrands = Tag::query()
             ->join('photo_item_tag', 'tags.id', '=', 'photo_item_tag.tag_id')
             ->where('tags.tag_type_id', $brandTagType->id)
-            ->when($unknownBrandId, fn (Builder $query) => $query->where('photo_item_tag.tag_id', '!=', $unknownBrandId))
+            ->when($unknownBrandId, fn ($query) => $query->where('photo_item_tag.tag_id', '!=', $unknownBrandId))
             ->select('tags.id', 'tags.name', DB::raw('count(*) as total'))
             ->groupBy('tags.id', 'tags.name')
             ->orderByDesc('total')
