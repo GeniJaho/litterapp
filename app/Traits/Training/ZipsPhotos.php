@@ -34,13 +34,14 @@ trait ZipsPhotos
         $bar = $this->output->createProgressBar($totalPhotos);
         $bar->start();
 
+        $shouldUseFullUrl = config('filesystems.default') === 's3';
         foreach ($results as $result) {
-
             foreach ($result['photos'] as $photoPath) {
-                $zip->addFile(
-                    Storage::disk('public')->path($photoPath),
-                    "/{$result['slug']}/".basename((string) $photoPath),
-                );
+                $fullPath = $shouldUseFullUrl
+                    ? Storage::url($photoPath)
+                    : Storage::path($photoPath);
+
+                $zip->addFile($fullPath, "/{$result['slug']}/".basename((string) $photoPath));
 
                 $bar->advance();
             }
