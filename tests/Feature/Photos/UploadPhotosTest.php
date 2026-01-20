@@ -21,7 +21,7 @@ beforeEach(function (): void {
 
 test('a user can upload photos', function (): void {
     $this->actingAs($user = User::factory()->create());
-    $file = UploadedFile::fake()->image('photo.jpg');
+    $file = UploadedFile::fake()->image('photo.jpg')->size(10);
 
     $response = $this->post('/upload', [
         'photo' => $file,
@@ -32,7 +32,26 @@ test('a user can upload photos', function (): void {
     expect($user->photos()->count())->toBe(1);
 
     $photo = $user->photos()->first();
-    expect($photo->path)->toBe('photos/'.$file->hashName());
+    expect($photo->path)->toBe('photos/'.$file->hashName())
+        ->and($photo->size_kb)->toBe(10);
+
+    Storage::assertExists('photos/'.$file->hashName());
+});
+
+test('photos larger than 300kb are minified', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $file = UploadedFile::fake()->image('photo.jpg', 1200, 1200)->size(301);
+
+    $response = $this->post('/upload', [
+        'photo' => $file,
+    ]);
+
+    $response->assertOk();
+
+    $photo = $user->photos()->first();
+
+    expect($photo->size_kb)->toBeLessThan(301);
 
     Storage::assertExists('photos/'.$file->hashName());
 });
@@ -54,7 +73,8 @@ test('a user can upload photos with location data', function (): void {
 
     $photo = $user->photos()->first();
     expect($photo->latitude)->toBe(40.053030045789)
-        ->and($photo->longitude)->toBe(-77.15449870066);
+        ->and($photo->longitude)->toBe(-77.15449870066)
+        ->and($photo->size_kb)->toBe(1);
 })->group('slow');
 
 test('a user can upload photos with the date the photo is taken', function (): void {

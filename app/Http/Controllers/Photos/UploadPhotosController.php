@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Photos;
 
+use App\Actions\Photos\StorePhotoAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Photos\StorePhotosRequest;
 use App\Jobs\SuggestPhotoItem;
-use App\Models\Photo;
 use App\Models\User;
+use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\UploadedFile;
 use Inertia\Inertia;
@@ -20,26 +21,16 @@ class UploadPhotosController extends Controller
     }
 
     public function store(
+        #[CurrentUser] User $user,
         StorePhotosRequest $request,
+        StorePhotoAction $storePhoto,
     ): JsonResponse {
-        /** @var User $user */
-        $user = auth()->user();
-
         /** @var UploadedFile $photo */
         $photo = $request->file('photo');
 
         $exif = $request->getExifData();
 
-        $path = $photo->store('photos');
-
-        $photo = Photo::create([
-            'user_id' => $user->id,
-            'path' => $path,
-            'original_file_name' => $photo->getClientOriginalName(),
-            'latitude' => $exif['latitude'] ?? null,
-            'longitude' => $exif['longitude'] ?? null,
-            'taken_at_local' => $exif['taken_at_local'] ?? null,
-        ]);
+        $photo = $storePhoto->run($photo, $user, $exif);
 
         if ($user->settings->litterbot_enabled) {
             SuggestPhotoItem::dispatch($photo);
