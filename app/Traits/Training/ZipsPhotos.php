@@ -34,14 +34,19 @@ trait ZipsPhotos
         $bar = $this->output->createProgressBar($totalPhotos);
         $bar->start();
 
-        $shouldUseFullUrl = config('filesystems.default') === 's3';
+        $badPhotos = [];
         foreach ($results as $result) {
             foreach ($result['photos'] as $photoPath) {
-                $fullPath = $shouldUseFullUrl
-                    ? Storage::url($photoPath)
-                    : Storage::path($photoPath);
+                $contents = Storage::get($photoPath);
 
-                $zip->addFile($fullPath, "/{$result['slug']}/".basename((string) $photoPath));
+                if ($contents === null) {
+                    $badPhotos[] = $photoPath;
+                } else {
+                    $zip->addFromString(
+                        "/{$result['slug']}/".basename((string) $photoPath),
+                        $contents
+                    );
+                }
 
                 $bar->advance();
             }
@@ -54,6 +59,15 @@ trait ZipsPhotos
         $this->components->info('Finalizing zip file');
 
         $zip->close();
+
+        if ($badPhotos !== []) {
+            $this->components->warn(sprintf(
+                'Warning: %d photos could not be found and were skipped. Check logs for details.',
+                count($badPhotos)
+            ));
+
+            logger()->debug('Bad photos during zipping:', $badPhotos);
+        }
 
         $this->components->info(sprintf(
             'Peak memory used: [%s]',
