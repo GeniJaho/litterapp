@@ -1,5 +1,5 @@
 #!/bin/sh
-#set -xv 
+#set -xv
 
 #Check if there is a key, if not, create one
 # We actually only need the first time we do the deployment,
@@ -18,5 +18,5 @@ fi
 echo "Database conversions, done always"
 php artisan migrate --force
 
-#Run the development server
-php artisan serve --host=0.0.0.0 --port=9000
+#Start Supervisor (manages web server and queue workers)
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
