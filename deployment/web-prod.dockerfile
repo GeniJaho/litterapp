@@ -22,6 +22,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y \
     unzip \
     redis-tools \
     default-mysql-client \
+    supervisor \
     vim
 
 # Clear cache
@@ -51,12 +52,14 @@ RUN apt-get update && apt-get install -y nodejs
 RUN set -eux; \
 	docker-php-ext-configure gd --enable-gd --with-freetype --with-jpeg --with-webp; \
 	docker-php-ext-configure intl; \
+	docker-php-ext-configure pcntl --enable-pcntl; \
 	docker-php-ext-configure mysqli --with-mysqli=mysqlnd; \
 	docker-php-ext-configure pdo_mysql --with-pdo-mysql=mysqlnd; \
 	docker-php-ext-configure zip; \
 	docker-php-ext-install -j "$(nproc)" \
 		gd \
 		intl \
+		pcntl \
 		mysqli \
 		opcache \
 		pdo_mysql \
@@ -72,6 +75,8 @@ RUN mkdir -p /home/$user/.composer \
     && chown -R $user:$user /home/$user \
     && chown -R $user:$user /app
 
+COPY ./deployment/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
 COPY --chown=$user . /app
 
 #USER $user
@@ -84,4 +89,4 @@ RUN php artisan filament:optimize
 RUN npm install && npm run build
 
 #EXPOSE 9000
-CMD php artisan serve --host=0.0.0.0 --port=9000
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

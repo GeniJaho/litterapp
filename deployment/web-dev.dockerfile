@@ -22,6 +22,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y \
     unzip \
     redis-tools \
     default-mysql-client \
+    supervisor \
     vim
 
 # Clear cache
@@ -60,6 +61,8 @@ RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer \
     && chown -R $user:$user /home/$user \
     && chown -R $user:$user /app
+
+COPY ./deployment/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 COPY --chown=$user . /app
 
