@@ -169,34 +169,19 @@ const exportData = (format) => {
 <template>
     <AppLayout title="See Your Photos">
         <template #header>
-            <div class="flex justify-between relative">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
                     My Photos
                 </h2>
 
-                <!-- Settings Dropdown -->
-                <div class="absolute right-0 top-1/2 transform -translate-y-1/2">
-                <Dropdown align="right" width="64">
-                    <template #trigger>
-                        <button class="flex items-center justify-center w-8 h-8 border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition">
-                            <i class="fas fa-gear text-lg text-gray-800 dark:text-gray-200 mt-0.5 sm:ml-[1px]"></i>
-                        </button>
-                    </template>
-
-                    <template #content>
-                        <div>
-                            <ToggleInput
-                                v-model="tagShortcutsEnabled"
-                                @update:modelValue="toggleTagShortcutsEnabled"
-                                class="block w-full px-4 py-2"
-                            >
-                                <template #label>Tag Shortcuts enabled</template>
-                            </ToggleInput>
-                        </div>
-                    </template>
-                </Dropdown>
-            </div>
-
+                <!-- Tag Shortcuts Toggle -->
+                <ToggleInput
+                    v-model="tagShortcutsEnabled"
+                    @update:modelValue="toggleTagShortcutsEnabled"
+                    class="mt-4 sm:mt-0"
+                >
+                    <template #label>Tag Shortcuts enabled</template>
+                </ToggleInput>
             </div>
         </template>
 
