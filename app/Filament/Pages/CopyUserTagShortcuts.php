@@ -23,7 +23,7 @@ class CopyUserTagShortcuts extends Page implements HasForms
 
     protected static ?string $navigationLabel = 'Copy Tag Shortcuts';
 
-    protected static ?string $navigationGroup = 'Settings';
+    protected static ?string $navigationGroup = 'System';
 
     protected static ?int $navigationSort = 100;
 
