@@ -23,19 +23,19 @@ trait ZipsPhotos
 
         $this->components->info('Zipping images at '.$zipFilePathOnDisk);
 
-        $zip = new ZipArchive;
-
-        if ($zip->open($zipFilePathOnDisk, ZipArchive::CREATE) !== true) {
-            $this->components->error("Failed to create zip file: {$zipFilePathOnDisk}");
-
-            return;
-        }
-
         $bar = $this->output->createProgressBar($totalPhotos);
         $bar->start();
 
         $badPhotos = [];
         foreach ($results as $result) {
+            $zip = new ZipArchive;
+
+            if ($zip->open($zipFilePathOnDisk, ZipArchive::CREATE) !== true) {
+                $this->components->error("Failed to open zip file: {$zipFilePathOnDisk}");
+
+                return;
+            }
+
             foreach ($result['photos'] as $photoPath) {
                 $contents = Storage::get($photoPath);
 
@@ -50,15 +50,13 @@ trait ZipsPhotos
 
                 $bar->advance();
             }
+
+            $zip->close();
         }
 
         $bar->finish();
 
         $this->newLine(2);
-
-        $this->components->info('Finalizing zip file');
-
-        $zip->close();
 
         if ($badPhotos !== []) {
             $this->components->warn(sprintf(
