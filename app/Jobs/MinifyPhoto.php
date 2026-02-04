@@ -36,7 +36,7 @@ class MinifyPhoto implements ShouldQueue
 
         Storage::put($this->photo->path, $minified);
 
-        $this->photo->update([
+        $this->photo->updateQuietly([
             'size_kb' => (int) round($minified->size() / 1024),
         ]);
     }
