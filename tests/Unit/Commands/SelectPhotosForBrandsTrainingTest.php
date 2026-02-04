@@ -100,6 +100,7 @@ function createPhotosForUserWithBrand(User $user, Tag $brand, int $count): void
     for ($i = 0; $i < $count; $i++) {
         $photo = new Photo;
         $photo->user_id = $user->id;
+        $photo->size_kb = 100;
         $photo->path = "photos/{$user->id}_{$brand->id}_{$i}.jpg";
         $photo->original_file_name = "file_{$user->id}_{$brand->id}_{$i}.jpg";
         $photo->save();

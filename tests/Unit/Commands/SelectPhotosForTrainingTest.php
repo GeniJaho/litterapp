@@ -101,14 +101,14 @@ it('test it processes multiple items', function (): void {
     $item1 = Item::factory()->create(['name' => 'Bottle']);
     $item2 = Item::factory()->create(['name' => 'Can']);
 
-    createPhotosForUserReal($user, $item1, 5);
-    createPhotosForUserReal($user, $item2, 8);
+    createPhotosForUserReal($user, $item1, 7);
+    createPhotosForUserReal($user, $item2, 9);
 
     $this->artisan('app:select-photos-for-training', ['--limit' => 100])
-        ->expectsOutputToContain('Bottle')
-        ->expectsOutputToContain('5')
-        ->expectsOutputToContain('Can')
-        ->expectsOutputToContain('8')
+        ->expectsTable(['Item', 'Photos', 'Users'], [
+            ['Bottle', '7', '1'],
+            ['Can', '9', '1'],
+        ])
         ->assertExitCode(0);
 });
 
@@ -145,6 +145,7 @@ function createPhotosForUserReal(User $user, Item $item, int $count): void
     for ($i = 0; $i < $count; $i++) {
         $photo = new Photo;
         $photo->user_id = $user->id;
+        $photo->size_kb = 100;
         $photo->path = "photos/{$user->id}_{$i}.jpg";
         $photo->original_file_name = "file_{$user->id}_{$i}.jpg";
         $photo->save();
