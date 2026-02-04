@@ -4,13 +4,17 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PhotoItemSuggestionResource\Pages\ListPhotoItemSuggestions;
 use App\Models\PhotoItemSuggestion;
+use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Tables\Filters\Filter;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class PhotoItemSuggestionResource extends Resource
 {
@@ -53,6 +57,40 @@ class PhotoItemSuggestionResource extends Resource
                     ->relationship('item', 'name')
                     ->multiple()
                     ->preload(),
+                Filter::make('score')
+                    ->form([
+                        TextInput::make('min_score')
+                            ->label('Minimum score')
+                            ->numeric()
+                            ->minValue(0)
+                            ->maxValue(100)
+                            ->placeholder('e.g. 80'),
+                    ])
+                    ->query(fn (Builder $query, array $data): Builder => $query
+                        ->when(
+                            $data['min_score'],
+                            fn (Builder $query, string $score): Builder => $query->where('score', '>=', $score),
+                        )),
+                TernaryFilter::make('is_accepted')
+                    ->label('Status')
+                    ->placeholder('All')
+                    ->trueLabel('Accepted')
+                    ->falseLabel('Rejected')
+                    ->queries(
+                        true: fn (Builder $query): Builder => $query->where('is_accepted', true),
+                        false: fn (Builder $query): Builder => $query->where('is_accepted', false),
+                        blank: fn (Builder $query): Builder => $query,
+                    ),
+                TernaryFilter::make('pending')
+                    ->label('Pending')
+                    ->placeholder('All')
+                    ->trueLabel('Only pending')
+                    ->falseLabel('Only reviewed')
+                    ->queries(
+                        true: fn (Builder $query): Builder => $query->whereNull('is_accepted'),
+                        false: fn (Builder $query): Builder => $query->whereNotNull('is_accepted'),
+                        blank: fn (Builder $query): Builder => $query,
+                    ),
             ], layout: FiltersLayout::AboveContent)
             ->persistFiltersInSession();
     }
