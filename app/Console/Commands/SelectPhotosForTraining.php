@@ -49,6 +49,7 @@ class SelectPhotosForTraining extends Command
                 ->join('photo_items', 'photos.id', '=', 'photo_items.photo_id')
                 ->where('photo_items.item_id', $item->id)
                 ->whereIn('photos.user_id', $usersConsentingToTrain)
+                ->where('photos.size_kb', '<=', 300)
                 ->select('photos.user_id', DB::raw('count(*) as total'))
                 ->groupBy('photos.user_id')
                 ->orderByDesc('total')
@@ -69,6 +70,7 @@ class SelectPhotosForTraining extends Command
                     ->join('photo_items', 'photos.id', '=', 'photo_items.photo_id')
                     ->where('photo_items.item_id', $item->id)
                     ->where('photos.user_id', $userId)
+                    ->where('photos.size_kb', '<=', 300)
                     ->limit($takeCount)
                     ->pluck('photos.path')
                     ->all();
