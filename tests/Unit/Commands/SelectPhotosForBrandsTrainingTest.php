@@ -89,8 +89,7 @@ it('test it zips and uploads photos to s3', function (): void {
 
     $files = Storage::disk('s3')->allFiles('zips');
     expect($files)->not->toBeEmpty();
-    expect($files[0])->toStartWith('zips/photos_brands_10_');
-    expect($files[0])->toEndWith('.zip');
+    expect($files[0])->toMatch('/^zips\/photos_brands_10_.*\/coca-cola\.zip$/');
 });
 
 function createPhotosForUserWithBrand(User $user, Tag $brand, int $count): void
