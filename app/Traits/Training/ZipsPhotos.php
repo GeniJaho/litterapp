@@ -45,7 +45,7 @@ trait ZipsPhotos
                 continue;
             }
 
-            foreach ($result['photos'] as $photoPath) {
+            foreach ($result['photos'] as $index => $photoPath) {
                 $contents = Storage::get($photoPath);
 
                 if ($contents === null) {
@@ -58,6 +58,11 @@ trait ZipsPhotos
                 }
 
                 $bar->advance();
+
+                if ($index > 0 && $index % 100 === 0) {
+                    $zip->close();
+                    $zip->open($zipFilePathOnDisk, ZipArchive::CREATE);
+                }
             }
 
             $zip->close();
