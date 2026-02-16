@@ -32,16 +32,19 @@ defineEmits(['update:modelValue']);
 let query = ref('')
 
 let filteredItems = computed(() => {
-    const items = query.value === ''
-        ? props.items
-        : props.items.filter((item) =>
-            item.name
-                .toLowerCase()
-                .replace(/\s+/g, '')
-                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
-        );
+    if (query.value === '') {
+        return props.items;
+    }
 
-    return items.slice(0, 100)
+    const q = query.value.toLowerCase().replace(/\s+/g, '');
+
+    return props.items
+        .filter((item) => item.name.toLowerCase().replace(/\s+/g, '').includes(q))
+        .sort((a, b) =>
+            a.name.toLowerCase().replace(/\s+/g, '').indexOf(q)
+            - b.name.toLowerCase().replace(/\s+/g, '').indexOf(q)
+        )
+        .slice(0, 100);
 })
 
 const removeItem = (id) => {

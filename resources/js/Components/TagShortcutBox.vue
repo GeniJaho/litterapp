@@ -35,13 +35,17 @@ defineEmits(['update:modelValue']);
 let query = ref('')
 
 let filteredItems = computed(() => {
-    return query.value === ''
-        ? props.items
-        : props.items.filter((item) =>
-            item.shortcut
-                .toLowerCase()
-                .replace(/\s+/g, '')
-                .includes(query.value.toLowerCase().replace(/\s+/g, ''))
+    if (query.value === '') {
+        return props.items;
+    }
+
+    const q = query.value.toLowerCase().replace(/\s+/g, '');
+
+    return props.items
+        .filter((item) => item.shortcut.toLowerCase().replace(/\s+/g, '').includes(q))
+        .sort((a, b) =>
+            a.shortcut.toLowerCase().replace(/\s+/g, '').indexOf(q)
+            - b.shortcut.toLowerCase().replace(/\s+/g, '').indexOf(q)
         );
 })
 
