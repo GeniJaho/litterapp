@@ -1,0 +1,20 @@
+{
+    "mcpServers": {
+        "laravel-boost": {
+            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php82",
+            "args": [
+                "/Users/fabjo/Sites/litterapp/artisan",
+                "boost:mcp"
+            ]
+        },
+        "herd": {
+            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php82",
+            "args": [
+                "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
+            ],
+            "env": {
+                "SITE_PATH": "/Users/fabjo/Sites/litterapp"
+            }
+        }
+    }
+}
