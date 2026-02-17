@@ -31,6 +31,10 @@ defineEmits(['update:modelValue']);
 
 let query = ref('')
 
+const normalizedItems = computed(() =>
+    props.items.map((item) => ({ item, normalized: item.name.toLowerCase().replace(/\s+/g, '') }))
+)
+
 let filteredItems = computed(() => {
     if (query.value === '') {
         return props.items;
@@ -38,12 +42,10 @@ let filteredItems = computed(() => {
 
     const q = query.value.toLowerCase().replace(/\s+/g, '');
 
-    return props.items
-        .filter((item) => item.name.toLowerCase().replace(/\s+/g, '').includes(q))
-        .sort((a, b) =>
-            a.name.toLowerCase().replace(/\s+/g, '').indexOf(q)
-            - b.name.toLowerCase().replace(/\s+/g, '').indexOf(q)
-        )
+    return normalizedItems.value
+        .filter(({ normalized }) => normalized.includes(q))
+        .sort((a, b) => a.normalized.indexOf(q) - b.normalized.indexOf(q))
+        .map(({ item }) => item)
         .slice(0, 100);
 })
 
