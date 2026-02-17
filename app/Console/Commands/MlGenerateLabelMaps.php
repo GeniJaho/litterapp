@@ -30,21 +30,21 @@ class MlGenerateLabelMaps extends Command
             ->whereNotIn('id', $excludedItemIds)
             ->orderBy('id')
             ->pluck('name', 'id')
-            ->mapWithKeys(fn ($name, $id): array => [(string) $id => $name]);
+            ->mapWithKeys(fn (mixed $name, int|string $id): array => [(string) $id => $name]);
 
         $brands = Tag::query()
             ->where('tag_type_id', $brandTypeId)
             ->whereNotIn('id', $excludedTagIds)
             ->orderBy('id')
             ->pluck('name', 'id')
-            ->mapWithKeys(fn ($name, $id): array => [(string) $id => $name]);
+            ->mapWithKeys(fn (mixed $name, int|string $id): array => [(string) $id => $name]);
 
         $content = Tag::query()
             ->where('tag_type_id', $contentTypeId)
             ->whereNotIn('id', $excludedTagIds)
             ->orderBy('id')
             ->pluck('name', 'id')
-            ->mapWithKeys(fn ($name, $id): array => [(string) $id => $name]);
+            ->mapWithKeys(fn (mixed $name, int|string $id): array => [(string) $id => $name]);
 
         $labelMaps = [
             'items' => $items->toArray(),
