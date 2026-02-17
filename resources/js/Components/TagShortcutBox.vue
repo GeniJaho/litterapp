@@ -40,7 +40,7 @@ const normalizedItems = computed(() =>
 
 let filteredItems = computed(() => {
     if (query.value === '') {
-        return props.items;
+        return props.items.slice(0, 100);
     }
 
     const q = query.value.toLowerCase().replace(/\s+/g, '');
