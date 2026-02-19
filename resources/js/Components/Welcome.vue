@@ -47,6 +47,89 @@ const grafanaLink = computed(() => page.props.grafana.map_link)
                     </iframe>
                 </div>
 
+                <!-- Dashboard Tiles Section -->
+                <div class="flex flex-col items-center pt-24 pb-12 md:pt-32">
+                    <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
+                    <div class="text-center text-2xl leading-8 font-black tracking-widest-xl dark:text-mainWhite text-darkBlue pt-8">
+                        Dashboard & Tools
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-12 pb-12">
+                    
+                    <!-- Tile 1: Global Data -->
+                    <a href="https://litterapp.net/grafana/public-dashboards/2bb92d7112934d53bd271430c32a8b4d" target="_blank">
+                        <div class="group cursor-pointer h-40 rounded-lg bg-gradient-to-br from-turqoFocus to-turqo hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between dark:from-turqo dark:to-turqoFocus">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-lg font-black text-darkBlue dark:text-darkBlue tracking-widest">Global Data</h3>
+                                    <p class="text-xs text-darkBlue dark:text-darkBlue pt-2 font-bold">Real-time statistics</p>
+                                </div>
+                                <i class="fa-solid fa-globe text-2xl text-darkBlue dark:text-darkBlue group-hover:scale-110 transition-transform"></i>
+                            </div>
+                            <div class="text-xs text-darkBlue dark:text-darkBlue opacity-75">Click to view →</div>
+                        </div>
+                    </a>
+
+                    <!-- Tile 2: Latest News -->
+                    <a href="https://litterapp.net/grafana/public-dashboards/a7d260cf38ff439ea19d39e1fba7f3bd" target="_blank">
+                        <div class="group cursor-pointer h-40 rounded-lg bg-gradient-to-br from-turqoFocus to-turqo hover:shadow-lg transition-all duration-300 p-6 flex flex-col justify-between dark:from-turqo dark:to-turqoFocus">
+                            <div class="flex items-start justify-between">
+                                <div>
+                                    <h3 class="text-lg font-black text-darkBlue dark:text-darkBlue tracking-widest">Latest News</h3>
+                                    <p class="text-xs text-darkBlue dark:text-darkBlue pt-2 font-bold">Recent updates</p>
+                                </div>
+                                <i class="fa-solid fa-newspaper text-2xl text-darkBlue dark:text-darkBlue group-hover:scale-110 transition-transform"></i>
+                            </div>
+                            <div class="text-xs text-darkBlue dark:text-darkBlue opacity-75">Click to view →</div>
+                        </div>
+                    </a>
+
+                    <!-- Tile 3: Coming Soon -->
+                    <div class="cursor-not-allowed h-40 rounded-lg bg-gray-200 dark:bg-gray-700 p-6 flex flex-col justify-between opacity-50">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-lg font-black text-gray-500 dark:text-gray-400 tracking-widest">Coming Soon</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 pt-2 font-bold">More features</p>
+                            </div>
+                            <i class="fa-solid fa-lock text-2xl text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tile 4: Coming Soon -->
+                    <div class="cursor-not-allowed h-40 rounded-lg bg-gray-200 dark:bg-gray-700 p-6 flex flex-col justify-between opacity-50">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-lg font-black text-gray-500 dark:text-gray-400 tracking-widest">Coming Soon</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 pt-2 font-bold">More features</p>
+                            </div>
+                            <i class="fa-solid fa-lock text-2xl text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tile 5: Coming Soon -->
+                    <div class="cursor-not-allowed h-40 rounded-lg bg-gray-200 dark:bg-gray-700 p-6 flex flex-col justify-between opacity-50">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-lg font-black text-gray-500 dark:text-gray-400 tracking-widest">Coming Soon</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 pt-2 font-bold">More features</p>
+                            </div>
+                            <i class="fa-solid fa-lock text-2xl text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                    </div>
+
+                    <!-- Tile 6: Coming Soon -->
+                    <div class="cursor-not-allowed h-40 rounded-lg bg-gray-200 dark:bg-gray-700 p-6 flex flex-col justify-between opacity-50">
+                        <div class="flex items-start justify-between">
+                            <div>
+                                <h3 class="text-lg font-black text-gray-500 dark:text-gray-400 tracking-widest">Coming Soon</h3>
+                                <p class="text-xs text-gray-500 dark:text-gray-400 pt-2 font-bold">More features</p>
+                            </div>
+                            <i class="fa-solid fa-lock text-2xl text-gray-500 dark:text-gray-400"></i>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="flex flex-col items-center pt-24 pb-12 md:pt-32">
                     <div class="h-2 w-2 bg-darkBlue dark:bg-mainWhite rounded-full"></div>
                     <div
