@@ -20,6 +20,11 @@ class SuggestPhotoItem implements ShouldQueue
     use Queueable;
     use SerializesModels;
 
+    public int $tries = 5;
+
+    /** @var array<int, int> */
+    public array $backoff = [60, 300, 1800, 3600];
+
     public function __construct(public readonly Photo $photo) {}
 
     public function handle(

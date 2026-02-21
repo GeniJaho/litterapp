@@ -6,6 +6,7 @@ use App\DTO\PhotoItemPrediction;
 use App\Models\AppSetting;
 use App\Models\Photo;
 use Illuminate\Container\Attributes\Config;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
@@ -17,6 +18,9 @@ class ClassifyPhotoAction implements ClassifiesPhoto
         #[Config('services.litterbot.url')] protected string $litterBotUrl,
     ) {}
 
+    /**
+     * @throws ConnectionException
+     */
     public function run(Photo $photo): ?PhotoItemPrediction
     {
         $response = Http::timeout(5)->post("{$this->getLitterBotUrl()}/predict", [
