@@ -22,7 +22,7 @@ it('test it selects photos for brands proportionally and limits users', function
 
     // Create 15 users, all consenting to training
     $users = User::factory(15)->create([
-        'settings' => ['consent_to_training' => true],
+        'settings' => ['consent_to_training_at' => now()->toIso8601String()],
     ]);
 
     $brand = Tag::factory()->create(['name' => 'Coca Cola', 'tag_type_id' => $brandType->id]);
@@ -44,7 +44,7 @@ it('test it selects photos for brands proportionally and limits users', function
 
 it('test it selects top 50 brands by usage', function (): void {
     $brandType = TagType::factory()->create(['name' => 'Brand', 'slug' => 'brand']);
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
 
     // Create 60 brands
     $brands = Tag::factory()->count(60)->create(['tag_type_id' => $brandType->id]);
@@ -65,8 +65,8 @@ it('test it selects top 50 brands by usage', function (): void {
 
 it('test it only selects photos from consenting users for brands', function (): void {
     $brandType = TagType::factory()->create(['name' => 'Brand', 'slug' => 'brand']);
-    $consentingUser = User::factory()->create(['settings' => ['consent_to_training' => true]]);
-    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training' => false]]);
+    $consentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => null]]);
 
     $brand = Tag::factory()->create(['name' => 'Pepsi', 'tag_type_id' => $brandType->id]);
     createPhotosForUserWithBrand($consentingUser, $brand, 10);
@@ -80,7 +80,7 @@ it('test it only selects photos from consenting users for brands', function (): 
 
 it('test it zips and uploads photos to s3', function (): void {
     $brandType = TagType::factory()->create(['name' => 'Brand', 'slug' => 'brand']);
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $brand = Tag::factory()->create(['name' => 'Coca Cola', 'tag_type_id' => $brandType->id]);
     createPhotosForUserWithBrand($user, $brand, 5);
 
