@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\User;
 use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class MlBackfillConsentTrainingTimestamps extends Command
 {
@@ -26,7 +27,7 @@ class MlBackfillConsentTrainingTimestamps extends Command
 
         $updated = 0;
 
-        $this->backfillQuery()->chunkById(500, function ($users) use ($now, &$updated): void {
+        $this->backfillQuery()->chunkById(500, function (Collection $users) use ($now, &$updated): void {
             foreach ($users as $user) {
                 $user->settings->consent_to_training_at = $now;
                 $user->save();
