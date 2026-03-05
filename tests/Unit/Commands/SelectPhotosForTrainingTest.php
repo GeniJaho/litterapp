@@ -17,7 +17,7 @@ beforeEach(function (): void {
 it('test it selects photos proportionally and limits users', function (): void {
     // Create 15 users, all consenting to training
     $users = User::factory(15)->create([
-        'settings' => ['consent_to_training' => true],
+        'settings' => ['consent_to_training_at' => now()->toIso8601String()],
     ]);
 
     $itemSlug = 'bottle';
@@ -45,8 +45,8 @@ it('test it selects photos proportionally and limits users', function (): void {
 });
 
 it('test it only selects photos from consenting users', function (): void {
-    $consentingUser = User::factory()->create(['settings' => ['consent_to_training' => true]]);
-    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training' => false]]);
+    $consentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => null]]);
 
     $item = Item::factory()->create(['name' => 'Bottle']);
     createPhotosForUserReal($consentingUser, $item, 10);
@@ -69,7 +69,7 @@ it('test it handles items with no photos', function (): void {
 });
 
 it('test it takes all photos if below limit', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
     createPhotosForUserReal($user, $item, 50);
 
@@ -80,7 +80,7 @@ it('test it takes all photos if below limit', function (): void {
 });
 
 it('test it handles rounding to zero due to small proportions', function (): void {
-    $users = User::factory(10)->create(['settings' => ['consent_to_training' => true]]);
+    $users = User::factory(10)->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
 
     // 10 users with 10 photos each = 100 total.
@@ -97,7 +97,7 @@ it('test it handles rounding to zero due to small proportions', function (): voi
 });
 
 it('test it processes multiple items', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item1 = Item::factory()->create(['name' => 'Bottle']);
     $item2 = Item::factory()->create(['name' => 'Can']);
 
@@ -121,7 +121,7 @@ it('test it skips missing items', function (): void {
 });
 
 it('test it fails to reach limit when many users exist due to ratio calculation', function (): void {
-    $users = User::factory(20)->create(['settings' => ['consent_to_training' => true]]);
+    $users = User::factory(20)->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
 
     // 20 users with 10 photos each = 200 total.

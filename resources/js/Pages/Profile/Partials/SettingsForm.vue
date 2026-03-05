@@ -7,22 +7,26 @@ import InputError from '@/Components/InputError.vue';
 import PrimaryButton from '@/Components/PrimaryButton.vue';
 import ToggleInput from "@/Components/ToggleInput.vue";
 
-const passwordInput = ref(null);
-
 const props = defineProps({
     user: Object,
 });
+
+const consentToTraining = ref(Boolean(props.user.settings.consent_to_training_at));
 
 const form = useForm({
     picked_up_by_default: props.user.settings.picked_up_by_default,
     recycled_by_default: props.user.settings.recycled_by_default,
     deposit_by_default: props.user.settings.deposit_by_default,
     litterbot_enabled: props.user.settings.litterbot_enabled,
-    consent_to_training: props.user.settings.consent_to_training,
+    consent_to_training_at: props.user.settings.consent_to_training_at,
 });
 
 
 const save = () => {
+    form.consent_to_training_at = consentToTraining.value
+        ? (form.consent_to_training_at ?? new Date().toISOString())
+        : null;
+
     form.post(route('user-settings.update'), {
         preserveScroll: true,
     });
@@ -102,8 +106,8 @@ const save = () => {
                 <InputError :message="form.errors.litterbot_enabled" class="mt-2" />
 
                 <ToggleInput
-                    id="consent_to_training"
-                    v-model="form.consent_to_training"
+                    id="consent_to_training_at"
+                    v-model="consentToTraining"
                     class="mt-4 block w-full"
                 >
                     <template #label>
@@ -114,7 +118,7 @@ const save = () => {
                         This helps make LitterBot more accurate for everyone.
                     </template>
                 </ToggleInput>
-                <InputError :message="form.errors.consent_to_training" class="mt-2" />
+                <InputError :message="form.errors.consent_to_training_at" class="mt-2" />
 
             </div>
         </template>
