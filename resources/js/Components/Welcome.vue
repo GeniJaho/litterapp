@@ -6,6 +6,15 @@ const page = usePage()
 
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
+const links = [
+    {title: "Who Are We", url: "https://litterapp.net/en/08_Who-Are-We/"},
+    {title: "Mission & Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
+    {title: "How It Works", url: "https://litterapp.net/en/01_How-It-Works/"},
+    {title: "The Science", url: "https://litterapp.net/en/09_The-Science/"},
+    {title: "Tagging Guide", url: "https://litterapp.net/en/04_Tagging-Guide/"},
+    {title: "Global Map", url: "https://globalmap.litterapp.net/"},
+]
+
 </script>
 
 <template>
@@ -34,6 +43,17 @@ const grafanaLink = computed(() => page.props.grafana.map_link)
                                 Start uploading <i class="fa-solid fa-arrow-right text-base pl-2"></i>
                             </button>
                         </Link>
+                    </div>
+                </div>
+
+                <div class="pt-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <a v-for="link in links" :key="link.url" :href="link.url" target="_blank"
+                           class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
+                            <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                {{ link.title }}
+                            </div>
+                        </a>
                     </div>
                 </div>
 
