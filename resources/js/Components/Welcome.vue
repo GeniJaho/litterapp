@@ -7,12 +7,12 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
 const links = [
-    {title: "Who Are We", url: "https://litterapp.net/en/08_Who-Are-We/"},
-    {title: "Mission & Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
-    {title: "How It Works", url: "https://litterapp.net/en/01_How-It-Works/"},
-    {title: "The Science", url: "https://litterapp.net/en/09_The-Science/"},
-    {title: "Tagging Guide", url: "https://litterapp.net/en/04_Tagging-Guide/"},
-    {title: "Global Map", url: "https://globalmap.litterapp.net/"},
+    { title: "Our mission and vision", url: "https://litterapp.net/docs/en/05_Mission-Vision/" },
+    { title: "Who are we", url: "https://litterapp.net/docs/en/08_Who-Are-We/" },
+    { title: "Create profile", url: "https://litterapp.net/docs/en/10_Profile/" },
+    { title: "Taking pictures", url: "https://litterapp.net/docs/en/20_Taking-Pictures/" },
+    { title: "Uploading pictures", url: "https://litterapp.net/docs/en/30_Uploading-Pictures/" },
+    { title: "Regular tagging", url: "https://litterapp.net/docs/en/40_Tagging-Pictures/" },
 ]
 
 </script>
@@ -46,17 +46,6 @@ const links = [
                     </div>
                 </div>
 
-                <div class="pt-12">
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <a v-for="link in links" :key="link.url" :href="link.url" target="_blank"
-                           class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
-                            <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
-                                {{ link.title }}
-                            </div>
-                        </a>
-                    </div>
-                </div>
-
                 <div class="pt-32 w-full">
                     <iframe class="w-full"
                             :src="grafanaLink"
@@ -65,6 +54,23 @@ const links = [
                             frameborder="0"
                     >
                     </iframe>
+                </div>
+
+                <div class="pt-12">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <a
+                            v-for="link in links"
+                            :key="link.url"
+                            :href="link.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group block rounded-lg border-2 border-darkBlue bg-white p-6 transition-colors duration-150 hover:bg-turqo focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 focus:ring-offset-mainWhite dark:border-mainWhite dark:bg-darkBlue/35 dark:hover:bg-turqo dark:focus:ring-offset-darkBlue"
+                        >
+                            <div class="text-center font-black tracking-widest text-darkBlue transition-colors duration-150 group-hover:text-darkBlue dark:text-mainWhite dark:group-hover:text-darkBlue">
+                                {{ link.title }}
+                            </div>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="flex flex-col items-center pt-24 pb-12 md:pt-32">
