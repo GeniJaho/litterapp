@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use Illuminate\Http\JsonResponse;
 
 class PhotoItemSuggestionsController extends Controller
 {
-    public function reject(PhotoItemSuggestion $photoItemSuggestion): JsonResponse
+    public function reject(PhotoSuggestion $photoSuggestion): JsonResponse
     {
-        if (auth()->id() !== $photoItemSuggestion->photo->user_id) {
+        if (auth()->id() !== $photoSuggestion->photo->user_id) {
             abort(404);
         }
 
-        $photoItemSuggestion->update(['is_accepted' => false]);
+        $photoSuggestion->update(['is_accepted' => false]);
 
         return response()->json();
     }

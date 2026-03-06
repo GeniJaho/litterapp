@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\Photos\ClassifiesPhoto;
-use App\Actions\Photos\GetItemFromPredictionAction;
 use App\Actions\Photos\GetRelevantTagShortcutAction;
-use App\DTO\PhotoItemPrediction;
-use App\Models\Item;
+use App\Actions\Photos\SuggestsPhotoTags;
+use App\DTO\PhotoSuggestionResult;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Http\JsonResponse;
@@ -17,8 +15,7 @@ class LitterBotController extends Controller
 {
     public function suggest(
         Photo $photo,
-        ClassifiesPhoto $action,
-        GetItemFromPredictionAction $getItemFromPredictionAction,
+        SuggestsPhotoTags $action,
         GetRelevantTagShortcutAction $getRelevantTagShortcutAction,
         #[CurrentUser] User $user
     ): JsonResponse {
@@ -30,37 +27,38 @@ class LitterBotController extends Controller
             abort(404);
         }
 
-        $existingSuggestion = $photo->photoItemSuggestions()->with('item')->first();
+        $existingSuggestion = $photo->photoSuggestions()->with(['item', 'brandTag', 'contentTag'])->first();
 
-        if ($existingSuggestion instanceof PhotoItemSuggestion) {
+        if ($existingSuggestion instanceof PhotoSuggestion) {
             return response()->json([
                 'suggestion' => $existingSuggestion,
                 'shortcut' => $getRelevantTagShortcutAction->run($user, $existingSuggestion->item_id),
             ]);
         }
 
-        $prediction = $action->run($photo);
+        $result = $action->run($photo);
 
-        if (! $prediction instanceof PhotoItemPrediction) {
+        if (! $result instanceof PhotoSuggestionResult) {
             return response()->json([
                 'error' => 'Failed to connect to LitterBot service',
             ], 422);
         }
 
-        $item = $getItemFromPredictionAction->run($prediction);
+        $attributes = $result->toSuggestionAttributes();
 
-        if (! $item instanceof Item || $photo->items()->where('item_id', $item->id)->exists()) {
+        if ($attributes === null) {
             return response()->json();
         }
 
-        $suggestion = $photo->photoItemSuggestions()->create([
-            'item_id' => $item->id,
-            'score' => $prediction->score,
-        ])->load('item');
+        if ($photo->items()->where('item_id', $attributes['item_id'])->exists()) {
+            return response()->json();
+        }
+
+        $suggestion = $photo->photoSuggestions()->create($attributes)->load(['item', 'brandTag', 'contentTag']);
 
         return response()->json([
             'suggestion' => $suggestion,
-            'shortcut' => $getRelevantTagShortcutAction->run($user, $item->id),
+            'shortcut' => $getRelevantTagShortcutAction->run($user, $attributes['item_id']),
         ]);
     }
 }

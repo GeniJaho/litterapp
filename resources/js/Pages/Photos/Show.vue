@@ -57,11 +57,11 @@ const getPhoto = () => {
         .then(response => {
             photo.value = response.data.photo;
 
-            if (photo.value.photo_item_suggestions.length) {
-                const firstSuggestion = photo.value.photo_item_suggestions[0];
+            if (photo.value.photo_suggestions.length) {
+                const firstSuggestion = photo.value.photo_suggestions[0];
                 const photoDoesNotHaveItem = photo.value.photo_items.findIndex(item => item.item_id === firstSuggestion.item_id) === -1;
 
-                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.score >= 80) {
+                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.item_score >= 50) {
                     suggestedItem.value = firstSuggestion;
 
                     if (tagShortcutsEnabled.value && !tagShortcut.value && firstSuggestion.shortcut) {
@@ -88,7 +88,7 @@ const suggestItem = () => {
 
     axios.get(route('litterbot.suggest', {photo: props.photoId}))
         .then(response => {
-            suggestedItem.value = response.data.suggestion?.id && response.data.suggestion?.score >= 80 ? response.data.suggestion : null;
+            suggestedItem.value = response.data.suggestion?.id && response.data.suggestion?.item_score >= 50 ? response.data.suggestion : null;
 
             if (tagShortcutsEnabled.value && response.data?.shortcut) {
                 suggestedTagShortcut.value = response.data.shortcut;
@@ -128,7 +128,7 @@ const addSuggestedItem = () => {
 };
 
 const rejectSuggestedItem = () => {
-    axios.post(`/photo-item-suggestions/${suggestedItem.value.id}/reject`)
+    axios.post(`/photo-suggestions/${suggestedItem.value.id}/reject`)
         .then(() => {
             suggestedItem.value = null;
             getPhoto();

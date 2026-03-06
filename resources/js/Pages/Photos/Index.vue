@@ -315,7 +315,7 @@ const exportData = (format) => {
                                     <div class="absolute top-2 right-2 flex gap-2">
                                         <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                         <TaggedIcon v-if="photo.items_exists"/>
-                                        <MagicWandIcon v-if="photo.photo_item_suggestions_exists"/>
+                                        <MagicWandIcon v-if="photo.photo_suggestions_exists"/>
                                     </div>
 
                                     <div

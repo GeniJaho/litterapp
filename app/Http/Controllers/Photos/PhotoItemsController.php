@@ -7,6 +7,7 @@ use App\Http\Requests\Photos\StorePhotoItemRequest;
 use App\Http\Requests\Photos\UpdatePhotoItemRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
+use App\Models\PhotoSuggestion;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -30,9 +31,33 @@ class PhotoItemsController extends Controller
             ]);
 
             if ($request->suggestion_id) {
-                $photo->photoItemSuggestions()
+                $suggestion = $photo->photoSuggestions()
                     ->where('id', $request->suggestion_id)
-                    ->update(['is_accepted' => true]);
+                    ->first();
+
+                if ($suggestion instanceof PhotoSuggestion) {
+                    $suggestion->update(['is_accepted' => true]);
+
+                    $tagIds = [];
+                    if ($suggestion->brand_tag_id && $suggestion->brand_score >= 50) {
+                        $tagIds[] = $suggestion->brand_tag_id;
+                    }
+
+                    if ($suggestion->content_tag_id && $suggestion->content_score >= 50) {
+                        $tagIds[] = $suggestion->content_tag_id;
+                    }
+
+                    if ($tagIds !== []) {
+                        $photoItem = $photo->photoItems()
+                            ->where('item_id', $suggestion->item_id)
+                            ->orderByDesc('id')
+                            ->first();
+
+                        if ($photoItem instanceof PhotoItem) {
+                            $photoItem->tags()->syncWithoutDetaching($tagIds);
+                        }
+                    }
+                }
             }
         });
 

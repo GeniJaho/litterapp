@@ -2,7 +2,7 @@
 
 namespace App\Actions\Photos;
 
-use App\DTO\PhotoItemPrediction;
+use App\DTO\PhotoSuggestionResult;
 use App\Models\AppSetting;
 use App\Models\Photo;
 use Illuminate\Container\Attributes\Config;
@@ -10,9 +10,9 @@ use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
-class ClassifyPhotoAction implements ClassifiesPhoto
+class SuggestPhotoTagsAction implements SuggestsPhotoTags
 {
-    public const LITTERBOT_URL_CACHE_KEY = 'classify_photo_action_litterbot_url';
+    public const LITTERBOT_URL_CACHE_KEY = 'suggest_photo_tags_action_litterbot_url';
 
     public function __construct(
         #[Config('services.litterbot.url')] protected string $litterBotUrl,
@@ -21,14 +21,14 @@ class ClassifyPhotoAction implements ClassifiesPhoto
     /**
      * @throws ConnectionException
      */
-    public function run(Photo $photo): ?PhotoItemPrediction
+    public function run(Photo $photo): ?PhotoSuggestionResult
     {
-        $response = Http::timeout(5)->post("{$this->getLitterBotUrl()}/predict", [
-            'image_path' => $photo->full_path,
+        $response = Http::timeout(15)->post("{$this->getLitterBotUrl()}/predict", [
+            'photo_url' => $photo->full_path,
         ]);
 
         if ($response->failed()) {
-            Log::error('Failed to get image prediction', [
+            Log::error('Failed to get photo suggestions', [
                 'photo_id' => $photo->id,
                 'response' => $response->body(),
             ]);
@@ -36,12 +36,16 @@ class ClassifyPhotoAction implements ClassifiesPhoto
             return null;
         }
 
-        /** @var string $className */
-        $className = $response->json('class_name');
-        /** @var float $score */
-        $score = $response->json('score');
+        Log::info('Received photo suggestions from LitterBot', [
+            'photo_id' => $photo->id,
+            'response' => $response->json(),
+        ]);
 
-        return new PhotoItemPrediction($className, $score);
+        return new PhotoSuggestionResult(
+            items: $response->json('items', []),
+            brands: $response->json('brands', []),
+            content: $response->json('content', []),
+        );
     }
 
     private function getLitterBotUrl(): string

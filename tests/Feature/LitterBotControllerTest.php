@@ -1,22 +1,26 @@
 <?php
 
-use App\Actions\Photos\ClassifiesPhoto;
-use App\DTO\PhotoItemPrediction;
+use App\Actions\Photos\SuggestsPhotoTags;
+use App\DTO\PhotoSuggestionResult;
 use App\DTO\UserSettings;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
-use Tests\Doubles\FakeClassifyPhotoAction;
+use Tests\Doubles\FakeSuggestPhotoTagsAction;
 
 test('it suggests an item for a photo', function (): void {
     $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
     $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
-    $item = Item::factory()->create(['name' => 'Bottle']);
+    $item = Item::factory()->create();
 
-    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
-        new PhotoItemPrediction('bottle', 0.95)
+    $this->swap(SuggestsPhotoTags::class, (new FakeSuggestPhotoTagsAction)->shouldReturnResult(
+        new PhotoSuggestionResult(
+            items: [['id' => $item->id, 'name' => $item->name, 'confidence' => 0.95, 'count' => 10]],
+            brands: [],
+            content: [],
+        )
     ));
 
     $response = $this->getJson(route('litterbot.suggest', $photo));
@@ -26,7 +30,8 @@ test('it suggests an item for a photo', function (): void {
         ->has('suggestion.id')
         ->where('suggestion.item.id', $item->id)
         ->where('suggestion.item.name', $item->name)
-        ->where('suggestion.score', 0.95)
+        ->where('suggestion.item_score', 95)
+        ->where('suggestion.item_count', 10)
         ->etc()
     );
 });
@@ -35,10 +40,11 @@ test('it returns existing suggestion if available', function (): void {
     $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
     $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
-    $item = Item::factory()->create(['name' => 'Bottle']);
-    $suggestion = $photo->photoItemSuggestions()->create([
+    $item = Item::factory()->create();
+    $photo->photoSuggestions()->create([
         'item_id' => $item->id,
-        'score' => 0.95,
+        'item_score' => 95,
+        'item_count' => 10,
     ]);
 
     $response = $this->getJson(route('litterbot.suggest', $photo));
@@ -48,17 +54,17 @@ test('it returns existing suggestion if available', function (): void {
         ->has('suggestion.id')
         ->where('suggestion.item.id', $item->id)
         ->where('suggestion.item.name', $item->name)
-        ->where('suggestion.score', 0.95)
+        ->where('suggestion.item_score', 95)
         ->etc()
     );
 });
 
-test('it returns error when classification fails', function (): void {
+test('it returns error when action fails', function (): void {
     $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
     $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
 
-    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldFail());
+    $this->swap(SuggestsPhotoTags::class, (new FakeSuggestPhotoTagsAction)->shouldFail());
 
     $response = $this->getJson(route('litterbot.suggest', $photo));
 
@@ -66,30 +72,19 @@ test('it returns error when classification fails', function (): void {
     $response->assertJson(['error' => 'Failed to connect to LitterBot service']);
 });
 
-test('it returns empty response when item not found', function (): void {
-    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
-    $this->actingAs($user);
-    $photo = Photo::factory()->for($user)->create();
-
-    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
-        new PhotoItemPrediction('unknown-item', 0.95)
-    ));
-
-    $response = $this->getJson(route('litterbot.suggest', $photo));
-
-    $response->assertOk();
-    $response->assertJson([]);
-});
-
 test('it returns empty response when item already exists in photo', function (): void {
     $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
     $this->actingAs($user);
     $photo = Photo::factory()->for($user)->create();
-    $item = Item::factory()->create(['name' => 'Bottle']);
+    $item = Item::factory()->create();
     $photo->items()->attach($item);
 
-    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
-        new PhotoItemPrediction('bottle', 0.95)
+    $this->swap(SuggestsPhotoTags::class, (new FakeSuggestPhotoTagsAction)->shouldReturnResult(
+        new PhotoSuggestionResult(
+            items: [['id' => $item->id, 'name' => $item->name, 'confidence' => 0.95, 'count' => 10]],
+            brands: [],
+            content: [],
+        )
     ));
 
     $response = $this->getJson(route('litterbot.suggest', $photo));

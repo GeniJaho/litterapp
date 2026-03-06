@@ -2,7 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
@@ -290,12 +290,12 @@ test('adding items to photos in bulk updates matching item suggestions', functio
     $otherItem = Item::factory()->create();
 
     // Suggestions that should be updated (is_accepted is null, matches item and photos)
-    $suggestionA = PhotoItemSuggestion::factory()->create([
+    $suggestionA = PhotoSuggestion::factory()->create([
         'photo_id' => $photoA->id,
         'item_id' => $itemToAdd->id,
         'is_accepted' => null,
     ]);
-    $suggestionB = PhotoItemSuggestion::factory()->create([
+    $suggestionB = PhotoSuggestion::factory()->create([
         'photo_id' => $photoB->id,
         'item_id' => $itemToAdd->id,
         'is_accepted' => null,
@@ -303,25 +303,25 @@ test('adding items to photos in bulk updates matching item suggestions', functio
 
     // Suggestions that should NOT be updated
     // Already accepted suggestion
-    $alreadyAccepted = PhotoItemSuggestion::factory()->create([
+    $alreadyAccepted = PhotoSuggestion::factory()->create([
         'photo_id' => $photoA->id,
         'item_id' => $itemToAdd->id,
         'is_accepted' => true,
     ]);
     // Already rejected suggestion
-    $alreadyRejected = PhotoItemSuggestion::factory()->create([
+    $alreadyRejected = PhotoSuggestion::factory()->create([
         'photo_id' => $photoB->id,
         'item_id' => $itemToAdd->id,
         'is_accepted' => false,
     ]);
     // Different item
-    $differentItem = PhotoItemSuggestion::factory()->create([
+    $differentItem = PhotoSuggestion::factory()->create([
         'photo_id' => $photoA->id,
         'item_id' => $otherItem->id,
         'is_accepted' => null,
     ]);
     // Different photo (not in the bulk operation)
-    $differentPhoto = PhotoItemSuggestion::factory()->create([
+    $differentPhoto = PhotoSuggestion::factory()->create([
         'photo_id' => $photoC->id,
         'item_id' => $itemToAdd->id,
         'is_accepted' => null,

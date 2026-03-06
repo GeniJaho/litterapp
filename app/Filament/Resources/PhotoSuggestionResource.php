@@ -2,8 +2,8 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\PhotoItemSuggestionResource\Pages\ListPhotoItemSuggestions;
-use App\Models\PhotoItemSuggestion;
+use App\Filament\Resources\PhotoSuggestionResource\Pages\ListPhotoSuggestions;
+use App\Models\PhotoSuggestion;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
@@ -16,13 +16,13 @@ use Filament\Tables\Filters\TernaryFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
-class PhotoItemSuggestionResource extends Resource
+class PhotoSuggestionResource extends Resource
 {
-    protected static ?string $model = PhotoItemSuggestion::class;
+    protected static ?string $model = PhotoSuggestion::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-sparkles';
 
-    protected static ?string $modelLabel = 'Item Suggestions';
+    protected static ?string $modelLabel = 'Suggestions';
 
     protected static ?int $navigationSort = 6;
 
@@ -39,11 +39,21 @@ class PhotoItemSuggestionResource extends Resource
                 ImageColumn::make('photo.full_path')
                     ->label('Photo'),
                 TextColumn::make('item.name')
-                    ->numeric()
                     ->sortable(),
-                TextColumn::make('score')
-                    ->numeric()
+                TextColumn::make('item_score')
+                    ->label('Item Score')
                     ->sortable(),
+                TextColumn::make('item_count')
+                    ->label('Item Count')
+                    ->sortable(),
+                TextColumn::make('brandTag.name')
+                    ->label('Brand'),
+                TextColumn::make('brand_score')
+                    ->label('Brand Score'),
+                TextColumn::make('contentTag.name')
+                    ->label('Content'),
+                TextColumn::make('content_score')
+                    ->label('Content Score'),
                 IconColumn::make('is_accepted')
                     ->boolean(),
             ])
@@ -57,19 +67,19 @@ class PhotoItemSuggestionResource extends Resource
                     ->relationship('item', 'name')
                     ->multiple()
                     ->preload(),
-                Filter::make('score')
+                Filter::make('item_score')
                     ->form([
                         TextInput::make('min_score')
-                            ->label('Minimum score')
+                            ->label('Minimum item score')
                             ->numeric()
                             ->minValue(0)
                             ->maxValue(100)
-                            ->placeholder('e.g. 80'),
+                            ->placeholder('e.g. 50'),
                     ])
                     ->query(fn (Builder $query, array $data): Builder => $query
                         ->when(
                             $data['min_score'],
-                            fn (Builder $query, string $score): Builder => $query->where('score', '>=', $score),
+                            fn (Builder $query, string $score): Builder => $query->where('item_score', '>=', $score),
                         )),
                 TernaryFilter::make('is_accepted')
                     ->label('Status')
@@ -105,7 +115,7 @@ class PhotoItemSuggestionResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => ListPhotoItemSuggestions::route('/'),
+            'index' => ListPhotoSuggestions::route('/'),
         ];
     }
 }

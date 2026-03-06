@@ -2,10 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Actions\Photos\ClassifiesPhoto;
-use App\Actions\Photos\GetItemFromPredictionAction;
-use App\DTO\PhotoItemPrediction;
-use App\Models\Item;
+use App\Actions\Photos\SuggestsPhotoTags;
+use App\DTO\PhotoSuggestionResult;
 use App\Models\Photo;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -27,28 +25,25 @@ class SuggestPhotoItem implements ShouldQueue
 
     public function __construct(public readonly Photo $photo) {}
 
-    public function handle(
-        ClassifiesPhoto $classifyPhotoAction,
-        GetItemFromPredictionAction $getItemFromPredictionAction,
-    ): int {
-        $prediction = $classifyPhotoAction->run($this->photo);
+    public function handle(SuggestsPhotoTags $action): int
+    {
+        $result = $action->run($this->photo);
 
-        if (! $prediction instanceof PhotoItemPrediction) {
+        if (! $result instanceof PhotoSuggestionResult) {
             return 1;
         }
 
-        $item = $getItemFromPredictionAction->run($prediction);
+        $attributes = $result->toSuggestionAttributes();
 
-        if (! $item instanceof Item) {
+        if ($attributes === null) {
             return 1;
         }
 
-        if ($this->photo->items()->where('item_id', $item->id)->doesntExist()) {
-            $this->photo->photoItemSuggestions()->create([
-                'item_id' => $item->id,
-                'score' => $prediction->score,
-            ]);
+        if ($this->photo->items()->where('item_id', $attributes['item_id'])->exists()) {
+            return 0;
         }
+
+        $this->photo->photoSuggestions()->create($attributes);
 
         return 0;
     }

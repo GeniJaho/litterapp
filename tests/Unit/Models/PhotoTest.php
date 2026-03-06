@@ -14,16 +14,16 @@ test('a photo has a full path', function (): void {
     expect($photo->full_path)->toBe(Storage::url('photos/photo.jpg'));
 });
 
-test('a photo has many item suggestions', function (): void {
+test('a photo has many suggestions', function (): void {
     $photo = Photo::factory()->create();
     $itemA = Item::factory()->create();
     $itemB = Item::factory()->create();
 
-    $photo->photoItemSuggestions()->createMany([
-        ['item_id' => $itemA->id, 'score' => 0.95],
-        ['item_id' => $itemB->id, 'score' => 0.85],
+    $photo->photoSuggestions()->createMany([
+        ['item_id' => $itemA->id, 'item_score' => 95, 'item_count' => 10],
+        ['item_id' => $itemB->id, 'item_score' => 85, 'item_count' => 5],
     ]);
 
-    expect($photo->photoItemSuggestions)->toHaveCount(2)
-        ->and($photo->photoItemSuggestions->first()->score)->toBe(0.95);
+    expect($photo->photoSuggestions)->toHaveCount(2)
+        ->and($photo->photoSuggestions->first()->item_score)->toBe(95);
 });

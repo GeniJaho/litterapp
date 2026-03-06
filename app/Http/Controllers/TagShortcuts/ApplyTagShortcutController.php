@@ -47,7 +47,7 @@ class ApplyTagShortcutController extends Controller
             }
 
             if ($request->suggestion_id) {
-                $photo->photoItemSuggestions()
+                $photo->photoSuggestions()
                     ->where('id', $request->suggestion_id)
                     ->update(['is_accepted' => true]);
             }

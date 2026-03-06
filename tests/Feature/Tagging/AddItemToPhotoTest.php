@@ -2,6 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
+use App\Models\Tag;
 use App\Models\User;
 
 test('a user can add items to a photo', function (): void {
@@ -104,13 +105,15 @@ test('a user can add suggested items to a photo', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
-    $photoItemSuggestion = $photo->photoItemSuggestions()->create([
+    $photoSuggestion = $photo->photoSuggestions()->create([
         'item_id' => $item->id,
+        'item_score' => 95,
+        'item_count' => 10,
     ]);
 
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
         'item_ids' => [$item->id],
-        'suggestion_id' => $photoItemSuggestion->id,
+        'suggestion_id' => $photoSuggestion->id,
     ]);
 
     $response->assertOk();
@@ -119,7 +122,72 @@ test('a user can add suggested items to a photo', function (): void {
         'photo_id' => $photo->id,
         'item_id' => $item->id,
     ]);
-    expect($photoItemSuggestion->fresh()->is_accepted)->toBeTrue();
+    expect($photoSuggestion->fresh()->is_accepted)->toBeTrue();
+});
+
+test('accepting a suggestion attaches above-threshold brand and content tags', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+    $brandTag = Tag::factory()->create();
+    $contentTag = Tag::factory()->create();
+
+    $photoSuggestion = $photo->photoSuggestions()->create([
+        'item_id' => $item->id,
+        'item_score' => 95,
+        'item_count' => 10,
+        'brand_tag_id' => $brandTag->id,
+        'brand_score' => 70,
+        'brand_count' => 5,
+        'content_tag_id' => $contentTag->id,
+        'content_score' => 60,
+        'content_count' => 3,
+    ]);
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_ids' => [$item->id],
+        'suggestion_id' => $photoSuggestion->id,
+    ]);
+
+    $response->assertOk();
+
+    expect($photoSuggestion->fresh()->is_accepted)->toBeTrue();
+
+    $photoItem = $photo->photoItems()->where('item_id', $item->id)->first();
+    expect($photoItem->tags)->toHaveCount(2);
+    expect($photoItem->tags->pluck('id')->toArray())->toContain($brandTag->id, $contentTag->id);
+});
+
+test('accepting a suggestion does not attach below-threshold tags', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    $item = Item::factory()->create();
+    $brandTag = Tag::factory()->create();
+    $contentTag = Tag::factory()->create();
+
+    $photoSuggestion = $photo->photoSuggestions()->create([
+        'item_id' => $item->id,
+        'item_score' => 95,
+        'item_count' => 10,
+        'brand_tag_id' => $brandTag->id,
+        'brand_score' => 49,
+        'brand_count' => 2,
+        'content_tag_id' => $contentTag->id,
+        'content_score' => 30,
+        'content_count' => 1,
+    ]);
+
+    $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
+        'item_ids' => [$item->id],
+        'suggestion_id' => $photoSuggestion->id,
+    ]);
+
+    $response->assertOk();
+
+    expect($photoSuggestion->fresh()->is_accepted)->toBeTrue();
+
+    $photoItem = $photo->photoItems()->where('item_id', $item->id)->first();
+    expect($photoItem->tags)->toHaveCount(0);
 });
 
 test('the request is validated', function (): void {

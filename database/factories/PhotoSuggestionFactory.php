@@ -4,17 +4,15 @@ namespace Database\Factories;
 
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<PhotoItemSuggestion>
+ * @extends Factory<PhotoSuggestion>
  */
-class PhotoItemSuggestionFactory extends Factory
+class PhotoSuggestionFactory extends Factory
 {
     /**
-     * Define the model's default state.
-     *
      * @return array<string, mixed>
      */
     public function definition(): array
@@ -22,7 +20,8 @@ class PhotoItemSuggestionFactory extends Factory
         return [
             'photo_id' => Photo::factory(),
             'item_id' => Item::factory(),
-            'score' => fake()->randomFloat(2, 0, 1),
+            'item_score' => fake()->numberBetween(0, 100),
+            'item_count' => fake()->numberBetween(1, 50),
             'is_accepted' => null,
         ];
     }
