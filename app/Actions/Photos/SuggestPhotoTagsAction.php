@@ -41,10 +41,17 @@ class SuggestPhotoTagsAction implements SuggestsPhotoTags
             'response' => $response->json(),
         ]);
 
+        /** @var array<int, array{id: int, name: string, confidence: float, count: int}> $items */
+        $items = $response->json('items', []);
+        /** @var array<int, array{id: int, name: string, confidence: float, count: int}> $brands */
+        $brands = $response->json('brands', []);
+        /** @var array<int, array{id: int, name: string, confidence: float, count: int}> $content */
+        $content = $response->json('content', []);
+
         return new PhotoSuggestionResult(
-            items: $response->json('items', []),
-            brands: $response->json('brands', []),
-            content: $response->json('content', []),
+            items: $items,
+            brands: $brands,
+            content: $content,
         );
     }
 

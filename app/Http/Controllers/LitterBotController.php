@@ -58,7 +58,7 @@ class LitterBotController extends Controller
 
         return response()->json([
             'suggestion' => $suggestion,
-            'shortcut' => $getRelevantTagShortcutAction->run($user, $attributes['item_id']),
+            'shortcut' => $getRelevantTagShortcutAction->run($user, (int) $attributes['item_id']),
         ]);
     }
 }
