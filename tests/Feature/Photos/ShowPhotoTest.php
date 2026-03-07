@@ -3,8 +3,8 @@
 use App\DTO\PhotoFilters;
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
 use App\Models\PhotoItemTag;
+use App\Models\PhotoSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\TagType;
@@ -293,10 +293,11 @@ test('a user can see a photo', function (): void {
         'photo_item_id' => $photo->photoItems()->first()->id,
         'tag_id' => $tag->id,
     ]);
-    $photoItemSuggestion = PhotoItemSuggestion::factory()->create([
+    $photoSuggestion = PhotoSuggestion::factory()->create([
         'photo_id' => $photo->id,
         'item_id' => $item->id,
-        'score' => 0.95,
+        'item_score' => 95,
+        'item_count' => 10,
     ]);
 
     $response = $this->getJson(route('photos.show', $photo));
@@ -315,12 +316,12 @@ test('a user can see a photo', function (): void {
         ->has('photo.photo_items.0.recycled')
         ->has('photo.photo_items.0.deposit')
         ->has('photo.photo_items.0.quantity')
-        ->has('photo.photo_item_suggestions', 1)
-        ->where('photo.photo_item_suggestions.0.score', $photoItemSuggestion->score)
-        ->where('photo.photo_item_suggestions.0.id', $photoItemSuggestion->id)
-        ->where('photo.photo_item_suggestions.0.item.id', $item->id)
-        ->where('photo.photo_item_suggestions.0.item.name', $item->name)
-        ->where('photo.photo_item_suggestions.0.shortcut', null)
+        ->has('photo.photo_suggestions', 1)
+        ->where('photo.photo_suggestions.0.item_score', $photoSuggestion->item_score)
+        ->where('photo.photo_suggestions.0.id', $photoSuggestion->id)
+        ->where('photo.photo_suggestions.0.item.id', $item->id)
+        ->where('photo.photo_suggestions.0.item.name', $item->name)
+        ->where('photo.photo_suggestions.0.shortcut', null)
         ->etc()
     );
 });

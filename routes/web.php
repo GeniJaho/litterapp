@@ -6,8 +6,6 @@ use App\Http\Controllers\Auth\TwitterController;
 use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HomeController;
-use App\Http\Controllers\LitterBotController;
-use App\Http\Controllers\PhotoItemSuggestionsController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\ExportPhotosController;
@@ -15,6 +13,7 @@ use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
 use App\Http\Controllers\Photos\UploadPhotosController;
+use App\Http\Controllers\PhotoSuggestionsController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
@@ -75,11 +74,9 @@ Route::middleware([
 
     Route::post('/photo-items/{photoItem}/copy', CopyPhotoItemController::class);
 
-    Route::post('/photo-item-suggestions/{photoItemSuggestion}/reject', [PhotoItemSuggestionsController::class, 'reject'])->name('photo-item-suggestions.reject');
+    Route::post('/photo-suggestions/{photoSuggestion}/reject', [PhotoSuggestionsController::class, 'reject'])->name('photo-suggestions.reject');
 
     Route::post('/settings', [UserSettingsController::class, 'update'])->name('user-settings.update');
-
-    Route::get('/litterbot/suggest/{photo}', [LitterBotController::class, 'suggest'])->name('litterbot.suggest');
 
     Route::get('/user/tag-shortcuts', [TagShortcutsController::class, 'index'])->name('tag-shortcuts.index');
     Route::post('/user/tag-shortcuts', [TagShortcutsController::class, 'store'])->name('tag-shortcuts.store');

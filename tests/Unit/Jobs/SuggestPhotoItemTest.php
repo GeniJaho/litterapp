@@ -1,83 +1,106 @@
 <?php
 
-use App\Actions\Photos\ClassifiesPhoto;
-use App\Actions\Photos\GetItemFromPredictionAction;
-use App\DTO\PhotoItemPrediction;
+use App\Actions\Photos\SuggestsPhotoTags;
+use App\DTO\PhotoSuggestionResult;
 use App\Jobs\SuggestPhotoItem;
 use App\Models\Item;
 use App\Models\Photo;
-use Tests\Doubles\FakeClassifyPhotoAction;
+use App\Models\Tag;
+use Tests\Doubles\FakeSuggestPhotoTagsAction;
 
 beforeEach(function (): void {
     $this->photo = Photo::factory()->create();
-    $this->item = Item::factory()->create(['name' => 'Bottle']);
+    $this->item = Item::factory()->create();
 
-    $this->fakeClassifyPhotoAction = app(FakeClassifyPhotoAction::class);
-    $this->swap(ClassifiesPhoto::class, $this->fakeClassifyPhotoAction);
+    $this->fakeAction = app(FakeSuggestPhotoTagsAction::class);
+    $this->swap(SuggestsPhotoTags::class, $this->fakeAction);
 });
 
-test('it creates a photo item suggestion when successful', function (): void {
-    $this->fakeClassifyPhotoAction->shouldReturnPrediction(
-        new PhotoItemPrediction('bottle', 0.95)
-    );
+test('it creates a photo suggestion when successful', function (): void {
+    $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
+        items: [['id' => $this->item->id, 'name' => $this->item->name, 'confidence' => 0.95, 'count' => 10]],
+        brands: [],
+        content: [],
+    ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle(
-        $this->fakeClassifyPhotoAction,
-        app(GetItemFromPredictionAction::class)
-    );
+    $result = $job->handle($this->fakeAction);
 
     expect($result)->toBe(0);
-    $this->assertDatabaseHas('photo_item_suggestions', [
+    $this->assertDatabaseHas('photo_suggestions', [
         'photo_id' => $this->photo->id,
         'item_id' => $this->item->id,
-        'score' => 0.95,
+        'item_score' => 95,
+        'item_count' => 10,
     ]);
 });
 
-test('it returns failure code when classification fails', function (): void {
-    $this->fakeClassifyPhotoAction->shouldFail();
+test('it creates a photo suggestion with brand and content tags', function (): void {
+    $brandTag = Tag::factory()->create();
+    $contentTag = Tag::factory()->create();
+
+    $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
+        items: [['id' => $this->item->id, 'name' => $this->item->name, 'confidence' => 0.85, 'count' => 8]],
+        brands: [['id' => $brandTag->id, 'name' => $brandTag->name, 'confidence' => 0.70, 'count' => 5]],
+        content: [['id' => $contentTag->id, 'name' => $contentTag->name, 'confidence' => 0.60, 'count' => 3]],
+    ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle(
-        $this->fakeClassifyPhotoAction,
-        app(GetItemFromPredictionAction::class)
-    );
-
-    expect($result)->toBe(1);
-    $this->assertDatabaseMissing('photo_item_suggestions', ['photo_id' => $this->photo->id]);
-});
-
-test('it returns failure code when item not found', function (): void {
-    $this->fakeClassifyPhotoAction->shouldReturnPrediction(
-        new PhotoItemPrediction('unknown-item', 0.95)
-    );
-
-    $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle(
-        $this->fakeClassifyPhotoAction,
-        app(GetItemFromPredictionAction::class)
-    );
-
-    expect($result)->toBe(1);
-    $this->assertDatabaseMissing('photo_item_suggestions', ['photo_id' => $this->photo->id]);
-});
-
-test('it does not create suggestion when item already exists in photo', function (): void {
-    $this->photo->items()->attach($this->item);
-
-    $this->fakeClassifyPhotoAction->shouldReturnPrediction(
-        new PhotoItemPrediction('bottle', 0.95)
-    );
-
-    $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle(
-        $this->fakeClassifyPhotoAction,
-        app(GetItemFromPredictionAction::class)
-    );
+    $result = $job->handle($this->fakeAction);
 
     expect($result)->toBe(0);
-    $this->assertDatabaseMissing('photo_item_suggestions', [
+    $this->assertDatabaseHas('photo_suggestions', [
+        'photo_id' => $this->photo->id,
+        'item_id' => $this->item->id,
+        'item_score' => 85,
+        'item_count' => 8,
+        'brand_tag_id' => $brandTag->id,
+        'brand_score' => 70,
+        'brand_count' => 5,
+        'content_tag_id' => $contentTag->id,
+        'content_score' => 60,
+        'content_count' => 3,
+    ]);
+});
+
+test('it returns failure code when action fails', function (): void {
+    $this->fakeAction->shouldFail();
+
+    $job = new SuggestPhotoItem($this->photo);
+    $result = $job->handle($this->fakeAction);
+
+    expect($result)->toBe(1);
+    $this->assertDatabaseMissing('photo_suggestions', ['photo_id' => $this->photo->id]);
+});
+
+test('it returns failure code when no items returned', function (): void {
+    $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
+        items: [],
+        brands: [],
+        content: [],
+    ));
+
+    $job = new SuggestPhotoItem($this->photo);
+    $result = $job->handle($this->fakeAction);
+
+    expect($result)->toBe(1);
+    $this->assertDatabaseMissing('photo_suggestions', ['photo_id' => $this->photo->id]);
+});
+
+test('it does not create suggestion when item already exists on photo', function (): void {
+    $this->photo->items()->attach($this->item);
+
+    $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
+        items: [['id' => $this->item->id, 'name' => $this->item->name, 'confidence' => 0.95, 'count' => 10]],
+        brands: [],
+        content: [],
+    ));
+
+    $job = new SuggestPhotoItem($this->photo);
+    $result = $job->handle($this->fakeAction);
+
+    expect($result)->toBe(0);
+    $this->assertDatabaseMissing('photo_suggestions', [
         'photo_id' => $this->photo->id,
         'item_id' => $this->item->id,
     ]);

@@ -1,3 +1,22 @@
+# Project-Specific Instructions
+
+## Code Quality Gates
+
+- Type coverage must be 100%. Verify with: `./vendor/bin/pest --type-coverage --min=100`
+- Run `composer qa` before finalizing any PHP changes.
+- Run relevant tests with `php artisan test --compact` after changes.
+
+## PHP Type Hints
+
+- All closure parameters must have explicit type hints — Pest type-coverage enforces this.
+- Use `Illuminate\Database\Query\Builder` for query builder closures: `fn (Builder $q) => ...`
+- Use `\stdClass` for raw DB query result rows (e.g., in `->map(fn (\stdClass $row) => ...)`).
+- When fixing type coverage, check every `fn ($var)` closure in the file — they all need types.
+
+## DB Facade Usage
+
+- `DB::query()` and `DB::table()` are acceptable for complex reporting/metrics queries that don't map to a single Eloquent model (e.g., aggregate stats, cross-table counts). Prefer Eloquent for standard CRUD operations.
+
 <laravel-boost-guidelines>
 === foundation rules ===
 

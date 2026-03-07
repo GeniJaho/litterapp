@@ -2,7 +2,7 @@
 
 use App\Models\Item;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\User;
@@ -16,7 +16,7 @@ test('a user can apply a tag shortcut to a photo', function (): void {
     $photo = Photo::factory()->create(['user_id' => $user->id]);
     $item = Item::factory()->create();
     $tag = Tag::factory()->create();
-    $photoItemSuggestion = PhotoItemSuggestion::factory()->create([
+    $photoItemSuggestion = PhotoSuggestion::factory()->create([
         'photo_id' => $photo->id,
         'item_id' => $item->id,
         'is_accepted' => null,

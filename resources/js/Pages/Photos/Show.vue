@@ -2,7 +2,7 @@
 import AppLayout from '@/Layouts/AppLayout.vue';
 import {onMounted, onUnmounted, ref, watch} from "vue";
 import PivotItem from "@/Pages/Photos/Partials/PivotItem.vue";
-import {Link, router, usePage} from "@inertiajs/vue3";
+import {Link, router} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import debounce from 'lodash.debounce';
 import TagBox from "@/Components/TagBox.vue";
@@ -30,7 +30,6 @@ const props = defineProps({
     tagShortcuts: Array,
 });
 
-const page = usePage();
 const photo = ref(null);
 const suggestedItem = ref(null);
 const suggestedTagShortcut = ref(null);
@@ -57,11 +56,11 @@ const getPhoto = () => {
         .then(response => {
             photo.value = response.data.photo;
 
-            if (photo.value.photo_item_suggestions.length) {
-                const firstSuggestion = photo.value.photo_item_suggestions[0];
+            if (photo.value.photo_suggestions.length) {
+                const firstSuggestion = photo.value.photo_suggestions[0];
                 const photoDoesNotHaveItem = photo.value.photo_items.findIndex(item => item.item_id === firstSuggestion.item_id) === -1;
 
-                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.score >= 80) {
+                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.item_score >= 50) {
                     suggestedItem.value = firstSuggestion;
 
                     if (tagShortcutsEnabled.value && !tagShortcut.value && firstSuggestion.shortcut) {
@@ -71,27 +70,9 @@ const getPhoto = () => {
                     suggestedItem.value = null;
                     suggestedTagShortcut.value = null;
                 }
-            } else if (! photo.value.photo_items.length) {
-                suggestItem();
-            }
-        })
-        .catch(error => {
-            console.log(error);
-        })
-}
-
-
-const suggestItem = () => {
-    if (! page.props.auth.user.settings?.litterbot_enabled) {
-        return;
-    }
-
-    axios.get(route('litterbot.suggest', {photo: props.photoId}))
-        .then(response => {
-            suggestedItem.value = response.data.suggestion?.id && response.data.suggestion?.score >= 80 ? response.data.suggestion : null;
-
-            if (tagShortcutsEnabled.value && response.data?.shortcut) {
-                suggestedTagShortcut.value = response.data.shortcut;
+            } else {
+                suggestedItem.value = null;
+                suggestedTagShortcut.value = null;
             }
         })
         .catch(error => {
@@ -128,7 +109,7 @@ const addSuggestedItem = () => {
 };
 
 const rejectSuggestedItem = () => {
-    axios.post(`/photo-item-suggestions/${suggestedItem.value.id}/reject`)
+    axios.post(`/photo-suggestions/${suggestedItem.value.id}/reject`)
         .then(() => {
             suggestedItem.value = null;
             getPhoto();

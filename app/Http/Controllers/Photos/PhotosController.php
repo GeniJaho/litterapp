@@ -10,7 +10,7 @@ use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -104,10 +104,12 @@ class PhotosController extends Controller
                     ->with('item:id,name')
                     ->with('tags:id,name')
                     ->orderByDesc('id'),
-                'photoItemSuggestions.item:id,name',
+                'photoSuggestions.item:id,name',
+                'photoSuggestions.brandTag:id,name',
+                'photoSuggestions.contentTag:id,name',
             ]);
 
-        $photo->photoItemSuggestions->each(fn (PhotoItemSuggestion $suggestion) => $suggestion->setAttribute(
+        $photo->photoSuggestions->each(fn (PhotoSuggestion $suggestion) => $suggestion->setAttribute(
             'shortcut',
             $getRelevantTagShortcutAction->run($user, $suggestion->item_id))
         );
