@@ -43,9 +43,22 @@ class PhotoSuggestionResult extends Data
             'item_count' => $topItem['count'],
         ];
 
+        $tagIds = [];
+        if ($this->brands !== []) {
+            $tagIds[] = $this->brands[0]['id'];
+        }
+
+        if ($this->content !== []) {
+            $tagIds[] = $this->content[0]['id'];
+        }
+
+        $validTagIds = $tagIds !== []
+            ? Tag::whereIn('id', $tagIds)->pluck('id')->all()
+            : [];
+
         if ($this->brands !== []) {
             $topBrand = $this->brands[0];
-            if (Tag::query()->where('id', $topBrand['id'])->exists()) {
+            if (in_array($topBrand['id'], $validTagIds, true)) {
                 $data['brand_tag_id'] = $topBrand['id'];
                 $data['brand_score'] = (int) round($topBrand['confidence'] * 100);
                 $data['brand_count'] = $topBrand['count'];
@@ -54,7 +67,7 @@ class PhotoSuggestionResult extends Data
 
         if ($this->content !== []) {
             $topContent = $this->content[0];
-            if (Tag::query()->where('id', $topContent['id'])->exists()) {
+            if (in_array($topContent['id'], $validTagIds, true)) {
                 $data['content_tag_id'] = $topContent['id'];
                 $data['content_score'] = (int) round($topContent['confidence'] * 100);
                 $data['content_count'] = $topContent['count'];

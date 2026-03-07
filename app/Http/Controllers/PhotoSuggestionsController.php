@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\PhotoSuggestion;
 use Illuminate\Http\JsonResponse;
 
-class PhotoItemSuggestionsController extends Controller
+class PhotoSuggestionsController extends Controller
 {
     public function reject(PhotoSuggestion $photoSuggestion): JsonResponse
     {
