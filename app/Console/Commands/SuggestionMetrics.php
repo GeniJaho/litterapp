@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Facades\DB;
+use stdClass;
 
 class SuggestionMetrics extends Command
 {
@@ -33,14 +35,14 @@ class SuggestionMetrics extends Command
             ->selectRaw('SUM(is_accepted = 0) as rejected')
             ->selectRaw('SUM(is_accepted IS NULL) as pending')
             ->from('photo_suggestions')
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
             ->first();
 
         $totalTaggedPhotos = DB::table('photo_items')->distinct('photo_id')->count('photo_id');
         $noSuggestionCount = $totalTaggedPhotos > 0
             ? $totalTaggedPhotos - (int) DB::table('photo_suggestions')
                 ->join('photo_items', 'photo_suggestions.photo_id', '=', 'photo_items.photo_id')
-                ->when($minScore > 0, fn ($q) => $q->where('photo_suggestions.item_score', '>=', $minScore))
+                ->when($minScore > 0, fn (Builder $q) => $q->where('photo_suggestions.item_score', '>=', $minScore))
                 ->distinct()
                 ->count('photo_suggestions.photo_id')
             : 0;
@@ -72,7 +74,7 @@ class SuggestionMetrics extends Command
     {
         $reviewed = DB::table('photo_suggestions')
             ->whereNotNull('is_accepted')
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
             ->count();
 
         if ($reviewed === 0) {
@@ -83,14 +85,14 @@ class SuggestionMetrics extends Command
 
         $accepted = DB::table('photo_suggestions')
             ->where('is_accepted', true)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
             ->count();
 
         // Also check: among rejected suggestions, did the user still tag the same item?
         $rejectedButItemTagged = DB::table('photo_suggestions')
             ->where('is_accepted', false)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
-            ->whereExists(fn ($q) => $q->select(DB::raw(1))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->whereExists(fn (Builder $q) => $q->select(DB::raw(1))
                 ->from('photo_items')
                 ->whereColumn('photo_items.photo_id', 'photo_suggestions.photo_id')
                 ->whereColumn('photo_items.item_id', 'photo_suggestions.item_id'))
@@ -117,7 +119,7 @@ class SuggestionMetrics extends Command
             ->whereNotNull('is_accepted')
             ->whereNotNull('brand_tag_id')
             ->where('brand_score', '>=', 50)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
             ->count();
 
         if ($reviewedWithBrand === 0) {
@@ -131,8 +133,8 @@ class SuggestionMetrics extends Command
             ->where('is_accepted', true)
             ->whereNotNull('brand_tag_id')
             ->where('brand_score', '>=', 50)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
-            ->whereExists(fn ($q) => $q->select(DB::raw(1))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->whereExists(fn (Builder $q) => $q->select(DB::raw(1))
                 ->from('photo_items')
                 ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
                 ->whereColumn('photo_items.photo_id', 'photo_suggestions.photo_id')
@@ -158,7 +160,7 @@ class SuggestionMetrics extends Command
             ->whereNotNull('is_accepted')
             ->whereNotNull('content_tag_id')
             ->where('content_score', '>=', 50)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
             ->count();
 
         if ($reviewedWithContent === 0) {
@@ -171,8 +173,8 @@ class SuggestionMetrics extends Command
             ->where('is_accepted', true)
             ->whereNotNull('content_tag_id')
             ->where('content_score', '>=', 50)
-            ->when($minScore > 0, fn ($q) => $q->where('item_score', '>=', $minScore))
-            ->whereExists(fn ($q) => $q->select(DB::raw(1))
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->whereExists(fn (Builder $q) => $q->select(DB::raw(1))
                 ->from('photo_items')
                 ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
                 ->whereColumn('photo_items.photo_id', 'photo_suggestions.photo_id')
@@ -224,7 +226,7 @@ class SuggestionMetrics extends Command
 
         $this->table(
             ['Score Range', 'Reviewed', 'Accepted', 'Rejected', 'Acceptance Rate'],
-            $buckets->map(fn ($row): array => [
+            $buckets->map(fn (stdClass $row): array => [
                 $row->score_bucket,
                 $row->total,
                 $row->accepted,
