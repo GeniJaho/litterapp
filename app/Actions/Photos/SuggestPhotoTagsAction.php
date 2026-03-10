@@ -2,20 +2,17 @@
 
 namespace App\Actions\Photos;
 
+use App\Actions\AI\GetLitterBotUrlAction;
 use App\DTO\PhotoSuggestionResult;
-use App\Models\AppSetting;
 use App\Models\Photo;
-use Illuminate\Container\Attributes\Config;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 
 class SuggestPhotoTagsAction implements SuggestsPhotoTags
 {
-    public const LITTERBOT_URL_CACHE_KEY = 'suggest_photo_tags_action_litterbot_url';
-
     public function __construct(
-        #[Config('services.litterbot.url')] protected string $litterBotUrl,
+        protected GetLitterBotUrlAction $getLitterBotUrl,
     ) {}
 
     /**
@@ -23,7 +20,7 @@ class SuggestPhotoTagsAction implements SuggestsPhotoTags
      */
     public function run(Photo $photo): ?PhotoSuggestionResult
     {
-        $response = Http::timeout(15)->post("{$this->getLitterBotUrl()}/predict", [
+        $response = Http::timeout(15)->post("{$this->getLitterBotUrl->run()}/predict", [
             'photo_url' => $photo->full_path,
         ]);
 
@@ -53,20 +50,5 @@ class SuggestPhotoTagsAction implements SuggestsPhotoTags
             brands: $brands,
             content: $content,
         );
-    }
-
-    private function getLitterBotUrl(): string
-    {
-        $valueFromSettings = cache()->remember(
-            self::LITTERBOT_URL_CACHE_KEY,
-            now()->addSeconds(10),
-            fn () => AppSetting::query()->where('key', 'litterbot_url')->value('value')
-        );
-
-        if (is_string($valueFromSettings) && $valueFromSettings !== '') {
-            return $valueFromSettings;
-        }
-
-        return $this->litterBotUrl;
     }
 }
