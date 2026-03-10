@@ -21,9 +21,9 @@ class PhotoSuggestionResult extends Data
 
     /**
      * Build the attributes for a PhotoSuggestion row from the top-1 item/brand/content,
-     * validating that referenced IDs exist in the database.
+     * plus the full predictions JSON, validating that referenced IDs exist in the database.
      *
-     * @return ?array<string, int|null>
+     * @return ?array<string, mixed>
      */
     public function toSuggestionAttributes(): ?array
     {
@@ -33,31 +33,34 @@ class PhotoSuggestionResult extends Data
 
         $topItem = $this->items[0];
 
-        if (! Item::query()->where('id', $topItem['id'])->exists()) {
+        // Collect all item IDs (up to 5) and validate in batch
+        $allItemIds = array_column(array_slice($this->items, 0, 5), 'id');
+        $validItemIds = Item::whereIn('id', $allItemIds)->pluck('id')->all();
+
+        if (! in_array($topItem['id'], $validItemIds, true)) {
             return null;
         }
 
+        // Collect all tag IDs and validate in batch
+        $brandSlice = array_slice($this->brands, 0, 3);
+        $contentSlice = array_slice($this->content, 0, 3);
+        $allTagIds = array_merge(
+            array_column($brandSlice, 'id'),
+            array_column($contentSlice, 'id'),
+        );
+        $validTagIds = $allTagIds !== []
+            ? Tag::whereIn('id', $allTagIds)->pluck('id')->all()
+            : [];
+
+        // Build flat top-1 columns
         $data = [
             'item_id' => $topItem['id'],
             'item_score' => (int) round($topItem['confidence'] * 100),
             'item_count' => $topItem['count'],
         ];
 
-        $tagIds = [];
-        if ($this->brands !== []) {
-            $tagIds[] = $this->brands[0]['id'];
-        }
-
-        if ($this->content !== []) {
-            $tagIds[] = $this->content[0]['id'];
-        }
-
-        $validTagIds = $tagIds !== []
-            ? Tag::whereIn('id', $tagIds)->pluck('id')->all()
-            : [];
-
-        if ($this->brands !== []) {
-            $topBrand = $this->brands[0];
+        if ($brandSlice !== []) {
+            $topBrand = $brandSlice[0];
             if (in_array($topBrand['id'], $validTagIds, true)) {
                 $data['brand_tag_id'] = $topBrand['id'];
                 $data['brand_score'] = (int) round($topBrand['confidence'] * 100);
@@ -65,14 +68,48 @@ class PhotoSuggestionResult extends Data
             }
         }
 
-        if ($this->content !== []) {
-            $topContent = $this->content[0];
+        if ($contentSlice !== []) {
+            $topContent = $contentSlice[0];
             if (in_array($topContent['id'], $validTagIds, true)) {
                 $data['content_tag_id'] = $topContent['id'];
                 $data['content_score'] = (int) round($topContent['confidence'] * 100);
                 $data['content_count'] = $topContent['count'];
             }
         }
+
+        // Build predictions JSON with only valid IDs, limited to top 3 per category
+        $predictionItems = array_values(array_filter(
+            array_map(
+                fn (array $i): ?array => in_array($i['id'], $validItemIds, true)
+                    ? ['id' => $i['id'], 'confidence' => $i['confidence'], 'count' => $i['count']]
+                    : null,
+                array_slice($this->items, 0, 3),
+            ),
+        ));
+
+        $predictionBrands = array_values(array_filter(
+            array_map(
+                fn (array $b): ?array => in_array($b['id'], $validTagIds, true)
+                    ? ['id' => $b['id'], 'confidence' => $b['confidence']]
+                    : null,
+                $brandSlice,
+            ),
+        ));
+
+        $predictionContent = array_values(array_filter(
+            array_map(
+                fn (array $c): ?array => in_array($c['id'], $validTagIds, true)
+                    ? ['id' => $c['id'], 'confidence' => $c['confidence']]
+                    : null,
+                $contentSlice,
+            ),
+        ));
+
+        $data['predictions'] = [
+            'items' => $predictionItems,
+            'brands' => $predictionBrands,
+            'content' => $predictionContent,
+        ];
 
         return $data;
     }

@@ -18,7 +18,7 @@ import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
-import SuggestedItem from "@/Pages/Photos/Partials/SuggestedItem.vue";
+import SuggestionPanel from "@/Pages/Photos/Partials/SuggestionPanel.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -30,7 +30,8 @@ const props = defineProps({
 });
 
 const photo = ref(null);
-const suggestedItem = ref(null);
+const suggestion = ref(null);
+const suggestionPanelRef = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || localStorage.getItem('tagShortcutsEnabled') === null);
@@ -54,18 +55,14 @@ const getPhoto = () => {
         .then(response => {
             photo.value = response.data.photo;
 
-            if (photo.value.photo_suggestions.length) {
-                const firstSuggestion = photo.value.photo_suggestions[0];
-                const photoDoesNotHaveItem = photo.value.photo_items.findIndex(item => item.item_id === firstSuggestion.item_id) === -1;
-
-                if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.item_score >= 50) {
-                    suggestedItem.value = firstSuggestion;
-                } else {
-                    suggestedItem.value = null;
-                }
-            } else {
-                suggestedItem.value = null;
-            }
+            const existingItemIds = photo.value.photo_items.map(pi => pi.item_id);
+            const match = photo.value.photo_suggestions.find(s => {
+                if (s.is_accepted !== null || s.item_score < 30) return false;
+                if (!s.predictions || !s.prediction_items?.items?.length) return false;
+                const hasDisplayable = s.prediction_items.items.some(i => !existingItemIds.includes(i.id));
+                return hasDisplayable;
+            });
+            suggestion.value = match || null;
         })
         .catch(error => {
             console.log(error);
@@ -77,33 +74,44 @@ const deletePhoto = () => {
 };
 
 const addItems = () => {
-    const suggestionId = selectedItem.value.id === suggestedItem.value?.item_id
-        ? suggestedItem.value.id
-        : null;
-
-    axios.post(`/photos/${photo.value.id}/items`, {
+    const payload = {
         item_ids: [selectedItem.value.id],
-        suggestion_id: suggestionId,
-    }).then(() => {
+    };
+
+    // If manual search matches a prediction item, link to suggestion
+    if (suggestion.value?.prediction_items?.items) {
+        const matchIndex = suggestion.value.prediction_items.items.findIndex(
+            i => i.id === selectedItem.value.id
+        );
+        if (matchIndex >= 0) {
+            payload.suggestion_id = suggestion.value.id;
+            payload.accepted_item_rank = matchIndex + 1;
+        }
+    }
+
+    axios.post(`/photos/${photo.value.id}/items`, payload).then(() => {
         selectedItem.value = null;
         getPhoto();
     });
 };
 
-const addSuggestedItem = () => {
+const addSuggestedItem = (payload) => {
     axios.post(`/photos/${photo.value.id}/items`, {
-        item_ids: [suggestedItem.value.item_id],
-        suggestion_id: suggestedItem.value.id,
+        item_ids: [payload.itemId],
+        suggestion_id: suggestion.value.id,
+        accepted_item_rank: payload.rank,
+        brand_tag_ids: payload.brandTagIds,
+        content_tag_ids: payload.contentTagIds,
     }).then(() => {
-        suggestedItem.value = null;
+        suggestion.value = null;
         getPhoto();
     });
 };
 
 const rejectSuggestedItem = () => {
-    axios.post(`/photo-suggestions/${suggestedItem.value.id}/reject`)
+    axios.post(`/photo-suggestions/${suggestion.value.id}/reject`)
         .then(() => {
-            suggestedItem.value = null;
+            suggestion.value = null;
             getPhoto();
         });
 };
@@ -177,9 +185,9 @@ const onKeyDown = (event) => {
         } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
             event.preventDefault();
             router.visit(props.nextPhotoUrl);
-        } else if ((event.code === "Enter" || event.code === "NumpadEnter") && suggestedItem.value?.id) {
+        } else if ((event.code === "Enter" || event.code === "NumpadEnter") && suggestion.value?.id && suggestionPanelRef.value) {
             event.preventDefault();
-            addSuggestedItem();
+            suggestionPanelRef.value.acceptSuggestion();
         }
     }
 };
@@ -190,7 +198,7 @@ const applyTagShortcut = () => {
     }
 
     axios.post(`/photos/${photo.value.id}/tag-shortcuts/${tagShortcut.value.id}`, {
-        suggestion_id: suggestedItem.value?.id,
+        suggestion_id: suggestion.value?.id,
     })
         .then(() => getPhoto());
 
@@ -341,7 +349,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             <div class="absolute top-2 right-2 flex gap-2">
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                 <TaggedIcon v-if="photo.photo_items.length"/>
-                                <MagicWandIcon v-if="suggestedItem && suggestedItem.id"/>
+                                <MagicWandIcon v-if="suggestion && suggestion.id"/>
                             </div>
 
                             <div
@@ -419,7 +427,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             </div>
                         </div>
 
-                        <div v-if="photo.photo_items.length || (suggestedItem && suggestedItem.id)">
+                        <div v-if="photo.photo_items.length || (suggestion && suggestion.id)">
                             <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-gray-100">
                                 Litter Objects
                             </h3>
@@ -440,12 +448,14 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                         @update-quantity="updateItemQuantity"
                                     />
 
-                                    <SuggestedItem
-                                        v-if="suggestedItem && suggestedItem.id"
-                                        :suggestedItem="suggestedItem"
-                                        @add-suggested-item="addSuggestedItem"
-                                        @reject-suggested-item="rejectSuggestedItem"
-                                    ></SuggestedItem>
+                                    <SuggestionPanel
+                                        v-if="suggestion && suggestion.id"
+                                        ref="suggestionPanelRef"
+                                        :suggestion="suggestion"
+                                        :photoItems="photo.photo_items"
+                                        @accept-suggestion="addSuggestedItem"
+                                        @reject-suggestion="rejectSuggestedItem"
+                                    />
 
                                 </TransitionGroup>
                             </div>

@@ -20,7 +20,7 @@ class ReloadSuggestionIndex extends Command
         $this->components->info("Reloading suggestion index at {$url}/reload...");
 
         try {
-            $response = Http::timeout(30)->post("{$url}/reload");
+            $response = Http::timeout(120)->post("{$url}/reload");
         } catch (ConnectionException $connectionException) {
             $this->components->error("Connection failed: {$connectionException->getMessage()}");
 

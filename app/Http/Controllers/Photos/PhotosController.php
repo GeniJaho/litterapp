@@ -106,6 +106,8 @@ class PhotosController extends Controller
                 'photoSuggestions.contentTag:id,name',
             ]);
 
+        $photo->photoSuggestions->each->append('prediction_items');
+
         return response()->json([
             'photo' => $photo,
         ]);

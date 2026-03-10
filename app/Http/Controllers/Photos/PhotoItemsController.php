@@ -36,20 +36,27 @@ class PhotoItemsController extends Controller
                     ->first();
 
                 if ($suggestion instanceof PhotoSuggestion) {
-                    $suggestion->update(['is_accepted' => true]);
+                    /** @var array<int, int> $brandTagIds */
+                    $brandTagIds = $request->input('brand_tag_ids', []);
+                    /** @var array<int, int> $contentTagIds */
+                    $contentTagIds = $request->input('content_tag_ids', []);
 
-                    $tagIds = [];
-                    if ($suggestion->brand_tag_id && $suggestion->brand_score >= 50) {
-                        $tagIds[] = $suggestion->brand_tag_id;
-                    }
+                    $suggestion->update([
+                        'is_accepted' => true,
+                        'accepted_item_rank' => $request->integer('accepted_item_rank') ?: null,
+                        'brand_accepted' => $brandTagIds !== [],
+                        'content_accepted' => $contentTagIds !== [],
+                    ]);
 
-                    if ($suggestion->content_tag_id && $suggestion->content_score >= 50) {
-                        $tagIds[] = $suggestion->content_tag_id;
-                    }
+                    $tagIds = array_merge($brandTagIds, $contentTagIds);
 
                     if ($tagIds !== []) {
+                        /** @var array<int, int> $itemIds */
+                        $itemIds = $request->input('item_ids');
+                        $addedItemId = $itemIds[0];
+
                         $photoItem = $photo->photoItems()
-                            ->where('item_id', $suggestion->item_id)
+                            ->where('item_id', $addedItemId)
                             ->orderByDesc('id')
                             ->first();
 
