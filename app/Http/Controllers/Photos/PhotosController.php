@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Photos;
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetNextPhotoAction;
 use App\Actions\Photos\GetPreviousPhotoAction;
-use App\Actions\Photos\GetRelevantTagShortcutAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
-use App\Models\PhotoSuggestion;
 use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -75,7 +73,6 @@ class PhotosController extends Controller
         GetTagsAndItemsAction $getTagsAndItemsAction,
         GetNextPhotoAction $getNextPhotoAction,
         GetPreviousPhotoAction $getPreviousPhotoAction,
-        GetRelevantTagShortcutAction $getRelevantTagShortcutAction,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -108,11 +105,6 @@ class PhotosController extends Controller
                 'photoSuggestions.brandTag:id,name',
                 'photoSuggestions.contentTag:id,name',
             ]);
-
-        $photo->photoSuggestions->each(fn (PhotoSuggestion $suggestion) => $suggestion->setAttribute(
-            'shortcut',
-            $getRelevantTagShortcutAction->run($user, $suggestion->item_id))
-        );
 
         return response()->json([
             'photo' => $photo,

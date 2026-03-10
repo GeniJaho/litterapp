@@ -19,7 +19,6 @@ import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 import SuggestedItem from "@/Pages/Photos/Partials/SuggestedItem.vue";
-import SuggestedTagShortcut from "@/Pages/Photos/Partials/SuggestedTagShortcut.vue";
 
 const props = defineProps({
     photoId: Number,
@@ -32,7 +31,6 @@ const props = defineProps({
 
 const photo = ref(null);
 const suggestedItem = ref(null);
-const suggestedTagShortcut = ref(null);
 const selectedItem = ref(null);
 const tagShortcut = ref(null);
 const tagShortcutsEnabled = ref(localStorage.getItem('tagShortcutsEnabled') === 'true' || localStorage.getItem('tagShortcutsEnabled') === null);
@@ -62,17 +60,11 @@ const getPhoto = () => {
 
                 if (firstSuggestion.is_accepted === null && photoDoesNotHaveItem && firstSuggestion.item_score >= 50) {
                     suggestedItem.value = firstSuggestion;
-
-                    if (tagShortcutsEnabled.value && !tagShortcut.value && firstSuggestion.shortcut) {
-                        suggestedTagShortcut.value = firstSuggestion.shortcut;
-                    }
                 } else {
                     suggestedItem.value = null;
-                    suggestedTagShortcut.value = null;
                 }
             } else {
                 suggestedItem.value = null;
-                suggestedTagShortcut.value = null;
             }
         })
         .catch(error => {
@@ -185,9 +177,6 @@ const onKeyDown = (event) => {
         } else if (event.code === "ArrowRight" && props.nextPhotoUrl) {
             event.preventDefault();
             router.visit(props.nextPhotoUrl);
-        } else if (event.shiftKey && (event.code === "Enter" || event.code === "NumpadEnter") && suggestedTagShortcut.value?.id) {
-            event.preventDefault();
-            applySuggestedTagShortcut();
         } else if ((event.code === "Enter" || event.code === "NumpadEnter") && suggestedItem.value?.id) {
             event.preventDefault();
             addSuggestedItem();
@@ -208,19 +197,7 @@ const applyTagShortcut = () => {
     tagShortcut.value = null;
 };
 
-const applySuggestedTagShortcut = () => {
-    if (!tagShortcutsEnabled.value || ! suggestedTagShortcut.value) {
-        return;
-    }
 
-    axios.post(`/photos/${photo.value.id}/tag-shortcuts/${suggestedTagShortcut.value.id}`, {
-        suggestion_id: suggestedItem.value.id,
-    }).then(() => {
-        suggestedTagShortcut.value = null;
-
-        getPhoto();
-    });
-};
 
 watch(tagShortcutsEnabled, (value) => {
     localStorage.setItem('tagShortcutsEnabled', value ? 'true' : 'false');
@@ -470,11 +447,6 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                         @reject-suggested-item="rejectSuggestedItem"
                                     ></SuggestedItem>
 
-                                    <SuggestedTagShortcut
-                                        v-if="suggestedTagShortcut && suggestedTagShortcut.id"
-                                        :suggestedTagShortcut="suggestedTagShortcut"
-                                        @add-suggested-tag-shortcut="applySuggestedTagShortcut"
-                                    ></SuggestedTagShortcut>
                                 </TransitionGroup>
                             </div>
                         </div>
