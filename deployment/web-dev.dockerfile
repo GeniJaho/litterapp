@@ -22,6 +22,7 @@ RUN apt-get upgrade && apt-get update && apt-get install -y \
     unzip \
     redis-tools \
     default-mysql-client \
+    supervisor \
     vim
 
 # Clear cache
@@ -70,6 +71,9 @@ RUN composer install --optimize-autoloader
 RUN php artisan optimize && php artisan storage:link
 
 RUN npm install && npm run build
+
+# Copy supervisor configuration
+COPY ./deployment/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Copy the entry script
 COPY ./deployment/web-dev.entrypoint.sh /usr/local/bin/entrypoint.sh

@@ -7,6 +7,7 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
 const links = [
+<<<<<<< HEAD
     {title: "Welcome", url: "https://litterapp.net/en/"},
     {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
     {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/"},
@@ -197,6 +198,23 @@ const specialItems = [
                             frameborder="0"
                     >
                     </iframe>
+                </div>
+
+                <div class="pt-12">
+                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+                        <a
+                            v-for="link in links"
+                            :key="link.url"
+                            :href="link.url"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="group block rounded-lg border-2 border-darkBlue bg-white p-6 transition-colors duration-150 hover:bg-turqo focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 focus:ring-offset-mainWhite dark:border-mainWhite dark:bg-darkBlue/35 dark:hover:bg-turqo dark:focus:ring-offset-darkBlue"
+                        >
+                            <div class="text-center font-black tracking-widest text-darkBlue transition-colors duration-150 group-hover:text-darkBlue dark:text-mainWhite dark:group-hover:text-darkBlue">
+                                {{ link.title }}
+                            </div>
+                        </a>
+                    </div>
                 </div>
 
                 <div class="flex flex-col items-center pt-24 pb-12 md:pt-32">

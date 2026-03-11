@@ -27,7 +27,7 @@ class SelectPhotosForTraining extends Command
 
         // Preload all items at once to avoid N+1 queries
         $items = Item::whereIn('name', GetItemFromPredictionAction::ITEM_CLASS_NAMES)->get()->keyBy('name');
-        $usersConsentingToTrain = User::query()->where('settings->consent_to_training', true)->pluck('id');
+        $usersConsentingToTrain = User::query()->whereNotNull('settings->consent_to_training_at')->pluck('id');
 
         $totalPhotos = 0;
         $results = [];

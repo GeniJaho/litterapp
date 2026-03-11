@@ -17,7 +17,7 @@ beforeEach(function (): void {
 });
 
 it('generates a manifest csv and uploads to s3', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Can']);
     $brandTag = Tag::factory()->create(['tag_type_id' => $this->brandType->id, 'name' => 'Red Bull']);
     $contentTag = Tag::factory()->create(['tag_type_id' => $this->contentType->id, 'name' => 'Energy drink']);
@@ -50,8 +50,8 @@ it('generates a manifest csv and uploads to s3', function (): void {
 });
 
 it('excludes photos from non-consenting users', function (): void {
-    $consentingUser = User::factory()->create(['settings' => ['consent_to_training' => true]]);
-    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training' => false]]);
+    $consentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $nonConsentingUser = User::factory()->create(['settings' => ['consent_to_training_at' => null]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
 
     Photo::factory()->create(['user_id' => $consentingUser->id]);
@@ -71,7 +71,7 @@ it('excludes photos from non-consenting users', function (): void {
 });
 
 it('excludes non-visual items', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $goodItem = Item::factory()->create(['name' => 'Can']);
     $excludedItem = Item::factory()->create(['name' => 'Piece of <add material>']);
 
@@ -91,7 +91,7 @@ it('excludes non-visual items', function (): void {
 });
 
 it('excludes placeholder brand and content tags from output', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Bottle']);
     $goodBrand = Tag::factory()->create(['tag_type_id' => $this->brandType->id, 'name' => 'Heineken']);
     $excludedBrand = Tag::factory()->create(['tag_type_id' => $this->brandType->id, 'name' => 'OTHER (Please add this missing brand to the picklist)']);
@@ -112,7 +112,7 @@ it('excludes placeholder brand and content tags from output', function (): void 
 });
 
 it('supports --since flag for delta manifests', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => '2025-01-01T00:00:00+00:00']]);
     $item = Item::factory()->create(['name' => 'Can']);
 
     $oldPhoto = Photo::factory()->create(['user_id' => $user->id]);
@@ -131,8 +131,57 @@ it('supports --since flag for delta manifests', function (): void {
     expect($files[0])->toContain('manifest_delta_');
 });
 
+it('supports --limit for smaller end-to-end runs', function (): void {
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $item = Item::factory()->create(['name' => 'Can']);
+
+    for ($index = 0; $index < 3; $index++) {
+        $photo = Photo::factory()->create(['user_id' => $user->id]);
+        PhotoItem::create(['photo_id' => $photo->id, 'item_id' => $item->id]);
+    }
+
+    $this->artisan('ml:generate-manifest', ['--limit' => 2])->assertExitCode(0);
+
+    $files = Storage::disk('s3')->allFiles('ml/manifests');
+    $csv = Storage::disk('s3')->get($files[0]);
+    $lines = array_filter(explode("\n", trim((string) $csv)));
+
+    expect($lines)->toHaveCount(3); // header + 2 rows
+});
+
+it('includes older photos from users who consented recently in delta exports', function (): void {
+    $recentlyConsentedUser = User::factory()->create([
+        'settings' => [
+            'consent_to_training_at' => '2026-02-10T00:00:00+00:00',
+        ],
+    ]);
+    $olderConsentedUser = User::factory()->create([
+        'settings' => [
+            'consent_to_training_at' => '2025-01-01T00:00:00+00:00',
+        ],
+    ]);
+    $item = Item::factory()->create(['name' => 'Can']);
+
+    $recentPhoto = Photo::factory()->create(['user_id' => $recentlyConsentedUser->id]);
+    PhotoItem::create(['photo_id' => $recentPhoto->id, 'item_id' => $item->id, 'created_at' => '2025-01-01']);
+
+    $olderPhoto = Photo::factory()->create(['user_id' => $olderConsentedUser->id]);
+    PhotoItem::create(['photo_id' => $olderPhoto->id, 'item_id' => $item->id, 'created_at' => '2025-01-01']);
+
+    $this->artisan('ml:generate-manifest', ['--since' => '2026-02-01'])->assertExitCode(0);
+
+    $files = Storage::disk('s3')->allFiles('ml/manifests');
+    $csv = Storage::disk('s3')->get($files[0]);
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
+
+    expect($lines)->toHaveCount(2); // header + recently consented user's older photo
+
+    $row = str_getcsv($lines[1]);
+    expect($row[0])->toBe((string) $recentPhoto->id);
+});
+
 it('handles multiple brand and content tags with pipe separator', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training' => true]]);
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
     $item = Item::factory()->create(['name' => 'Can']);
     $brand1 = Tag::factory()->create(['tag_type_id' => $this->brandType->id, 'name' => 'Red Bull']);
     $brand2 = Tag::factory()->create(['tag_type_id' => $this->brandType->id, 'name' => 'Monster']);
@@ -158,7 +207,7 @@ it('handles multiple brand and content tags with pipe separator', function (): v
 });
 
 it('fails when no users have consented', function (): void {
-    User::factory()->create(['settings' => ['consent_to_training' => false]]);
+    User::factory()->create(['settings' => ['consent_to_training_at' => null]]);
 
     $this->artisan('ml:generate-manifest')
         ->expectsOutputToContain('No users have consented')
