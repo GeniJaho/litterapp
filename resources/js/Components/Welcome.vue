@@ -29,6 +29,9 @@ const communityLinks = [
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
     {title: "Special find", url: null},
+]
+
+const cleanUpLinks = [
     {title: "Before and After", url: "https://litterapp.net/grafana/public-dashboards/51397ab45e954d53952467bf626e80cf"},
     {title: "Plastic Avengers", url: "https://litterapp.net/grafana/public-dashboards/bf41908e0bbf45c0a2e9de2d6a24e09c"},
     {title: "WCD", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369"},
@@ -130,6 +133,31 @@ const specialItems = [
                     <div class="pt-12">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <template v-for="link in communityLinks" :key="link.title">
+                                <a v-if="link.url" :href="link.url" target="_blank"
+                                   class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
+                                    <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                        {{ link.title }}
+                                    </div>
+                                </a>
+                                <div v-else
+                                     class="block p-6 bg-gray-300 dark:bg-gray-700 border-2 border-darkBlue dark:border-mainWhite rounded-lg">
+                                    <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                        {{ link.title }}
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Clean-Up
+                        </div>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <template v-for="link in cleanUpLinks" :key="link.title">
                                 <a v-if="link.url" :href="link.url" target="_blank"
                                    class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
                                     <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
