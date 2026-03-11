@@ -7,12 +7,44 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
 const links = [
-    {title: "Who Are We", url: "https://litterapp.net/en/08_Who-Are-We/"},
-    {title: "Mission & Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
-    {title: "How It Works", url: "https://litterapp.net/en/01_How-It-Works/"},
-    {title: "The Science", url: "https://litterapp.net/en/09_The-Science/"},
-    {title: "Tagging Guide", url: "https://litterapp.net/en/04_Tagging-Guide/"},
-    {title: "Global Map", url: "https://globalmap.litterapp.net/"},
+    {title: "Welcome", url: "https://litterapp.net/en/"},
+    {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
+    {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/"},
+    {title: "Success", url: "https://litterapp.net/en/50_Events/"},
+    {title: "FAQ", url: "https://litterapp.net/en/90_Faq/"},
+    {title: "Contact", url: "https://litterapp.net/en/90_Contact/"},
+    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
+    {title: "Support", url: "https://litterapp.net/en/95_Support/"},
+    {title: "Agenda", url: "https://litterapp.net/grafana/public-dashboards/49da49c1260249cd895d87b2f76ebeea"},
+    {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
+    {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
+    {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
+    {title: "Before and After", url: "https://litterapp.net/grafana/public-dashboards/51397ab45e954d53952467bf626e80cf"},
+    {title: "Plastic Avengers", url: "https://litterapp.net/grafana/public-dashboards/bf41908e0bbf45c0a2e9de2d6a24e09c"},
+    {title: "WCD", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369"},
+    {title: "LOD", url: "https://litterapp.net/grafana/public-dashboards/bfa3693a7c0c405caae3097b062a0818"},
+    {title: "Peukmeuk", url: "https://litterapp.net/grafana/public-dashboards/e67f80e9859345d1ad3cb9c77ecdebf5"},
+    {title: "Zaanse Estafette", url: "https://litterapp.net/grafana/public-dashboards/9cd53e77f5da4e9b886c1b6838a39874"},
+    {title: "Zwerfafval Ruimers Assendelft", url: "https://litterapp.net/grafana/public-dashboards/8795c66e4b9a4cc19d5049fa5ebf8a44"},
+    {title: "Zaanse Schans", url: "https://litterapp.net/grafana/public-dashboards/effd0584398b417cac7b6ba501156be8"},
+    {title: "NZK", url: "https://litterapp.net/grafana/public-dashboards/6af5426fe8ed482dbd7275cbecf064be"},
+    {title: "Duurzaamheidscafe de Saen", url: "https://litterapp.net/grafana/public-dashboards/4ebd114de579407b9d36a99f595d17b6"},
+    {title: "Zaandewandel", url: "https://litterapp.net/grafana/public-dashboards/ef09b39b4bcd4c22899f795658a7873e"},
+    {title: "ShowYourImpact", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
+    {title: "TimHortons", url: "https://litterapp.net/grafana/public-dashboards/17cd2fbfba8e4c6092d00d85d4497bed"},
+    {title: "Statiegeldalliantie", url: "https://litterapp.net/grafana/public-dashboards/8358d80789a84f3fa7ca777f54ec5f70"},
+    {title: "Styrofoam", url: "https://litterapp.net/grafana/public-dashboards/0c1f944bf895422386dfa8885303dfbc"},
+]
+
+const specialItems = [
+    {title: "BermBende", url: "https://litterapp.net/grafana/public-dashboards/d75e295d8c4d4d2387f944e354ce8f6c"},
+    {title: "VapePens", url: "https://litterapp.net/grafana/public-dashboards/aff35d8e2ad64018a472407b0ca1220d"},
+    {title: "Car Debris", url: "https://litterapp.net/grafana/public-dashboards/fc67df2742a34a089732e9d131b147ac"},
+    {title: "Diving Litter", url: "https://litterapp.net/grafana/public-dashboards/aff35d8e2ad64018a472407b0ca1220d"},
+    {title: "Lighters", url: "https://litterapp.net/grafana/public-dashboards/1d3a6f42efab4db490522703be08009d"},
+    {title: "TieWraps", url: "https://litterapp.net/grafana/public-dashboards/9c89a67a8f1647009c870b912a7b0afc"},
+    {title: "Esso", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47"},
+    {title: "Mars", url: "https://litterapp.net/grafana/public-dashboards/0a326840431e4ae39844bc61feb0a9bd"},
 ]
 
 </script>
@@ -54,6 +86,20 @@ const links = [
                                 {{ link.title }}
                             </div>
                         </a>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Special Items
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <a v-for="link in specialItems" :key="link.url" :href="link.url" target="_blank"
+                               class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
+                                <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                    {{ link.title }}
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
 
