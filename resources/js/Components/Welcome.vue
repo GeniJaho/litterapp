@@ -28,7 +28,7 @@ const communityLinks = [
     {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
-    {title: "Special find", url: null},
+    {title: "Special find", url: "https://litterapp.net/grafana/public-dashboards/a51f135fc9d3422a9dd14200c231fe1e"},
 ]
 
 const cleanUpLinks = [
@@ -42,7 +42,7 @@ const cleanUpLinks = [
     {title: "Zaanse Schans", url: "https://litterapp.net/grafana/public-dashboards/effd0584398b417cac7b6ba501156be8"},
     {title: "NZK", url: "https://litterapp.net/grafana/public-dashboards/6af5426fe8ed482dbd7275cbecf064be"},
     {title: "Duurzaamheidscafe de Saen", url: "https://litterapp.net/grafana/public-dashboards/4ebd114de579407b9d36a99f595d17b6"},
-    {title: "Noorder-Eiland", url: null},
+    {title: "Noorder-Eiland", url: "https://litterapp.net/grafana/public-dashboards/545755e418dd43659c0f16a0a1450c15"},
     {title: "Zaandewandel", url: "https://litterapp.net/grafana/public-dashboards/ef09b39b4bcd4c22899f795658a7873e"},
     {title: "ShowYourImpact", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
 ]
