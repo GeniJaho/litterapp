@@ -7,7 +7,6 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
 const links = [
-<<<<<<< HEAD
     {title: "Welcome", url: "https://litterapp.net/en/"},
     {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
     {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/"},
