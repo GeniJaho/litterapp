@@ -25,7 +25,7 @@ const funLinks = [
 
 const communityLinks = [
     {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
-    {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
+    {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/e88a57e063704a53a42d73c8c8aa0e6a"},
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
     {title: "Special find", url: "https://litterapp.net/grafana/public-dashboards/a51f135fc9d3422a9dd14200c231fe1e"},
