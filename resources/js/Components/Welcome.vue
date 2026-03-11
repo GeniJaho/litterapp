@@ -19,12 +19,12 @@ const moreLinks = [
 ]
 
 const funLinks = [
-    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
     {title: "Support", url: "https://litterapp.net/en/95_Support/"},
     {title: "Agenda", url: "https://litterapp.net/grafana/public-dashboards/49da49c1260249cd895d87b2f76ebeea"},
 ]
 
 const communityLinks = [
+    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
     {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
