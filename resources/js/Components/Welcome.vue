@@ -54,7 +54,7 @@ const specialItems = [
     {title: "BermBende", url: "https://litterapp.net/grafana/public-dashboards/d75e295d8c4d4d2387f944e354ce8f6c"},
     {title: "VapePens", url: "https://litterapp.net/grafana/public-dashboards/aff35d8e2ad64018a472407b0ca1220d"},
     {title: "Car Debris", url: "https://litterapp.net/grafana/public-dashboards/fc67df2742a34a089732e9d131b147ac"},
-    {title: "Diving Litter", url: "https://litterapp.net/grafana/public-dashboards/aff35d8e2ad64018a472407b0ca1220d"},
+    {title: "Diving Litter", url: "https://litterapp.net/grafana/public-dashboards/b8b156acc131418386e258e749854e9f"},
     {title: "Lighters", url: "https://litterapp.net/grafana/public-dashboards/1d3a6f42efab4db490522703be08009d"},
     {title: "TieWraps", url: "https://litterapp.net/grafana/public-dashboards/9c89a67a8f1647009c870b912a7b0afc"},
     {title: "Esso", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47"},
