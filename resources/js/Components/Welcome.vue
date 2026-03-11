@@ -10,6 +10,9 @@ const links = [
     {title: "Welcome", url: "https://litterapp.net/en/"},
     {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/"},
     {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/"},
+]
+
+const moreLinks = [
     {title: "Success", url: "https://litterapp.net/en/50_Events/"},
     {title: "FAQ", url: "https://litterapp.net/en/90_Faq/"},
     {title: "Contact", url: "https://litterapp.net/en/90_Contact/"},
@@ -21,7 +24,7 @@ const funLinks = [
     {title: "Agenda", url: "https://litterapp.net/grafana/public-dashboards/49da49c1260249cd895d87b2f76ebeea"},
 ]
 
-const moreLinks = [
+const communityLinks = [
     {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3"},
@@ -86,7 +89,7 @@ const specialItems = [
                     </div>
                 </div>
 
-                <div class="pt-12">
+                <div class="pt-8">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <a v-for="link in links" :key="link.url" :href="link.url" target="_blank"
                            class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
@@ -94,6 +97,17 @@ const specialItems = [
                                 {{ link.title }}
                             </div>
                         </a>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <a v-for="link in moreLinks" :key="link.url" :href="link.url" target="_blank"
+                               class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
+                                <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                    {{ link.title }}
+                                </div>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="pt-12">
@@ -115,7 +129,7 @@ const specialItems = [
 
                     <div class="pt-12">
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                            <template v-for="link in moreLinks" :key="link.title">
+                            <template v-for="link in communityLinks" :key="link.title">
                                 <a v-if="link.url" :href="link.url" target="_blank"
                                    class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
                                     <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
