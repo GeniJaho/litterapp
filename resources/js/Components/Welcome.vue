@@ -13,7 +13,6 @@ const links = [
     {title: "Success", url: "https://litterapp.net/en/50_Events/"},
     {title: "FAQ", url: "https://litterapp.net/en/90_Faq/"},
     {title: "Contact", url: "https://litterapp.net/en/90_Contact/"},
-    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
     {title: "Support", url: "https://litterapp.net/en/95_Support/"},
     {title: "Agenda", url: "https://litterapp.net/grafana/public-dashboards/49da49c1260249cd895d87b2f76ebeea"},
     {title: "Litter All Around The World", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792"},
@@ -34,6 +33,10 @@ const links = [
     {title: "TimHortons", url: "https://litterapp.net/grafana/public-dashboards/17cd2fbfba8e4c6092d00d85d4497bed"},
     {title: "Statiegeldalliantie", url: "https://litterapp.net/grafana/public-dashboards/8358d80789a84f3fa7ca777f54ec5f70"},
     {title: "Styrofoam", url: "https://litterapp.net/grafana/public-dashboards/0c1f944bf895422386dfa8885303dfbc"},
+]
+
+const funLinks = [
+    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289"},
 ]
 
 const specialItems = [
@@ -86,6 +89,20 @@ const specialItems = [
                                 {{ link.title }}
                             </div>
                         </a>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Fun
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            <a v-for="link in funLinks" :key="link.url" :href="link.url" target="_blank"
+                               class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
+                                <div class="font-black text-darkBlue dark:text-mainWhite text-center uppercase tracking-widest">
+                                    {{ link.title }}
+                                </div>
+                            </a>
+                        </div>
                     </div>
 
                     <div class="pt-12">
