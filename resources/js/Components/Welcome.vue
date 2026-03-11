@@ -97,9 +97,6 @@ const specialItems = [
                     </div>
 
                     <div class="pt-12">
-                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
-                            Fun
-                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             <a v-for="link in funLinks" :key="link.url" :href="link.url" target="_blank"
                                class="block p-6 bg-white dark:bg-gray-800 border-2 border-darkBlue dark:border-mainWhite rounded-lg hover:bg-turqo focus:bg-turqoFocus transition-colors duration-150">
@@ -107,6 +104,12 @@ const specialItems = [
                                     {{ link.title }}
                                 </div>
                             </a>
+                        </div>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Fun
                         </div>
                     </div>
 
