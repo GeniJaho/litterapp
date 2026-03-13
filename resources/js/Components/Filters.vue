@@ -37,6 +37,7 @@ const filters = ref({
     has_item_suggestions: props.defaultFilters?.has_item_suggestions ?? null,
     has_brand: props.defaultFilters?.has_brand ?? null,
     has_material: props.defaultFilters?.has_material ?? null,
+    has_content: props.defaultFilters?.has_content ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -54,6 +55,7 @@ const deposit = ref(yesOrNoOptions.find(option => option.value === filters.value
 const hasItemSuggestions = ref(yesOrNoOptions.find(option => option.value === filters.value.has_item_suggestions));
 const hasBrand = ref(yesOrNoOptions.find(option => option.value === filters.value.has_brand));
 const hasMaterial = ref(yesOrNoOptions.find(option => option.value === filters.value.has_material));
+const hasContent = ref(yesOrNoOptions.find(option => option.value === filters.value.has_content));
 
 const emit = defineEmits(['change']);
 
@@ -75,6 +77,7 @@ const filter = () => {
     filters.value.has_item_suggestions = hasItemSuggestions.value.value !== null ? (hasItemSuggestions.value.value === true ? 1 : 0) : null;
     filters.value.has_brand = hasBrand.value.value !== null ? (hasBrand.value.value === true ? 1 : 0) : null;
     filters.value.has_material = hasMaterial.value.value !== null ? (hasMaterial.value.value === true ? 1 : 0) : null;
+    filters.value.has_content = hasContent.value.value !== null ? (hasContent.value.value === true ? 1 : 0) : null;
     emit('change', {...filters.value, store_filters: 1});
 }
 
@@ -94,6 +97,7 @@ const clear = () => {
     hasItemSuggestions.value = yesOrNoOptions[0];
     hasBrand.value = yesOrNoOptions[0];
     hasMaterial.value = yesOrNoOptions[0];
+    hasContent.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -110,6 +114,7 @@ const clear = () => {
         has_item_suggestions: null,
         has_brand: null,
         has_material: null,
+        has_content: null,
     };
 
     emit('change', {...filters.value, clear_filters: 1});
@@ -281,6 +286,15 @@ const clear = () => {
                     ></SelectInput>
                 </div>
                 <div>
+                    <InputLabel for="has-material" value="Has Material" />
+                    <SelectInput
+                        v-model="hasMaterial"
+                        :options="yesOrNoOptions"
+                        id="has-material"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
                     <InputLabel for="has-brand" value="Has Brand" />
                     <SelectInput
                         v-model="hasBrand"
@@ -290,11 +304,11 @@ const clear = () => {
                     ></SelectInput>
                 </div>
                 <div>
-                    <InputLabel for="has-material" value="Has Material" />
+                    <InputLabel for="has-content" value="Has Content" />
                     <SelectInput
-                        v-model="hasMaterial"
+                        v-model="hasContent"
                         :options="yesOrNoOptions"
-                        id="has-material"
+                        id="has-content"
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>

@@ -8,6 +8,7 @@ use App\Models\PhotoItem;
 use App\Models\PhotoItemSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
+use App\Models\TagType;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
@@ -554,6 +555,132 @@ test('a user can filter their photos by being deposit or not', function (): void
     );
 
     $response = $this->get('/my-photos?store_filters=1&deposit=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by having a brand or not', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $brandTagType = TagType::query()->where('slug', 'brand')->firstOrFail();
+    $brandTag = Tag::factory()->create(['tag_type_id' => $brandTagType->id]);
+    $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
+    $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
+    $photoItemB->tags()->attach($brandTag);
+
+    $response = $this->get('/my-photos?store_filters=1&has_brand=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_brand=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_brand=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by having a material or not', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $materialTagType = TagType::query()->where('slug', 'material')->firstOrFail();
+    $materialTag = Tag::factory()->create(['tag_type_id' => $materialTagType->id]);
+    $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
+    $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
+    $photoItemB->tags()->attach($materialTag);
+
+    $response = $this->get('/my-photos?store_filters=1&has_material=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_material=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_material=');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 2)
+        ->etc()
+    );
+});
+
+test('a user can filter their photos by having content or not', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $photoA = Photo::factory()->for($user)->create();
+    $photoB = Photo::factory()->for($user)->create();
+    $item = Item::factory()->create();
+    $contentTagType = TagType::query()->where('slug', 'content')->firstOrFail();
+    $contentTag = Tag::factory()->create(['tag_type_id' => $contentTagType->id]);
+    $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
+    $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
+    $photoItemB->tags()->attach($contentTag);
+
+    $response = $this->get('/my-photos?store_filters=1&has_content=1');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoB->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_content=0');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
+        ->where('photos.data.0.id', $photoA->id)
+        ->etc()
+    );
+
+    $response = $this->get('/my-photos?store_filters=1&has_content=');
 
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
