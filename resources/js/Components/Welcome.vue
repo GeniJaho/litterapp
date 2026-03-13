@@ -11,11 +11,9 @@ const links = [
     {title: "Welcome", url: "https://litterapp.net/en/", icon: "👋"},
     {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/", icon: "🎯"},
     {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/", icon: "👥"},
-    {title: "Success", url: "https://litterapp.net/en/50_Events/", icon: "🏆"},
     {title: "FAQ", url: "https://litterapp.net/en/90_Faq/", icon: "❓"},
     {title: "Contact", url: "https://litterapp.net/en/90_Contact/", icon: "📧"},
     {title: "Support", url: "https://litterapp.net/en/95_Support/", icon: "💚"},
-    {title: "Agenda", url: "https://litterapp.net/grafana/public-dashboards/49da49c1260249cd895d87b2f76ebeea", icon: "📅"},
 ]
 
 const communityLinks = [
@@ -24,10 +22,10 @@ const communityLinks = [
     {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be", icon: "🐕"},
     {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3", icon: "🏞️"},
     {title: "Special find", url: "https://litterapp.net/grafana/public-dashboards/a51f135fc9d3422a9dd14200c231fe1e", icon: "💎"},
+    {title: "Before and After", url: "https://litterapp.net/grafana/public-dashboards/51397ab45e954d53952467bf626e80cf", icon: "📸"},
 ]
 
 const cleanUpLinks = [
-    {title: "Before and After", url: "https://litterapp.net/grafana/public-dashboards/51397ab45e954d53952467bf626e80cf", icon: "📸"},
     {title: "Plastic Avengers", url: "https://litterapp.net/grafana/public-dashboards/bf41908e0bbf45c0a2e9de2d6a24e09c", icon: "🦸"},
     {title: "WCD", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369", icon: "🌊"},
     {title: "LOD", url: "https://litterapp.net/grafana/public-dashboards/bfa3693a7c0c405caae3097b062a0818", icon: "🧹"},
@@ -54,6 +52,7 @@ const specialItems = [
     {title: "TieWraps", url: "https://litterapp.net/grafana/public-dashboards/9c89a67a8f1647009c870b912a7b0afc", icon: "🔗"},
     {title: "Esso", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47", icon: "⛽"},
     {title: "Mars", url: "https://litterapp.net/grafana/public-dashboards/0a326840431e4ae39844bc61feb0a9bd", icon: "🍫"},
+    {title: "Success", url: "https://litterapp.net/en/50_Events/", icon: "🏆"},
 ]
 
 
