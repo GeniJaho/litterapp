@@ -89,7 +89,7 @@ const specialItems = [
                 </div>
 
                 <div class="pt-32">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <LinkTile
                             v-for="link in links"
                             :key="link.url"
@@ -104,7 +104,7 @@ const specialItems = [
                             Fun
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <LinkTile
                                 v-for="link in communityLinks"
                                 :key="link.url"
@@ -120,7 +120,7 @@ const specialItems = [
                             Clean-Up
                         </div>
 
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <LinkTile
                                 v-for="link in cleanUpLinks"
                                 :key="link.url"
@@ -135,7 +135,7 @@ const specialItems = [
                         <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
                             Special Items
                         </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             <LinkTile
                                 v-for="link in specialItems"
                                 :key="link.url"
