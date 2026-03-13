@@ -91,9 +91,9 @@ class Photo extends Model
             return;
         }
 
-        $brandTypeId = \App\Models\TagType::query()->where('slug', 'brand')->value('id');
-        $materialTypeId = \App\Models\TagType::query()->where('slug', 'material')->value('id');
-        $contentTypeId = \App\Models\TagType::query()->where('slug', 'content')->value('id');
+        $brandTypeId = TagType::query()->where('slug', 'brand')->value('id');
+        $materialTypeId = TagType::query()->where('slug', 'material')->value('id');
+        $contentTypeId = TagType::query()->where('slug', 'content')->value('id');
 
         $photoItemProperties = array_filter([
             'picked_up' => $filters->picked_up,
