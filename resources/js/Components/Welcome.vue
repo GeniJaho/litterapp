@@ -1,19 +1,60 @@
 <script setup>
 import {Link, usePage} from "@inertiajs/vue3";
 import {computed} from "vue";
+import LinkTile from "@/Components/LinkTile.vue";
 
 const page = usePage()
 
 const grafanaLink = computed(() => page.props.grafana.map_link)
 
 const links = [
-    { title: "Our mission and vision", url: "https://litterapp.net/docs/en/05_Mission-Vision/" },
-    { title: "Who are we", url: "https://litterapp.net/docs/en/08_Who-Are-We/" },
-    { title: "Create profile", url: "https://litterapp.net/docs/en/10_Profile/" },
-    { title: "Taking pictures", url: "https://litterapp.net/docs/en/20_Taking-Pictures/" },
-    { title: "Uploading pictures", url: "https://litterapp.net/docs/en/30_Uploading-Pictures/" },
-    { title: "Regular tagging", url: "https://litterapp.net/docs/en/40_Tagging-Pictures/" },
+    {title: "Welcome", url: "https://litterapp.net/en/", icon: "👋"},
+    {title: "Mission and Vision", url: "https://litterapp.net/en/05_Mission-Vision/", icon: "🎯"},
+    {title: "Who are we", url: "https://litterapp.net/en/08_Who-Are-We/", icon: "👥"},
+    {title: "FAQ", url: "https://litterapp.net/en/90_Faq/", icon: "❓"},
+    {title: "Contact", url: "https://litterapp.net/en/90_Contact/", icon: "📧"},
+    {title: "Support", url: "https://litterapp.net/en/95_Support/", icon: "💚"},
 ]
+
+const communityLinks = [
+    {title: "TreasureHunt", url: "https://litterapp.net/grafana/public-dashboards/85addd6bdcec4d91942426378ad62289", icon: "🗺️"},
+    {title: "Litter Around The World", url: "https://litterapp.net/grafana/public-dashboards/e88a57e063704a53a42d73c8c8aa0e6a", icon: "🌍"},
+    {title: "Trashdog", url: "https://litterapp.net/grafana/public-dashboards/46806378a10f499d8fda26d1e8b289be", icon: "🐕"},
+    {title: "Scenery", url: "https://litterapp.net/grafana/public-dashboards/b67bea6f6c774a12a96278bdf8f289c3", icon: "🏞️"},
+    {title: "Special find", url: "https://litterapp.net/grafana/public-dashboards/a51f135fc9d3422a9dd14200c231fe1e", icon: "💎"},
+    {title: "Before and After", url: "https://litterapp.net/grafana/public-dashboards/51397ab45e954d53952467bf626e80cf", icon: "📸"},
+]
+
+const cleanUpLinks = [
+    {title: "Plastic Avengers", url: "https://litterapp.net/grafana/public-dashboards/bf41908e0bbf45c0a2e9de2d6a24e09c", icon: "🦸"},
+    {title: "WCD", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369", icon: "🌊"},
+    {title: "LOD", url: "https://litterapp.net/grafana/public-dashboards/bfa3693a7c0c405caae3097b062a0818", icon: "🧹"},
+    {title: "Peukmeuk", url: "https://litterapp.net/grafana/public-dashboards/e67f80e9859345d1ad3cb9c77ecdebf5", icon: "🚬"},
+    {title: "Zaanse Estafette", url: "https://litterapp.net/grafana/public-dashboards/9cd53e77f5da4e9b886c1b6838a39874", icon: "🏃"},
+    {title: "Zwerfafval Ruimers Assendelft", url: "https://litterapp.net/grafana/public-dashboards/8795c66e4b9a4cc19d5049fa5ebf8a44", icon: "🧤"},
+    {title: "Zaanse Schans", url: "https://litterapp.net/grafana/public-dashboards/effd0584398b417cac7b6ba501156be8", icon: "🏘️"},
+    {title: "NZK", url: "https://litterapp.net/grafana/public-dashboards/6af5426fe8ed482dbd7275cbecf064be", icon: "🗑️"},
+    {title: "Duurzaamheidscafe de Saen", url: "https://litterapp.net/grafana/public-dashboards/4ebd114de579407b9d36a99f595d17b6", icon: "☕"},
+    {title: "Noorder-Eiland", url: "https://litterapp.net/grafana/public-dashboards/545755e418dd43659c0f16a0a1450c15", icon: "🏝️"},
+    {title: "Zaandewandel", url: "https://litterapp.net/grafana/public-dashboards/ef09b39b4bcd4c22899f795658a7873e", icon: "🚶"},
+    {title: "ShowYourImpact", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792", icon: "📊"},
+]
+
+const specialItems = [
+    {title: "TimHortons", url: "https://litterapp.net/grafana/public-dashboards/17cd2fbfba8e4c6092d00d85d4497bed", icon: "☕"},
+    {title: "Statiegeldalliantie", url: "https://litterapp.net/grafana/public-dashboards/8358d80789a84f3fa7ca777f54ec5f70", icon: "🥤"},
+    {title: "Styrofoam", url: "https://litterapp.net/grafana/public-dashboards/0c1f944bf895422386dfa8885303dfbc", icon: "📦"},
+    {title: "BermBende", url: "https://litterapp.net/grafana/public-dashboards/d75e295d8c4d4d2387f944e354ce8f6c", icon: "🛣️"},
+    {title: "VapePens", url: "https://litterapp.net/grafana/public-dashboards/aff35d8e2ad64018a472407b0ca1220d", icon: "💨"},
+    {title: "Car Debris", url: "https://litterapp.net/grafana/public-dashboards/fc67df2742a34a089732e9d131b147ac", icon: "🚗"},
+    {title: "Diving Litter", url: "https://litterapp.net/grafana/public-dashboards/b8b156acc131418386e258e749854e9f", icon: "🤿"},
+    {title: "Lighters", url: "https://litterapp.net/grafana/public-dashboards/1d3a6f42efab4db490522703be08009d", icon: "🔥"},
+    {title: "TieWraps", url: "https://litterapp.net/grafana/public-dashboards/9c89a67a8f1647009c870b912a7b0afc", icon: "🔗"},
+    {title: "Esso", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47", icon: "⛽"},
+    {title: "Mars", url: "https://litterapp.net/grafana/public-dashboards/0a326840431e4ae39844bc61feb0a9bd", icon: "🍫"},
+    {title: "Success", url: "https://litterapp.net/en/50_Events/", icon: "🏆"},
+]
+
 
 </script>
 
@@ -46,6 +87,65 @@ const links = [
                     </div>
                 </div>
 
+                <div class="pt-32">
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        <LinkTile
+                            v-for="link in links"
+                            :key="link.url"
+                            :title="link.title"
+                            :url="link.url"
+                            :icon="link.icon"
+                        />
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Fun
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <LinkTile
+                                v-for="link in communityLinks"
+                                :key="link.url"
+                                :title="link.title"
+                                :url="link.url"
+                                :icon="link.icon"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Clean-Up
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <LinkTile
+                                v-for="link in cleanUpLinks"
+                                :key="link.url"
+                                :title="link.title"
+                                :url="link.url"
+                                :icon="link.icon"
+                            />
+                        </div>
+                    </div>
+
+                    <div class="pt-12">
+                        <div class="text-center text-xl font-black tracking-widest dark:text-mainWhite text-darkBlue pb-6">
+                            Special Items
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            <LinkTile
+                                v-for="link in specialItems"
+                                :key="link.url"
+                                :title="link.title"
+                                :url="link.url"
+                                :icon="link.icon"
+                            />
+                        </div>
+                    </div>
+                </div>
+
                 <div class="pt-32 w-full">
                     <iframe class="w-full"
                             :src="grafanaLink"
@@ -54,23 +154,6 @@ const links = [
                             frameborder="0"
                     >
                     </iframe>
-                </div>
-
-                <div class="pt-12">
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
-                        <a
-                            v-for="link in links"
-                            :key="link.url"
-                            :href="link.url"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="group block rounded-lg border-2 border-darkBlue bg-white p-6 transition-colors duration-150 hover:bg-turqo focus:outline-none focus:ring-2 focus:ring-turqo focus:ring-offset-2 focus:ring-offset-mainWhite dark:border-mainWhite dark:bg-darkBlue/35 dark:hover:bg-turqo dark:focus:ring-offset-darkBlue"
-                        >
-                            <div class="text-center font-black tracking-widest text-darkBlue transition-colors duration-150 group-hover:text-darkBlue dark:text-mainWhite dark:group-hover:text-darkBlue">
-                                {{ link.title }}
-                            </div>
-                        </a>
-                    </div>
                 </div>
 
                 <div class="flex flex-col items-center pt-24 pb-12 md:pt-32">
