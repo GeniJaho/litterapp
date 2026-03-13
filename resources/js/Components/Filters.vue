@@ -35,6 +35,8 @@ const filters = ref({
     recycled: props.defaultFilters?.recycled ?? null,
     deposit: props.defaultFilters?.deposit ?? null,
     has_item_suggestions: props.defaultFilters?.has_item_suggestions ?? null,
+    has_brand: props.defaultFilters?.has_brand ?? null,
+    has_material: props.defaultFilters?.has_material ?? null,
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
@@ -50,6 +52,8 @@ const pickedUp = ref(yesOrNoOptions.find(option => option.value === filters.valu
 const recycled = ref(yesOrNoOptions.find(option => option.value === filters.value.recycled));
 const deposit = ref(yesOrNoOptions.find(option => option.value === filters.value.deposit));
 const hasItemSuggestions = ref(yesOrNoOptions.find(option => option.value === filters.value.has_item_suggestions));
+const hasBrand = ref(yesOrNoOptions.find(option => option.value === filters.value.has_brand));
+const hasMaterial = ref(yesOrNoOptions.find(option => option.value === filters.value.has_material));
 
 const emit = defineEmits(['change']);
 
@@ -69,6 +73,8 @@ const filter = () => {
     filters.value.recycled = recycled.value.value !== null ? (recycled.value.value === true ? 1 : 0) : null;
     filters.value.deposit = deposit.value.value !== null ? (deposit.value.value === true ? 1 : 0) : null;
     filters.value.has_item_suggestions = hasItemSuggestions.value.value !== null ? (hasItemSuggestions.value.value === true ? 1 : 0) : null;
+    filters.value.has_brand = hasBrand.value.value !== null ? (hasBrand.value.value === true ? 1 : 0) : null;
+    filters.value.has_material = hasMaterial.value.value !== null ? (hasMaterial.value.value === true ? 1 : 0) : null;
     emit('change', {...filters.value, store_filters: 1});
 }
 
@@ -86,6 +92,8 @@ const clear = () => {
     recycled.value = yesOrNoOptions[0];
     deposit.value = yesOrNoOptions[0];
     hasItemSuggestions.value = yesOrNoOptions[0];
+    hasBrand.value = yesOrNoOptions[0];
+    hasMaterial.value = yesOrNoOptions[0];
 
     filters.value = {
         item_ids: [],
@@ -100,6 +108,8 @@ const clear = () => {
         recycled: null,
         deposit: null,
         has_item_suggestions: null,
+        has_brand: null,
+        has_material: null,
     };
 
     emit('change', {...filters.value, clear_filters: 1});
@@ -267,6 +277,24 @@ const clear = () => {
                         v-model="hasItemSuggestions"
                         :options="yesOrNoOptions"
                         id="has-item-suggestions"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="has-brand" value="Has Brand" />
+                    <SelectInput
+                        v-model="hasBrand"
+                        :options="yesOrNoOptions"
+                        id="has-brand"
+                        class="block w-full mt-1"
+                    ></SelectInput>
+                </div>
+                <div>
+                    <InputLabel for="has-material" value="Has Material" />
+                    <SelectInput
+                        v-model="hasMaterial"
+                        :options="yesOrNoOptions"
+                        id="has-material"
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>

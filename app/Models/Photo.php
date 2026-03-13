@@ -119,6 +119,10 @@ class Photo extends Model
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
             ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoItemSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')->where('score', '>=', 80)))
             ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoItemSuggestions'))
+            ->when($filters->has_brand === true, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', fn (Builder $query) => $query->select('id')->from('tag_types')->where('slug', 'brand'))))
+            ->when($filters->has_brand === false, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', fn (Builder $query) => $query->select('id')->from('tag_types')->where('slug', 'brand'))))
+            ->when($filters->has_material === true, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', fn (Builder $query) => $query->select('id')->from('tag_types')->where('slug', 'material'))))
+            ->when($filters->has_material === false, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', fn (Builder $query) => $query->select('id')->from('tag_types')->where('slug', 'material'))))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 }
