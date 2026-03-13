@@ -46,7 +46,7 @@ class SelectPhotosForBrandsTraining extends Command
             ->limit(50)
             ->get();
 
-        $usersConsentingToTrain = User::query()->where('settings->consent_to_training', true)->pluck('id');
+        $usersConsentingToTrain = User::query()->whereNotNull('settings->consent_to_training_at')->pluck('id');
 
         $totalPhotos = 0;
         $results = [];

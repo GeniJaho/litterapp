@@ -12,11 +12,12 @@ else
   echo "Variable APP_KEY is set."
 fi
 
-#Just for reference ...
-#php artisan migrate:fresh --seed
+# Clear cached config so runtime environment variables take effect
+php artisan config:clear
+
 #Do any migration
 echo "Database conversions, done always"
 php artisan migrate --force
 
-#Run the development server
-php artisan serve --host=0.0.0.0 --port=9000
+#Start supervisor (runs both web server and queue worker)
+exec /usr/bin/supervisord -c /etc/supervisor/conf.d/supervisord.conf
