@@ -91,6 +91,10 @@ class Photo extends Model
             return;
         }
 
+        $brandTypeId = TagType::query()->where('slug', 'brand')->value('id');
+        $materialTypeId = TagType::query()->where('slug', 'material')->value('id');
+        $contentTypeId = TagType::query()->where('slug', 'content')->value('id');
+
         $photoItemProperties = array_filter([
             'picked_up' => $filters->picked_up,
             'recycled' => $filters->recycled,
@@ -119,6 +123,12 @@ class Photo extends Model
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
             ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoItemSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')->where('score', '>=', 80)))
             ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoItemSuggestions'))
+            ->when($filters->has_brand === true && $brandTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
+            ->when($filters->has_brand === false && $brandTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
+            ->when($filters->has_material === true && $materialTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))
+            ->when($filters->has_material === false && $materialTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))
+            ->when($filters->has_content === true && $contentTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
+            ->when($filters->has_content === false && $contentTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 }
