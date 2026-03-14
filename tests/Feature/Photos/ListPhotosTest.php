@@ -567,10 +567,11 @@ test('a user can filter their photos by being deposit or not', function (): void
 test('a user can filter their photos by having a brand or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
+    $brandTagType = TagType::query()->firstOrCreate(['slug' => 'brand'], ['name' => 'Brand']);
+
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    $brandTagType = TagType::query()->where('slug', 'brand')->firstOrFail();
     $brandTag = Tag::factory()->create(['tag_type_id' => $brandTagType->id]);
     $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
     $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
@@ -609,10 +610,11 @@ test('a user can filter their photos by having a brand or not', function (): voi
 test('a user can filter their photos by having a material or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
+    $materialTagType = TagType::query()->firstOrCreate(['slug' => 'material'], ['name' => 'Material']);
+
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    $materialTagType = TagType::query()->where('slug', 'material')->firstOrFail();
     $materialTag = Tag::factory()->create(['tag_type_id' => $materialTagType->id]);
     $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
     $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
@@ -651,10 +653,11 @@ test('a user can filter their photos by having a material or not', function (): 
 test('a user can filter their photos by having content or not', function (): void {
     $this->actingAs($user = User::factory()->create());
 
+    $contentTagType = TagType::query()->firstOrCreate(['slug' => 'content'], ['name' => 'Content']);
+
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    $contentTagType = TagType::query()->where('slug', 'content')->firstOrFail();
     $contentTag = Tag::factory()->create(['tag_type_id' => $contentTagType->id]);
     $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
     $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
