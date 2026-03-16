@@ -27,16 +27,16 @@ const communityLinks = [
 
 const cleanUpLinks = [
     {title: "Plastic Avengers", url: "https://litterapp.net/grafana/public-dashboards/bf41908e0bbf45c0a2e9de2d6a24e09c", icon: "🦸"},
-    {title: "WCD", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369", icon: "🌊"},
-    {title: "LOD", url: "https://litterapp.net/grafana/public-dashboards/bfa3693a7c0c405caae3097b062a0818", icon: "🧹"},
+    {title: "World Cleanup Day", url: "https://litterapp.net/grafana/public-dashboards/2f664f62876e4fd79c28e6965ed74369", icon: "🌊"},
+    {title: "Landelijke Opschoon Dag", url: "https://litterapp.net/grafana/public-dashboards/bfa3693a7c0c405caae3097b062a0818", icon: "🧹"},
     {title: "Peukmeuk", url: "https://litterapp.net/grafana/public-dashboards/e67f80e9859345d1ad3cb9c77ecdebf5", icon: "🚬"},
     {title: "Zaanse Estafette", url: "https://litterapp.net/grafana/public-dashboards/9cd53e77f5da4e9b886c1b6838a39874", icon: "🏃"},
     {title: "Zwerfafval Ruimers Assendelft", url: "https://litterapp.net/grafana/public-dashboards/8795c66e4b9a4cc19d5049fa5ebf8a44", icon: "🧤"},
     {title: "Zaanse Schans", url: "https://litterapp.net/grafana/public-dashboards/effd0584398b417cac7b6ba501156be8", icon: "🏘️"},
-    {title: "NZK", url: "https://litterapp.net/grafana/public-dashboards/6af5426fe8ed482dbd7275cbecf064be", icon: "🗑️"},
-    {title: "Duurzaamheidscafe de Saen", url: "https://litterapp.net/grafana/public-dashboards/4ebd114de579407b9d36a99f595d17b6", icon: "☕"},
+    {title: "NoordZeeKanaal", url: "https://litterapp.net/grafana/public-dashboards/6af5426fe8ed482dbd7275cbecf064be", icon: "🗑️"},
+    {title: "Duurzaamheidscafé de Saen", url: "https://litterapp.net/grafana/public-dashboards/4ebd114de579407b9d36a99f595d17b6", icon: "☕"},
     {title: "Noorder-Eiland", url: "https://litterapp.net/grafana/public-dashboards/545755e418dd43659c0f16a0a1450c15", icon: "🏝️"},
-    {title: "Zaandewandel", url: "https://litterapp.net/grafana/public-dashboards/ef09b39b4bcd4c22899f795658a7873e", icon: "🚶"},
+    {title: "(Z)aanDeWandel", url: "https://litterapp.net/grafana/public-dashboards/ef09b39b4bcd4c22899f795658a7873e", icon: "🚶"},
     {title: "ShowYourImpact", url: "https://litterapp.net/grafana/public-dashboards/3fc460b04e2a453ba323c4fdacbae792", icon: "📊"},
 ]
 
@@ -50,9 +50,9 @@ const specialItems = [
     {title: "Diving Litter", url: "https://litterapp.net/grafana/public-dashboards/b8b156acc131418386e258e749854e9f", icon: "🤿"},
     {title: "Lighters", url: "https://litterapp.net/grafana/public-dashboards/1d3a6f42efab4db490522703be08009d", icon: "🔥"},
     {title: "TieWraps", url: "https://litterapp.net/grafana/public-dashboards/9c89a67a8f1647009c870b912a7b0afc", icon: "🔗"},
-    {title: "Esso", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47", icon: "⛽"},
+    {title: "Esso gloves", url: "https://litterapp.net/grafana/public-dashboards/0537cdd165e544f68d47e398da330e47", icon: "⛽"},
     {title: "Mars", url: "https://litterapp.net/grafana/public-dashboards/0a326840431e4ae39844bc61feb0a9bd", icon: "🍫"},
-    {title: "Success", url: "https://litterapp.net/en/50_Events/", icon: "🏆"},
+    {title: "Success Stories", url: "https://litterapp.net/en/50_Events/", icon: "🏆"},
 ]
 
 
