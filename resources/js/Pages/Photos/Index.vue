@@ -285,7 +285,37 @@ const exportData = (format) => {
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
-                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
+                    <div v-if="photos.links?.length && photos.last_page > 1" class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                        <div class="flex items-center text-gray-700 dark:text-white text-sm">
+                            Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <SelectInput
+                                v-model="perPage"
+                                :options="perPageOptions"
+                                class="w-full max-w-36 sm:w-36"
+                            />
+                        </div>
+                        <div class="flex justify-center space-x-2 items-center">
+                            <div v-for="link in photos.links" :key="link.url" class="group relative">
+                                <Tooltip v-if="link.url && link.url === photos.prev_page_url">
+                                    <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &larr;</span>
+                                </Tooltip>
+                                <Tooltip v-else-if="link.url && link.url === photos.next_page_url">
+                                    <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &rarr;</span>
+                                </Tooltip>
+                                <Link
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    v-html="link.label"
+                                    :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"
+                                ></Link>
+                                <span v-else v-html="link.label" :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl mt-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <div
                                 v-for="photo in photos.data"
