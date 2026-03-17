@@ -16,6 +16,7 @@ import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
+import BulkAddTags from "@/Pages/Photos/Partials/BulkAddTags.vue";
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
@@ -218,6 +219,13 @@ const exportData = (format) => {
                             :items="items"
                             @closeModalWithSuccess="clearSelection"
                         ></BulkRemoveItemsAndTags>
+
+                        <BulkAddTags
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkAddTags>
                     </div>
 
                     <div>

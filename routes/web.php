@@ -60,6 +60,7 @@ Route::middleware([
 
     Route::post('/photos/items', [BulkPhotoItemsController::class, 'store'])->name('bulk-photo-items.store');
     Route::delete('/photos/items', [BulkPhotoItemsController::class, 'destroy'])->name('bulk-photo-items.destroy');
+    Route::post('/photos/tags', [BulkPhotoItemsController::class, 'addTags'])->name('bulk-photo-tags.add');
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
     Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');

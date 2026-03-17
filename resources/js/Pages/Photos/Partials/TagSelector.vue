@@ -9,6 +9,10 @@ import TagBox from "@/Components/TagBox.vue";
 
 const props = defineProps({
     tags: Object,
+    buttonText: {
+        type: String,
+        default: '{{ buttonText }}',
+    },
 });
 
 const emit = defineEmits(['tag-selected']);
@@ -74,7 +78,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedMaterialTag"
                     @click="removeMaterialTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
@@ -93,7 +97,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedBrandTag"
                     @click="removeBrandTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
@@ -112,7 +116,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedContentTag"
                     @click="removeContentTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
@@ -131,7 +135,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedSizeTag"
                     @click="removeSizeTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
@@ -150,7 +154,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedStateTag"
                     @click="removeStateTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
@@ -169,7 +173,7 @@ const removeSizeTag = () => {
                     :disabled="!selectedEventTag"
                     @click="removeEventTag"
                 >
-                    Remove
+                    {{ buttonText }}
                 </PrimaryButton>
             </div>
         </div>
