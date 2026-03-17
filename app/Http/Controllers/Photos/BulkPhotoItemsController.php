@@ -11,6 +11,7 @@ use App\Models\PhotoItem;
 use App\Models\PhotoItemSuggestion;
 use App\Models\PhotoItemTag;
 use App\Models\TagShortcut;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
@@ -74,7 +75,7 @@ class BulkPhotoItemsController extends Controller
         });
     }
 
-    public function addTags(BulkAddPhotoTags $bulkAddPhotoTags): \Illuminate\Http\RedirectResponse
+    public function addTags(BulkAddPhotoTags $bulkAddPhotoTags): RedirectResponse
     {
         $photosWithMultipleItems = [];
         $photosWithNoItems = [];
@@ -87,12 +88,12 @@ class BulkPhotoItemsController extends Controller
                 ->groupBy('photo_id')
                 ->pluck('count', 'photo_id');
 
-            $photosWithNoItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count) => $count === 0));
-            $photosWithMultipleItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count) => $count > 1));
+            $photosWithNoItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count === 0));
+            $photosWithMultipleItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count > 1));
 
-            $photosWithSingleItem = array_keys(array_filter($photoItemCounts->toArray(), fn ($count) => $count === 1));
+            $photosWithSingleItem = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count === 1));
 
-            if (empty($photosWithSingleItem)) {
+            if ($photosWithSingleItem === []) {
                 return;
             }
 
@@ -109,10 +110,11 @@ class BulkPhotoItemsController extends Controller
 
                 $tagsToAttach = array_diff($bulkAddPhotoTags->tag_ids, $existingTagIds);
 
-                if (! empty($tagsToAttach)) {
+                if ($tagsToAttach !== []) {
                     foreach ($itemPhotoItems as $photoItem) {
                         $photoItem->tags()->attach($tagsToAttach);
                     }
+
                     $tagsAdded = true;
                 }
             }
