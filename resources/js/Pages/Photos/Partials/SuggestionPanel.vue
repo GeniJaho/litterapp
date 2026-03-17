@@ -1,10 +1,10 @@
 <script setup>
-import {ref, computed, onMounted, onUnmounted} from "vue";
+import {ref, computed} from "vue";
 import Tooltip from "@/Components/Tooltip.vue";
+
+import PrimaryButton from "@/Components/PrimaryButton.vue";
 import SecondaryButton from "@/Components/SecondaryButton.vue";
-import DangerButton from "@/Components/DangerButton.vue";
-import ToggleInput from "@/Components/ToggleInput.vue";
-import {usePage} from "@inertiajs/vue3";
+
 
 const props = defineProps({
     suggestion: Object,
@@ -15,11 +15,6 @@ const emit = defineEmits([
     'accept-suggestion',
     'reject-suggestion',
 ]);
-
-const page = usePage();
-const pickedUp = page.props.auth.user.settings.picked_up_by_default || false;
-const recycled = page.props.auth.user.settings.recycled_by_default || false;
-const deposit = page.props.auth.user.settings.deposit_by_default || false;
 
 const existingItemIds = computed(() => {
     return (props.photoItems || []).map(pi => pi.item_id);
@@ -103,102 +98,86 @@ const rejectSuggestion = () => {
     emit('reject-suggestion');
 };
 
-const onKeyDown = (event) => {
-    if (event.target.tagName === 'INPUT' || event.target.tagName === 'TEXTAREA') return;
-
-    const num = parseInt(event.key);
-    if (num >= 1 && num <= displayItems.value.length) {
-        event.preventDefault();
-        selectedRank.value = num;
-    }
+const fillStyle = (confidence) => {
+    const skew = 12;
+    return {
+        clipPath: `polygon(0 0, calc(${confidence}% + ${skew}px) 0, ${confidence}% 100%, 0 100%)`,
+    };
 };
 
 defineExpose({ acceptSuggestion });
-
-onMounted(() => {
-    window.addEventListener('keydown', onKeyDown);
-});
-
-onUnmounted(() => {
-    window.removeEventListener('keydown', onKeyDown);
-});
 </script>
 
 <template>
-    <li class="col-span-1 lg:col-span-2 xl:col-span-3 flex flex-col divide-y divide-dashed divide-gray-200 dark:divide-gray-700 rounded-lg bg-white/10 dark:bg-gray-800/10 shadow border border-dashed border-gray-800/70 dark:border-white/70">
-        <div class="px-4 py-5 sm:p-6">
-            <!-- Item Cards -->
-            <div class="flex gap-3 mb-4" v-if="displayItems.length">
+    <li class="col-span-1 lg:col-span-2 self-start flex flex-col rounded-lg bg-white/10 dark:bg-gray-800/10 shadow border border-dashed border-gray-800/70 dark:border-white/70">
+        <div class="px-4 py-4 sm:px-5 sm:py-4">
+
+            <!-- Item Cards (stacked) -->
+            <div class="flex flex-col gap-2" v-if="displayItems.length">
                 <button
                     v-for="(item, index) in displayItems"
                     :key="item.id"
                     @click="selectCard(index)"
-                    class="flex-1 rounded-lg border-2 p-3 transition-all cursor-pointer text-left"
+                    class="relative rounded-lg border-2 px-3 py-2 transition-all cursor-pointer text-left overflow-hidden"
                     :class="selectedRank === index + 1
-                        ? 'border-turqoFocus bg-turqoFocus/10 dark:bg-turqoFocus/20'
+                        ? 'border-turqoFocus'
                         : 'border-gray-300 dark:border-gray-600 hover:border-gray-400 dark:hover:border-gray-500'"
                 >
-                    <div class="text-xs font-mono text-gray-500 dark:text-gray-400 mb-1">
-                        {{ index + 1 }}
-                    </div>
-                    <div class="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">
-                        {{ item.name }}
-                    </div>
-                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
-                        {{ item.confidence }}%
-                    </div>
-                    <div class="mt-1.5 h-1.5 w-full bg-gray-200 dark:bg-gray-700 rounded-full overflow-hidden">
-                        <div
-                            class="h-full rounded-full"
-                            :class="selectedRank === index + 1 ? 'bg-turqoFocus' : 'bg-gray-400 dark:bg-gray-500'"
-                            :style="{ width: item.confidence + '%' }"
-                        ></div>
-                    </div>
+                    <span
+                        class="absolute inset-0 pointer-events-none"
+                        :class="selectedRank === index + 1
+                            ? 'bg-turqoFocus/15 dark:bg-turqoFocus/20'
+                            : 'bg-gray-200/50 dark:bg-gray-700/30'"
+                        :style="fillStyle(item.confidence)"
+                    ></span>
+                    <span class="relative flex items-baseline gap-1.5">
+                        <span class="text-xs text-gray-500 dark:text-gray-400 font-medium">{{ item.confidence }}%</span>
+                        <span class="text-sm font-bold text-gray-900 dark:text-gray-100 truncate">{{ item.name }}</span>
+                    </span>
                 </button>
             </div>
 
-            <!-- Brand Checkboxes -->
-            <div v-if="displayBrands.length" class="mb-3">
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-2">Brands:</span>
-                <label
+            <!-- Brand Tags -->
+            <div v-if="displayBrands.length" class="flex flex-wrap items-center gap-1 mt-3">
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-1">Brands:</span>
+                <button
                     v-for="brand in displayBrands"
                     :key="brand.id"
-                    class="inline-flex items-center mr-3 cursor-pointer"
+                    @click="toggleBrand(brand.id)"
+                    class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset transition-all cursor-pointer"
+                    :class="selectedBrandIds.includes(brand.id)
+                        ? 'ring-turqoFocus'
+                        : 'ring-gray-200 dark:ring-gray-700 hover:ring-gray-400'"
                 >
-                    <input
-                        type="checkbox"
-                        :checked="selectedBrandIds.includes(brand.id)"
-                        @change="toggleBrand(brand.id)"
-                        class="rounded border-gray-300 dark:border-gray-600 text-turqoFocus focus:ring-turqoFocus dark:bg-gray-700"
-                    >
-                    <span class="ml-1.5 text-sm text-gray-700 dark:text-gray-300">{{ brand.name }}</span>
-                    <span class="ml-1 text-xs text-gray-400">{{ brand.confidence }}%</span>
-                </label>
+                    <svg class="h-1.5 w-1.5" :class="selectedBrandIds.includes(brand.id) ? 'fill-turqoFocus' : 'fill-gray-400 dark:fill-gray-500'" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"/></svg>
+                    <span class="text-gray-500 dark:text-gray-400">{{ brand.confidence }}%</span>
+                    {{ brand.name }}
+                </button>
             </div>
 
-            <!-- Content Checkboxes -->
-            <div v-if="displayContent.length" class="mb-4">
-                <span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-2">Content:</span>
-                <label
+            <!-- Content Tags -->
+            <div v-if="displayContent.length" class="flex flex-wrap items-center gap-1 mt-2">
+                <span class="text-xs font-medium text-gray-500 dark:text-gray-400 mr-1">Content:</span>
+                <button
                     v-for="content in displayContent"
                     :key="content.id"
-                    class="inline-flex items-center mr-3 cursor-pointer"
+                    @click="toggleContent(content.id)"
+                    class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset transition-all cursor-pointer"
+                    :class="selectedContentIds.includes(content.id)
+                        ? 'ring-turqoFocus'
+                        : 'ring-gray-200 dark:ring-gray-700 hover:ring-gray-400'"
                 >
-                    <input
-                        type="checkbox"
-                        :checked="selectedContentIds.includes(content.id)"
-                        @change="toggleContent(content.id)"
-                        class="rounded border-gray-300 dark:border-gray-600 text-turqoFocus focus:ring-turqoFocus dark:bg-gray-700"
-                    >
-                    <span class="ml-1.5 text-sm text-gray-700 dark:text-gray-300">{{ content.name }}</span>
-                    <span class="ml-1 text-xs text-gray-400">{{ content.confidence }}%</span>
-                </label>
+                    <svg class="h-1.5 w-1.5" :class="selectedContentIds.includes(content.id) ? 'fill-turqoFocus' : 'fill-gray-400 dark:fill-gray-500'" viewBox="0 0 6 6"><circle cx="3" cy="3" r="3"/></svg>
+                    <span class="text-gray-500 dark:text-gray-400">{{ content.confidence }}%</span>
+                    {{ content.name }}
+                </button>
             </div>
 
             <!-- Actions -->
-            <div class="flex justify-between gap-2">
-                <SecondaryButton
+            <div class="flex gap-2 mt-4">
+                <PrimaryButton
                     class="group relative w-full justify-center"
+                    type="button"
                     @click="acceptSuggestion"
                     :disabled="!selectedItem"
                 >
@@ -206,43 +185,13 @@ onUnmounted(() => {
                         <span class="whitespace-nowrap text-white">Ctrl (⌘) + Enter</span>
                     </Tooltip>
                     Accept
-                </SecondaryButton>
-                <DangerButton
+                </PrimaryButton>
+                <SecondaryButton
                     @click="rejectSuggestion"
-                    class="w-full"
+                    class="w-full justify-center"
                 >
                     Reject
-                </DangerButton>
-            </div>
-        </div>
-        <div class="px-4 py-4 sm:px-6 flex flex-row justify-between items-center">
-            <div class="text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
-                <i class="fas fa-wand-magic-sparkles text-gray-900 dark:text-turqoFocus mr-2"></i>
-                <span class="font-bold">{{ suggestion.item_score }}%</span>
-                AI Confidence
-            </div>
-            <div class="flex flex-row gap-4">
-                <ToggleInput
-                    :model-value="pickedUp"
-                    class="opacity-70"
-                    disabled="disabled"
-                >
-                    <template #label>Picked Up</template>
-                </ToggleInput>
-                <ToggleInput
-                    :model-value="recycled"
-                    class="opacity-70"
-                    disabled="disabled"
-                >
-                    <template #label>Recycled</template>
-                </ToggleInput>
-                <ToggleInput
-                    :model-value="deposit"
-                    class="opacity-70"
-                    disabled="disabled"
-                >
-                    <template #label>Deposit</template>
-                </ToggleInput>
+                </SecondaryButton>
             </div>
         </div>
     </li>
