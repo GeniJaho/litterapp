@@ -110,6 +110,36 @@ test('it handles a mix of photos with single, multiple, and no items', function 
     $this->assertDatabaseCount('photo_item_tag', 1);
 });
 
+test('it adds tags per photo, not per item type', function (): void {
+    $user = User::factory()->create();
+    $item = Item::factory()->create();
+    $tag = Tag::factory()->create();
+
+    // Photo A already has the tag on its item
+    $photoA = Photo::factory()->create(['user_id' => $user->id]);
+    $photoItemA = PhotoItem::factory()->for($item)->for($photoA)->create();
+    PhotoItemTag::factory()->for($photoItemA)->for($tag)->create();
+
+    // Photo B has the same item type but does NOT have the tag yet
+    $photoB = Photo::factory()->create(['user_id' => $user->id]);
+    $photoItemB = PhotoItem::factory()->for($item)->for($photoB)->create();
+
+    $response = $this->actingAs($user)->post('/photos/tags', [
+        'photo_ids' => [$photoA->id, $photoB->id],
+        'tag_ids' => [$tag->id],
+    ]);
+
+    $response->assertRedirect();
+    $response->assertSessionHas('bulkAddTagsResult.tags_added', true);
+    // Photo B should have gotten the tag even though Photo A already had it
+    $this->assertDatabaseHas('photo_item_tag', [
+        'photo_item_id' => $photoItemB->id,
+        'tag_id' => $tag->id,
+    ]);
+    // Photo A should still have exactly 1 copy (no duplicate)
+    $this->assertDatabaseCount('photo_item_tag', 2);
+});
+
 test('a user cannot add tags to photos of another user', function (): void {
     $user = User::factory()->create();
     $otherUser = User::factory()->create();
