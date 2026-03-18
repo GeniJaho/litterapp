@@ -142,7 +142,7 @@ const onKeyDown = (event) => {
 
 <template>
     <PrimaryButton @click="openModal">
-        Add Tags
+        Add Tags to Items
     </PrimaryButton>
 
     <BulkTagModal max-width="3xl" :show="showModal" @close="closeModal">
@@ -152,8 +152,8 @@ const onKeyDown = (event) => {
             </div>
             <div class="px-6 text-sm text-gray-700 dark:text-gray-200">
                 Add tags to the item on the selected photos.<br>
-                If a photo has more than 1 item, no tags will be added.<br>
-                Tags that are already present on an item will not be added again.<br><br>
+                Photos with more than 1 item will be skipped.<br>
+                Duplicate tags will not be added.<br><br>
                 After you have selected all the tags you want to add,
                 click the "Save" button and confirm the dialog that appears.
             </div>
@@ -193,7 +193,7 @@ const onKeyDown = (event) => {
                     </div>
 
                     <div v-else class="mt-4 text-sm text-gray-500 dark:text-gray-400">
-                        No tags selected yet. Select tags from the list on the left.
+                        No tags selected yet.
                     </div>
                 </div>
             </div>
@@ -231,13 +231,12 @@ const onKeyDown = (event) => {
 
     <ConfirmationModal :show="showConfirmationModal" @close="showConfirmationModal = false">
         <template #title>
-            Confirm Adding Tags
+            Confirm Addition
         </template>
 
         <template #content>
-            Are you sure you want to add the tags to the item on the selected photos?<br>
-            Be aware, if a photo has more than 1 item, no tags will be added to that photo.<br>
-            You have selected {{ form.tag_ids.length }} tag(s).
+            Are you sure you want to add {{ form.tag_ids.length }} tag(s) to the selected photos?<br>
+            Photos with more than 1 item will be skipped.
         </template>
 
         <template #footer>
