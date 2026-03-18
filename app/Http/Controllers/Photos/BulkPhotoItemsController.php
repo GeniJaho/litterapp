@@ -102,21 +102,15 @@ class BulkPhotoItemsController extends Controller
 
             $photoItems = PhotoItem::query()
                 ->whereIn('photo_id', $photosWithSingleItem)
-                ->get()
-                ->groupBy('item_id');
+                ->get();
 
-            foreach ($photoItems as $itemPhotoItems) {
-                $existingTagIds = PhotoItemTag::query()
-                    ->whereIn('photo_item_id', $itemPhotoItems->pluck('id'))
-                    ->pluck('tag_id')
-                    ->toArray();
+            foreach ($photoItems as $photoItem) {
+                $existingTagIds = $photoItem->tags()->pluck('tags.id')->all();
 
                 $tagsToAttach = array_diff($bulkAddPhotoTags->tag_ids, $existingTagIds);
 
                 if ($tagsToAttach !== []) {
-                    foreach ($itemPhotoItems as $photoItem) {
-                        $photoItem->tags()->attach($tagsToAttach);
-                    }
+                    $photoItem->tags()->attach($tagsToAttach);
 
                     $tagsAdded = true;
                 }
