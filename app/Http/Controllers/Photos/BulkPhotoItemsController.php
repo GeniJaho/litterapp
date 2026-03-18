@@ -84,14 +84,17 @@ class BulkPhotoItemsController extends Controller
         DB::transaction(function () use ($bulkAddPhotoTags, &$photosWithMultipleItems, &$photosWithNoItems, &$tagsAdded): void {
             $photoItemCounts = PhotoItem::query()
                 ->whereIn('photo_id', $bulkAddPhotoTags->photo_ids)
-                ->select('photo_id', DB::raw('count(*) as count'))
+                ->select('photo_id', DB::raw('count(*) as item_count'))
                 ->groupBy('photo_id')
-                ->pluck('count', 'photo_id');
+                ->pluck('item_count', 'photo_id');
 
-            $photosWithNoItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count === 0));
-            $photosWithMultipleItems = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count > 1));
+            /** @var array<int, int> $counts */
+            $counts = $photoItemCounts->toArray();
 
-            $photosWithSingleItem = array_keys(array_filter($photoItemCounts->toArray(), fn ($count): bool => $count === 1));
+            $photosWithNoItems = array_values(array_diff($bulkAddPhotoTags->photo_ids, $photoItemCounts->keys()->all()));
+            $photosWithMultipleItems = array_keys(array_filter($counts, fn (int $count): bool => $count > 1));
+
+            $photosWithSingleItem = array_keys(array_filter($counts, fn (int $count): bool => $count === 1));
 
             if ($photosWithSingleItem === []) {
                 return;

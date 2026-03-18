@@ -11,7 +11,7 @@ const props = defineProps({
     tags: Object,
     buttonText: {
         type: String,
-        default: '{{ buttonText }}',
+        default: 'Remove',
     },
 });
 

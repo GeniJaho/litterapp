@@ -13,7 +13,7 @@ class BulkAddPhotoTags extends Data
      */
     public function __construct(
         public array $photo_ids,
-        public array $tag_ids = [],
+        public array $tag_ids,
     ) {}
 
     /**

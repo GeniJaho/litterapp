@@ -131,7 +131,11 @@ const openModal = () => {
 const onKeyDown = (event) => {
     if ((event.ctrlKey || event.metaKey) && (event.code === "Enter" || event.code === "ArrowRight") && ! saveDisabled.value) {
         event.preventDefault();
-        save();
+        if (showConfirmationModal.value) {
+            save();
+        } else {
+            showConfirmationModal.value = true;
+        }
     }
 };
 </script>
@@ -194,7 +198,7 @@ const onKeyDown = (event) => {
                 </div>
             </div>
 
-            <div v-if="form.hasErrors" class="flex flex-col items-end mt-8 text-sm text-red-500 dark:text-red-430">
+            <div v-if="form.hasErrors" class="flex flex-col items-end mt-8 text-sm text-red-500 dark:text-red-400">
                 <p v-for="error in form.errors">{{ error }}</p>
             </div>
 
