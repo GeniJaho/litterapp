@@ -107,6 +107,37 @@ it('shows brand acceptance when brand tags exist', function (): void {
         ->expectsOutputToContain('Brand Suggestion Acceptance');
 });
 
+it('displays rank distribution for multi-item suggestions', function (): void {
+    $item1 = Item::factory()->create();
+    $item2 = Item::factory()->create();
+
+    PhotoSuggestion::factory()
+        ->withPredictions([$item1->id, $item2->id])
+        ->create([
+            'is_accepted' => true,
+            'accepted_item_rank' => 1,
+        ]);
+
+    PhotoSuggestion::factory()
+        ->withPredictions([$item1->id, $item2->id])
+        ->create([
+            'is_accepted' => true,
+            'accepted_item_rank' => 2,
+        ]);
+
+    PhotoSuggestion::factory()
+        ->withPredictions([$item1->id, $item2->id])
+        ->create([
+            'is_accepted' => true,
+            'accepted_item_rank' => 2,
+        ]);
+
+    $this->artisan('app:suggestion-metrics')
+        ->assertSuccessful()
+        ->expectsOutputToContain('Accepted Item Rank Distribution')
+        ->expectsOutputToContain('Multi-suggestion uplift');
+});
+
 it('handles no suggestions gracefully', function (): void {
     $this->artisan('app:suggestion-metrics')
         ->assertSuccessful()

@@ -19,6 +19,7 @@ class SuggestionMetrics extends Command
 
         $this->displayOverview($minScore);
         $this->displayItemAcceptance($minScore);
+        $this->displayRankDistribution();
         $this->displayBrandAcceptance($minScore);
         $this->displayContentAcceptance($minScore);
         $this->displayAcceptanceByScoreBucket();
@@ -113,6 +114,42 @@ class SuggestionMetrics extends Command
         );
     }
 
+    private function displayRankDistribution(): void
+    {
+        $ranks = DB::query()
+            ->selectRaw('accepted_item_rank as `rank`')
+            ->selectRaw('COUNT(*) as total')
+            ->from('photo_suggestions')
+            ->where('is_accepted', true)
+            ->whereNotNull('accepted_item_rank')
+            ->groupBy('accepted_item_rank')
+            ->orderBy('accepted_item_rank')
+            ->get();
+
+        if ($ranks->isEmpty()) {
+            return;
+        }
+
+        /** @var int $totalRanked */
+        $totalRanked = $ranks->sum('total');
+        /** @var int $notRankOne */
+        $notRankOne = $ranks->where('rank', '>', 1)->sum('total');
+        $uplift = $totalRanked > 0 ? round(100 * $notRankOne / $totalRanked, 1) : 0;
+
+        $this->components->info('Accepted Item Rank Distribution');
+
+        $this->table(
+            ['Rank', 'Count', '%'],
+            $ranks->map(fn (stdClass $row): array => [
+                $row->rank,
+                $row->total,
+                round(100 * $row->total / $totalRanked, 1).'%',
+            ])->all(),
+        );
+
+        $this->components->info("Multi-suggestion uplift: {$uplift}% of accepted were NOT rank 1");
+    }
+
     private function displayBrandAcceptance(int $minScore): void
     {
         $reviewedWithBrand = DB::table('photo_suggestions')
@@ -144,13 +181,34 @@ class SuggestionMetrics extends Command
 
         $brandRate = round(100 * $brandApplied / $reviewedWithBrand, 1);
 
+        // New-style: count suggestions where brand_accepted = true (multi-item predictions)
+        $newStyleBrandAccepted = DB::table('photo_suggestions')
+            ->where('is_accepted', true)
+            ->whereNotNull('predictions')
+            ->where('brand_accepted', true)
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->count();
+
+        $newStyleBrandTotal = DB::table('photo_suggestions')
+            ->where('is_accepted', true)
+            ->whereNotNull('predictions')
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->count();
+
         $this->components->info('Brand Suggestion Acceptance (score >= 50)');
+
+        $rows = [
+            ['Brand applied with accepted suggestion (legacy)', "{$brandApplied} / {$reviewedWithBrand} ({$brandRate}%)", '> 40%'],
+        ];
+
+        if ($newStyleBrandTotal > 0) {
+            $newBrandRate = round(100 * $newStyleBrandAccepted / $newStyleBrandTotal, 1);
+            $rows[] = ['Brand accepted (multi-item)', "{$newStyleBrandAccepted} / {$newStyleBrandTotal} ({$newBrandRate}%)", '> 40%'];
+        }
 
         $this->table(
             ['Metric', 'Value', 'Target'],
-            [
-                ['Brand applied with accepted suggestion', "{$brandApplied} / {$reviewedWithBrand} ({$brandRate}%)", '> 40%'],
-            ],
+            $rows,
         );
     }
 
@@ -184,13 +242,34 @@ class SuggestionMetrics extends Command
 
         $contentRate = round(100 * $contentApplied / $reviewedWithContent, 1);
 
+        // New-style: count suggestions where content_accepted = true (multi-item predictions)
+        $newStyleContentAccepted = DB::table('photo_suggestions')
+            ->where('is_accepted', true)
+            ->whereNotNull('predictions')
+            ->where('content_accepted', true)
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->count();
+
+        $newStyleContentTotal = DB::table('photo_suggestions')
+            ->where('is_accepted', true)
+            ->whereNotNull('predictions')
+            ->when($minScore > 0, fn (Builder $q) => $q->where('item_score', '>=', $minScore))
+            ->count();
+
         $this->components->info('Content Suggestion Acceptance (score >= 50)');
+
+        $rows = [
+            ['Content applied with accepted suggestion (legacy)', "{$contentApplied} / {$reviewedWithContent} ({$contentRate}%)", '> 40%'],
+        ];
+
+        if ($newStyleContentTotal > 0) {
+            $newContentRate = round(100 * $newStyleContentAccepted / $newStyleContentTotal, 1);
+            $rows[] = ['Content accepted (multi-item)', "{$newStyleContentAccepted} / {$newStyleContentTotal} ({$newContentRate}%)", '> 40%'];
+        }
 
         $this->table(
             ['Metric', 'Value', 'Target'],
-            [
-                ['Content applied with accepted suggestion', "{$contentApplied} / {$reviewedWithContent} ({$contentRate}%)", '> 40%'],
-            ],
+            $rows,
         );
     }
 

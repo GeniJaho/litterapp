@@ -56,6 +56,13 @@ class PhotoSuggestionResource extends Resource
                     ->label('Content Score'),
                 IconColumn::make('is_accepted')
                     ->boolean(),
+                TextColumn::make('accepted_item_rank')
+                    ->label('Rank')
+                    ->sortable(),
+                IconColumn::make('brand_accepted')
+                    ->boolean(),
+                IconColumn::make('content_accepted')
+                    ->boolean(),
             ])
             ->defaultSort('id', 'desc')
             ->filters([
@@ -91,6 +98,13 @@ class PhotoSuggestionResource extends Resource
                         false: fn (Builder $query): Builder => $query->where('is_accepted', false),
                         blank: fn (Builder $query): Builder => $query,
                     ),
+                SelectFilter::make('accepted_item_rank')
+                    ->label('Accepted Rank')
+                    ->options([
+                        1 => '1',
+                        2 => '2',
+                        3 => '3',
+                    ]),
                 TernaryFilter::make('pending')
                     ->label('Pending')
                     ->placeholder('All')

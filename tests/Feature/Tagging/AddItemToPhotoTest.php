@@ -147,6 +147,9 @@ test('accepting a suggestion attaches above-threshold brand and content tags', f
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
         'item_ids' => [$item->id],
         'suggestion_id' => $photoSuggestion->id,
+        'accepted_item_rank' => 1,
+        'brand_tag_ids' => [$brandTag->id],
+        'content_tag_ids' => [$contentTag->id],
     ]);
 
     $response->assertOk();
@@ -180,6 +183,9 @@ test('accepting a suggestion does not attach below-threshold tags', function ():
     $response = $this->actingAs($user)->postJson("/photos/{$photo->id}/items", [
         'item_ids' => [$item->id],
         'suggestion_id' => $photoSuggestion->id,
+        'accepted_item_rank' => 1,
+        'brand_tag_ids' => [],
+        'content_tag_ids' => [],
     ]);
 
     $response->assertOk();

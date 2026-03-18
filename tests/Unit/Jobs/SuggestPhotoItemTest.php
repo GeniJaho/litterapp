@@ -87,6 +87,36 @@ test('it returns failure code when no items returned', function (): void {
     $this->assertDatabaseMissing('photo_suggestions', ['photo_id' => $this->photo->id]);
 });
 
+test('it stores predictions JSON alongside flat columns', function (): void {
+    $item2 = Item::factory()->create();
+    $brandTag = Tag::factory()->create();
+
+    $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
+        items: [
+            ['id' => $this->item->id, 'name' => $this->item->name, 'confidence' => 0.85, 'count' => 8],
+            ['id' => $item2->id, 'name' => $item2->name, 'confidence' => 0.40, 'count' => 3],
+        ],
+        brands: [['id' => $brandTag->id, 'name' => $brandTag->name, 'confidence' => 0.60, 'count' => 5]],
+        content: [],
+    ));
+
+    $job = new SuggestPhotoItem($this->photo);
+    $result = $job->handle($this->fakeAction);
+
+    expect($result)->toBe(0);
+
+    $suggestion = $this->photo->photoSuggestions()->first();
+
+    expect($suggestion->item_id)->toBe($this->item->id)
+        ->and($suggestion->item_score)->toBe(85)
+        ->and($suggestion->predictions)->toBeArray()
+        ->and($suggestion->predictions['items'])->toHaveCount(2)
+        ->and($suggestion->predictions['items'][0]['id'])->toBe($this->item->id)
+        ->and($suggestion->predictions['items'][1]['id'])->toBe($item2->id)
+        ->and($suggestion->predictions['brands'])->toHaveCount(1)
+        ->and($suggestion->predictions['brands'][0]['id'])->toBe($brandTag->id);
+});
+
 test('it does not create suggestion when item already exists on photo', function (): void {
     $this->photo->items()->attach($this->item);
 
