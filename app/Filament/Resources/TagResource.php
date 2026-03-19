@@ -83,7 +83,7 @@ class TagResource extends Resource
             ->headerActions([
                 ImportAction::make()->importer(TagImporter::class),
             ])
-            ->defaultSort('name');
+            ->defaultSort('id', 'desc');
     }
 
     public static function getRelations(): array
