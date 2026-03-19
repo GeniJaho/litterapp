@@ -16,10 +16,7 @@ class GetPhotoIdsInRangeAction
         return $user
             ->photos()
             ->filter($user->settings->photo_filters)
-            ->whereBetween(
-                $user->settings->sort_column === 'id' ? 'id' : 'id',
-                [$startId, $endId]
-            )
+            ->whereBetween('id', [min($startId, $endId), max($startId, $endId)])
             ->when(
                 $user->settings->sort_column !== 'id',
                 fn (Builder $query) => $query
