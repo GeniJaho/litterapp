@@ -297,7 +297,16 @@ const exportData = (format) => {
                     <div class="flex items-center text-gray-700 dark:text-white text-sm">
                         Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                     </div>
-                    <div class="flex flex-row gap-4">
+                    <div class="flex flex-row gap-4 items-end">
+                        <div>
+                            <InputLabel for="per-page" value="Per page" />
+                            <SelectInput
+                                id="per-page"
+                                v-model="perPage"
+                                :options="perPageOptions"
+                                class="mt-1 block w-full max-w-36 sm:w-36"
+                            ></SelectInput>
+                        </div>
                         <div>
                             <InputLabel for="sort-column" value="Order by" />
                             <SelectInput
