@@ -18,6 +18,7 @@ import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
+import ShareIcon from "@/Components/ShareIcon.vue";
 import SuggestedItem from "@/Pages/Photos/Partials/SuggestedItem.vue";
 import SuggestedTagShortcut from "@/Pages/Photos/Partials/SuggestedTagShortcut.vue";
 
@@ -101,6 +102,36 @@ const suggestItem = () => {
 
 const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
+};
+
+const shareUrl = ref(null);
+const showShareModal = ref(false);
+const isCopying = ref(false);
+
+const generateShareLink = () => {
+    axios.post(`/photos/${photo.value.id}/share`)
+        .then(response => {
+            shareUrl.value = response.data.share_url;
+            showShareModal.value = true;
+        })
+        .catch(error => {
+            console.log(error);
+        });
+};
+
+const copyShareLink = async () => {
+    if (!shareUrl.value) return;
+    
+    isCopying.value = true;
+    try {
+        await navigator.clipboard.writeText(shareUrl.value);
+        setTimeout(() => {
+            isCopying.value = false;
+        }, 1500);
+    } catch (err) {
+        console.error('Failed to copy:', err);
+        isCopying.value = false;
+    }
 };
 
 const addItems = () => {
@@ -384,6 +415,9 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                 <TaggedIcon v-if="photo.photo_items.length"/>
                                 <MagicWandIcon v-if="suggestedItem && suggestedItem.id"/>
+                                <button @click="generateShareLink" class="flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
+                                    <ShareIcon />
+                                </button>
                             </div>
 
                             <div
@@ -508,6 +542,35 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                     class="w-full h-full object-contain"
                     @click="zoomedPhoto = false"
                 >
+            </Modal>
+
+            <Modal max-width="md" @close="showShareModal = false" :show="showShareModal">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                        Deel deze foto
+                    </h3>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                        Kopieer de link om deze foto te delen. Iedereen met de link kan de foto bekijken.
+                    </p>
+                    <div class="flex items-center gap-2">
+                        <input
+                            type="text"
+                            :value="shareUrl"
+                            readonly
+                            class="flex-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-turqoFocus focus:ring-turqoFocus sm:text-sm px-3 py-2"
+                            @click="$event.target.select()"
+                        />
+                        <PrimaryButton @click="copyShareLink" class="whitespace-nowrap">
+                            <span v-if="isCopying">Gekopieerd!</span>
+                            <span v-else>Kopieer link</span>
+                        </PrimaryButton>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-end">
+                    <PrimaryButton @click="showShareModal = false">
+                        Sluiten
+                    </PrimaryButton>
+                </div>
             </Modal>
         </div>
     </AppLayout>

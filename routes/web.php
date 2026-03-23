@@ -15,6 +15,7 @@ use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
 use App\Http\Controllers\Photos\UploadPhotosController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
@@ -46,6 +47,8 @@ Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 Route::get('/auth/twitter/redirect', [TwitterController::class, 'redirect'])->name('auth.twitter.redirect');
 Route::get('/auth/twitter/callback', [TwitterController::class, 'callback']);
 
+Route::get('/s/{token}', [ShareController::class, 'show'])->name('photo.share');
+
 Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(function (): void {
     Route::impersonate();
 });
@@ -66,6 +69,7 @@ Route::middleware([
     Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
+    Route::post('/photos/{photo}/share', [PhotosController::class, 'share'])->name('photos.share');
 
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);
