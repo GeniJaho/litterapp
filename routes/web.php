@@ -15,6 +15,7 @@ use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
 use App\Http\Controllers\Photos\UploadPhotosController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
