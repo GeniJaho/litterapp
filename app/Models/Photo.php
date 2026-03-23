@@ -28,6 +28,8 @@ class Photo extends Model
     /** @use HasFactory<PhotoFactory> */
     use HasFactory;
 
+    protected $appends = ['full_path'];
+
     /**
      * @return array<string, string>
      */

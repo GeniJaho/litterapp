@@ -80,25 +80,36 @@ const hasGps = props.photo.latitude && props.photo.longitude;
                                         </span>
                                     </div>
 
-                                    <div class="flex items-center space-x-4">
-                                        <span
-                                            v-if="photoItem.picked_up"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
-                                        >
-                                            Opgeruimd
-                                        </span>
-                                        <span
-                                            v-if="photoItem.recycled"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
-                                        >
-                                            Recycled
-                                        </span>
-                                        <span
-                                            v-if="photoItem.deposit"
-                                            class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
-                                        >
-                                            Statiegeld
-                                        </span>
+                                    <div class="flex flex-col items-end gap-2">
+                                        <div class="flex items-center gap-1 flex-wrap justify-end">
+                                            <span
+                                                v-for="tag in photoItem.tags"
+                                                :key="tag.id"
+                                                class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
+                                            >
+                                                {{ tag.name }}
+                                            </span>
+                                        </div>
+                                        <div class="flex items-center gap-1">
+                                            <span
+                                                v-if="photoItem.picked_up"
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
+                                            >
+                                                Opgeruimd
+                                            </span>
+                                            <span
+                                                v-if="photoItem.recycled"
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200"
+                                            >
+                                                Recycled
+                                            </span>
+                                            <span
+                                                v-if="photoItem.deposit"
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
+                                            >
+                                                Statiegeld
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
