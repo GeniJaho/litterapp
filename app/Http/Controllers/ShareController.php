@@ -11,7 +11,7 @@ class ShareController extends Controller
     public function show(string $token): Response|RedirectResponse
     {
         $photo = Photo::query()
-            ->with(['user', 'photoItems.item', 'photoItems.photoItemTags.tag'])
+            ->with(['user', 'photoItems.item', 'photoItems.tags'])
             ->where('share_token', $token)
             ->firstOrFail();
 
