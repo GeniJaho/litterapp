@@ -131,6 +131,22 @@ class PhotosController extends Controller
         return to_route('my-photos');
     }
 
+    public function share(Photo $photo): JsonResponse
+    {
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
+        if (! $photo->share_token) {
+            $photo->generateShareToken();
+        }
+
+        return response()->json([
+            'share_url' => $photo->getShareUrl(),
+            'share_token' => $photo->share_token,
+        ]);
+    }
+
     /**
      * @return Collection<int, TagShortcut>
      */
