@@ -6,6 +6,7 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FilterPhotosAction
 {
@@ -14,20 +15,11 @@ class FilterPhotosAction
      */
     public function run(User $user): LengthAwarePaginator
     {
-        $photos = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
+        $photos = $this->baseQuery($user)
             ->withExists([
                 'items',
                 'photoItemSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted')->where('score', '>=', 80),
             ])
-            ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
-
-        if ($user->settings->sort_column !== 'id') {
-            $photos->orderBy('id');
-        }
-
-        $photos = $photos
             ->paginate($user->settings->getValidPerPage())
             ->withQueryString();
 
@@ -38,5 +30,30 @@ class FilterPhotosAction
         });
 
         return $photos;
+    }
+
+    /**
+     * @return array<int, mixed>
+     */
+    public function allIds(User $user): array
+    {
+        return $this->baseQuery($user)->pluck('id')->all();
+    }
+
+    /**
+     * @return HasMany<Photo, User>
+     */
+    private function baseQuery(User $user): HasMany
+    {
+        $query = $user
+            ->photos()
+            ->filter($user->settings->photo_filters)
+            ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
+
+        if ($user->settings->sort_column !== 'id') {
+            $query->orderBy('id');
+        }
+
+        return $query;
     }
 }

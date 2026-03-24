@@ -22,6 +22,7 @@ import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
 const props = defineProps({
     photos: Object,
+    allPhotoIds: Array,
     tags: Object,
     items: Array,
     filters: Object,
@@ -120,18 +121,23 @@ const selectPhotos = (photoId) => {
         return;
     }
 
-    // Copilot magic ensues
     const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
-    const lastIndex = props.photos.data.findIndex(photo => photo.id === lastSelected);
-    const currentIndex = props.photos.data.findIndex(photo => photo.id === photoId);
-
-    if (lastIndex === -1 || currentIndex === -1) {
+    if (lastSelected === undefined) {
+        selectedPhotos.value = [photoId];
+        localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
         return;
     }
 
-    const selected = props.photos.data.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1);
+    const startIndex = props.allPhotoIds.indexOf(lastSelected);
+    const endIndex = props.allPhotoIds.indexOf(photoId);
 
-    selectedPhotos.value = selected.map(photo => photo.id);
+    if (startIndex === -1 || endIndex === -1) {
+        return;
+    }
+
+    const from = Math.min(startIndex, endIndex);
+    const to = Math.max(startIndex, endIndex);
+    selectedPhotos.value = props.allPhotoIds.slice(from, to + 1);
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
@@ -266,10 +272,7 @@ const exportData = (format) => {
                     class="mt-6"
                 />
 
-                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-between gap-4">
-                    <div class="flex items-center text-gray-700 dark:text-white text-sm">
-                        Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
-                    </div>
+                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-end gap-4">
                     <div class="flex flex-row gap-4">
                         <div>
                             <InputLabel for="sort-column" value="Order by" />
@@ -293,7 +296,7 @@ const exportData = (format) => {
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
-                    <div v-if="photos.links?.length && photos.last_page > 1" class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                    <div class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
                         <div class="flex items-center text-gray-700 dark:text-white text-sm">
                             Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                         </div>
@@ -373,7 +376,7 @@ const exportData = (format) => {
                             </div>
                         </div>
 
-                        <div v-if="photos.links?.length && photos.last_page > 1" class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
+                        <div class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
                             <div class="bg-white text-blue-500 dark:bg-gray-800 dark:text-white flex items-center justify-center">
                                 Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                             </div>
