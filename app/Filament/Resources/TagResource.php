@@ -36,7 +36,8 @@ class TagResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->maxLength(191),
+                    ->maxLength(191)
+                    ->autofocus(session()->has('last_tag_type_id')),
             ]);
     }
 
