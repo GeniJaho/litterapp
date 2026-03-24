@@ -28,6 +28,8 @@ class Photo extends Model
     /** @use HasFactory<PhotoFactory> */
     use HasFactory;
 
+    protected $appends = ['full_path'];
+
     /**
      * @return array<string, string>
      */
@@ -36,6 +38,7 @@ class Photo extends Model
         return [
             'user_id' => 'integer',
             'size_kb' => 'integer',
+            'share_expires_at' => 'datetime',
         ];
     }
 
@@ -130,5 +133,29 @@ class Photo extends Model
             ->when($filters->has_content === true && $contentTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($filters->has_content === false && $contentTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
+    }
+
+    public function generateShareToken(): string
+    {
+        $this->share_token = str()->uuid()->toString();
+        $this->save();
+
+        return $this->share_token;
+    }
+
+    public function getShareUrl(): string
+    {
+        return route('photo.share', ['token' => $this->share_token]);
+    }
+
+    public function isShareable(): bool
+    {
+        return $this->share_token !== null
+            && ($this->share_expires_at === null || $this->share_expires_at->isFuture());
+    }
+
+    public function incrementShareViewCount(): void
+    {
+        $this->increment('share_view_count');
     }
 }

@@ -30,6 +30,7 @@ const props = defineProps({
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
+const selectionAnchor = ref(localStorage.getItem('selectionAnchor') ? parseInt(localStorage.getItem('selectionAnchor')) : null);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
     {label: '25 per page', value: 25},
@@ -83,6 +84,10 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
+
+    if (selectedPhotos.value.length > 0 && selectionAnchor.value === null) {
+        selectionAnchor.value = selectedPhotos.value[selectedPhotos.value.length - 1];
+    }
 });
 
 onUnmounted(() => {
@@ -112,27 +117,47 @@ const selectPhoto = (photoId) => {
         selectedPhotos.value.push(photoId);
     }
 
+    selectionAnchor.value = photoId;
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+    localStorage.setItem('selectionAnchor', photoId.toString());
 };
 
-const selectPhotos = (photoId) => {
+const selectPhotos = async (photoId) => {
     if (! isSelecting.value) {
         return;
     }
 
-    // Copilot magic ensues
-    const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
-    const lastIndex = props.photos.data.findIndex(photo => photo.id === lastSelected);
-    const currentIndex = props.photos.data.findIndex(photo => photo.id === photoId);
+    const currentPagePhoto = props.photos.data.find(photo => photo.id === photoId);
 
-    if (lastIndex === -1 || currentIndex === -1) {
+    if (currentPagePhoto) {
+        const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
+        const lastIndex = props.photos.data.findIndex(photo => photo.id === lastSelected);
+        const currentIndex = props.photos.data.findIndex(photo => photo.id === photoId);
+
+        if (lastIndex !== -1 && currentIndex !== -1) {
+            const selected = props.photos.data.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1);
+            selectedPhotos.value = selected.map(photo => photo.id);
+            localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+            return;
+        }
+    }
+
+    if (selectionAnchor.value === null) {
+        selectionAnchor.value = photoId;
+        selectedPhotos.value = [photoId];
+        localStorage.setItem('selectionAnchor', photoId.toString());
+        localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
         return;
     }
 
-    const selected = props.photos.data.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1);
-
-    selectedPhotos.value = selected.map(photo => photo.id);
-    localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+    try {
+        const response = await fetch(`/photos/range-ids?start_id=${selectionAnchor.value}&end_id=${photoId}`);
+        const data = await response.json();
+        selectedPhotos.value = data.photo_ids;
+        localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+    } catch (error) {
+        console.error('Failed to fetch photo range:', error);
+    }
 };
 
 const toggleSelecting = () => {
@@ -147,7 +172,9 @@ const toggleSelecting = () => {
 const clearSelection = () => {
     isSelecting.value = false;
     selectedPhotos.value = [];
+    selectionAnchor.value = null;
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+    localStorage.removeItem('selectionAnchor');
 };
 
 const deletePhoto = (photoId) => {
@@ -270,7 +297,16 @@ const exportData = (format) => {
                     <div class="flex items-center text-gray-700 dark:text-white text-sm">
                         Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                     </div>
-                    <div class="flex flex-row gap-4">
+                    <div class="flex flex-row gap-4 items-end">
+                        <div>
+                            <InputLabel for="per-page" value="Per page" />
+                            <SelectInput
+                                id="per-page"
+                                v-model="perPage"
+                                :options="perPageOptions"
+                                class="mt-1 block w-full max-w-36 sm:w-36"
+                            ></SelectInput>
+                        </div>
                         <div>
                             <InputLabel for="sort-column" value="Order by" />
                             <SelectInput

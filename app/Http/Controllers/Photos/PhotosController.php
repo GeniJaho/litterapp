@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetNextPhotoAction;
+use App\Actions\Photos\GetPhotoIdsInRangeAction;
 use App\Actions\Photos\GetPreviousPhotoAction;
 use App\Actions\Photos\GetRelevantTagShortcutAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
@@ -130,6 +131,22 @@ class PhotosController extends Controller
         return to_route('my-photos');
     }
 
+    public function share(Photo $photo): JsonResponse
+    {
+        if (auth()->id() !== $photo->user_id) {
+            abort(404);
+        }
+
+        if (! $photo->share_token) {
+            $photo->generateShareToken();
+        }
+
+        return response()->json([
+            'share_url' => $photo->getShareUrl(),
+            'share_token' => $photo->share_token,
+        ]);
+    }
+
     /**
      * @return Collection<int, TagShortcut>
      */
@@ -141,5 +158,29 @@ class PhotosController extends Controller
             ->with(TagShortcut::commonEagerLoads())
             ->orderBy('shortcut')
             ->get();
+    }
+
+    /**
+     * @return array{photo_ids: array<int>}
+     */
+    public function getPhotoIdsInRange(
+        Request $request,
+        GetPhotoIdsInRangeAction $getPhotoIdsInRangeAction,
+    ): array {
+        $request->validate([
+            'start_id' => 'required|integer',
+            'end_id' => 'required|integer',
+        ]);
+
+        /** @var User $user */
+        $user = auth()->user();
+
+        $photoIds = $getPhotoIdsInRangeAction->run(
+            $user,
+            $request->integer('start_id'),
+            $request->integer('end_id'),
+        );
+
+        return ['photo_ids' => $photoIds];
     }
 }
