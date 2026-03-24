@@ -149,13 +149,13 @@ class ReplaceItems extends Page implements HasForms
         $toItem = Item::findOrFail($data['toItemId']);
 
         // Delete photo_items where the photo already has the target item (avoid duplicates)
+        $photoIdsWithTarget = DB::table('photo_items')
+            ->where('item_id', $toItem->id)
+            ->pluck('photo_id');
+
         $deletedRows = DB::table('photo_items')
             ->where('item_id', $fromItem->id)
-            ->whereIn('photo_id', function ($query) use ($toItem): void {
-                $query->select('photo_id')
-                    ->from('photo_items')
-                    ->where('item_id', $toItem->id);
-            })
+            ->whereIn('photo_id', $photoIdsWithTarget)
             ->delete();
 
         // Replace remaining photo_items from old item to new item
