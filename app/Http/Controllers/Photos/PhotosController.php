@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Photos;
 
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetNextPhotoAction;
-use App\Actions\Photos\GetPhotoIdsInRangeAction;
 use App\Actions\Photos\GetPreviousPhotoAction;
 use App\Actions\Photos\GetRelevantTagShortcutAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
@@ -64,6 +63,7 @@ class PhotosController extends Controller
 
         return Inertia::render('Photos/Index', [
             'photos' => $photos,
+            'allPhotoIds' => $filterPhotosAction->allIds($user),
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
@@ -142,29 +142,5 @@ class PhotosController extends Controller
             ->with(TagShortcut::commonEagerLoads())
             ->orderBy('shortcut')
             ->get();
-    }
-
-    /**
-     * @return array{photo_ids: array<int>}
-     */
-    public function getPhotoIdsInRange(
-        Request $request,
-        GetPhotoIdsInRangeAction $getPhotoIdsInRangeAction,
-    ): array {
-        $request->validate([
-            'start_id' => 'required|integer',
-            'end_id' => 'required|integer',
-        ]);
-
-        /** @var User $user */
-        $user = auth()->user();
-
-        $photoIds = $getPhotoIdsInRangeAction->run(
-            $user,
-            $request->integer('start_id'),
-            $request->integer('end_id'),
-        );
-
-        return ['photo_ids' => $photoIds];
     }
 }

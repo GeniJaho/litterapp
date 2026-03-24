@@ -22,6 +22,7 @@ import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
 const props = defineProps({
     photos: Object,
+    allPhotoIds: Array,
     tags: Object,
     items: Array,
     filters: Object,
@@ -30,7 +31,6 @@ const props = defineProps({
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
-const selectionAnchor = ref(localStorage.getItem('selectionAnchor') ? parseInt(localStorage.getItem('selectionAnchor')) : null);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
     {label: '25 per page', value: 25},
@@ -84,10 +84,6 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
-
-    if (selectedPhotos.value.length > 0 && selectionAnchor.value === null) {
-        selectionAnchor.value = selectedPhotos.value[selectedPhotos.value.length - 1];
-    }
 });
 
 onUnmounted(() => {
@@ -117,47 +113,32 @@ const selectPhoto = (photoId) => {
         selectedPhotos.value.push(photoId);
     }
 
-    selectionAnchor.value = photoId;
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
-    localStorage.setItem('selectionAnchor', photoId.toString());
 };
 
-const selectPhotos = async (photoId) => {
+const selectPhotos = (photoId) => {
     if (! isSelecting.value) {
         return;
     }
 
-    const currentPagePhoto = props.photos.data.find(photo => photo.id === photoId);
-
-    if (currentPagePhoto) {
-        const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
-        const lastIndex = props.photos.data.findIndex(photo => photo.id === lastSelected);
-        const currentIndex = props.photos.data.findIndex(photo => photo.id === photoId);
-
-        if (lastIndex !== -1 && currentIndex !== -1) {
-            const selected = props.photos.data.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1);
-            selectedPhotos.value = selected.map(photo => photo.id);
-            localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
-            return;
-        }
-    }
-
-    if (selectionAnchor.value === null) {
-        selectionAnchor.value = photoId;
+    const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
+    if (lastSelected === undefined) {
         selectedPhotos.value = [photoId];
-        localStorage.setItem('selectionAnchor', photoId.toString());
         localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
         return;
     }
 
-    try {
-        const response = await fetch(`/photos/range-ids?start_id=${selectionAnchor.value}&end_id=${photoId}`);
-        const data = await response.json();
-        selectedPhotos.value = data.photo_ids;
-        localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
-    } catch (error) {
-        console.error('Failed to fetch photo range:', error);
+    const startIndex = props.allPhotoIds.indexOf(lastSelected);
+    const endIndex = props.allPhotoIds.indexOf(photoId);
+
+    if (startIndex === -1 || endIndex === -1) {
+        return;
     }
+
+    const from = Math.min(startIndex, endIndex);
+    const to = Math.max(startIndex, endIndex);
+    selectedPhotos.value = props.allPhotoIds.slice(from, to + 1);
+    localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
 const toggleSelecting = () => {
@@ -172,9 +153,7 @@ const toggleSelecting = () => {
 const clearSelection = () => {
     isSelecting.value = false;
     selectedPhotos.value = [];
-    selectionAnchor.value = null;
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
-    localStorage.removeItem('selectionAnchor');
 };
 
 const deletePhoto = (photoId) => {
@@ -293,20 +272,8 @@ const exportData = (format) => {
                     class="mt-6"
                 />
 
-                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-between gap-4">
-                    <div class="flex items-center text-gray-700 dark:text-white text-sm">
-                        Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
-                    </div>
-                    <div class="flex flex-row gap-4 items-end">
-                        <div>
-                            <InputLabel for="per-page" value="Per page" />
-                            <SelectInput
-                                id="per-page"
-                                v-model="perPage"
-                                :options="perPageOptions"
-                                class="mt-1 block w-full max-w-36 sm:w-36"
-                            ></SelectInput>
-                        </div>
+                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-end gap-4">
+                    <div class="flex flex-row gap-4">
                         <div>
                             <InputLabel for="sort-column" value="Order by" />
                             <SelectInput
@@ -329,7 +296,7 @@ const exportData = (format) => {
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
-                    <div v-if="photos.links?.length && photos.last_page > 1" class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                    <div class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
                         <div class="flex items-center text-gray-700 dark:text-white text-sm">
                             Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                         </div>
@@ -409,7 +376,7 @@ const exportData = (format) => {
                             </div>
                         </div>
 
-                        <div v-if="photos.links?.length && photos.last_page > 1" class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
+                        <div class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
                             <div class="bg-white text-blue-500 dark:bg-gray-800 dark:text-white flex items-center justify-center">
                                 Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                             </div>
