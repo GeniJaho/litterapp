@@ -1,5 +1,5 @@
 <x-filament-panels::page>
-    <x-filament-panels::form wire:submit="replace">
+    <x-filament-panels::form>
         {{ $this->form }}
 
         <x-filament-panels::form.actions
