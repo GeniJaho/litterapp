@@ -92,49 +92,7 @@ class ReplaceItems extends Page implements HasForms
         return [
             Action::make('replace')
                 ->label('Replace Items')
-                ->requiresConfirmation()
-                ->modalHeading('Confirm Item Replacement')
-                ->modalDescription(function (): string {
-                    $data = $this->form->getState();
-
-                    /** @var Item|null $fromItem */
-                    $fromItem = Item::find($data['fromItemId']);
-                    /** @var Item|null $toItem */
-                    $toItem = Item::find($data['toItemId']);
-
-                    if (! $fromItem || ! $toItem) {
-                        return 'Please select both items first.';
-                    }
-
-                    $affectedPhotos = DB::table('photo_items')
-                        ->where('item_id', $fromItem->id)
-                        ->whereNotIn('photo_id', function ($query) use ($toItem): void {
-                            $query->select('photo_id')
-                                ->from('photo_items')
-                                ->where('item_id', $toItem->id);
-                        })
-                        ->distinct('photo_id')
-                        ->count('photo_id');
-
-                    $skippedPhotos = DB::table('photo_items')
-                        ->where('item_id', $fromItem->id)
-                        ->whereIn('photo_id', function ($query) use ($toItem): void {
-                            $query->select('photo_id')
-                                ->from('photo_items')
-                                ->where('item_id', $toItem->id);
-                        })
-                        ->distinct('photo_id')
-                        ->count('photo_id');
-
-                    $message = "This will replace '{$fromItem->name}' with '{$toItem->name}' in {$affectedPhotos} photo(s).";
-
-                    if ($skippedPhotos > 0) {
-                        $message .= " {$skippedPhotos} photo(s) already have '{$toItem->name}' and will be skipped (the '{$fromItem->name}' entry will be removed).";
-                    }
-
-                    return $message;
-                })
-                ->action('replace'),
+                ->submit('replace'),
         ];
     }
 
@@ -143,32 +101,125 @@ class ReplaceItems extends Page implements HasForms
         /** @var array{fromItemId: int, toItemId: int} $data */
         $data = $this->form->getState();
 
+        if ($data['fromItemId'] === $data['toItemId']) {
+            Notification::make()
+                ->title('Same item selected')
+                ->body('The item to replace and the replacement item cannot be the same.')
+                ->danger()
+                ->send();
+
+            return;
+        }
+
         /** @var Item $fromItem */
         $fromItem = Item::findOrFail($data['fromItemId']);
         /** @var Item $toItem */
         $toItem = Item::findOrFail($data['toItemId']);
 
-        // Delete photo_items where the photo already has the target item (avoid duplicates)
+        $totalFromPhotos = DB::table('photo_items')
+            ->where('item_id', $fromItem->id)
+            ->count();
+
+        if ($totalFromPhotos === 0) {
+            Notification::make()
+                ->title('Nothing to replace')
+                ->body("'{$fromItem->name}' is not used in any photos.")
+                ->warning()
+                ->send();
+
+            return;
+        }
+
         $photoIdsWithTarget = DB::table('photo_items')
             ->where('item_id', $toItem->id)
             ->pluck('photo_id');
 
-        $deletedRows = DB::table('photo_items')
+        $affectedPhotos = DB::table('photo_items')
+            ->where('item_id', $fromItem->id)
+            ->whereNotIn('photo_id', $photoIdsWithTarget)
+            ->distinct()
+            ->count('photo_id');
+
+        $skippedPhotos = DB::table('photo_items')
             ->where('item_id', $fromItem->id)
             ->whereIn('photo_id', $photoIdsWithTarget)
-            ->delete();
+            ->distinct()
+            ->count('photo_id');
 
-        // Replace remaining photo_items from old item to new item
-        $replacedRows = DB::table('photo_items')
-            ->where('item_id', $fromItem->id)
-            ->update(['item_id' => $toItem->id]);
+        $this->replacingFromId = $fromItem->id;
+        $this->replacingToId = $toItem->id;
+        $this->affectedPhotos = $affectedPhotos;
+        $this->skippedPhotos = $skippedPhotos;
 
-        Notification::make()
-            ->title('Items Replaced')
-            ->body("Replaced '{$fromItem->name}' with '{$toItem->name}' in {$replacedRows} photo(s), skipped {$deletedRows} (already had '{$toItem->name}')")
-            ->success()
-            ->send();
+        $this->mountAction('confirmReplace');
+    }
 
-        $this->form->fill();
+    public ?int $replacingFromId = null;
+
+    public ?int $replacingToId = null;
+
+    public int $affectedPhotos = 0;
+
+    public int $skippedPhotos = 0;
+
+    public function confirmReplaceAction(): Action
+    {
+        return Action::make('confirmReplace')
+            ->requiresConfirmation()
+            ->modalHeading('Confirm Item Replacement')
+            ->modalDescription(function (): string {
+                /** @var Item|null $from */
+                $from = Item::find($this->replacingFromId);
+                /** @var Item|null $to */
+                $to = Item::find($this->replacingToId);
+
+                if (! $from || ! $to) {
+                    return 'Please select both items first.';
+                }
+
+                $message = "This will replace '{$from->name}' with '{$to->name}' in {$this->affectedPhotos} photo(s).";
+
+                if ($this->skippedPhotos > 0) {
+                    $message .= " {$this->skippedPhotos} photo(s) already have '{$to->name}' and will be skipped (the '{$from->name}' entry will be removed).";
+                }
+
+                return $message;
+            })
+            ->action(function (): void {
+                /** @var Item|null $fromItem */
+                $fromItem = Item::find($this->replacingFromId);
+                /** @var Item|null $toItem */
+                $toItem = Item::find($this->replacingToId);
+
+                if (! $fromItem || ! $toItem) {
+                    return;
+                }
+
+                $photoIdsWithTarget = DB::table('photo_items')
+                    ->where('item_id', $toItem->id)
+                    ->pluck('photo_id');
+
+                $deletedRows = DB::table('photo_items')
+                    ->where('item_id', $fromItem->id)
+                    ->whereIn('photo_id', $photoIdsWithTarget)
+                    ->delete();
+
+                $replacedRows = DB::table('photo_items')
+                    ->where('item_id', $fromItem->id)
+                    ->update(['item_id' => $toItem->id]);
+
+                Notification::make()
+                    ->title('Items Replaced')
+                    ->body(
+                        "Replaced '{$fromItem->name}' with '{$toItem->name}' in {$replacedRows} photo(s)."
+                        .($deletedRows > 0 ? " Skipped {$deletedRows} (already had '{$toItem->name}')." : '')
+                    )
+                    ->success()
+                    ->send();
+
+                $this->replacingFromId = null;
+                $this->replacingToId = null;
+                $this->form->fill();
+            });
     }
 }
