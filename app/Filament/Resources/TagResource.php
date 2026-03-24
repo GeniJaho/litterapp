@@ -37,7 +37,7 @@ class TagResource extends Resource
                     ->required()
                     ->unique(ignoreRecord: true)
                     ->maxLength(191)
-                    ->autofocus(session()->has('last_tag_type_id')),
+                    ->autofocus(),
             ]);
     }
 
