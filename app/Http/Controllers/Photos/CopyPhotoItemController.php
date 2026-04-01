@@ -10,7 +10,10 @@ class CopyPhotoItemController extends Controller
 {
     public function __invoke(PhotoItem $photoItem): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
+        $user = auth()->user();
+        $photo = $photoItem->photo;
+
+        if (! $user->is_admin && $user->id !== $photo->user_id) {
             abort(404);
         }
 

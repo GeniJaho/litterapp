@@ -20,9 +20,15 @@ class PhotosBelongToUser implements ValidationRule
             return;
         }
 
+        $user = auth()->user();
+
+        if ($user->is_admin) {
+            return;
+        }
+
         $photosBelongsToOthers = Photo::query()
             ->whereIn('id', $value)
-            ->where('user_id', '!=', auth()->id())
+            ->where('user_id', '!=', $user->id)
             ->exists();
 
         if ($photosBelongsToOthers) {
