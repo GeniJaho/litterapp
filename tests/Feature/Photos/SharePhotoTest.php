@@ -69,14 +69,16 @@ test('viewing a shared photo increments the view count', function (): void {
     expect($photo->refresh()->share_view_count)->toBe(1);
 });
 
-test('viewing a shared photo does not expose user data', function (): void {
+test('viewing a shared photo only exposes user name and photo', function (): void {
     $photo = Photo::factory()->create(['share_token' => 'test-token']);
 
     $response = $this->get('/s/test-token')->assertSuccessful();
 
     $response->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
         ->component('Photos/Share/Show')
-        ->missing('photo.user')
+        ->has('photo.user.name')
+        ->has('photo.user.profile_photo_url')
+        ->missing('photo.user.email')
     );
 });
 

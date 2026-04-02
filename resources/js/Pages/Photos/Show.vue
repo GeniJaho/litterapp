@@ -18,7 +18,6 @@ import VueMagnifier from '@websitebeaver/vue-magnifier';
 import '@websitebeaver/vue-magnifier/styles.css';
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
-import ShareIcon from "@/Components/ShareIcon.vue";
 import SuggestedItem from "@/Pages/Photos/Partials/SuggestedItem.vue";
 import SuggestedTagShortcut from "@/Pages/Photos/Partials/SuggestedTagShortcut.vue";
 
@@ -119,19 +118,23 @@ const generateShareLink = () => {
         });
 };
 
-const copyShareLink = async () => {
+const copyShareLink = () => {
     if (!shareUrl.value) return;
-    
+
     isCopying.value = true;
-    try {
-        await navigator.clipboard.writeText(shareUrl.value);
-        setTimeout(() => {
-            isCopying.value = false;
-        }, 1500);
-    } catch (err) {
-        console.error('Failed to copy:', err);
+
+    const textarea = document.createElement('textarea');
+    textarea.value = shareUrl.value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    setTimeout(() => {
         isCopying.value = false;
-    }
+    }, 1500);
 };
 
 const addItems = () => {
@@ -415,9 +418,6 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                 <TaggedIcon v-if="photo.photo_items.length"/>
                                 <MagicWandIcon v-if="suggestedItem && suggestedItem.id"/>
-                                <button @click="generateShareLink" class="flex items-center justify-center bg-gray-50 w-8 h-8 rounded-full hover:bg-gray-100 dark:bg-gray-700 dark:hover:bg-gray-600 transition-colors cursor-pointer">
-                                    <ShareIcon />
-                                </button>
                             </div>
 
                             <div
@@ -433,7 +433,7 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 class="absolute bottom-4 right-2"
                             />
                         </div>
-                        <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
+                        <div class="flex justify-between mt-4">
                             <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
                                 <PrimaryButton class="group relative">
                                     <Tooltip>
@@ -442,6 +442,10 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                     Previous
                                 </PrimaryButton>
                             </Link>
+                            <PrimaryButton @click="generateShareLink" class="group relative">
+                                <i class="fas fa-share-nodes mr-1"></i>
+                                Share
+                            </PrimaryButton>
                             <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
                                 <PrimaryButton class="group relative">
                                     <Tooltip>
@@ -547,10 +551,10 @@ const adjustZoomLevelWithMouseWheel = (event) => {
             <Modal max-width="md" @close="showShareModal = false" :show="showShareModal">
                 <div class="p-6">
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
-                        Deel deze foto
+                        Share this photo
                     </h3>
                     <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Kopieer de link om deze foto te delen. Iedereen met de link kan de foto bekijken.
+                        Copy the link to share this photo. Anyone with the link can view it.
                     </p>
                     <div class="flex items-center gap-2">
                         <input
@@ -561,14 +565,14 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             @click="$event.target.select()"
                         />
                         <PrimaryButton @click="copyShareLink" class="whitespace-nowrap">
-                            <span v-if="isCopying">Gekopieerd!</span>
-                            <span v-else>Kopieer link</span>
+                            <span v-if="isCopying">Copied!</span>
+                            <span v-else>Copy link</span>
                         </PrimaryButton>
                     </div>
                 </div>
                 <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-end">
                     <PrimaryButton @click="showShareModal = false">
-                        Sluiten
+                        Close
                     </PrimaryButton>
                 </div>
             </Modal>

@@ -11,7 +11,7 @@ class ShareController extends Controller
     public function show(string $token): Response
     {
         $photo = Photo::query()
-            ->with(['photoItems.item', 'photoItems.tags'])
+            ->with(['user:id,name,profile_photo_path', 'photoItems.item', 'photoItems.tags'])
             ->where('share_token', $token)
             ->firstOrFail();
 

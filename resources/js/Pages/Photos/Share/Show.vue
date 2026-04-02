@@ -8,7 +8,7 @@ const props = defineProps({
 
 const formatDate = (date) => {
     if (!date) return null;
-    return new Date(date).toLocaleDateString('nl-NL', {
+    return new Date(date).toLocaleDateString('en-US', {
         day: 'numeric',
         month: 'long',
         year: 'numeric',
@@ -18,7 +18,7 @@ const formatDate = (date) => {
 
 <template>
     <div class="min-h-screen bg-gray-100 dark:bg-gray-900">
-        <Head title="Gedeelde foto - LitterApp" />
+        <Head title="Shared photo - LitterApp" />
 
         <div class="py-10">
             <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -32,17 +32,38 @@ const formatDate = (date) => {
                     </div>
 
                     <div class="p-6">
-                        <div v-if="photo.taken_at_local" class="mb-4">
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {{ formatDate(photo.taken_at_local) }}
-                            </p>
+                        <div class="flex items-center justify-between mb-4">
+                            <div class="flex items-center space-x-3">
+                                <img
+                                    v-if="photo.user?.profile_photo_url"
+                                    :src="photo.user.profile_photo_url"
+                                    :alt="photo.user.name"
+                                    class="h-10 w-10 rounded-full object-cover"
+                                />
+                                <div
+                                    v-else
+                                    class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center"
+                                >
+                                    <span class="text-lg font-medium text-gray-700">
+                                        {{ photo.user?.name?.charAt(0).toUpperCase() }}
+                                    </span>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{ photo.user?.name }}
+                                    </p>
+                                    <p v-if="photo.taken_at_local" class="text-sm text-gray-500 dark:text-gray-400">
+                                        {{ formatDate(photo.taken_at_local) }}
+                                    </p>
+                                </div>
+                            </div>
                         </div>
 
                         <div v-if="photo.photo_items?.length" class="mt-6">
                             <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-3">
-                                Items op deze foto ({{ photo.photo_items.length }})
+                                Items in this photo ({{ photo.photo_items.length }})
                             </h3>
-                            
+
                             <div class="space-y-3">
                                 <div
                                     v-for="photoItem in photo.photo_items"
@@ -74,7 +95,7 @@ const formatDate = (date) => {
                                                 v-if="photoItem.picked_up"
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200"
                                             >
-                                                Opgeruimd
+                                                Picked up
                                             </span>
                                             <span
                                                 v-if="photoItem.recycled"
@@ -86,7 +107,7 @@ const formatDate = (date) => {
                                                 v-if="photoItem.deposit"
                                                 class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200"
                                             >
-                                                Statiegeld
+                                                Deposit
                                             </span>
                                         </div>
                                     </div>
@@ -97,11 +118,11 @@ const formatDate = (date) => {
                         <div v-if="photo.photo_items?.length" class="mt-6 pt-4 border-t border-gray-200 dark:border-gray-700">
                             <div class="flex items-center justify-between text-sm text-gray-500 dark:text-gray-400">
                                 <span>
-                                    {{ photo.photo_items.filter(i => i.picked_up).length }} opgeruimd
+                                    {{ photo.photo_items.filter(i => i.picked_up).length }} picked up
                                     /
-                                    {{ photo.photo_items.filter(i => i.recycled).length }} gerecycled
+                                    {{ photo.photo_items.filter(i => i.recycled).length }} recycled
                                 </span>
-                                <span>{{ photo.share_view_count }} keer bekeken</span>
+                                <span>{{ photo.share_view_count }} views</span>
                             </div>
                         </div>
 
@@ -110,7 +131,7 @@ const formatDate = (date) => {
                                 href="/"
                                 class="text-turqoFocus hover:text-turqoFocus/80 font-medium"
                             >
-                                ← Ga naar LitterApp
+                                &larr; Go to LitterApp
                             </Link>
                         </div>
                     </div>
