@@ -66,8 +66,8 @@ const formatDate = (date) => {
 
                             <div class="space-y-3">
                                 <div
-                                    v-for="photoItem in photo.photo_items"
-                                    :key="photoItem.id"
+                                    v-for="(photoItem, index) in photo.photo_items"
+                                    :key="index"
                                     class="flex items-center justify-between p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
                                 >
                                     <div class="flex items-center space-x-3">
@@ -83,8 +83,8 @@ const formatDate = (date) => {
                                     <div class="flex flex-col items-end gap-2">
                                         <div class="flex items-center gap-1 flex-wrap justify-end">
                                             <span
-                                                v-for="tag in photoItem.tags"
-                                                :key="tag.id"
+                                                v-for="(tag, tagIndex) in photoItem.tags"
+                                                :key="tagIndex"
                                                 class="inline-flex items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
                                             >
                                                 {{ tag.name }}
