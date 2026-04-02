@@ -135,7 +135,7 @@ class Photo extends Model
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 
-    public function generateShareToken(): string
+    public function generateShareToken(): ?string
     {
         $this->share_token = str()->uuid()->toString();
         $this->save();
@@ -150,8 +150,17 @@ class Photo extends Model
 
     public function isShareable(): bool
     {
-        return $this->share_token !== null
-            && ($this->share_expires_at === null || $this->share_expires_at->isFuture());
+        if ($this->share_token === null) {
+            return false;
+        }
+
+        if ($this->share_expires_at === null) {
+            return true;
+        }
+
+        $expiresAt = $this->share_expires_at;
+
+        return $expiresAt instanceof \Illuminate\Support\Carbon && $expiresAt->isFuture();
     }
 
     public function incrementShareViewCount(): void

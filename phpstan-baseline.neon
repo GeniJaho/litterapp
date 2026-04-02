@@ -29,3 +29,27 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Models/TagShortcutItem.php
+
+		-
+			message: '#^Instanceof between string and Illuminate\\Support\\Carbon will always evaluate to false\.$#'
+			identifier: instanceof.alwaysFalse
+			count: 1
+			path: app/Models/Photo.php
+
+		-
+			message: '#^Result of && is always false\.$#'
+			identifier: booleanAnd.alwaysFalse
+			count: 1
+			path: app/Models/Photo.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Actions/Photos/GetPhotoIdsInRangeAction.php
+
+		-
+			message: '#^Method App\\Actions\\Photos\\GetPhotoIdsInRangeAction::run\(\) should return array<int> but returns array<mixed>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Actions/Photos/GetPhotoIdsInRangeAction.php

@@ -8,7 +8,7 @@ use Inertia\Response;
 
 class ShareController extends Controller
 {
-    public function show(string $token): Response|RedirectResponse
+    public function show(string $token): Response
     {
         $photo = Photo::query()
             ->with(['user', 'photoItems.item', 'photoItems.tags'])
