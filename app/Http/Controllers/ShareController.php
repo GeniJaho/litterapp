@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Photo;
 use App\Models\PhotoItem;
+use App\Models\Tag;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -16,7 +17,7 @@ class ShareController extends Controller
             ->where('share_token', $token)
             ->firstOrFail();
 
-        if (! $photo->isShareable()) {
+        if (! $this->isShareable($photo)) {
             abort(403, 'This share link has expired or is invalid.');
         }
 
@@ -38,11 +39,24 @@ class ShareController extends Controller
                     'picked_up' => $photoItem->picked_up,
                     'recycled' => $photoItem->recycled,
                     'deposit' => $photoItem->deposit,
-                    'tags' => $photoItem->tags->map(fn ($tag): array => [
+                    'tags' => $photoItem->tags->map(fn (Tag $tag): array => [
                         'name' => $tag->name,
                     ])->all(),
                 ])->all(),
             ],
         ]);
+    }
+
+    private function isShareable(Photo $photo): bool
+    {
+        if ($photo->share_token === null) {
+            return false;
+        }
+
+        if ($photo->share_expires_at === null) {
+            return true;
+        }
+
+        return $photo->share_expires_at->isFuture();
     }
 }

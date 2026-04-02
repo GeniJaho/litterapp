@@ -9,9 +9,11 @@ class GenerateShareTokenAction
 {
     public function run(Photo $photo): string
     {
-        $photo->share_token = Str::uuid()->toString();
+        $token = Str::uuid()->toString();
+
+        $photo->share_token = $token;
         $photo->save();
 
-        return $photo->share_token;
+        return $token;
     }
 }

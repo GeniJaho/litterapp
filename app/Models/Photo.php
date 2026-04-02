@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Storage;
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
  * @property ?int $size_kb
+ * @property ?string $share_token
+ * @property ?Carbon $share_expires_at
+ * @property int $share_view_count
  * @property-read string $full_path
  */
 class Photo extends Model
@@ -131,18 +134,5 @@ class Photo extends Model
             ->when($filters->has_content === true && $contentTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($filters->has_content === false && $contentTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
-    }
-
-    public function isShareable(): bool
-    {
-        if ($this->share_token === null) {
-            return false;
-        }
-
-        if ($this->share_expires_at === null) {
-            return true;
-        }
-
-        return $this->share_expires_at->isFuture();
     }
 }
