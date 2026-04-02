@@ -8,14 +8,16 @@ use Illuminate\Contracts\Database\Eloquent\Builder;
 
 class GetPreviousPhotoAction
 {
-    public function run(User $user, Photo $photo): ?string
+    public function run(User $user, Photo $photo, bool $showAllPhotos = false): ?string
     {
         $attribute = $photo->getAttribute($user->settings->sort_column);
 
-        /** @var Builder $builder */
-        $builder = $user
-            ->photos()
-            ->filter($user->settings->photo_filters);
+        /** @var \Illuminate\Database\Eloquent\Builder<Photo> $builder */
+        $builder = $showAllPhotos
+            ? Photo::query()->whereHas('user')
+            : $user->photos();
+
+        $builder->filter($user->settings->photo_filters);
 
         if ($attribute) {
             $previousPhoto = $builder->clone()

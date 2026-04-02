@@ -7,6 +7,7 @@ use App\DTO\BulkDeletePhotoItems;
 use App\DTO\BulkPhotoItems;
 use App\Http\Controllers\Controller;
 use App\Models\Item;
+use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\PhotoItemSuggestion;
 use App\Models\PhotoItemTag;
@@ -16,8 +17,35 @@ use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
 {
+    /**
+     * @param  array<int>  $photoIds
+     */
+    private function authorizeAdminOrOwnPhotos(array $photoIds): void
+    {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        if (! $user) {
+            abort(404);
+        }
+
+        $photoUserIds = Photo::query()->whereIn('id', $photoIds)->pluck('user_id')->unique()->values();
+
+        if ($user->is_admin) {
+            return;
+        }
+
+        if ($photoUserIds->count() === 1 && $photoUserIds->first() === $user->id) {
+            return;
+        }
+
+        abort(404);
+    }
+
     public function store(BulkPhotoItems $bulkPhotoItems): void
     {
+        $this->authorizeAdminOrOwnPhotos($bulkPhotoItems->photo_ids);
+
         $items = Item::query()->find(array_column($bulkPhotoItems->items, 'id'))->keyBy('id');
         $usedShortcuts = TagShortcut::query()->find($bulkPhotoItems->used_shortcuts)->keyBy('id');
 
@@ -58,6 +86,8 @@ class BulkPhotoItemsController extends Controller
 
     public function destroy(BulkDeletePhotoItems $bulkDeletePhotoItems): void
     {
+        $this->authorizeAdminOrOwnPhotos($bulkDeletePhotoItems->photo_ids);
+
         DB::transaction(function () use ($bulkDeletePhotoItems): void {
             PhotoItem::query()
                 ->whereIn('photo_id', $bulkDeletePhotoItems->photo_ids)
@@ -77,6 +107,8 @@ class BulkPhotoItemsController extends Controller
 
     public function addTags(BulkAddPhotoTags $bulkAddPhotoTags): RedirectResponse
     {
+        $this->authorizeAdminOrOwnPhotos($bulkAddPhotoTags->photo_ids);
+
         $photosWithMultipleItems = [];
         $photosWithNoItems = [];
         $tagsAdded = false;

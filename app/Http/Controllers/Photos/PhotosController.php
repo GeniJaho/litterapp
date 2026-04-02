@@ -57,17 +57,19 @@ class PhotosController extends Controller
             $user->save();
         }
 
-        $photos = $filterPhotosAction->run($user);
+        $showAllPhotos = $user->is_admin;
+        $photos = $filterPhotosAction->run($user, $showAllPhotos);
 
         $tagsAndItems = $getTagsAndItemsAction->run();
 
         return Inertia::render('Photos/Index', [
             'photos' => $photos,
-            'allPhotoIds' => $filterPhotosAction->allIds($user),
+            'allPhotoIds' => $filterPhotosAction->allIds($user, $showAllPhotos),
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
             'tagShortcuts' => $this->getTagShortcuts($user),
+            'isAdmin' => $user->is_admin,
         ]);
     }
 
@@ -81,19 +83,20 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id) {
+        if (! $user->is_admin && $user->id !== $photo->user_id) {
             abort(404);
         }
 
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
+            $showAllPhotos = $user->is_admin;
 
             return Inertia::render('Photos/Show', [
                 'photoId' => $photo->id,
                 'items' => $tagsAndItems['items'],
                 'tags' => $tagsAndItems['tags'],
-                'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo),
-                'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo),
+                'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo, $showAllPhotos),
+                'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo, $showAllPhotos),
                 'tagShortcuts' => $this->getTagShortcuts($user),
             ]);
         }
@@ -120,7 +123,9 @@ class PhotosController extends Controller
 
     public function destroy(Photo $photo): RedirectResponse
     {
-        if (auth()->id() !== $photo->user_id) {
+        $user = auth()->user();
+
+        if (! $user->is_admin && $user->id !== $photo->user_id) {
             abort(404);
         }
 

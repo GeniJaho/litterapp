@@ -12,7 +12,16 @@ class PhotoItemTagsController extends Controller
 {
     public function store(PhotoItem $photoItem, StorePhotoItemTagRequest $request): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        if (! $user) {
+            abort(404);
+        }
+
+        $photo = $photoItem->photo;
+
+        if (! $user->is_admin && $user->id !== $photo->user_id) {
             abort(404);
         }
 
@@ -23,7 +32,16 @@ class PhotoItemTagsController extends Controller
 
     public function destroy(PhotoItem $photoItem, Tag $tag): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
+        /** @var \App\Models\User|null $user */
+        $user = auth()->user();
+
+        if (! $user) {
+            abort(404);
+        }
+
+        $photo = $photoItem->photo;
+
+        if (! $user->is_admin && $user->id !== $photo->user_id) {
             abort(404);
         }
 

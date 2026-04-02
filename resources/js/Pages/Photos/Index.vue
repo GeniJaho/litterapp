@@ -27,6 +27,7 @@ const props = defineProps({
     items: Array,
     filters: Object,
     tagShortcuts: Array,
+    isAdmin: Boolean,
 });
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
@@ -352,6 +353,10 @@ const exportData = (format) => {
                                     </a>
 
                                     <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
+
+                                    <div v-if="isAdmin && photo.user" class="absolute top-2 left-8 text-xs shadow bg-blue-500 rounded px-2 py-1 text-white">
+                                        {{ photo.user.name }}
+                                    </div>
 
                                     <div class="absolute top-2 right-2 flex gap-2">
                                         <LocationIcon v-if="photo.latitude && photo.longitude"/>
