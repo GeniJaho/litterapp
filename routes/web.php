@@ -48,7 +48,7 @@ Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 Route::get('/auth/twitter/redirect', [TwitterController::class, 'redirect'])->name('auth.twitter.redirect');
 Route::get('/auth/twitter/callback', [TwitterController::class, 'callback']);
 
-Route::get('/s/{token}', [ShareController::class, 'show'])->name('photo.share');
+Route::get('/s/{token}', ShareController::class)->name('photo.share');
 
 Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(function (): void {
     Route::impersonate();

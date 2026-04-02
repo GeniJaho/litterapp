@@ -16,19 +16,74 @@ test('a user can generate a share link for their photo', function (): void {
 
     $this->postJson("/photos/{$photo->id}/share")
         ->assertSuccessful()
-        ->assertJsonStructure(['share_url', 'share_token']);
+        ->assertJsonStructure(['share_url', 'share_token', 'share_expires_at']);
 
     expect($photo->refresh()->share_token)->not->toBeNull();
 });
 
-test('generating a share link twice returns the same token', function (): void {
+test('a user can generate a share link without expiry', function (): void {
     $this->actingAs($user = User::factory()->create());
-    $photo = Photo::factory()->for($user)->create(['share_token' => 'existing-token']);
+    $photo = Photo::factory()->for($user)->create();
 
-    $response = $this->postJson("/photos/{$photo->id}/share")->assertSuccessful();
+    $response = $this->postJson("/photos/{$photo->id}/share")
+        ->assertSuccessful();
 
-    expect($photo->refresh()->share_token)->toBe('existing-token');
-    expect($response->json('share_token'))->toBe('existing-token');
+    expect($response->json('share_expires_at'))->toBeNull();
+    expect($photo->refresh()->share_expires_at)->toBeNull();
+});
+
+test('a user can generate a share link with 7 day expiry', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+
+    $this->freezeTime();
+
+    $response = $this->postJson("/photos/{$photo->id}/share", ['expires_in' => 7])
+        ->assertSuccessful();
+
+    expect($response->json('share_expires_at'))->not->toBeNull();
+    expect($photo->refresh()->share_expires_at->toDateString())->toBe(now()->addDays(7)->toDateString());
+});
+
+test('a user can generate a share link with 30 day expiry', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+
+    $this->freezeTime();
+
+    $this->postJson("/photos/{$photo->id}/share", ['expires_in' => 30])
+        ->assertSuccessful();
+
+    expect($photo->refresh()->share_expires_at->toDateString())->toBe(now()->addDays(30)->toDateString());
+});
+
+test('a user can generate a share link with 90 day expiry', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+
+    $this->freezeTime();
+
+    $this->postJson("/photos/{$photo->id}/share", ['expires_in' => 90])
+        ->assertSuccessful();
+
+    expect($photo->refresh()->share_expires_at->toDateString())->toBe(now()->addDays(90)->toDateString());
+});
+
+test('a user cannot use an invalid expiry value', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create();
+
+    $this->postJson("/photos/{$photo->id}/share", ['expires_in' => 5])
+        ->assertUnprocessable();
+});
+
+test('generating a new share link replaces the previous token', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create(['share_token' => 'old-token']);
+
+    $this->postJson("/photos/{$photo->id}/share")->assertSuccessful();
+
+    expect($photo->refresh()->share_token)->not->toBe('old-token');
 });
 
 test('a user cannot generate a share link for another users photo', function (): void {

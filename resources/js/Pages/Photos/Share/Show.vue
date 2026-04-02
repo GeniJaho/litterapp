@@ -122,7 +122,12 @@ const formatDate = (date) => {
                                     /
                                     {{ photo.photo_items.filter(i => i.recycled).length }} recycled
                                 </span>
-                                <span>{{ photo.share_view_count }} views</span>
+                                <span>
+                                    {{ photo.share_view_count }} views
+                                    <template v-if="photo.share_expires_at">
+                                        &middot; expires {{ formatDate(photo.share_expires_at) }}
+                                    </template>
+                                </span>
                             </div>
                         </div>
 

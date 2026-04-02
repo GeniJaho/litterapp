@@ -10,7 +10,7 @@ use Inertia\Response;
 
 class ShareController extends Controller
 {
-    public function show(string $token): Response
+    public function __invoke(string $token): Response
     {
         $photo = Photo::query()
             ->with(['user:id,name,profile_photo_path', 'photoItems.item', 'photoItems.tags'])
@@ -29,6 +29,7 @@ class ShareController extends Controller
                 'original_file_name' => $photo->original_file_name,
                 'taken_at_local' => $photo->taken_at_local,
                 'share_view_count' => $photo->share_view_count,
+                'share_expires_at' => $photo->share_expires_at?->toIso8601String(),
                 'user' => $photo->user ? [
                     'name' => $photo->user->name,
                     'profile_photo_url' => $photo->user->profile_photo_url,

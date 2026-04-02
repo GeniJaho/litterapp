@@ -104,14 +104,35 @@ const deletePhoto = () => {
 };
 
 const shareUrl = ref(null);
+const shareExpiresAt = ref(null);
 const showShareModal = ref(false);
+const showShareOptions = ref(true);
 const isCopying = ref(false);
+const shareExpiresIn = ref(null);
+
+const shareExpiryOptions = [
+    { value: null, label: 'Never' },
+    { value: 7, label: '7 days' },
+    { value: 30, label: '30 days' },
+    { value: 90, label: '90 days' },
+];
 
 const generateShareLink = () => {
-    axios.post(`/photos/${photo.value.id}/share`)
+    showShareModal.value = true;
+    showShareOptions.value = true;
+    shareUrl.value = null;
+    shareExpiresAt.value = null;
+    shareExpiresIn.value = null;
+};
+
+const confirmShareLink = () => {
+    axios.post(`/photos/${photo.value.id}/share`, {
+        expires_in: shareExpiresIn.value,
+    })
         .then(response => {
             shareUrl.value = response.data.share_url;
-            showShareModal.value = true;
+            shareExpiresAt.value = response.data.share_expires_at;
+            showShareOptions.value = false;
         })
         .catch(error => {
             console.error(error);
@@ -559,24 +580,55 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                     <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
                         Share this photo
                     </h3>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
-                        Copy the link to share this photo. Anyone with the link can view it.
-                    </p>
-                    <div class="flex items-center gap-2">
-                        <input
-                            type="text"
-                            :value="shareUrl"
-                            readonly
-                            class="flex-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-turqoFocus focus:ring-turqoFocus sm:text-sm px-3 py-2"
-                            @click="$event.target.select()"
-                        />
-                        <PrimaryButton @click="copyShareLink" class="whitespace-nowrap">
-                            <span v-if="isCopying">Copied!</span>
-                            <span v-else>Copy link</span>
-                        </PrimaryButton>
+
+                    <div v-if="showShareOptions">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Choose how long the share link should be valid.
+                        </p>
+                        <div class="space-y-2 mb-4">
+                            <label
+                                v-for="option in shareExpiryOptions"
+                                :key="option.value"
+                                class="flex items-center gap-2 cursor-pointer"
+                            >
+                                <input
+                                    type="radio"
+                                    :value="option.value"
+                                    v-model="shareExpiresIn"
+                                    name="share_expiry"
+                                    class="text-turqoFocus focus:ring-turqoFocus"
+                                />
+                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ option.label }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div v-else>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                            Anyone with the link can view this photo.
+                        </p>
+                        <p v-if="shareExpiresAt" class="text-xs text-gray-400 dark:text-gray-500 mb-4">
+                            Expires {{ new Date(shareExpiresAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) }}
+                        </p>
+                        <div class="flex items-center gap-2">
+                            <input
+                                type="text"
+                                :value="shareUrl"
+                                readonly
+                                class="flex-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-turqoFocus focus:ring-turqoFocus sm:text-sm px-3 py-2"
+                                @click="$event.target.select()"
+                            />
+                            <PrimaryButton @click="copyShareLink" class="whitespace-nowrap">
+                                <span v-if="isCopying">Copied!</span>
+                                <span v-else>Copy link</span>
+                            </PrimaryButton>
+                        </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-end">
+                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-end gap-2">
+                    <PrimaryButton v-if="showShareOptions" @click="confirmShareLink">
+                        Generate link
+                    </PrimaryButton>
                     <PrimaryButton @click="showShareModal = false">
                         Close
                     </PrimaryButton>
