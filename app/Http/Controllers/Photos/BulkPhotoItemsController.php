@@ -17,9 +17,18 @@ use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
 {
+    /**
+     * @param  array<int>  $photoIds
+     */
     private function authorizeAdminOrOwnPhotos(array $photoIds): void
     {
+        /** @var \App\Models\User|null $user */
         $user = auth()->user();
+
+        if (! $user) {
+            abort(404);
+        }
+
         $photoUserIds = Photo::query()->whereIn('id', $photoIds)->pluck('user_id')->unique()->values();
 
         if ($user->is_admin) {

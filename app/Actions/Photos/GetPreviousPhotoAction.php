@@ -12,7 +12,7 @@ class GetPreviousPhotoAction
     {
         $attribute = $photo->getAttribute($user->settings->sort_column);
 
-        /** @var Builder $builder */
+        /** @var \Illuminate\Database\Eloquent\Builder<Photo> $builder */
         $builder = $showAllPhotos
             ? Photo::query()->whereHas('user')
             : $user->photos();
