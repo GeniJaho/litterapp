@@ -11,7 +11,7 @@ class ShareController extends Controller
     public function show(string $token): Response
     {
         $photo = Photo::query()
-            ->with(['user', 'photoItems.item', 'photoItems.tags'])
+            ->with(['photoItems.item', 'photoItems.tags'])
             ->where('share_token', $token)
             ->firstOrFail();
 
@@ -19,7 +19,8 @@ class ShareController extends Controller
             abort(403, 'This share link has expired or is invalid.');
         }
 
-        $photo->incrementShareViewCount();
+        $photo->increment('share_view_count');
+        $photo->append('full_path');
 
         return Inertia::render('Photos/Share/Show', [
             'photo' => $photo,

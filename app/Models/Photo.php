@@ -28,8 +28,6 @@ class Photo extends Model
     /** @use HasFactory<PhotoFactory> */
     use HasFactory;
 
-    protected $appends = ['full_path'];
-
     /**
      * @return array<string, string>
      */
@@ -135,19 +133,6 @@ class Photo extends Model
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 
-    public function generateShareToken(): ?string
-    {
-        $this->share_token = str()->uuid()->toString();
-        $this->save();
-
-        return $this->share_token;
-    }
-
-    public function getShareUrl(): string
-    {
-        return route('photo.share', ['token' => $this->share_token]);
-    }
-
     public function isShareable(): bool
     {
         if ($this->share_token === null) {
@@ -158,13 +143,6 @@ class Photo extends Model
             return true;
         }
 
-        $expiresAt = $this->share_expires_at;
-
-        return $expiresAt instanceof \Illuminate\Support\Carbon && $expiresAt->isFuture();
-    }
-
-    public function incrementShareViewCount(): void
-    {
-        $this->increment('share_view_count');
+        return $this->share_expires_at->isFuture();
     }
 }

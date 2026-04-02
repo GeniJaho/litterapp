@@ -1,8 +1,6 @@
 <script setup>
-import { ref } from 'vue';
 import { Head, Link } from '@inertiajs/vue3';
 import TaggedIcon from '@/Components/TaggedIcon.vue';
-import LocationIcon from '@/Components/LocationIcon.vue';
 
 const props = defineProps({
     photo: Object,
@@ -16,8 +14,6 @@ const formatDate = (date) => {
         year: 'numeric',
     });
 };
-
-const hasGps = props.photo.latitude && props.photo.longitude;
 </script>
 
 <template>
@@ -36,27 +32,10 @@ const hasGps = props.photo.latitude && props.photo.longitude;
                     </div>
 
                     <div class="p-6">
-                        <div class="flex items-center justify-between mb-4">
-                            <div class="flex items-center space-x-3">
-                                <div class="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-                                    <span class="text-lg font-medium text-gray-700">
-                                        {{ photo.user?.name?.charAt(0).toUpperCase() }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <p class="text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {{ photo.user?.name }}
-                                    </p>
-                                    <p class="text-sm text-gray-500 dark:text-gray-400">
-                                        {{ formatDate(photo.taken_at_local) }}
-                                    </p>
-                                </div>
-                            </div>
-
-                            <div v-if="hasGps" class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-                                <LocationIcon class="w-5 h-5 mr-1" />
-                                <span>GPS data beschikbaar</span>
-                            </div>
+                        <div v-if="photo.taken_at_local" class="mb-4">
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {{ formatDate(photo.taken_at_local) }}
+                            </p>
                         </div>
 
                         <div v-if="photo.photo_items?.length" class="mt-6">
