@@ -433,27 +433,33 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 class="absolute bottom-4 right-2"
                             />
                         </div>
-                        <div class="flex justify-between mt-4">
-                            <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
-                                <PrimaryButton class="group relative">
-                                    <Tooltip>
-                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &larr;</span>
-                                    </Tooltip>
-                                    Previous
+                        <div class="grid grid-cols-3 items-center mt-4">
+                            <div class="justify-self-start">
+                                <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
+                                    <PrimaryButton class="group relative">
+                                        <Tooltip>
+                                            <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &larr;</span>
+                                        </Tooltip>
+                                        Previous
+                                    </PrimaryButton>
+                                </Link>
+                            </div>
+                            <div class="justify-self-center">
+                                <PrimaryButton @click="generateShareLink" class="group relative">
+                                    <i class="fas fa-share-nodes mr-1"></i>
+                                    Share
                                 </PrimaryButton>
-                            </Link>
-                            <PrimaryButton @click="generateShareLink" class="group relative">
-                                <i class="fas fa-share-nodes mr-1"></i>
-                                Share
-                            </PrimaryButton>
-                            <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
-                                <PrimaryButton class="group relative">
-                                    <Tooltip>
-                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</span>
-                                    </Tooltip>
-                                    Next
-                                </PrimaryButton>
-                            </Link>
+                            </div>
+                            <div class="justify-self-end">
+                                <Link v-if="nextPhotoUrl" :href="nextPhotoUrl">
+                                    <PrimaryButton class="group relative">
+                                        <Tooltip>
+                                            <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</span>
+                                        </Tooltip>
+                                        Next
+                                    </PrimaryButton>
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
