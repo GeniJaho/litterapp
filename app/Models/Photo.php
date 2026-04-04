@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Storage;
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
  * @property ?int $size_kb
+ * @property ?string $share_token
+ * @property ?Carbon $share_expires_at
+ * @property int $share_view_count
  * @property-read string $full_path
  */
 class Photo extends Model
@@ -36,6 +39,7 @@ class Photo extends Model
         return [
             'user_id' => 'integer',
             'size_kb' => 'integer',
+            'share_expires_at' => 'datetime',
         ];
     }
 

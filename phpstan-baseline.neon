@@ -29,3 +29,4 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Models/TagShortcutItem.php
+
