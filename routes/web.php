@@ -11,6 +11,7 @@ use App\Http\Controllers\PhotoItemSuggestionsController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\ExportPhotosController;
+use App\Http\Controllers\Photos\PhotoIdsController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
@@ -68,6 +69,7 @@ Route::middleware([
     Route::post('/photos/tags', [BulkPhotoItemsController::class, 'addTags'])->name('bulk-photo-tags.add');
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
+    Route::get('/my-photos/ids', PhotoIdsController::class)->name('my-photos.ids');
     Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');

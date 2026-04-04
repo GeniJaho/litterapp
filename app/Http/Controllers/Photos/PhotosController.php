@@ -63,7 +63,6 @@ class PhotosController extends Controller
 
         return Inertia::render('Photos/Index', [
             'photos' => $photos,
-            'allPhotoIds' => $filterPhotosAction->allIds($user),
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
