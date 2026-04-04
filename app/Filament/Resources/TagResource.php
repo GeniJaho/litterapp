@@ -31,11 +31,13 @@ class TagResource extends Resource
             ->schema([
                 Select::make('tag_type_id')
                     ->required()
+                    ->default(fn () => session('last_tag_type_id'))
                     ->relationship(name: 'type', titleAttribute: 'name'),
                 TextInput::make('name')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->maxLength(191),
+                    ->maxLength(191)
+                    ->autofocus(),
             ]);
     }
 
