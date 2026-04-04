@@ -139,6 +139,18 @@ const confirmShareLink = () => {
         });
 };
 
+const revokeShareLink = () => {
+    axios.delete(`/photos/${photo.value.id}/share`)
+        .then(() => {
+            shareUrl.value = null;
+            shareExpiresAt.value = null;
+            showShareModal.value = false;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
 const copyShareLink = () => {
     if (!shareUrl.value) return;
 
@@ -625,13 +637,24 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                         </div>
                     </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-end gap-2">
-                    <PrimaryButton v-if="showShareOptions" @click="confirmShareLink">
-                        Generate link
-                    </PrimaryButton>
-                    <PrimaryButton @click="showShareModal = false">
-                        Close
-                    </PrimaryButton>
+                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between">
+                    <div>
+                        <button
+                            v-if="!showShareOptions && shareUrl"
+                            @click="revokeShareLink"
+                            class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
+                        >
+                            Delete link
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <PrimaryButton v-if="showShareOptions" @click="confirmShareLink">
+                            Generate link
+                        </PrimaryButton>
+                        <PrimaryButton @click="showShareModal = false">
+                            Close
+                        </PrimaryButton>
+                    </div>
                 </div>
             </Modal>
         </div>

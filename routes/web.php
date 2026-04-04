@@ -14,6 +14,7 @@ use App\Http\Controllers\Photos\ExportPhotosController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
+use App\Http\Controllers\Photos\RevokeSharePhotoController;
 use App\Http\Controllers\Photos\SharePhotoController;
 use App\Http\Controllers\Photos\UploadPhotosController;
 use App\Http\Controllers\ShareController;
@@ -71,6 +72,7 @@ Route::middleware([
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
     Route::post('/photos/{photo}/share', SharePhotoController::class)->name('photos.share');
+    Route::delete('/photos/{photo}/share', RevokeSharePhotoController::class)->name('photos.share.revoke');
 
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);

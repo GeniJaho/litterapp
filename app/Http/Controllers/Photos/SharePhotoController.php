@@ -16,7 +16,7 @@ class SharePhotoController extends Controller
             abort(404);
         }
 
-        $generateShareToken->run($photo, $request->validated('expires_in'));
+        $generateShareToken->run($photo, $request->integer('expires_in'));
 
         return response()->json([
             'share_url' => route('photo.share', ['token' => $photo->share_token]),

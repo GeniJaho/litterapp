@@ -103,6 +103,49 @@ test('updating expiry on an existing share link keeps the same token', function 
     expect($photo->share_expires_at->toDateString())->toBe(now()->addDays(30)->toDateString());
 });
 
+test('a user can revoke a share link', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create([
+        'share_token' => 'token-to-revoke',
+        'share_expires_at' => now()->addDays(7),
+    ]);
+
+    $this->deleteJson("/photos/{$photo->id}/share")
+        ->assertSuccessful();
+
+    $photo->refresh();
+    expect($photo->share_token)->toBeNull();
+    expect($photo->share_expires_at)->toBeNull();
+});
+
+test('a revoked share link returns 404', function (): void {
+    $this->actingAs($user = User::factory()->create());
+    $photo = Photo::factory()->for($user)->create([
+        'share_token' => 'token-to-revoke',
+    ]);
+
+    $this->deleteJson("/photos/{$photo->id}/share")->assertSuccessful();
+
+    $this->get('/s/token-to-revoke')->assertNotFound();
+});
+
+test('a user cannot revoke a share link for another users photo', function (): void {
+    $this->actingAs(User::factory()->create());
+    $photo = Photo::factory()->create(['share_token' => 'other-token']);
+
+    $this->deleteJson("/photos/{$photo->id}/share")->assertNotFound();
+
+    expect($photo->refresh()->share_token)->toBe('other-token');
+});
+
+test('a guest cannot revoke a share link', function (): void {
+    $photo = Photo::factory()->create(['share_token' => 'guest-token']);
+
+    $this->deleteJson("/photos/{$photo->id}/share")->assertUnauthorized();
+
+    expect($photo->refresh()->share_token)->toBe('guest-token');
+});
+
 test('a user cannot generate a share link for another users photo', function (): void {
     $this->actingAs(User::factory()->create());
     $photo = Photo::factory()->create();
