@@ -64,7 +64,7 @@ const specialItems = [
         <div class="flex flex-col px-12 lg:px-40 space-y-12 bg-mainWhite dark:bg-darkBlue ">
             <div class="mt-12">
                 <h1 class="text-xl leading-8 font-black tracking-widest-xl dark:text-mainWhite text-darkBlue">
-                    Welcome to LitterApp, The Platform for Citizen Science!
+                    Welcome to LitterApp!
                 </h1>
                 <div class="flex flex-col md:flex-row md:space-x-24 md:items-end mt-8 md:mt-8">
                     <div
