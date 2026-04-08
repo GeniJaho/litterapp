@@ -66,7 +66,7 @@ const specialItems = [
                 <h1 class="text-xl leading-8 font-black tracking-widest-xl dark:text-mainWhite text-darkBlue">
                     Welcome to LitterApp!
                 </h1>
-                <div class="flex flex-col md:flex-row md:space-x-24 md:items-end md:justify-between mt-16 md:mt-16">
+                <div class="flex flex-col md:flex-row md:space-x-24 md:items-end md:justify-between mt-8 md:mt-8">
                     <div
                         class="tracking-widest-xl md:leading-12 text-4xl md:text-6xl dark:text-mainWhite text-darkBlue">
                         From
@@ -87,7 +87,7 @@ const specialItems = [
                     </div>
                 </div>
 
-                <div class="pt-32">
+                <div class="pt-16">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         <LinkTile
                             v-for="link in links"
