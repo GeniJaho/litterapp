@@ -27,10 +27,9 @@ const props = defineProps({
     filters: Object,
     tagShortcuts: Array,
 });
-
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
-const allPhotoIds = ref([]);
+const photoIds = ref([]);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
     {label: '25 per page', value: 25},
@@ -86,7 +85,7 @@ onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
 
     if (isSelecting.value) {
-        fetchAllPhotoIds();
+        fetchPhotoIds();
     }
 });
 
@@ -132,8 +131,8 @@ const selectPhotos = (photoId) => {
         return;
     }
 
-    const startIndex = allPhotoIds.value.indexOf(lastSelected);
-    const endIndex = allPhotoIds.value.indexOf(photoId);
+    const startIndex = photoIds.value.indexOf(lastSelected);
+    const endIndex = photoIds.value.indexOf(photoId);
 
     if (startIndex === -1 || endIndex === -1) {
         return;
@@ -141,18 +140,16 @@ const selectPhotos = (photoId) => {
 
     const from = Math.min(startIndex, endIndex);
     const to = Math.max(startIndex, endIndex);
-    selectedPhotos.value = allPhotoIds.value.slice(from, to + 1);
+    selectedPhotos.value = photoIds.value.slice(from, to + 1);
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
-const fetchAllPhotoIds = () => {
-    if (allPhotoIds.value.length) {
-        return;
-    }
+const fetchPhotoIds = () => {
+    const limit = props.photos.current_page * props.photos.per_page;
 
-    axios.get('/my-photos/ids')
+    axios.get('/my-photos/ids', { params: { limit } })
         .then(response => {
-            allPhotoIds.value = response.data;
+            photoIds.value = response.data;
         });
 };
 
@@ -163,13 +160,13 @@ const toggleSelecting = () => {
     }
 
     isSelecting.value = true;
-    fetchAllPhotoIds();
+    fetchPhotoIds();
 };
 
 const clearSelection = () => {
     isSelecting.value = false;
     selectedPhotos.value = [];
-    allPhotoIds.value = [];
+    photoIds.value = [];
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
