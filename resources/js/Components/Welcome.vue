@@ -61,22 +61,22 @@ const specialItems = [
 <template>
 
     <div>
-        <div class="flex flex-col px-12 lg:px-40 space-y-12 bg-mainWhite dark:bg-darkBlue ">
+        <div class="flex flex-col px-12 lg:px-24 space-y-12 bg-mainWhite dark:bg-darkBlue ">
             <div class="mt-12">
                 <h1 class="text-xl leading-8 font-black tracking-widest-xl dark:text-mainWhite text-darkBlue">
                     Welcome to LitterApp!
                 </h1>
-                <div class="flex flex-col md:flex-row md:space-x-24 md:items-end mt-16 md:mt-16">
+                <div class="flex flex-col md:flex-row md:space-x-24 md:items-end md:justify-between mt-16 md:mt-16">
                     <div
                         class="tracking-widest-xl md:leading-12 text-4xl md:text-6xl dark:text-mainWhite text-darkBlue">
                         From
-                        <span class="font-black tracking-widest-xl">waste to data</span>, step by step
+                        <span class="font-black tracking-widest-xl">waste to data</span>,
+                        <br> step by step
                     </div>
                     <div class="">
                         <div
                             class="whitespace-nowrap text-base font-normal tracking-widest-xl dark:text-mainWhite text-darkBlue pt-12 pb-4">
-                            I
-                            already know the story
+                            I already know the story
                         </div>
                         <Link :href="route('upload')">
                             <button
@@ -313,7 +313,7 @@ const specialItems = [
 
 
         <div
-            class="flex flex-col md:flex-row md:space-x-28 md:items-end py-20 md:py-32 px-12 lg:px-40 bg-darkBlue dark:bg-mainWhite">
+            class="flex flex-col md:flex-row md:space-x-28 md:items-end py-20 md:py-32 px-12 lg:px-24 bg-darkBlue dark:bg-mainWhite">
             <div
                 class="tracking-widest-xl md:leading-12 text-4xl md:text-6xl text-mainWhite dark:text-darkBlue">
                 The

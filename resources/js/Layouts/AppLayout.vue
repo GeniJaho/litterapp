@@ -51,7 +51,7 @@ const logout = () => {
             </div>
             <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
-                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-40">
+                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-24">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
