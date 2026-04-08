@@ -17,12 +17,7 @@ class ListTags extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()
-                ->after(function ($record, array $data, array $arguments): void {
-                    if ($arguments['another'] ?? false) {
-                        session(['last_tag_type_id' => $data['tag_type_id']]);
-                    }
-                }),
+            CreateAction::make(),
         ];
     }
 
