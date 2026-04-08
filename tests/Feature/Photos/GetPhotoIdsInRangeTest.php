@@ -4,24 +4,17 @@ use App\DTO\PhotoFilters;
 use App\DTO\UserSettings;
 use App\Models\Photo;
 use App\Models\User;
-use Illuminate\Testing\Fluent\AssertableJson;
-use Inertia\Testing\AssertableInertia;
 
-test('all photo ids are passed in sorted order', function (): void {
+test('all photo ids are returned in sorted order', function (): void {
     $this->actingAs($user = User::factory()->create());
 
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $photoC = Photo::factory()->for($user)->create();
 
-    $response = $this->get('/my-photos');
-
-    $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-        ->component('Photos/Index')
-        ->where('allPhotoIds', [$photoC->id, $photoB->id, $photoA->id])
-        ->etc()
-    );
+    $this->getJson('/my-photos/ids')
+        ->assertOk()
+        ->assertExactJson([$photoC->id, $photoB->id, $photoA->id]);
 });
 
 test('all photo ids exclude other users photos', function (): void {
@@ -32,14 +25,9 @@ test('all photo ids exclude other users photos', function (): void {
     Photo::factory()->for($otherUser)->create();
     $photoC = Photo::factory()->for($user)->create();
 
-    $response = $this->get('/my-photos');
-
-    $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-        ->component('Photos/Index')
-        ->where('allPhotoIds', [$photoC->id, $photoA->id])
-        ->etc()
-    );
+    $this->getJson('/my-photos/ids')
+        ->assertOk()
+        ->assertExactJson([$photoC->id, $photoA->id]);
 });
 
 test('all photo ids respect non-id sort settings', function (): void {
@@ -53,32 +41,24 @@ test('all photo ids respect non-id sort settings', function (): void {
     $photoC = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinutes(2)]);
     $photoD = Photo::factory()->for($user)->create(['taken_at_local' => now()->addMinutes(4)]);
 
-    $response = $this->get('/my-photos');
-
-    $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-        ->component('Photos/Index')
-        ->where('allPhotoIds', [$photoB->id, $photoC->id, $photoA->id, $photoD->id])
-        ->etc()
-    );
+    $this->getJson('/my-photos/ids')
+        ->assertOk()
+        ->assertExactJson([$photoB->id, $photoC->id, $photoA->id, $photoD->id]);
 });
 
 test('all photo ids respect filters', function (): void {
     $this->actingAs($user = User::factory()->create());
 
-    Photo::factory()->for($user)->create();
-    Photo::factory()->for($user)->create();
-    Photo::factory()->for($user)->create();
+    Photo::factory()->for($user)->count(3)->create();
 
     $user->settings->photo_filters = new PhotoFilters(item_ids: []);
     $user->save();
 
-    $response = $this->get('/my-photos');
+    $this->getJson('/my-photos/ids')
+        ->assertOk()
+        ->assertJsonCount(3);
+});
 
-    $response->assertOk();
-    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-        ->component('Photos/Index')
-        ->has('allPhotoIds', 3)
-        ->etc()
-    );
+test('guest cannot fetch photo ids', function (): void {
+    $this->getJson('/my-photos/ids')->assertUnauthorized();
 });

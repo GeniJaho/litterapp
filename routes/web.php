@@ -11,10 +11,14 @@ use App\Http\Controllers\PhotoItemSuggestionsController;
 use App\Http\Controllers\Photos\BulkPhotoItemsController;
 use App\Http\Controllers\Photos\CopyPhotoItemController;
 use App\Http\Controllers\Photos\ExportPhotosController;
+use App\Http\Controllers\Photos\PhotoIdsController;
 use App\Http\Controllers\Photos\PhotoItemsController;
 use App\Http\Controllers\Photos\PhotoItemTagsController;
 use App\Http\Controllers\Photos\PhotosController;
+use App\Http\Controllers\Photos\RevokeSharePhotoController;
+use App\Http\Controllers\Photos\SharePhotoController;
 use App\Http\Controllers\Photos\UploadPhotosController;
+use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutItemController;
@@ -46,6 +50,8 @@ Route::get('/auth/github/callback', [GitHubController::class, 'callback']);
 Route::get('/auth/twitter/redirect', [TwitterController::class, 'redirect'])->name('auth.twitter.redirect');
 Route::get('/auth/twitter/callback', [TwitterController::class, 'callback']);
 
+Route::get('/s/{token}', ShareController::class)->name('photo.share');
+
 Route::middleware(['auth', config('jetstream.auth_session'), 'verified'])->group(function (): void {
     Route::impersonate();
 });
@@ -63,9 +69,12 @@ Route::middleware([
     Route::post('/photos/tags', [BulkPhotoItemsController::class, 'addTags'])->name('bulk-photo-tags.add');
 
     Route::get('/my-photos', [PhotosController::class, 'index'])->name('my-photos');
+    Route::get('/my-photos/ids', PhotoIdsController::class)->name('my-photos.ids');
     Route::get('/photos/export', ExportPhotosController::class)->name('photos.export');
     Route::get('/photos/{photo}', [PhotosController::class, 'show'])->name('photos.show');
     Route::delete('/photos/{photo}', [PhotosController::class, 'destroy'])->name('photos.destroy');
+    Route::post('/photos/{photo}/share', SharePhotoController::class)->name('photos.share');
+    Route::delete('/photos/{photo}/share', RevokeSharePhotoController::class)->name('photos.share.revoke');
 
     Route::post('/photos/{photo}/tag-shortcuts/{tagShortcut}', ApplyTagShortcutController::class);
     Route::post('/photos/{photo}/items', [PhotoItemsController::class, 'store']);

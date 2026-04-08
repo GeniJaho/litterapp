@@ -103,6 +103,73 @@ const deletePhoto = () => {
     router.delete(`/photos/${photo.value.id}`);
 };
 
+const shareUrl = ref(null);
+const shareExpiresAt = ref(null);
+const showShareModal = ref(false);
+const showShareOptions = ref(true);
+const isCopying = ref(false);
+const shareExpiresIn = ref(null);
+
+const shareExpiryOptions = [
+    { value: null, label: 'Never' },
+    { value: 7, label: '7 days' },
+    { value: 30, label: '30 days' },
+    { value: 90, label: '90 days' },
+];
+
+const generateShareLink = () => {
+    showShareModal.value = true;
+    showShareOptions.value = true;
+    shareUrl.value = null;
+    shareExpiresAt.value = null;
+    shareExpiresIn.value = null;
+};
+
+const confirmShareLink = () => {
+    axios.post(`/photos/${photo.value.id}/share`, {
+        expires_in: shareExpiresIn.value,
+    })
+        .then(response => {
+            shareUrl.value = response.data.share_url;
+            shareExpiresAt.value = response.data.share_expires_at;
+            showShareOptions.value = false;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
+const revokeShareLink = () => {
+    axios.delete(`/photos/${photo.value.id}/share`)
+        .then(() => {
+            shareUrl.value = null;
+            shareExpiresAt.value = null;
+            showShareModal.value = false;
+        })
+        .catch(error => {
+            console.error(error);
+        });
+};
+
+const copyShareLink = () => {
+    if (!shareUrl.value) return;
+
+    isCopying.value = true;
+
+    const textarea = document.createElement('textarea');
+    textarea.value = shareUrl.value;
+    textarea.style.position = 'fixed';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+
+    setTimeout(() => {
+        isCopying.value = false;
+    }, 1500);
+};
+
 const addItems = () => {
     const suggestionId = selectedItem.value.id === suggestedItem.value?.item_id
         ? suggestedItem.value.id
@@ -399,23 +466,33 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                                 class="absolute bottom-4 right-2"
                             />
                         </div>
-                        <div v-if="previousPhotoUrl || nextPhotoUrl" class="flex justify-between mt-4">
-                            <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
-                                <PrimaryButton class="group relative">
-                                    <Tooltip>
-                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &larr;</span>
-                                    </Tooltip>
-                                    Previous
+                        <div class="grid grid-cols-3 items-center mt-4">
+                            <div class="justify-self-start">
+                                <Link v-if="previousPhotoUrl" :href="previousPhotoUrl">
+                                    <PrimaryButton class="group relative">
+                                        <Tooltip>
+                                            <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &larr;</span>
+                                        </Tooltip>
+                                        Previous
+                                    </PrimaryButton>
+                                </Link>
+                            </div>
+                            <div class="justify-self-center">
+                                <PrimaryButton @click="generateShareLink" class="group relative">
+                                    <i class="fas fa-share-nodes mr-1"></i>
+                                    Share
                                 </PrimaryButton>
-                            </Link>
-                            <Link v-if="nextPhotoUrl" :href="nextPhotoUrl" class="ml-auto">
-                                <PrimaryButton class="group relative">
-                                    <Tooltip>
-                                        <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</span>
-                                    </Tooltip>
-                                    Next
-                                </PrimaryButton>
-                            </Link>
+                            </div>
+                            <div class="justify-self-end">
+                                <Link v-if="nextPhotoUrl" :href="nextPhotoUrl">
+                                    <PrimaryButton class="group relative">
+                                        <Tooltip>
+                                            <span class="whitespace-nowrap dark:text-white">Ctrl (⌘) + &rarr;</span>
+                                        </Tooltip>
+                                        Next
+                                    </PrimaryButton>
+                                </Link>
+                            </div>
                         </div>
                     </div>
 
@@ -508,6 +585,77 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                     class="w-full h-full object-contain"
                     @click="zoomedPhoto = false"
                 >
+            </Modal>
+
+            <Modal max-width="md" @close="showShareModal = false" :show="showShareModal">
+                <div class="p-6">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100 mb-4">
+                        Share this photo
+                    </h3>
+
+                    <div v-if="showShareOptions">
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+                            Choose how long the share link should be valid.
+                        </p>
+                        <div class="space-y-2 mb-4">
+                            <label
+                                v-for="option in shareExpiryOptions"
+                                :key="option.value"
+                                class="flex items-center gap-2 cursor-pointer"
+                            >
+                                <input
+                                    type="radio"
+                                    :value="option.value"
+                                    v-model="shareExpiresIn"
+                                    name="share_expiry"
+                                    class="text-turqoFocus focus:ring-turqoFocus"
+                                />
+                                <span class="text-sm text-gray-700 dark:text-gray-300">{{ option.label }}</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div v-else>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+                            Anyone with the link can view this photo.
+                        </p>
+                        <p v-if="shareExpiresAt" class="text-xs text-gray-400 dark:text-gray-500 mb-4">
+                            Expires {{ new Date(shareExpiresAt).toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' }) }}
+                        </p>
+                        <div class="flex items-center gap-2">
+                            <input
+                                type="text"
+                                :value="shareUrl"
+                                readonly
+                                class="flex-1 block w-full rounded-md border-gray-300 dark:border-gray-600 dark:bg-gray-700 dark:text-gray-100 shadow-sm focus:border-turqoFocus focus:ring-turqoFocus sm:text-sm px-3 py-2"
+                                @click="$event.target.select()"
+                            />
+                            <PrimaryButton @click="copyShareLink" class="whitespace-nowrap">
+                                <span v-if="isCopying">Copied!</span>
+                                <span v-else>Copy link</span>
+                            </PrimaryButton>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 dark:bg-gray-700 px-6 py-4 flex justify-between">
+                    <div>
+                        <button
+                            v-if="!showShareOptions && shareUrl"
+                            @click="revokeShareLink"
+                            class="text-sm text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 underline"
+                        >
+                            Delete link
+                        </button>
+                    </div>
+                    <div class="flex gap-2">
+                        <PrimaryButton v-if="showShareOptions" @click="confirmShareLink">
+                            Generate link
+                        </PrimaryButton>
+                        <PrimaryButton @click="showShareModal = false">
+                            Close
+                        </PrimaryButton>
+                    </div>
+                </div>
             </Modal>
         </div>
     </AppLayout>

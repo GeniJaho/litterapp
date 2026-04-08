@@ -22,7 +22,6 @@ import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
 const props = defineProps({
     photos: Object,
-    allPhotoIds: Array,
     tags: Object,
     items: Array,
     filters: Object,
@@ -31,6 +30,7 @@ const props = defineProps({
 
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
+const allPhotoIds = ref([]);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
     {label: '25 per page', value: 25},
@@ -84,6 +84,10 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
+
+    if (isSelecting.value) {
+        fetchAllPhotoIds();
+    }
 });
 
 onUnmounted(() => {
@@ -128,8 +132,8 @@ const selectPhotos = (photoId) => {
         return;
     }
 
-    const startIndex = props.allPhotoIds.indexOf(lastSelected);
-    const endIndex = props.allPhotoIds.indexOf(photoId);
+    const startIndex = allPhotoIds.value.indexOf(lastSelected);
+    const endIndex = allPhotoIds.value.indexOf(photoId);
 
     if (startIndex === -1 || endIndex === -1) {
         return;
@@ -137,8 +141,19 @@ const selectPhotos = (photoId) => {
 
     const from = Math.min(startIndex, endIndex);
     const to = Math.max(startIndex, endIndex);
-    selectedPhotos.value = props.allPhotoIds.slice(from, to + 1);
+    selectedPhotos.value = allPhotoIds.value.slice(from, to + 1);
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+};
+
+const fetchAllPhotoIds = () => {
+    if (allPhotoIds.value.length) {
+        return;
+    }
+
+    axios.get('/my-photos/ids')
+        .then(response => {
+            allPhotoIds.value = response.data;
+        });
 };
 
 const toggleSelecting = () => {
@@ -148,11 +163,13 @@ const toggleSelecting = () => {
     }
 
     isSelecting.value = true;
+    fetchAllPhotoIds();
 };
 
 const clearSelection = () => {
     isSelecting.value = false;
     selectedPhotos.value = [];
+    allPhotoIds.value = [];
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
