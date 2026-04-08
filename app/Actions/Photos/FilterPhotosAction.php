@@ -35,9 +35,9 @@ class FilterPhotosAction
     /**
      * @return array<int, mixed>
      */
-    public function allIds(User $user): array
+    public function idsUpToPage(User $user, int $limit): array
     {
-        return $this->baseQuery($user)->pluck('id')->all();
+        return $this->baseQuery($user)->take($limit)->pluck('id')->all();
     }
 
     /**
