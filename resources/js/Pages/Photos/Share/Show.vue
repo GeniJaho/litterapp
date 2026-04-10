@@ -1,5 +1,6 @@
 <script setup>
-import { computed, Head, Link } from '@inertiajs/vue3';
+import { computed } from 'vue';
+import { Head, Link } from '@inertiajs/vue3';
 import TaggedIcon from '@/Components/TaggedIcon.vue';
 
 const props = defineProps({
