@@ -1,5 +1,5 @@
 <script setup>
-import { Head, Link } from '@inertiajs/vue3';
+import { computed, Head, Link } from '@inertiajs/vue3';
 import TaggedIcon from '@/Components/TaggedIcon.vue';
 
 const props = defineProps({
@@ -14,6 +14,11 @@ const formatDate = (date) => {
         year: 'numeric',
     });
 };
+
+const googleMapsUrl = computed(() => {
+    if (!props.photo.latitude || !props.photo.longitude) return null;
+    return `https://www.google.com/maps?q=${props.photo.latitude},${props.photo.longitude}`;
+});
 </script>
 
 <template>
@@ -109,9 +114,21 @@ const formatDate = (date) => {
                                             >
                                                 Deposit
                                             </span>
-                                        </div>
-                                    </div>
                                 </div>
+                            </div>
+
+                            <a
+                                v-if="googleMapsUrl"
+                                :href="googleMapsUrl"
+                                target="_blank"
+                                class="text-turqoFocus hover:text-turqoFocus/80 text-sm flex items-center gap-1"
+                            >
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                                    <path d="M12 0C7.31 0 3.5 3.81 3.5 8.5c0 6.094 7.313 14.313 7.625 14.656l.875.844.875-.844C13.188 22.813 20.5 14.594 20.5 8.5 20.5 3.81 16.69 0 12 0zm0 12c-1.933 0-3.5-1.567-3.5-3.5S10.067 5 12 5s3.5 1.567 3.5 3.5S13.933 12 12 12z"/>
+                                </svg>
+                                View on Google Maps
+                            </a>
+                        </div>
                             </div>
                         </div>
 

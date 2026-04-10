@@ -28,6 +28,8 @@ class ShareController extends Controller
                 'full_path' => $photo->full_path,
                 'original_file_name' => $photo->original_file_name,
                 'taken_at_local' => $photo->taken_at_local,
+                'latitude' => $photo->latitude,
+                'longitude' => $photo->longitude,
                 'share_view_count' => $photo->share_view_count,
                 'share_expires_at' => $photo->share_expires_at?->toIso8601String(),
                 'user' => $photo->user ? [
