@@ -67,7 +67,6 @@ class PhotosController extends Controller
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
             'tagShortcuts' => $this->getTagShortcuts($user),
-            'isAdmin' => $user->is_admin,
             'users' => $user->is_admin
                 ? User::query()->select(['id', 'name'])->orderBy('name')->get()->map->only(['id', 'name'])
                 : [],

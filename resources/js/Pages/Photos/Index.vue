@@ -26,7 +26,6 @@ const props = defineProps({
     items: Array,
     filters: Object,
     tagShortcuts: Array,
-    isAdmin: Boolean,
     users: Array,
 });
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
@@ -286,7 +285,6 @@ const exportData = (format) => {
                     :items="items"
                     :default-filters="filters"
                     :users="users"
-                    :is-admin="isAdmin"
                     class="mt-6"
                 />
 

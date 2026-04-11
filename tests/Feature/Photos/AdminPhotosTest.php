@@ -36,7 +36,6 @@ test('admin sees all users photos when user_ids filter is set', function (): voi
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 2)
-        ->where('isAdmin', true)
         ->has('users')
         ->etc()
     );
@@ -99,7 +98,6 @@ test('non-admin user_ids filter is silently ignored', function (): void {
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Photos/Index')
         ->has('photos.data', 1)
-        ->where('isAdmin', false)
         ->where('users', [])
         ->etc()
     );
@@ -362,14 +360,12 @@ test('users list is passed to admin but not regular users', function (): void {
 
     $this->actingAs($admin)->get('/my-photos')
         ->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-            ->where('isAdmin', true)
             ->has('users', 2)
             ->etc()
         );
 
     $this->actingAs($regularUser)->get('/my-photos')
         ->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
-            ->where('isAdmin', false)
             ->where('users', [])
             ->etc()
         );

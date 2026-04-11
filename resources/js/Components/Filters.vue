@@ -1,6 +1,7 @@
 <script setup>
 
 import {ref} from "vue";
+import {usePage} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
 import InputLabel from "@/Components/InputLabel.vue";
@@ -18,11 +19,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
-    isAdmin: {
-        type: Boolean,
-        default: false,
-    },
 });
+
+const page = usePage();
+const isAdmin = page.props.auth.user?.is_admin;
 
 const yesOrNoOptions = [
     {label: '-', value: null},
