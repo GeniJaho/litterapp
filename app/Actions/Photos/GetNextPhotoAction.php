@@ -12,10 +12,15 @@ class GetNextPhotoAction
     {
         $attribute = $photo->getAttribute($user->settings->sort_column);
 
-        /** @var Builder $builder */
-        $builder = $user
-            ->photos()
-            ->filter($user->settings->photo_filters);
+        $filters = $user->settings->photo_filters;
+        $userIds = $filters !== null ? $filters->user_ids : [];
+
+        /** @var \Illuminate\Database\Eloquent\Builder<Photo> $builder */
+        $builder = $user->is_admin && $userIds !== []
+            ? Photo::query()->whereIn('user_id', $userIds)
+            : $user->photos();
+
+        $builder->filter($filters);
 
         if ($attribute) {
             $nextPhoto = $builder->clone()

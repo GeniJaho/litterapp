@@ -10,9 +10,7 @@ class RevokeSharePhotoController extends Controller
 {
     public function __invoke(Photo $photo): JsonResponse
     {
-        if (auth()->id() !== $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         $photo->update([
             'share_token' => null,

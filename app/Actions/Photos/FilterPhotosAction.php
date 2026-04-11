@@ -41,17 +41,28 @@ class FilterPhotosAction
     }
 
     /**
-     * @return HasMany<Photo, User>
+     * @return HasMany<Photo, User>|Builder<Photo>
      */
-    private function baseQuery(User $user): HasMany
+    private function baseQuery(User $user): HasMany|Builder
     {
-        $query = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
+        $filters = $user->settings->photo_filters;
+        $userIds = $filters !== null ? $filters->user_ids : [];
+
+        /** @var HasMany<Photo, User>|Builder<Photo> $query */
+        $query = $user->is_admin && $userIds !== []
+            ? Photo::query()->whereIn('user_id', $userIds)
+            : $user->photos();
+
+        $query
+            ->filter($filters)
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
         if ($user->settings->sort_column !== 'id') {
             $query->orderBy('id');
+        }
+
+        if ($user->is_admin && $userIds !== []) {
+            $query->with('user:id,name,profile_photo_path');
         }
 
         return $query;

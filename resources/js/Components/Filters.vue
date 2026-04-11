@@ -13,7 +13,15 @@ const props = defineProps({
     defaultFilters: {
         type: Object,
         required: false,
-    }
+    },
+    users: {
+        type: Array,
+        default: () => [],
+    },
+    isAdmin: {
+        type: Boolean,
+        default: false,
+    },
 });
 
 const yesOrNoOptions = [
@@ -25,6 +33,7 @@ const yesOrNoOptions = [
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
     tag_ids: props.defaultFilters?.tag_ids ?? [],
+    user_ids: props.defaultFilters?.user_ids ?? [],
     uploaded_from: props.defaultFilters?.uploaded_from ?? null,
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
@@ -41,6 +50,7 @@ const filters = ref({
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
+const selectedUsers = ref(props.defaultFilters?.user_ids?.map(id => props.users.find(user => user.id === parseInt(id))).filter(Boolean) ?? []);
 const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
@@ -61,6 +71,7 @@ const emit = defineEmits(['change']);
 
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
+    filters.value.user_ids = selectedUsers.value.map(user => user.id);
     filters.value.tag_ids = [
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
@@ -83,6 +94,7 @@ const filter = () => {
 
 const clear = () => {
     selectedItems.value = [];
+    selectedUsers.value = [];
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
@@ -102,6 +114,7 @@ const clear = () => {
     filters.value = {
         item_ids: [],
         tag_ids: [],
+        user_ids: [],
         uploaded_from: null,
         uploaded_until: null,
         taken_from_local: null,
@@ -125,6 +138,16 @@ const clear = () => {
     <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 sm:p-0">
         <div class="w-full">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+                <div v-if="isAdmin">
+                    <InputLabel for="user-filter" value="Users" />
+                    <TagBox
+                        id="user-filter"
+                        v-model="selectedUsers"
+                        :items="users"
+                        :multiple="true"
+                        class="mt-1 block w-full"
+                    ></TagBox>
+                </div>
                 <div>
                     <InputLabel for="item-filter" value="Items" />
                     <TagBox

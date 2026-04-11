@@ -3,6 +3,7 @@
 namespace App\Actions\Photos;
 
 use App\DTO\PhotoExport;
+use App\Models\Photo;
 use App\Models\User;
 use Generator;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -11,9 +12,16 @@ class ExportPhotosAction
 {
     public function run(User $user): Generator
     {
-        $photos = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
+        $filters = $user->settings->photo_filters;
+        $userIds = $filters !== null ? $filters->user_ids : [];
+
+        /** @var \Illuminate\Database\Eloquent\Builder<Photo> $query */
+        $query = $user->is_admin && $userIds !== []
+            ? Photo::query()->whereIn('user_id', $userIds)
+            : $user->photos();
+
+        $photos = $query
+            ->filter($filters)
             ->with(['photoItems' => fn (Builder $q) => $q
                 ->with('item:id,name')
                 ->with('tags:id,tag_type_id,name')
