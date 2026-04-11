@@ -5,6 +5,7 @@ namespace App\Filament\Resources;
 use App\Filament\Imports\TagImporter;
 use App\Filament\Resources\TagResource\Pages\ListTags;
 use App\Models\Tag;
+use App\Models\TagType;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
@@ -31,11 +32,22 @@ class TagResource extends Resource
             ->schema([
                 Select::make('tag_type_id')
                     ->required()
+                    ->default(function (ListTags $livewire): ?int {
+                        if ($livewire->activeTab && $livewire->activeTab !== 'all') {
+                            /** @var int|null */
+                            return TagType::query()
+                                ->where('slug', $livewire->activeTab)
+                                ->value('id');
+                        }
+
+                        return null;
+                    })
                     ->relationship(name: 'type', titleAttribute: 'name'),
                 TextInput::make('name')
                     ->required()
                     ->unique(ignoreRecord: true)
-                    ->maxLength(191),
+                    ->maxLength(191)
+                    ->autofocus(),
             ]);
     }
 
