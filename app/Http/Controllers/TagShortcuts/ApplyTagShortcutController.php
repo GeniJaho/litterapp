@@ -21,9 +21,7 @@ class ApplyTagShortcutController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== (int) $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         if ($user->id !== (int) $tagShortcut->user_id) {
             abort(404);

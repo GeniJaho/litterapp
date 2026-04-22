@@ -370,3 +370,45 @@ test('users list is passed to admin but not regular users', function (): void {
             ->etc()
         );
 });
+
+test('admin can apply a tag shortcut to another users photo', function (): void {
+    $admin = createAdmin();
+    $otherUser = User::factory()->create();
+    $photo = Photo::factory()->for($otherUser)->create();
+    $item = Item::factory()->create();
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $admin->id]);
+    $tagShortcut->items()->attach($item, [
+        'picked_up' => true,
+        'recycled' => false,
+        'deposit' => false,
+        'quantity' => 1,
+    ]);
+
+    $response = $this->actingAs($admin)->postJson("/photos/{$photo->id}/tag-shortcuts/{$tagShortcut->id}");
+
+    $response->assertOk();
+    $this->assertDatabaseHas('photo_items', [
+        'photo_id' => $photo->id,
+        'item_id' => $item->id,
+    ]);
+});
+
+test('admin can trigger litterbot suggest on another users photo', function (): void {
+    $admin = createAdmin();
+    $otherUser = User::factory()->create();
+    $photo = Photo::factory()->for($otherUser)->create();
+    $item = Item::factory()->create(['name' => 'Bottle']);
+
+    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
+        new PhotoItemPrediction('bottle', 0.95)
+    ));
+
+    $response = $this->actingAs($admin)->getJson(route('litterbot.suggest', $photo));
+
+    $response->assertOk();
+    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
+        ->has('suggestion.id')
+        ->where('suggestion.item.id', $item->id)
+        ->etc()
+    );
+});
