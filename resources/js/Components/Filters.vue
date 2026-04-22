@@ -1,8 +1,10 @@
 <script setup>
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
+import {usePage} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import SelectInput from "@/Components/SelectInput.vue";
@@ -13,8 +15,15 @@ const props = defineProps({
     defaultFilters: {
         type: Object,
         required: false,
-    }
+    },
+    users: {
+        type: Array,
+        default: () => [],
+    },
 });
+
+const page = usePage();
+const isAdmin = page.props.auth.user?.is_admin;
 
 const yesOrNoOptions = [
     {label: '-', value: null},
@@ -22,9 +31,13 @@ const yesOrNoOptions = [
     {label: 'No', value: false},
 ];
 
+const allUsers = ref(props.defaultFilters?.all_users ?? false);
+
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
     tag_ids: props.defaultFilters?.tag_ids ?? [],
+    user_ids: props.defaultFilters?.user_ids ?? [],
+    all_users: props.defaultFilters?.all_users ?? false,
     uploaded_from: props.defaultFilters?.uploaded_from ?? null,
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
@@ -41,6 +54,7 @@ const filters = ref({
 });
 
 const selectedItems = ref(props.defaultFilters?.item_ids.map(id => props.items.find(item => item.id === parseInt(id))) ?? []);
+const selectedUsers = ref(props.defaultFilters?.user_ids?.map(id => props.users.find(user => user.id === parseInt(id))).filter(Boolean) ?? []);
 const selectedMaterials = ref(props.tags.material.filter(material => filters.value.tag_ids.includes(material.id)));
 const selectedBrands = ref(props.tags.brand.filter(brand => filters.value.tag_ids.includes(brand.id)));
 const selectedEvents = ref(props.tags.event.filter(event => filters.value.tag_ids.includes(event.id)));
@@ -57,10 +71,18 @@ const hasBrand = ref(yesOrNoOptions.find(option => option.value === filters.valu
 const hasMaterial = ref(yesOrNoOptions.find(option => option.value === filters.value.has_material));
 const hasContent = ref(yesOrNoOptions.find(option => option.value === filters.value.has_content));
 
+watch(allUsers, (value) => {
+    if (value) {
+        selectedUsers.value = [];
+    }
+});
+
 const emit = defineEmits(['change']);
 
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
+    filters.value.user_ids = selectedUsers.value.map(user => user.id);
+    filters.value.all_users = allUsers.value ? 1 : 0;
     filters.value.tag_ids = [
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
@@ -83,6 +105,8 @@ const filter = () => {
 
 const clear = () => {
     selectedItems.value = [];
+    selectedUsers.value = [];
+    allUsers.value = false;
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
@@ -102,6 +126,8 @@ const clear = () => {
     filters.value = {
         item_ids: [],
         tag_ids: [],
+        user_ids: [],
+        all_users: false,
         uploaded_from: null,
         uploaded_until: null,
         taken_from_local: null,
@@ -312,6 +338,23 @@ const clear = () => {
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>
+                <template v-if="isAdmin">
+                    <div v-if="!allUsers">
+                        <InputLabel for="user-filter" value="Users" />
+                        <TagBox
+                            id="user-filter"
+                            v-model="selectedUsers"
+                            :items="users"
+                            :multiple="true"
+                            class="mt-1 block w-full"
+                        ></TagBox>
+                    </div>
+                    <div class="flex items-center pt-6">
+                        <ToggleInput v-model="allUsers">
+                            <template #label>All users</template>
+                        </ToggleInput>
+                    </div>
+                </template>
             </div>
         </div>
 

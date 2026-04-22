@@ -26,6 +26,7 @@ const props = defineProps({
     items: Array,
     filters: Object,
     tagShortcuts: Array,
+    users: Array,
 });
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
@@ -283,6 +284,7 @@ const exportData = (format) => {
                     :tags="tags"
                     :items="items"
                     :default-filters="filters"
+                    :users="users"
                     class="mt-6"
                 />
 
@@ -366,6 +368,13 @@ const exportData = (format) => {
                                     </a>
 
                                     <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
+
+                                    <div
+                                        v-if="photo.user"
+                                        class="absolute top-2 left-8 text-xs shadow bg-black/50 rounded px-2 py-1 text-white"
+                                    >
+                                        {{ photo.user.name }}
+                                    </div>
 
                                     <div class="absolute top-2 right-2 flex gap-2">
                                         <LocationIcon v-if="photo.latitude && photo.longitude"/>

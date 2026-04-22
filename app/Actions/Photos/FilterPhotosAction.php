@@ -6,7 +6,6 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FilterPhotosAction
 {
@@ -41,19 +40,36 @@ class FilterPhotosAction
     }
 
     /**
-     * @return HasMany<Photo, User>
+     * @return Builder<Photo>
      */
-    private function baseQuery(User $user): HasMany
+    private function baseQuery(User $user): Builder
     {
-        $query = $user
-            ->photos()
-            ->filter($user->settings->photo_filters)
+        $filters = $user->settings->photo_filters;
+
+        $query = Photo::query()
+            ->forUser($user)
+            ->filter($filters)
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
         if ($user->settings->sort_column !== 'id') {
             $query->orderBy('id');
         }
 
+        if ($user->is_admin && $this->isViewingOtherUsers($user)) {
+            $query->with('user:id,name,profile_photo_path');
+        }
+
         return $query;
+    }
+
+    private function isViewingOtherUsers(User $user): bool
+    {
+        $filters = $user->settings->photo_filters;
+
+        if ($filters === null) {
+            return false;
+        }
+
+        return $filters->all_users || $filters->user_ids !== [];
     }
 }

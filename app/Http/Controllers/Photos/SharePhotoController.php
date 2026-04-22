@@ -12,9 +12,7 @@ class SharePhotoController extends Controller
 {
     public function __invoke(SharePhotoRequest $request, Photo $photo, GenerateShareTokenAction $generateShareToken): JsonResponse
     {
-        if (auth()->id() !== $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         $generateShareToken->run($photo, $request->integer('expires_in'));
 

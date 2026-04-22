@@ -89,6 +89,28 @@ class Photo extends Model
     /**
      * @param  Builder<Photo>  $query
      */
+    protected function scopeForUser(Builder $query, User $user): void
+    {
+        $filters = $user->settings->photo_filters;
+        $userIds = $filters !== null ? $filters->user_ids : [];
+        $allUsers = $filters !== null && $filters->all_users;
+
+        if ($user->is_admin && $allUsers) {
+            return;
+        }
+
+        if ($user->is_admin && $userIds !== []) {
+            $query->whereIn('user_id', $userIds);
+
+            return;
+        }
+
+        $query->where('user_id', $user->id);
+    }
+
+    /**
+     * @param  Builder<Photo>  $query
+     */
     protected function scopeFilter(Builder $query, ?PhotoFilters $filters): void
     {
         if (! $filters instanceof PhotoFilters) {

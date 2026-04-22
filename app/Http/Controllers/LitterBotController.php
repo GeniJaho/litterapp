@@ -26,9 +26,7 @@ class LitterBotController extends Controller
             return response()->json();
         }
 
-        if ($photo->user_id !== $user->id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         $existingSuggestion = $photo->photoItemSuggestions()->with('item')->first();
 

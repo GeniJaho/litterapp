@@ -3,6 +3,7 @@
 namespace App\Rules;
 
 use App\Models\Photo;
+use App\Models\User;
 use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Translation\PotentiallyTranslatedString;
@@ -20,9 +21,16 @@ class PhotosBelongToUser implements ValidationRule
             return;
         }
 
+        /** @var User $user */
+        $user = auth()->user();
+
+        if ($user->is_admin) {
+            return;
+        }
+
         $photosBelongsToOthers = Photo::query()
             ->whereIn('id', $value)
-            ->where('user_id', '!=', auth()->id())
+            ->where('user_id', '!=', $user->id)
             ->exists();
 
         if ($photosBelongsToOthers) {
