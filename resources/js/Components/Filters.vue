@@ -1,9 +1,10 @@
 <script setup>
 
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import {usePage} from "@inertiajs/vue3";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import TagBox from "@/Components/TagBox.vue";
+import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import TextInput from "@/Components/TextInput.vue";
 import SelectInput from "@/Components/SelectInput.vue";
@@ -30,10 +31,13 @@ const yesOrNoOptions = [
     {label: 'No', value: false},
 ];
 
+const allUsers = ref(props.defaultFilters?.all_users ?? false);
+
 const filters = ref({
     item_ids: props.defaultFilters?.item_ids ?? [],
     tag_ids: props.defaultFilters?.tag_ids ?? [],
     user_ids: props.defaultFilters?.user_ids ?? [],
+    all_users: props.defaultFilters?.all_users ?? false,
     uploaded_from: props.defaultFilters?.uploaded_from ?? null,
     uploaded_until: props.defaultFilters?.uploaded_until ?? null,
     taken_from_local: props.defaultFilters?.taken_from_local ?? null,
@@ -67,11 +71,18 @@ const hasBrand = ref(yesOrNoOptions.find(option => option.value === filters.valu
 const hasMaterial = ref(yesOrNoOptions.find(option => option.value === filters.value.has_material));
 const hasContent = ref(yesOrNoOptions.find(option => option.value === filters.value.has_content));
 
+watch(allUsers, (value) => {
+    if (value) {
+        selectedUsers.value = [];
+    }
+});
+
 const emit = defineEmits(['change']);
 
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
     filters.value.user_ids = selectedUsers.value.map(user => user.id);
+    filters.value.all_users = allUsers.value;
     filters.value.tag_ids = [
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
@@ -95,6 +106,7 @@ const filter = () => {
 const clear = () => {
     selectedItems.value = [];
     selectedUsers.value = [];
+    allUsers.value = false;
     selectedMaterials.value = [];
     selectedBrands.value = [];
     selectedEvents.value = [];
@@ -115,6 +127,7 @@ const clear = () => {
         item_ids: [],
         tag_ids: [],
         user_ids: [],
+        all_users: false,
         uploaded_from: null,
         uploaded_until: null,
         taken_from_local: null,
@@ -139,14 +152,19 @@ const clear = () => {
         <div class="w-full">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
                 <div v-if="isAdmin">
-                    <InputLabel for="user-filter" value="Users" />
-                    <TagBox
-                        id="user-filter"
-                        v-model="selectedUsers"
-                        :items="users"
-                        :multiple="true"
-                        class="mt-1 block w-full"
-                    ></TagBox>
+                    <ToggleInput v-model="allUsers">
+                        <template #label>All users</template>
+                    </ToggleInput>
+                    <div v-if="!allUsers" class="mt-2">
+                        <InputLabel for="user-filter" value="Users" />
+                        <TagBox
+                            id="user-filter"
+                            v-model="selectedUsers"
+                            :items="users"
+                            :multiple="true"
+                            class="mt-1 block w-full"
+                        ></TagBox>
+                    </div>
                 </div>
                 <div>
                     <InputLabel for="item-filter" value="Items" />

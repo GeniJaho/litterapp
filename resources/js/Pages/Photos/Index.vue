@@ -193,7 +193,7 @@ const exportData = (format) => {
         <template #header>
             <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center">
                 <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-                    {{ filters?.user_ids?.length ? 'All Photos' : 'My Photos' }}
+                    My Photos
                 </h2>
 
                 <!-- Tag Shortcuts Toggle -->

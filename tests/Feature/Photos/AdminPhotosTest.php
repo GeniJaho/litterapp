@@ -1,14 +1,18 @@
 <?php
 
+use App\Actions\Photos\ClassifiesPhoto;
 use App\DTO\PhotoFilters;
+use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\Tag;
+use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
+use Tests\Doubles\FakeClassifyPhotoAction;
 
 beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
@@ -409,6 +413,48 @@ test('admin can trigger litterbot suggest on another users photo', function (): 
     $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
         ->has('suggestion.id')
         ->where('suggestion.item.id', $item->id)
+        ->etc()
+    );
+});
+
+test('admin with all_users filter sees all photos', function (): void {
+    $admin = createAdmin();
+    $userA = User::factory()->create();
+    $userB = User::factory()->create();
+
+    Photo::factory()->for($admin)->create();
+    Photo::factory()->for($userA)->create();
+    Photo::factory()->for($userB)->create();
+
+    $admin->settings->photo_filters = new PhotoFilters(all_users: true);
+    $admin->save();
+
+    $response = $this->actingAs($admin)->get('/my-photos');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 3)
+        ->etc()
+    );
+});
+
+test('non-admin all_users filter is silently ignored', function (): void {
+    $user = User::factory()->create();
+    $otherUser = User::factory()->create();
+
+    Photo::factory()->for($user)->create();
+    Photo::factory()->for($otherUser)->create();
+
+    $user->settings->photo_filters = new PhotoFilters(all_users: true);
+    $user->save();
+
+    $response = $this->actingAs($user)->get('/my-photos');
+
+    $response->assertOk();
+    $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->component('Photos/Index')
+        ->has('photos.data', 1)
         ->etc()
     );
 });

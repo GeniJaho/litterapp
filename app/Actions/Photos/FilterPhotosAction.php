@@ -6,7 +6,6 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class FilterPhotosAction
 {
@@ -41,19 +40,14 @@ class FilterPhotosAction
     }
 
     /**
-     * @return HasMany<Photo, User>|Builder<Photo>
+     * @return Builder<Photo>
      */
-    private function baseQuery(User $user): HasMany|Builder
+    private function baseQuery(User $user): Builder
     {
         $filters = $user->settings->photo_filters;
-        $userIds = $filters !== null ? $filters->user_ids : [];
 
-        /** @var HasMany<Photo, User>|Builder<Photo> $query */
-        $query = $user->is_admin && $userIds !== []
-            ? Photo::query()->whereIn('user_id', $userIds)
-            : $user->photos();
-
-        $query
+        $query = Photo::query()
+            ->forUser($user)
             ->filter($filters)
             ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
 
@@ -61,10 +55,21 @@ class FilterPhotosAction
             $query->orderBy('id');
         }
 
-        if ($user->is_admin && $userIds !== []) {
+        if ($user->is_admin && $this->isViewingOtherUsers($user)) {
             $query->with('user:id,name,profile_photo_path');
         }
 
         return $query;
+    }
+
+    private function isViewingOtherUsers(User $user): bool
+    {
+        $filters = $user->settings->photo_filters;
+
+        if ($filters === null) {
+            return false;
+        }
+
+        return $filters->all_users || $filters->user_ids !== [];
     }
 }
