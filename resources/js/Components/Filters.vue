@@ -151,21 +151,6 @@ const clear = () => {
     <div class="flex flex-col lg:flex-row lg:space-x-4 w-full px-4 sm:p-0">
         <div class="w-full">
             <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                <div v-if="isAdmin">
-                    <ToggleInput v-model="allUsers">
-                        <template #label>All users</template>
-                    </ToggleInput>
-                    <div v-if="!allUsers" class="mt-2">
-                        <InputLabel for="user-filter" value="Users" />
-                        <TagBox
-                            id="user-filter"
-                            v-model="selectedUsers"
-                            :items="users"
-                            :multiple="true"
-                            class="mt-1 block w-full"
-                        ></TagBox>
-                    </div>
-                </div>
                 <div>
                     <InputLabel for="item-filter" value="Items" />
                     <TagBox
@@ -353,6 +338,23 @@ const clear = () => {
                         class="block w-full mt-1"
                     ></SelectInput>
                 </div>
+                <template v-if="isAdmin">
+                    <div v-if="!allUsers">
+                        <InputLabel for="user-filter" value="Users" />
+                        <TagBox
+                            id="user-filter"
+                            v-model="selectedUsers"
+                            :items="users"
+                            :multiple="true"
+                            class="mt-1 block w-full"
+                        ></TagBox>
+                    </div>
+                    <div class="flex items-center pt-6">
+                        <ToggleInput v-model="allUsers">
+                            <template #label>All users</template>
+                        </ToggleInput>
+                    </div>
+                </template>
             </div>
         </div>
 

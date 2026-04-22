@@ -111,7 +111,7 @@ const isCopying = ref(false);
 const shareExpiresIn = ref(null);
 
 const shareExpiryOptions = [
-    { value: null, label: 'Never' },
+    { value: null, label: 'Does not expire' },
     { value: 7, label: '7 days' },
     { value: 30, label: '30 days' },
     { value: 90, label: '90 days' },
@@ -446,6 +446,13 @@ const adjustZoomLevelWithMouseWheel = (event) => {
                             />
 
                             <ZoomIcon @click="zoomedPhoto = true" class="absolute top-0 left-0" />
+
+                            <div
+                                v-if="photo.user"
+                                class="absolute top-2 left-8 text-xs shadow bg-black/50 rounded px-2 py-1 text-white"
+                            >
+                                {{ photo.user.name }}
+                            </div>
 
                             <div class="absolute top-2 right-2 flex gap-2">
                                 <LocationIcon v-if="photo.latitude && photo.longitude"/>
