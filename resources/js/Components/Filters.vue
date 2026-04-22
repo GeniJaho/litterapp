@@ -82,7 +82,7 @@ const emit = defineEmits(['change']);
 const filter = () => {
     filters.value.item_ids = selectedItems.value.map(item => item.id);
     filters.value.user_ids = selectedUsers.value.map(user => user.id);
-    filters.value.all_users = allUsers.value;
+    filters.value.all_users = allUsers.value ? 1 : 0;
     filters.value.tag_ids = [
         ...selectedMaterials.value.map(material => material.id),
         ...selectedBrands.value.map(brand => brand.id),
