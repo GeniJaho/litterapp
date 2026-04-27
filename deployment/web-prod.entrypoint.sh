@@ -1,5 +1,8 @@
 #!/bin/sh
 
+echo "Refreshing application caches"
+php artisan optimize
+
 echo "Running database migrations"
 php artisan migrate --force
 
