@@ -20,6 +20,7 @@ services:
       DB_CONNECTION: mysql
       DB_HOST: db
       DB_PORT: 3306
+      NIGHTWATCH_TOKEN: ${NIGHTWATCH_TOKEN}
     ports:
       - "9000:9000"
     volumes:
