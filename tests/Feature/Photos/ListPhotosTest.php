@@ -229,6 +229,35 @@ test('when the user is clearing the filters they are removed in their settings',
     expect($user->fresh()->settings->photo_filters)->toBeNull();
 });
 
+test('clearing filters works when the frontend sends the full empty filter payload', function (): void {
+    $this->actingAs($user = User::factory()->create([
+        'settings' => new UserSettings(photo_filters: new PhotoFilters(item_ids: [1], all_users: true)),
+    ]));
+
+    $this->get('/my-photos?'.http_build_query([
+        'item_ids' => [],
+        'tag_ids' => [],
+        'user_ids' => [],
+        'all_users' => 0,
+        'uploaded_from' => null,
+        'uploaded_until' => null,
+        'taken_from_local' => null,
+        'taken_until_local' => null,
+        'has_gps' => null,
+        'is_tagged' => null,
+        'picked_up' => null,
+        'recycled' => null,
+        'deposit' => null,
+        'has_item_suggestions' => null,
+        'has_brand' => null,
+        'has_material' => null,
+        'has_content' => null,
+        'clear_filters' => 1,
+    ]))->assertOk();
+
+    expect($user->fresh()->settings->photo_filters)->toBeNull();
+});
+
 test('a user can filter their photos by tags on the photo items', function (): void {
     $this->actingAs($user = User::factory()->create());
 

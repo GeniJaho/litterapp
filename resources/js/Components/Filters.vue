@@ -127,7 +127,7 @@ const clear = () => {
         item_ids: [],
         tag_ids: [],
         user_ids: [],
-        all_users: false,
+        all_users: 0,
         uploaded_from: null,
         uploaded_until: null,
         taken_from_local: null,
