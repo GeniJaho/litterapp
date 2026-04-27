@@ -63,7 +63,8 @@ RUN set -eux; \
 		mysqli \
 		opcache \
 		pdo_mysql \
-		zip
+		zip \
+		exif
 
 
 # Set PHP memory limit
