@@ -21,6 +21,9 @@ use Illuminate\Support\Facades\Storage;
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoSuggestion> $photoSuggestions
  * @property ?int $size_kb
+ * @property ?string $share_token
+ * @property ?Carbon $share_expires_at
+ * @property int $share_view_count
  * @property-read string $full_path
  */
 class Photo extends Model
@@ -36,6 +39,7 @@ class Photo extends Model
         return [
             'user_id' => 'integer',
             'size_kb' => 'integer',
+            'share_expires_at' => 'datetime',
         ];
     }
 
@@ -85,11 +89,37 @@ class Photo extends Model
     /**
      * @param  Builder<Photo>  $query
      */
+    protected function scopeForUser(Builder $query, User $user): void
+    {
+        $filters = $user->settings->photo_filters;
+        $userIds = $filters !== null ? $filters->user_ids : [];
+        $allUsers = $filters !== null && $filters->all_users;
+
+        if ($user->is_admin && $allUsers) {
+            return;
+        }
+
+        if ($user->is_admin && $userIds !== []) {
+            $query->whereIn('user_id', $userIds);
+
+            return;
+        }
+
+        $query->where('user_id', $user->id);
+    }
+
+    /**
+     * @param  Builder<Photo>  $query
+     */
     protected function scopeFilter(Builder $query, ?PhotoFilters $filters): void
     {
         if (! $filters instanceof PhotoFilters) {
             return;
         }
+
+        $brandTypeId = TagType::query()->where('slug', 'brand')->value('id');
+        $materialTypeId = TagType::query()->where('slug', 'material')->value('id');
+        $contentTypeId = TagType::query()->where('slug', 'content')->value('id');
 
         $photoItemProperties = array_filter([
             'picked_up' => $filters->picked_up,
@@ -119,6 +149,12 @@ class Photo extends Model
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
             ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')->where('item_score', '>=', 50)))
             ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoSuggestions'))
+            ->when($filters->has_brand === true && $brandTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
+            ->when($filters->has_brand === false && $brandTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
+            ->when($filters->has_material === true && $materialTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))
+            ->when($filters->has_material === false && $materialTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))
+            ->when($filters->has_content === true && $contentTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
+            ->when($filters->has_content === false && $contentTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $contentTypeId)))
             ->when($photoItemProperties !== [], fn (Builder $query) => $query->whereHas('photoItems', fn (Builder $query) => $query->where($photoItemProperties)));
     }
 }

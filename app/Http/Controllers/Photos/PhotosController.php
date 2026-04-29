@@ -65,6 +65,9 @@ class PhotosController extends Controller
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
             'tagShortcuts' => $this->getTagShortcuts($user),
+            'users' => $user->is_admin
+                ? User::query()->select(['id', 'name'])->orderBy('name')->get()->map->only(['id', 'name'])
+                : [],
         ]);
     }
 
@@ -77,9 +80,7 @@ class PhotosController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         if (! request()->wantsJson()) {
             $tagsAndItems = $getTagsAndItemsAction->run();
@@ -94,17 +95,23 @@ class PhotosController extends Controller
             ]);
         }
 
-        $photo
-            ->append('full_path')
-            ->load([
-                'photoItems' => fn (Builder $q) => $q
-                    ->with('item:id,name')
-                    ->with('tags:id,name')
-                    ->orderByDesc('id'),
-                'photoSuggestions.item:id,name',
+        $eagerLoads = [
+            'photoItems' => fn (Builder $q) => $q
+                ->with('item:id,name')
+                ->with('tags:id,name')
+                ->orderByDesc('id'),
+            'photoSuggestions.item:id,name',
                 'photoSuggestions.brandTag:id,name',
                 'photoSuggestions.contentTag:id,name',
-            ]);
+            ];
+
+        if ($user->is_admin && $user->id !== $photo->user_id) {
+            $eagerLoads[] = 'user:id,name,profile_photo_path';
+        }
+
+        $photo
+            ->append('full_path')
+            ->load($eagerLoads);
 
         $photo->photoSuggestions->each->append('prediction_items');
 
@@ -115,9 +122,7 @@ class PhotosController extends Controller
 
     public function destroy(Photo $photo): RedirectResponse
     {
-        if (auth()->id() !== $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         $photo->delete();
 

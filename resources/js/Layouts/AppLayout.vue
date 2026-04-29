@@ -51,7 +51,7 @@ const logout = () => {
             </div>
             <nav class="bg-turqoFocus">
                 <!-- Primary Navigation Menu -->
-                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-40">
+                <div class="px-12 py-6 md:pb-0 md:pt-12 lg:px-24">
                     <div class="flex justify-between h-16">
                         <div class="flex">
                             <!-- Logo -->
@@ -63,6 +63,11 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden sm:space-x-8 md:space-x-6 lg:space-x-12 sm:-my-px ml-12 lg:ml-14 md:flex">
+                                <NavLink :href="route('home')"
+                                         :active="route().current('home')"
+                                >
+                                    Home
+                                </NavLink>
                                 <NavLink :href="grafanaLink"
                                          :externalLink="true"
                                          target="_blank"
@@ -328,6 +333,12 @@ const logout = () => {
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
+
+                        <ResponsiveNavLink :href="route('home')"
+                                           :active="route().current('home')"
+                        >
+                            Home
+                        </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="grafanaLink"
                                            as="externalLink"

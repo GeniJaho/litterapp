@@ -78,7 +78,7 @@ class ItemResource extends Resource
                     DeleteBulkAction::make(),
                 ]),
             ])
-            ->defaultSort('name');
+            ->defaultSort('id', 'desc');
     }
 
     public static function getRelations(): array

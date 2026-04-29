@@ -12,9 +12,7 @@ class PhotoItemTagsController extends Controller
 {
     public function store(PhotoItem $photoItem, StorePhotoItemTagRequest $request): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoItem->photo);
 
         $photoItem->tags()->syncWithoutDetaching((array) $request->input('tag_ids'));
 
@@ -23,9 +21,7 @@ class PhotoItemTagsController extends Controller
 
     public function destroy(PhotoItem $photoItem, Tag $tag): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoItem->photo);
 
         $photoItem->tags()->detach($tag);
 

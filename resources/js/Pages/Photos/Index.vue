@@ -16,6 +16,7 @@ import ToggleInput from "@/Components/ToggleInput.vue";
 import InputLabel from "@/Components/InputLabel.vue";
 import DropdownLink from "@/Components/DropdownLink.vue";
 import BulkRemoveItemsAndTags from "@/Pages/Photos/Partials/BulkRemoveItemsAndTags.vue";
+import BulkAddTags from "@/Pages/Photos/Partials/BulkAddTags.vue";
 import LocationIcon from "@/Components/LocationIcon.vue";
 import MagicWandIcon from "@/Components/MagicWandIcon.vue";
 
@@ -25,10 +26,11 @@ const props = defineProps({
     items: Array,
     filters: Object,
     tagShortcuts: Array,
+    users: Array,
 });
-
 const isSelecting = ref(localStorage.getItem('isSelecting') === 'true' || false);
 const selectedPhotos = ref(localStorage.getItem('selectedPhotos') ? JSON.parse(localStorage.getItem('selectedPhotos')) : []);
+const photoIds = ref([]);
 const showFilters = ref(localStorage.getItem('showFilters') === 'true' || false);
 const perPageOptions = [
     {label: '25 per page', value: 25},
@@ -82,6 +84,10 @@ const toggleTagShortcutsEnabled = (enabled) => {
 
 onMounted(() => {
     window.addEventListener('keydown', onKeyDown);
+
+    if (isSelecting.value) {
+        fetchPhotoIds();
+    }
 });
 
 onUnmounted(() => {
@@ -119,19 +125,33 @@ const selectPhotos = (photoId) => {
         return;
     }
 
-    // Copilot magic ensues
     const lastSelected = selectedPhotos.value[selectedPhotos.value.length - 1];
-    const lastIndex = props.photos.data.findIndex(photo => photo.id === lastSelected);
-    const currentIndex = props.photos.data.findIndex(photo => photo.id === photoId);
-
-    if (lastIndex === -1 || currentIndex === -1) {
+    if (lastSelected === undefined) {
+        selectedPhotos.value = [photoId];
+        localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
         return;
     }
 
-    const selected = props.photos.data.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1);
+    const startIndex = photoIds.value.indexOf(lastSelected);
+    const endIndex = photoIds.value.indexOf(photoId);
 
-    selectedPhotos.value = selected.map(photo => photo.id);
+    if (startIndex === -1 || endIndex === -1) {
+        return;
+    }
+
+    const from = Math.min(startIndex, endIndex);
+    const to = Math.max(startIndex, endIndex);
+    selectedPhotos.value = photoIds.value.slice(from, to + 1);
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
+};
+
+const fetchPhotoIds = () => {
+    const limit = props.photos.current_page * props.photos.per_page;
+
+    axios.get('/my-photos/ids', { params: { limit } })
+        .then(response => {
+            photoIds.value = response.data;
+        });
 };
 
 const toggleSelecting = () => {
@@ -141,11 +161,13 @@ const toggleSelecting = () => {
     }
 
     isSelecting.value = true;
+    fetchPhotoIds();
 };
 
 const clearSelection = () => {
     isSelecting.value = false;
     selectedPhotos.value = [];
+    photoIds.value = [];
     localStorage.setItem('selectedPhotos', JSON.stringify(selectedPhotos.value));
 };
 
@@ -218,6 +240,13 @@ const exportData = (format) => {
                             :items="items"
                             @closeModalWithSuccess="clearSelection"
                         ></BulkRemoveItemsAndTags>
+
+                        <BulkAddTags
+                            v-if="isSelecting && selectedPhotos.length"
+                            :photoIds="selectedPhotos"
+                            :tags="tags"
+                            @closeModalWithSuccess="clearSelection"
+                        ></BulkAddTags>
                     </div>
 
                     <div>
@@ -255,13 +284,11 @@ const exportData = (format) => {
                     :tags="tags"
                     :items="items"
                     :default-filters="filters"
+                    :users="users"
                     class="mt-6"
                 />
 
-                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-between gap-4">
-                    <div class="flex items-center text-gray-700 dark:text-white text-sm">
-                        Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
-                    </div>
+                <div v-if="photos.total" class="mt-6 px-4 sm:px-0 flex flex-col sm:flex-row sm:justify-end gap-4">
                     <div class="flex flex-row gap-4">
                         <div>
                             <InputLabel for="sort-column" value="Order by" />
@@ -285,7 +312,37 @@ const exportData = (format) => {
                 </div>
 
                 <div v-if="photos.data.length" class="mt-6 mb-24">
-                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl">
+                    <div class="flex flex-col sm:flex-row sm:justify-between gap-4 px-4 sm:px-0">
+                        <div class="flex items-center text-gray-700 dark:text-white text-sm">
+                            Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
+                        </div>
+                        <div class="flex items-center justify-center">
+                            <SelectInput
+                                v-model="perPage"
+                                :options="perPageOptions"
+                                class="w-full max-w-36 sm:w-36"
+                            />
+                        </div>
+                        <div class="flex justify-center space-x-2 items-center">
+                            <div v-for="link in photos.links" :key="link.url" class="group relative">
+                                <Tooltip v-if="link.url && link.url === photos.prev_page_url">
+                                    <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &larr;</span>
+                                </Tooltip>
+                                <Tooltip v-else-if="link.url && link.url === photos.next_page_url">
+                                    <span class="whitespace-nowrap dark:text-white text-xs">Ctrl (⌘) + &rarr;</span>
+                                </Tooltip>
+                                <Link
+                                    v-if="link.url"
+                                    :href="link.url"
+                                    v-html="link.label"
+                                    :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"
+                                ></Link>
+                                <span v-else v-html="link.label" :class="`px-4 py-2 rounded ${link.active ? 'bg-blue-500 text-white' : 'bg-white text-blue-500 dark:bg-gray-800 dark:text-white'}`"></span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-6 lg:p-8 bg-white dark:bg-gray-800 dark:bg-gradient-to-bl dark:from-gray-700/50 dark:via-transparent border-b border-gray-200 dark:border-gray-700 sm:rounded-lg shadow-xl mt-4">
                         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4">
                             <div
                                 v-for="photo in photos.data"
@@ -312,6 +369,13 @@ const exportData = (format) => {
 
                                     <ZoomIcon @click="zoomedImage = photo" class="absolute top-0 left-0"/>
 
+                                    <div
+                                        v-if="photo.user"
+                                        class="absolute top-2 left-8 text-xs shadow bg-black/50 rounded px-2 py-1 text-white"
+                                    >
+                                        {{ photo.user.name }}
+                                    </div>
+
                                     <div class="absolute top-2 right-2 flex gap-2">
                                         <LocationIcon v-if="photo.latitude && photo.longitude"/>
                                         <TaggedIcon v-if="photo.items_exists"/>
@@ -335,7 +399,7 @@ const exportData = (format) => {
                             </div>
                         </div>
 
-                        <div v-if="photos.links?.length && photos.last_page > 1" class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
+                        <div class="mt-8 flex flex-col sm:flex-row sm:justify-between gap-4">
                             <div class="bg-white text-blue-500 dark:bg-gray-800 dark:text-white flex items-center justify-center">
                                 Showing {{ photos.from }} to {{ photos.to }} of {{ photos.total }} photos
                             </div>

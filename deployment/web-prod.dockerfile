@@ -63,8 +63,12 @@ RUN set -eux; \
 		mysqli \
 		opcache \
 		pdo_mysql \
-		zip
+		zip \
+		exif
 
+
+# Set PHP memory limit
+RUN echo 'memory_limit = 512M' > /usr/local/etc/php/conf.d/memory-limit.ini
 
 # Get latest Composer
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer

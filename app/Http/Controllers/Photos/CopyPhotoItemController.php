@@ -10,9 +10,7 @@ class CopyPhotoItemController extends Controller
 {
     public function __invoke(PhotoItem $photoItem): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoItem->photo);
 
         $newPhotoItem = $photoItem->replicate();
         $newPhotoItem->save();

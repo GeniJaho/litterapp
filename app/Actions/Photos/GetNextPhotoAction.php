@@ -12,9 +12,9 @@ class GetNextPhotoAction
     {
         $attribute = $photo->getAttribute($user->settings->sort_column);
 
-        /** @var Builder $builder */
-        $builder = $user
-            ->photos()
+        /** @var \Illuminate\Database\Eloquent\Builder<Photo> $builder */
+        $builder = Photo::query()
+            ->forUser($user)
             ->filter($user->settings->photo_filters);
 
         if ($attribute) {

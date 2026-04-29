@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Photos;
 
+use App\DTO\BulkAddPhotoTags;
 use App\DTO\BulkDeletePhotoItems;
 use App\DTO\BulkPhotoItems;
 use App\Http\Controllers\Controller;
@@ -10,6 +11,7 @@ use App\Models\PhotoItem;
 use App\Models\PhotoItemTag;
 use App\Models\PhotoSuggestion;
 use App\Models\TagShortcut;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class BulkPhotoItemsController extends Controller
@@ -71,5 +73,54 @@ class BulkPhotoItemsController extends Controller
                 ->whereIn('tag_id', $bulkDeletePhotoItems->tag_ids)
                 ->delete();
         });
+    }
+
+    public function addTags(BulkAddPhotoTags $bulkAddPhotoTags): RedirectResponse
+    {
+        $photosWithMultipleItems = [];
+        $photosWithNoItems = [];
+        $tagsAdded = false;
+
+        DB::transaction(function () use ($bulkAddPhotoTags, &$photosWithMultipleItems, &$photosWithNoItems, &$tagsAdded): void {
+            $photoItemCounts = PhotoItem::query()
+                ->whereIn('photo_id', $bulkAddPhotoTags->photo_ids)
+                ->select('photo_id', DB::raw('count(*) as item_count'))
+                ->groupBy('photo_id')
+                ->pluck('item_count', 'photo_id');
+
+            /** @var array<int, int> $counts */
+            $counts = $photoItemCounts->toArray();
+
+            $photosWithNoItems = array_values(array_diff($bulkAddPhotoTags->photo_ids, $photoItemCounts->keys()->all()));
+            $photosWithMultipleItems = array_keys(array_filter($counts, fn (int $count): bool => $count > 1));
+
+            $photosWithSingleItem = array_keys(array_filter($counts, fn (int $count): bool => $count === 1));
+
+            if ($photosWithSingleItem === []) {
+                return;
+            }
+
+            $photoItems = PhotoItem::query()
+                ->whereIn('photo_id', $photosWithSingleItem)
+                ->get();
+
+            foreach ($photoItems as $photoItem) {
+                $existingTagIds = $photoItem->tags()->pluck('tags.id')->all();
+
+                $tagsToAttach = array_diff($bulkAddPhotoTags->tag_ids, $existingTagIds);
+
+                if ($tagsToAttach !== []) {
+                    $photoItem->tags()->attach($tagsToAttach);
+
+                    $tagsAdded = true;
+                }
+            }
+        });
+
+        return back()->with('bulkAddTagsResult', [
+            'photos_with_no_items' => $photosWithNoItems,
+            'photos_with_multiple_items' => $photosWithMultipleItems,
+            'tags_added' => $tagsAdded,
+        ]);
     }
 }

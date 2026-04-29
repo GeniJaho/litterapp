@@ -8,6 +8,7 @@ services:
       ENVIRONMENT: ${ENVIRONMENT}
       APP_NAME: ${APP_NAME}
       APP_KEY: ${APP_KEY}
+      NIGHTWATCH_TOKEN: ${NIGHTWATCH_TOKEN}
     ports:
       - 9000:9000
     volumes:

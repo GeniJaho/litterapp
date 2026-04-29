@@ -19,9 +19,7 @@ class PhotoItemsController extends Controller
         /** @var User $user */
         $user = auth()->user();
 
-        if ($user->id !== $photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photo);
 
         DB::transaction(function () use ($user, $photo, $request): void {
             $photo->items()->attach($request->item_ids, [
@@ -73,9 +71,7 @@ class PhotoItemsController extends Controller
 
     public function update(PhotoItem $photoItem, UpdatePhotoItemRequest $request): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoItem->photo);
 
         if ($request->filled('quantity')) {
             $photoItem->quantity = $request->integer('quantity');
@@ -100,9 +96,7 @@ class PhotoItemsController extends Controller
 
     public function destroy(PhotoItem $photoItem): JsonResponse
     {
-        if (auth()->id() !== $photoItem->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoItem->photo);
 
         $photoItem->delete();
 
