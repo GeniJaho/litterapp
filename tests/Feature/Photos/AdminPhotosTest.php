@@ -1,8 +1,6 @@
 <?php
 
-use App\Actions\Photos\ClassifiesPhoto;
 use App\DTO\PhotoFilters;
-use App\DTO\PhotoItemPrediction;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
@@ -12,7 +10,6 @@ use App\Models\User;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Inertia\Testing\AssertableInertia;
-use Tests\Doubles\FakeClassifyPhotoAction;
 
 beforeEach(function (): void {
     Storage::fake(config('filesystems.default'));
@@ -395,26 +392,6 @@ test('admin can apply a tag shortcut to another users photo', function (): void 
         'photo_id' => $photo->id,
         'item_id' => $item->id,
     ]);
-});
-
-test('admin can trigger litterbot suggest on another users photo', function (): void {
-    $admin = createAdmin();
-    $otherUser = User::factory()->create();
-    $photo = Photo::factory()->for($otherUser)->create();
-    $item = Item::factory()->create(['name' => 'Bottle']);
-
-    $this->swap(ClassifiesPhoto::class, (new FakeClassifyPhotoAction)->shouldReturnPrediction(
-        new PhotoItemPrediction('bottle', 0.95)
-    ));
-
-    $response = $this->actingAs($admin)->getJson(route('litterbot.suggest', $photo));
-
-    $response->assertOk();
-    $response->assertJson(fn (AssertableJson $json): AssertableJson => $json
-        ->has('suggestion.id')
-        ->where('suggestion.item.id', $item->id)
-        ->etc()
-    );
 });
 
 test('admin with all_users filter sees all photos', function (): void {

@@ -101,9 +101,9 @@ class PhotosController extends Controller
                 ->with('tags:id,name')
                 ->orderByDesc('id'),
             'photoSuggestions.item:id,name',
-                'photoSuggestions.brandTag:id,name',
-                'photoSuggestions.contentTag:id,name',
-            ];
+            'photoSuggestions.brandTag:id,name',
+            'photoSuggestions.contentTag:id,name',
+        ];
 
         if ($user->is_admin && $user->id !== $photo->user_id) {
             $eagerLoads[] = 'user:id,name,profile_photo_path';

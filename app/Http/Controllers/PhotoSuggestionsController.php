@@ -9,9 +9,7 @@ class PhotoSuggestionsController extends Controller
 {
     public function reject(PhotoSuggestion $photoSuggestion): JsonResponse
     {
-        if (auth()->id() !== $photoSuggestion->photo->user_id) {
-            abort(404);
-        }
+        $this->authorize('manage', $photoSuggestion->photo);
 
         $photoSuggestion->update(['is_accepted' => false]);
 
