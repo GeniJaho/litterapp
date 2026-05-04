@@ -147,8 +147,14 @@ class Photo extends Model
             ->when($filters->has_gps === false, fn (Builder $query) => $query->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('items'))
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
-            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')->where('item_score', '>=', 50)))
-            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoSuggestions'))
+            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoSuggestions', fn (Builder $query) => $query
+                ->whereNull('is_accepted')
+                ->whereNotNull('predictions')
+                ->where('item_score', '>=', 30)))
+            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoSuggestions', fn (Builder $query) => $query
+                ->whereNull('is_accepted')
+                ->whereNotNull('predictions')
+                ->where('item_score', '>=', 30)))
             ->when($filters->has_brand === true && $brandTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
             ->when($filters->has_brand === false && $brandTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
             ->when($filters->has_material === true && $materialTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))

@@ -17,7 +17,10 @@ class FilterPhotosAction
         $photos = $this->baseQuery($user)
             ->withExists([
                 'items',
-                'photoSuggestions' => fn (Builder $query) => $query->whereNull('is_accepted')->where('item_score', '>=', 30),
+                'photoSuggestions' => fn (Builder $query) => $query
+                    ->whereNull('is_accepted')
+                    ->whereNotNull('predictions')
+                    ->where('item_score', '>=', 30),
             ])
             ->paginate($user->settings->getValidPerPage())
             ->withQueryString();

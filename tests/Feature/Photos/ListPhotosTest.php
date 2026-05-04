@@ -26,7 +26,11 @@ test('a user can see their photos', function (): void {
     $item = Item::factory()->create();
     $tag = Tag::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
-    PhotoSuggestion::factory()->for($item)->for($photoB)->create(['is_accepted' => null, 'item_score' => 50]); // Only consider pending suggestions
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoB)
+        ->withPredictions([$item->id])
+        ->create(['is_accepted' => null, 'item_score' => 50]); // Only consider pending multi-item suggestions
     PhotoSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true, 'item_score' => 50]);
     $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
@@ -432,7 +436,15 @@ test('a user can filter their photos by having item suggestions or not', functio
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    PhotoSuggestion::factory()->for($item)->for($photoB)->create(['item_score' => 50]);
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoB)
+        ->withPredictions([$item->id])
+        ->create(['item_score' => 50, 'is_accepted' => null]);
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoA)
+        ->create(['item_score' => 90, 'is_accepted' => null]); // Legacy row should be ignored
 
     $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=1');
 
