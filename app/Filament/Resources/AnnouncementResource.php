@@ -56,7 +56,7 @@ class AnnouncementResource extends Resource
                 DateTimePicker::make('published_at')
                     ->seconds(false)
                     ->nullable()
-                    ->helperText('Leave empty to keep as a draft. Future dates schedule visibility.'),
+                    ->helperText('Times are in UTC. Leave empty to keep as a draft. Future dates schedule visibility.'),
             ]);
     }
 
