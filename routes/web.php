@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
@@ -40,6 +41,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', HomeController::class)->name('home');
+Route::get('/announcements', AnnouncementsController::class)->name('announcements');
 Route::get('/docs/en/', DocsController::class)->name('docs');
 Route::get('/events', EventsController::class)->name('events');
 
