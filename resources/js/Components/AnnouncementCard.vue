@@ -52,8 +52,6 @@ const formattedDate = computed(() => {
             <a
                 v-if="announcement.link_url"
                 :href="announcement.link_url"
-                target="_blank"
-                rel="noopener noreferrer"
                 class="mt-4 inline-flex items-center text-sm font-bold tracking-wider text-darkBlue dark:text-turqo hover:underline"
             >
                 {{ announcement.link_label || 'Read more' }}
