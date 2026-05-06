@@ -2,6 +2,14 @@
 import {Link, usePage} from "@inertiajs/vue3";
 import {computed} from "vue";
 import LinkTile from "@/Components/LinkTile.vue";
+import AnnouncementsSection from "@/Components/AnnouncementsSection.vue";
+
+defineProps({
+    announcements: {
+        type: Array,
+        default: () => [],
+    },
+});
 
 const page = usePage()
 
@@ -86,6 +94,8 @@ const specialItems = [
                         </Link>
                     </div>
                 </div>
+
+                <AnnouncementsSection :announcements="announcements"/>
 
                 <div class="pt-16">
                     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
