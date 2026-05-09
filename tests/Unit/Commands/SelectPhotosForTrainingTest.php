@@ -1,6 +1,6 @@
 <?php
 
-use App\Actions\Photos\GetItemFromPredictionAction;
+use App\Console\Commands\SelectPhotosForTraining;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
@@ -21,7 +21,7 @@ it('test it selects photos proportionally and limits users', function (): void {
     ]);
 
     $itemSlug = 'bottle';
-    $itemName = GetItemFromPredictionAction::ITEM_CLASS_NAMES[$itemSlug];
+    $itemName = SelectPhotosForTraining::ITEM_CLASS_NAMES[$itemSlug];
     $item = Item::factory()->create(['name' => $itemName]);
 
     // Total 1000 photos across 15 users

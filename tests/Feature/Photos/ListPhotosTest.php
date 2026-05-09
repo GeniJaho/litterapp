@@ -5,7 +5,7 @@ use App\DTO\UserSettings;
 use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
-use App\Models\PhotoItemSuggestion;
+use App\Models\PhotoSuggestion;
 use App\Models\Tag;
 use App\Models\TagShortcut;
 use App\Models\TagType;
@@ -26,8 +26,12 @@ test('a user can see their photos', function (): void {
     $item = Item::factory()->create();
     $tag = Tag::factory()->create();
     PhotoItem::factory()->for($item)->for($photoB)->create();
-    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['is_accepted' => null, 'score' => 80]); // Only consider pending suggestions
-    PhotoItemSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true, 'score' => 80]);
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoB)
+        ->withPredictions([$item->id])
+        ->create(['is_accepted' => null, 'item_score' => 50]); // Only consider pending multi-item suggestions
+    PhotoSuggestion::factory()->for($item)->for($photoA)->create(['is_accepted' => true, 'item_score' => 50]);
     $emptyTagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
     $tagShortcut->items()->attach($item, [
@@ -46,11 +50,11 @@ test('a user can see their photos', function (): void {
         ->where('photos.data.0.id', $photoB->id)
         ->where('photos.data.0.full_path', $photoB->full_path)
         ->where('photos.data.0.items_exists', true)
-        ->where('photos.data.0.photo_item_suggestions_exists', true)
+        ->where('photos.data.0.photo_suggestions_exists', true)
         ->where('photos.data.1.id', $photoA->id)
         ->where('photos.data.1.full_path', $photoA->full_path)
         ->where('photos.data.1.items_exists', false)
-        ->where('photos.data.1.photo_item_suggestions_exists', false)
+        ->where('photos.data.1.photo_suggestions_exists', false)
         ->has('tagShortcuts', 1)
         ->where('tagShortcuts.0.id', $tagShortcut->id)
         ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
@@ -432,7 +436,15 @@ test('a user can filter their photos by having item suggestions or not', functio
     $photoA = Photo::factory()->for($user)->create();
     $photoB = Photo::factory()->for($user)->create();
     $item = Item::factory()->create();
-    PhotoItemSuggestion::factory()->for($item)->for($photoB)->create(['score' => 80]);
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoB)
+        ->withPredictions([$item->id])
+        ->create(['item_score' => 50, 'is_accepted' => null]);
+    PhotoSuggestion::factory()
+        ->for($item)
+        ->for($photoA)
+        ->create(['item_score' => 90, 'is_accepted' => null]); // Legacy row should be ignored
 
     $response = $this->get('/my-photos?store_filters=1&has_item_suggestions=1');
 

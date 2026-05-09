@@ -37,6 +37,25 @@ const rejectSuggestedItem = () => {
                 <h3 class="truncate text-lg font-bold text-gray-900 dark:text-gray-100">
                     1 {{ suggestedItem.item.name }}
                 </h3>
+
+                <div v-if="suggestedItem.brand_tag && suggestedItem.brand_score >= 50" class="mt-2 flex items-center gap-2">
+                    <span class="inline-flex items-center rounded-md bg-blue-50 dark:bg-blue-900/30 px-2 py-1 text-xs font-medium text-blue-700 dark:text-blue-300 ring-1 ring-inset ring-blue-700/10 dark:ring-blue-300/20">
+                        {{ suggestedItem.brand_tag.name }}
+                    </span>
+                    <span v-if="suggestedItem.brand_count" class="text-xs text-gray-500 dark:text-gray-400">
+                        {{ suggestedItem.brand_count }} similar
+                    </span>
+                </div>
+
+                <div v-if="suggestedItem.content_tag && suggestedItem.content_score >= 50" class="mt-1 flex items-center gap-2">
+                    <span class="inline-flex items-center rounded-md bg-purple-50 dark:bg-purple-900/30 px-2 py-1 text-xs font-medium text-purple-700 dark:text-purple-300 ring-1 ring-inset ring-purple-700/10 dark:ring-purple-300/20">
+                        {{ suggestedItem.content_tag.name }}
+                    </span>
+                    <span v-if="suggestedItem.content_count" class="text-xs text-gray-500 dark:text-gray-400">
+                        {{ suggestedItem.content_count }} similar
+                    </span>
+                </div>
+
                 <div class="mt-6 flex justify-between gap-2">
                     <SecondaryButton
                         class="group relative w-full justify-center"
@@ -58,8 +77,11 @@ const rejectSuggestedItem = () => {
 
             <div class="mt-6 text-sm font-medium leading-6 text-gray-900 dark:text-gray-100">
                 <i class="fas fa-wand-magic-sparkles text-gray-900 dark:text-turqoFocus mr-2"></i>
-                <span class="font-bold">{{ suggestedItem.score.toFixed() }}%</span>
+                <span class="font-bold">{{ suggestedItem.item_score }}%</span>
                 AI Confidence
+                <span v-if="suggestedItem.item_count" class="ml-2 text-xs text-gray-500 dark:text-gray-400">
+                    ({{ suggestedItem.item_count }} similar photos)
+                </span>
             </div>
         </div>
         <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">

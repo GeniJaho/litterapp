@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Actions\Photos\GetItemFromPredictionAction;
 use App\Actions\Training\DistributePhotosAmongUsersAction;
 use App\Models\Item;
 use App\Models\Photo;
@@ -15,6 +14,40 @@ class SelectPhotosForTraining extends Command
 {
     use ZipsPhotos;
 
+    /**
+     * @var array<string, string>
+     */
+    public const ITEM_CLASS_NAMES = [
+        'aluminium-foil' => 'Aluminium Foil',
+        'balloon' => 'Balloon',
+        'bottle' => 'Bottle',
+        'can' => 'Can',
+        'cap' => 'Cap (Bottle Cap/-Lid/-Top)',
+        'cigarette-butt' => 'Cigarette Butt',
+        'drink-pouch' => 'Drink Pouch',
+        'straw' => 'Straw',
+        'cup' => 'Cup',
+        'drink-carton' => 'Drink Carton',
+        'battery' => 'Battery',
+        'cable-tie' => 'Cable Tie/Tie Wrap',
+        'crown-cap' => 'Crown Cap',
+        'facemask' => 'Facemask',
+        'firework' => 'Fireworks',
+        'glove' => 'Glove',
+        'glove-industrial' => 'Glove (industrial/professional gloves)',
+        'joint-tube' => 'Joint Tube',
+        'lid' => 'Lid',
+        'lighter' => 'Lighter',
+        'nitrous-canister' => 'Nitrous Canister',
+        'packaging' => 'Packaging',
+        'pull-ring' => 'Pull Ring',
+        'rope' => 'Rope/string/cord',
+        'saucepacket' => 'Saucepacket',
+        'sleeve-label' => 'Sleeve/Label (Bottle Sleeve/Bottle Label)',
+        'wet-wipes' => 'Wet Wipes',
+        'zip-bag' => 'Zip Bag',
+    ];
+
     protected $signature = 'app:select-photos-for-training {--limit=1000 : Number of photos per item}';
 
     protected $description = 'Start photos from consenting users for ML training';
@@ -26,13 +59,13 @@ class SelectPhotosForTraining extends Command
         $this->components->info("Selecting up to {$limit} photos per item from users who consented to training...");
 
         // Preload all items at once to avoid N+1 queries
-        $items = Item::whereIn('name', GetItemFromPredictionAction::ITEM_CLASS_NAMES)->get()->keyBy('name');
+        $items = Item::whereIn('name', self::ITEM_CLASS_NAMES)->get()->keyBy('name');
         $usersConsentingToTrain = User::query()->whereNotNull('settings->consent_to_training_at')->pluck('id');
 
         $totalPhotos = 0;
         $results = [];
 
-        foreach (GetItemFromPredictionAction::ITEM_CLASS_NAMES as $itemSlug => $itemName) {
+        foreach (self::ITEM_CLASS_NAMES as $itemSlug => $itemName) {
             $item = $items->get($itemName);
 
             if (! $item) {

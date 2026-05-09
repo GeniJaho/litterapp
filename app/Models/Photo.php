@@ -19,7 +19,7 @@ use Illuminate\Support\Facades\Storage;
  * @property int<0, max> $id
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
- * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
+ * @property Collection<int, PhotoSuggestion> $photoSuggestions
  * @property ?int $size_kb
  * @property ?string $share_token
  * @property ?Carbon $share_expires_at
@@ -71,11 +71,11 @@ class Photo extends Model
     }
 
     /**
-     * @return HasMany<PhotoItemSuggestion, $this>
+     * @return HasMany<PhotoSuggestion, $this>
      */
-    public function photoItemSuggestions(): HasMany
+    public function photoSuggestions(): HasMany
     {
-        return $this->hasMany(PhotoItemSuggestion::class);
+        return $this->hasMany(PhotoSuggestion::class);
     }
 
     /**
@@ -147,8 +147,14 @@ class Photo extends Model
             ->when($filters->has_gps === false, fn (Builder $query) => $query->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude')))
             ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('items'))
             ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
-            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoItemSuggestions', fn (Builder $query) => $query->whereNull('is_accepted')->where('score', '>=', 80)))
-            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoItemSuggestions'))
+            ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoSuggestions', fn (Builder $query) => $query
+                ->whereNull('is_accepted')
+                ->whereNotNull('predictions')
+                ->where('item_score', '>=', 30)))
+            ->when($filters->has_item_suggestions === false, fn (Builder $query) => $query->whereDoesntHave('photoSuggestions', fn (Builder $query) => $query
+                ->whereNull('is_accepted')
+                ->whereNotNull('predictions')
+                ->where('item_score', '>=', 30)))
             ->when($filters->has_brand === true && $brandTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
             ->when($filters->has_brand === false && $brandTypeId, fn (Builder $query) => $query->whereDoesntHave('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $brandTypeId)))
             ->when($filters->has_material === true && $materialTypeId, fn (Builder $query) => $query->whereHas('photoItems.tags', fn (Builder $query) => $query->where('tag_type_id', $materialTypeId)))
