@@ -53,6 +53,21 @@ test('enabling training consent stores the consent timestamp', function (): void
     expect($user->fresh()->settings->consent_to_training_at)->toBe('2026-03-05T11:22:33+00:00');
 });
 
+test('saving settings does not bump the user updated_at', function (): void {
+    $user = User::factory()->create([
+        'updated_at' => '2020-01-01 00:00:00',
+    ]);
+
+    $response = $this->actingAs($user)->post('/settings', [
+        'picked_up_by_default' => true,
+        'consent_to_training_at' => null,
+    ]);
+
+    $response->assertOk();
+
+    expect($user->fresh()->updated_at->toDateTimeString())->toBe('2020-01-01 00:00:00');
+});
+
 test('disabling training consent clears the consent timestamp', function (): void {
     $user = User::factory()->create([
         'settings' => [

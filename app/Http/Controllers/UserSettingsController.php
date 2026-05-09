@@ -23,6 +23,6 @@ class UserSettingsController extends Controller
             $user->settings->consent_to_training_at = now()->toIso8601String();
         }
 
-        $user->save();
+        $user->withoutTimestamps(fn () => $user->save());
     }
 }

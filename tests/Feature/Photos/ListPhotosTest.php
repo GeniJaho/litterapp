@@ -78,6 +78,19 @@ test('a user can not see another users photos', function (): void {
     );
 });
 
+test('persisting filter, sort, and per-page preferences does not bump the user updated_at', function (): void {
+    $this->actingAs($user = User::factory()->create([
+        'updated_at' => '2020-01-01 00:00:00',
+    ]));
+
+    $this->get('/my-photos?set_per_page=true&per_page=50')->assertOk();
+    $this->get('/my-photos?set_sort=true&sort_column=id&sort_direction=asc')->assertOk();
+    $this->get('/my-photos?store_filters=1&has_gps=1')->assertOk();
+    $this->get('/my-photos?clear_filters=1')->assertOk();
+
+    expect($user->fresh()->updated_at->toDateTimeString())->toBe('2020-01-01 00:00:00');
+});
+
 test('a user can choose the number of photos per page', function (): void {
     $this->actingAs($user = User::factory()->create());
     Photo::factory(26)->for($user)->create();

@@ -35,16 +35,16 @@ class PhotosController extends Controller
 
         if ($request->boolean('store_filters')) {
             $user->settings->photo_filters = $photoFilters;
-            $user->save();
+            $user->withoutTimestamps(fn () => $user->save());
         } elseif ($request->boolean('clear_filters')) {
             $user->settings->photo_filters = null;
-            $user->save();
+            $user->withoutTimestamps(fn () => $user->save());
         } elseif ($request->boolean('set_per_page')) {
             $perPage = in_array($request->integer('per_page'), [25, 50, 100, 200])
                 ? $request->integer('per_page')
                 : 25;
             $user->settings->per_page = $perPage;
-            $user->save();
+            $user->withoutTimestamps(fn () => $user->save());
         } elseif ($request->boolean('set_sort')) {
             $sortColumn = in_array($request->string('sort_column'), ['id', 'taken_at_local', 'original_file_name'])
                 ? $request->string('sort_column')
@@ -54,7 +54,7 @@ class PhotosController extends Controller
                 : 'desc';
             $user->settings->sort_column = $sortColumn;
             $user->settings->sort_direction = $sortDirection;
-            $user->save();
+            $user->withoutTimestamps(fn () => $user->save());
         }
 
         $photos = $filterPhotosAction->run($user);
