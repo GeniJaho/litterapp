@@ -156,12 +156,12 @@ class SuggestionMetrics extends Command
     {
         $acceptedWithBrandPredictions = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.brands') > 0")
+            ->whereJsonLength('predictions->brands', '>', 0)
             ->count();
 
         $brandReviewed = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.brands') > 0")
+            ->whereJsonLength('predictions->brands', '>', 0)
             ->whereNotNull('brand_accepted')
             ->count();
 
@@ -173,7 +173,7 @@ class SuggestionMetrics extends Command
 
         $brandAccepted = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.brands') > 0")
+            ->whereJsonLength('predictions->brands', '>', 0)
             ->where('brand_accepted', true)
             ->count();
 
@@ -195,12 +195,12 @@ class SuggestionMetrics extends Command
     {
         $acceptedWithContentPredictions = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.content') > 0")
+            ->whereJsonLength('predictions->content', '>', 0)
             ->count();
 
         $contentReviewed = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.content') > 0")
+            ->whereJsonLength('predictions->content', '>', 0)
             ->whereNotNull('content_accepted')
             ->count();
 
@@ -212,7 +212,7 @@ class SuggestionMetrics extends Command
 
         $contentAccepted = $this->baseSuggestionsQuery($minScore)
             ->where('is_accepted', true)
-            ->whereRaw("JSON_LENGTH(predictions, '$.content') > 0")
+            ->whereJsonLength('predictions->content', '>', 0)
             ->where('content_accepted', true)
             ->count();
 
