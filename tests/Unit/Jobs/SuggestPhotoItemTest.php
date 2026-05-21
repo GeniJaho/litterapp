@@ -24,9 +24,8 @@ test('it creates a photo suggestion when successful', function (): void {
     ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
+    $job->handle($this->fakeAction);
 
-    expect($result)->toBe(0);
     $this->assertDatabaseHas('photo_suggestions', [
         'photo_id' => $this->photo->id,
         'item_id' => $this->item->id,
@@ -46,9 +45,8 @@ test('it creates a photo suggestion with brand and content tags', function (): v
     ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
+    $job->handle($this->fakeAction);
 
-    expect($result)->toBe(0);
     $this->assertDatabaseHas('photo_suggestions', [
         'photo_id' => $this->photo->id,
         'item_id' => $this->item->id,
@@ -63,17 +61,18 @@ test('it creates a photo suggestion with brand and content tags', function (): v
     ]);
 });
 
-test('it returns failure code when action fails', function (): void {
+test('it throws when action fails so the queue can retry', function (): void {
     $this->fakeAction->shouldFail();
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
 
-    expect($result)->toBe(1);
+    expect(fn (): mixed => $job->handle($this->fakeAction))
+        ->toThrow(RuntimeException::class);
+
     $this->assertDatabaseMissing('photo_suggestions', ['photo_id' => $this->photo->id]);
 });
 
-test('it returns failure code when no items returned', function (): void {
+test('it throws when no items are returned so the queue can retry', function (): void {
     $this->fakeAction->shouldReturnResult(new PhotoSuggestionResult(
         items: [],
         brands: [],
@@ -81,9 +80,10 @@ test('it returns failure code when no items returned', function (): void {
     ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
 
-    expect($result)->toBe(1);
+    expect(fn (): mixed => $job->handle($this->fakeAction))
+        ->toThrow(RuntimeException::class);
+
     $this->assertDatabaseMissing('photo_suggestions', ['photo_id' => $this->photo->id]);
 });
 
@@ -101,9 +101,7 @@ test('it stores predictions JSON alongside flat columns', function (): void {
     ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
-
-    expect($result)->toBe(0);
+    $job->handle($this->fakeAction);
 
     $suggestion = $this->photo->photoSuggestions()->first();
 
@@ -127,9 +125,8 @@ test('it does not create suggestion when item already exists on photo', function
     ));
 
     $job = new SuggestPhotoItem($this->photo);
-    $result = $job->handle($this->fakeAction);
+    $job->handle($this->fakeAction);
 
-    expect($result)->toBe(0);
     $this->assertDatabaseMissing('photo_suggestions', [
         'photo_id' => $this->photo->id,
         'item_id' => $this->item->id,

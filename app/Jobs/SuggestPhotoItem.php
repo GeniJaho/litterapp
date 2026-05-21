@@ -12,6 +12,7 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use RuntimeException;
 
 class SuggestPhotoItem implements ShouldQueue
 {
@@ -27,26 +28,24 @@ class SuggestPhotoItem implements ShouldQueue
 
     public function __construct(public readonly Photo $photo) {}
 
-    public function handle(SuggestsPhotoTags $action): int
+    public function handle(SuggestsPhotoTags $action): void
     {
         $result = $action->run($this->photo);
 
         if (! $result instanceof PhotoSuggestionResult) {
-            return 1;
+            throw new RuntimeException("Failed to get photo suggestions for photo {$this->photo->id}");
         }
 
         $attributes = $result->toSuggestionAttributes();
 
         if ($attributes === null) {
-            return 1;
+            throw new RuntimeException("No items returned in photo suggestion result for photo {$this->photo->id}");
         }
 
         if ($this->photo->items()->where('item_id', $attributes['item_id'])->exists()) {
-            return 0;
+            return;
         }
 
         $this->photo->photoSuggestions()->create($attributes);
-
-        return 0;
     }
 }

@@ -13,12 +13,6 @@
 - Use `\stdClass` for raw DB query result rows (e.g., in `->map(fn (\stdClass $row) => ...)`).
 - When fixing type coverage, check every `fn ($var)` closure in the file — they all need types.
 
-## Pint Auto-Formatting (Linter Hook)
-
-- Pint runs automatically on file save as a hook. It will remove unused imports and convert FQCNs to `use` imports.
-- When adding an import and its usage in the same file, do it in a **single edit** — otherwise Pint removes the "unused" import before the usage is added.
-- Workaround: use a FQCN inline (e.g., `\App\Actions\AI\GetLitterBotUrlAction::CACHE_KEY`) and Pint will convert it to a proper `use` import automatically.
-
 ## PHPStan Strictness
 
 - No `(int)` casts or `intval()` on `mixed` — use a PHPDoc `@var` annotation to type the variable first.
