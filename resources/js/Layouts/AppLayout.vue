@@ -20,7 +20,6 @@ const page = usePage()
 const grafanaLink = computed(() => page.props.grafana.nav_link)
 const facebookLink = computed(() => page.props.nav.facebook_link)
 const twitterLink = computed(() => page.props.nav.twitter_link)
-const latestNewsLink = '/grafana/public-dashboards/a7d260cf38ff439ea19d39e1fba7f3bd';
 const isAdmin = computed(() => page.props.auth.user?.is_admin)
 const isImpersonating = computed(() => page.props.auth.user?.is_being_impersonated)
 
@@ -97,14 +96,6 @@ const logout = () => {
                                          target="_blank"
                                 >
                                     Docs
-                                </NavLink>
-
-                                <!-- Latest News -->
-                                <NavLink :href="latestNewsLink"
-                                         :externalLink="true"
-                                         target="_blank"
-                                >
-                                    Latest News
                                 </NavLink>
                             </div>
                         </div>
@@ -371,14 +362,6 @@ const logout = () => {
                                            target="_blank"
                         >
                             Docs
-                        </ResponsiveNavLink>
-
-                        <!-- Latest News -->
-                        <ResponsiveNavLink :href="latestNewsLink"
-                                           as="externalLink"
-                                           target="_blank"
-                        >
-                            Latest News
                         </ResponsiveNavLink>
                     </div>
 

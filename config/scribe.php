@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use Knuckles\Scribe\Extracting\Strategies;
 use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamAttribute;
 use Knuckles\Scribe\Extracting\Strategies\BodyParameters\GetFromBodyParamTag;
