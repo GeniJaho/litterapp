@@ -105,6 +105,7 @@ class BulkPhotoItemsController extends Controller
                 ->get();
 
             foreach ($photoItems as $photoItem) {
+                /** @var list<int> $existingTagIds */
                 $existingTagIds = $photoItem->tags()->pluck('tags.id')->all();
 
                 $tagsToAttach = array_diff($bulkAddPhotoTags->tag_ids, $existingTagIds);

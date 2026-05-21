@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\DTO;
 
 use Spatie\LaravelData\Data;
@@ -7,9 +9,9 @@ use Spatie\LaravelData\Data;
 class PhotoFilters extends Data
 {
     /**
-     * @param  int[]  $item_ids
-     * @param  int[]  $tag_ids
-     * @param  int[]  $user_ids
+     * @param  list<int|string>  $item_ids
+     * @param  list<int|string>  $tag_ids
+     * @param  list<int|string>  $user_ids
      */
     public function __construct(
         public array $item_ids = [],
@@ -30,9 +32,9 @@ class PhotoFilters extends Data
         public ?bool $has_material = null,
         public ?bool $has_content = null,
     ) {
-        $this->item_ids = array_map(fn (int|string $id): int => $id, $this->item_ids);
-        $this->tag_ids = array_map(fn (int|string $id): int => $id, $this->tag_ids);
-        $this->user_ids = array_map(fn (int|string $id): int => $id, $this->user_ids);
+        $this->item_ids = array_map(fn (int|string $id): int => (int) $id, $this->item_ids);
+        $this->tag_ids = array_map(fn (int|string $id): int => (int) $id, $this->tag_ids);
+        $this->user_ids = array_map(fn (int|string $id): int => (int) $id, $this->user_ids);
     }
 
     /**

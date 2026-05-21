@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Actions\Photos;
 
 use App\DTO\PhotoItemPrediction;
