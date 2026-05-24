@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\TagResource\Pages;
 
+use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Filament\Resources\TagResource;
 use App\Models\Tag;
 use App\Models\TagType;
@@ -9,6 +10,7 @@ use Filament\Actions\CreateAction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Cache;
 
 class ListTags extends ListRecords
 {
@@ -17,7 +19,7 @@ class ListTags extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make(),
+            CreateAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
         ];
     }
 

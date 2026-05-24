@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Filament\Resources;
 
+use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Filament\Resources\ItemTypeResource\Pages\ListItemTypes;
 use App\Models\ItemType;
 use Filament\Forms\Components\TextInput;
@@ -15,6 +16,7 @@ use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class ItemTypeResource extends Resource
 {
@@ -60,12 +62,12 @@ class ItemTypeResource extends Resource
                 //
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
+                DeleteAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
                 ]),
             ]);
     }
