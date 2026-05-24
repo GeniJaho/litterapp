@@ -6,13 +6,24 @@ use App\Models\Item;
 use App\Models\Tag;
 use App\Models\TagType;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Cache;
 
 class GetTagsAndItemsAction
 {
+    public const CACHE_KEY = 'photos.tags_and_items';
+
     /**
      * @return array<string, mixed>
      */
     public function run(): array
+    {
+        return Cache::rememberForever(self::CACHE_KEY, fn (): array => $this->query());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function query(): array
     {
         $tagTypes = TagType::query()->get();
 

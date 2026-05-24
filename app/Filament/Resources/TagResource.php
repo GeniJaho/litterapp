@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Filament\Imports\TagImporter;
 use App\Filament\Resources\TagResource\Pages\ListTags;
 use App\Models\Tag;
@@ -17,6 +18,7 @@ use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ImportAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Cache;
 
 class TagResource extends Resource
 {
@@ -84,12 +86,12 @@ class TagResource extends Resource
                 //
             ])
             ->actions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
+                DeleteAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
-                    DeleteBulkAction::make(),
+                    DeleteBulkAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
                 ]),
             ])
             ->headerActions([

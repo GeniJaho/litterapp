@@ -2,10 +2,12 @@
 
 namespace App\Filament\Imports;
 
+use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Models\Tag;
 use Filament\Actions\Imports\ImportColumn;
 use Filament\Actions\Imports\Importer;
 use Filament\Actions\Imports\Models\Import;
+use Illuminate\Support\Facades\Cache;
 
 class TagImporter extends Importer
 {
@@ -27,6 +29,11 @@ class TagImporter extends Importer
     public function resolveRecord(): ?Tag
     {
         return new Tag;
+    }
+
+    protected function afterSave(): void
+    {
+        Cache::forget(GetTagsAndItemsAction::CACHE_KEY);
     }
 
     public static function getCompletedNotificationBody(Import $import): string
