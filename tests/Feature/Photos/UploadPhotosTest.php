@@ -4,12 +4,10 @@ use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
 use App\DTO\UserSettings;
 use App\Jobs\SuggestPhotoItem;
-use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Storage;
-use Tests\Doubles\FakeExtractExifFromPhotoAction;
 
 use function Pest\Laravel\freezeTime;
 
@@ -22,6 +20,7 @@ beforeEach(function (): void {
 test('a user can upload photos', function (): void {
     $this->actingAs($user = User::factory()->create());
     $file = UploadedFile::fake()->image('photo.jpg')->size(10);
+    $expectedHash = hash_file('sha256', $file->getRealPath());
 
     $response = $this->post('/upload', [
         'photo' => $file,
@@ -33,7 +32,8 @@ test('a user can upload photos', function (): void {
 
     $photo = $user->photos()->first();
     expect($photo->path)->toBe('photos/'.$file->hashName())
-        ->and($photo->size_kb)->toBe(10);
+        ->and($photo->size_kb)->toBe(10)
+        ->and($photo->details->content_hash)->toBe($expectedHash);
 
     Storage::assertExists('photos/'.$file->hashName());
 });
@@ -119,71 +119,46 @@ test('only images can be uploaded', function (): void {
     expect($user->photos()->count())->toBeZero();
 });
 
-test('a user can upload a photo with the same name twice if different date taken', function (): void {
-    $user = User::factory()->create();
-    Photo::factory()->for($user)->create([
-        'original_file_name' => 'photo.jpg',
-        'taken_at_local' => now()->subDay()->toDateTimeString(),
-    ]);
+test('a user can upload two photos with the same name but different content', function (): void {
+    $this->actingAs($user = User::factory()->create());
 
-    $response = $this->actingAs($user)->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg'),
-    ]);
-
-    $response->assertOk();
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg', 10, 10)])->assertOk();
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg', 20, 20)])->assertOk();
 
     expect($user->photos()->count())->toBe(2);
 });
 
 test('a user can not upload the same photo twice', function (): void {
-    $this->swap(
-        ExtractsExifFromPhoto::class,
-        app(FakeExtractExifFromPhotoAction::class)->withExif([]),
-    );
-    $user = User::factory()->create();
-    Photo::factory()->for($user)->create([
-        'original_file_name' => 'photo.jpg',
-        'taken_at_local' => null,
-    ]);
+    $this->actingAs($user = User::factory()->create());
 
-    $response = $this->actingAs($user)->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg'),
-    ]);
-
-    $response->assertSessionHasErrors('photo');
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg')])->assertOk();
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg')])
+        ->assertSessionHasErrors('photo');
 
     expect($user->photos()->count())->toBe(1);
 });
 
-test('a user can not upload the same photo with same date taken twice', function (): void {
-    $user = User::factory()->create();
-    Photo::factory()->for($user)->create([
-        'original_file_name' => 'photo.jpg',
-        'taken_at_local' => now()->toDateTimeString(),
-    ]);
+test('a user can not upload the same photo even with a different name', function (): void {
+    $this->actingAs($user = User::factory()->create());
 
-    $response = $this->actingAs($user)->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg'),
-    ]);
-
-    $response->assertSessionHasErrors('photo');
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('first.jpg')])->assertOk();
+    $this->post('/upload', ['photo' => UploadedFile::fake()->image('second.jpg')])
+        ->assertSessionHasErrors('photo');
 
     expect($user->photos()->count())->toBe(1);
 });
 
-test('a user can upload a photo with the same name as another users photo', function (): void {
-    Photo::factory()->create([
-        'original_file_name' => 'photo.jpg',
-    ]);
-    $user = User::factory()->create();
+test('a user can upload the same photo as another user', function (): void {
+    $this->actingAs($otherUser = User::factory()->create())
+        ->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg')])
+        ->assertOk();
 
-    $response = $this->actingAs($user)->post('/upload', [
-        'photo' => UploadedFile::fake()->image('photo.jpg'),
-    ]);
+    $this->actingAs($user = User::factory()->create())
+        ->post('/upload', ['photo' => UploadedFile::fake()->image('photo.jpg')])
+        ->assertOk();
 
-    $response->assertOk();
-
-    expect($user->photos()->count())->toBe(1);
+    expect($otherUser->photos()->count())->toBe(1)
+        ->and($user->photos()->count())->toBe(1);
 });
 
 test('the SuggestPhotoItem job is dispatched when all conditions are met', function (): void {

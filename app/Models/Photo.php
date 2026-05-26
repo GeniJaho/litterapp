@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -20,6 +21,7 @@ use Illuminate\Support\Facades\Storage;
  * @property Collection<int, Item> $items
  * @property Collection<int, PhotoItem> $photoItems
  * @property Collection<int, PhotoItemSuggestion> $photoItemSuggestions
+ * @property ?PhotoDetail $details
  * @property ?int $size_kb
  * @property ?string $share_token
  * @property ?Carbon $share_expires_at
@@ -76,6 +78,14 @@ class Photo extends Model
     public function photoItemSuggestions(): HasMany
     {
         return $this->hasMany(PhotoItemSuggestion::class);
+    }
+
+    /**
+     * @return HasOne<PhotoDetail, $this>
+     */
+    public function details(): HasOne
+    {
+        return $this->hasOne(PhotoDetail::class);
     }
 
     /**

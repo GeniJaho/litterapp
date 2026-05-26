@@ -30,7 +30,7 @@ class UploadPhotosController extends Controller
 
         $exif = $request->getExifData();
 
-        $photo = $storePhoto->run($photo, $user, $exif);
+        $photo = $storePhoto->run($photo, $user, $exif, $request->getContentHash());
 
         if ($user->settings->litterbot_enabled) {
             SuggestPhotoItem::dispatch($photo);
