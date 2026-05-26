@@ -3,6 +3,7 @@
 namespace App\Http\Requests\Photos;
 
 use App\Actions\Photos\ExtractsExifFromPhoto;
+use App\Models\PhotoDetail;
 use App\Models\User;
 use Illuminate\Container\Attributes\CurrentUser;
 use Illuminate\Contracts\Validation\ValidationRule;
@@ -18,6 +19,8 @@ class StorePhotosRequest extends FormRequest
      * @var array<string, mixed>
      */
     private array $exifData = [];
+
+    private string $contentHash = '';
 
     /**
      * Get the validation rules that apply to the request.
@@ -48,8 +51,9 @@ class StorePhotosRequest extends FormRequest
                 $photo = $this->photo;
 
                 $this->exifData = app(ExtractsExifFromPhoto::class)->run($photo);
+                $this->contentHash = hash('sha256', $photo->getContent());
 
-                if ($this->photoExists($user, $photo)) {
+                if ($this->photoExists($user)) {
                     $validator->errors()->add('photo', 'You have already uploaded this photo!');
                 }
             },
@@ -64,19 +68,16 @@ class StorePhotosRequest extends FormRequest
         return $this->exifData;
     }
 
-    private function photoExists(User $user, UploadedFile $photo): bool
+    public function getContentHash(): string
     {
-        if (isset($this->exifData['taken_at_local'])) {
-            return $user
-                ->photos()
-                ->where('original_file_name', $photo->getClientOriginalName())
-                ->where('taken_at_local', $this->exifData['taken_at_local'])
-                ->exists();
-        }
+        return $this->contentHash;
+    }
 
-        return $user
-            ->photos()
-            ->where('original_file_name', $photo->getClientOriginalName())
+    private function photoExists(User $user): bool
+    {
+        return PhotoDetail::query()
+            ->where('user_id', $user->id)
+            ->where('content_hash', $this->contentHash)
             ->exists();
     }
 }
