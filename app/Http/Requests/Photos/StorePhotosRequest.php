@@ -51,7 +51,16 @@ class StorePhotosRequest extends FormRequest
                 $photo = $this->photo;
 
                 $this->exifData = app(ExtractsExifFromPhoto::class)->run($photo);
-                $this->contentHash = hash('sha256', $photo->getContent());
+
+                $contentHash = hash_file('sha256', $photo->getPathname());
+
+                if ($contentHash === false) {
+                    $validator->errors()->add('photo', 'The photo could not be processed.');
+
+                    return;
+                }
+
+                $this->contentHash = $contentHash;
 
                 if ($this->photoExists($user)) {
                     $validator->errors()->add('photo', 'You have already uploaded this photo!');
