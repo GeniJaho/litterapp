@@ -31,11 +31,8 @@ it('generates a manifest csv and uploads to s3', function (): void {
         ->expectsOutputToContain('Manifest generation complete')
         ->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    expect($files)->toHaveCount(1);
-
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
     expect($lines)->toHaveCount(2); // header + 1 row
 
     $header = str_getcsv($lines[0]);
@@ -47,6 +44,47 @@ it('generates a manifest csv and uploads to s3', function (): void {
     expect($row[2])->toBe((string) $item->id);
     expect($row[3])->toBe((string) $brandTag->id);
     expect($row[4])->toBe((string) $contentTag->id);
+});
+
+it('uploads both a dated snapshot and a manifest_latest pointer', function (): void {
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $item = Item::factory()->create(['name' => 'Can']);
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    PhotoItem::create(['photo_id' => $photo->id, 'item_id' => $item->id]);
+
+    $this->artisan('ml:generate-manifest')->assertExitCode(0);
+
+    $datedKey = 'ml/manifests/manifest_'.now()->format('Y-m-d').'.csv';
+
+    Storage::disk('s3')->assertExists($datedKey);
+    Storage::disk('s3')->assertExists('ml/manifests/manifest_latest.csv');
+
+    $dated = Storage::disk('s3')->get($datedKey);
+    $latest = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    expect($latest)->toBe($dated);
+});
+
+it('emits one row per photo-item so a photo with multiple items appears multiple times', function (): void {
+    $user = User::factory()->create(['settings' => ['consent_to_training_at' => now()->toIso8601String()]]);
+    $itemA = Item::factory()->create(['name' => 'Can']);
+    $itemB = Item::factory()->create(['name' => 'Bottle']);
+
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    PhotoItem::create(['photo_id' => $photo->id, 'item_id' => $itemA->id]);
+    PhotoItem::create(['photo_id' => $photo->id, 'item_id' => $itemB->id]);
+
+    $this->artisan('ml:generate-manifest')->assertExitCode(0);
+
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $rows = array_values(array_slice(array_filter(explode("\n", trim((string) $csv))), 1));
+
+    expect($rows)->toHaveCount(2); // both items for the same photo
+
+    $photoIds = collect($rows)->map(fn (string $line): string => str_getcsv($line)[0])->unique()->values()->all();
+    $itemIds = collect($rows)->map(fn (string $line): string => str_getcsv($line)[2])->all();
+
+    expect($photoIds)->toBe([(string) $photo->id]);
+    expect($itemIds)->toContain((string) $itemA->id, (string) $itemB->id);
 });
 
 it('excludes photos from non-consenting users', function (): void {
@@ -63,9 +101,8 @@ it('excludes photos from non-consenting users', function (): void {
 
     $this->artisan('ml:generate-manifest')->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
 
     expect($lines)->toHaveCount(2); // header + 1 consenting photo
 });
@@ -83,9 +120,8 @@ it('excludes non-visual items', function (): void {
 
     $this->artisan('ml:generate-manifest')->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
 
     expect($lines)->toHaveCount(2); // header + 1 good photo only
 });
@@ -103,32 +139,11 @@ it('excludes placeholder brand and content tags from output', function (): void 
 
     $this->artisan('ml:generate-manifest')->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
     $row = str_getcsv($lines[1]);
 
     expect($row[3])->toBe((string) $goodBrand->id); // Only good brand, not excluded
-});
-
-it('supports --since flag for delta manifests', function (): void {
-    $user = User::factory()->create(['settings' => ['consent_to_training_at' => '2025-01-01T00:00:00+00:00']]);
-    $item = Item::factory()->create(['name' => 'Can']);
-
-    $oldPhoto = Photo::factory()->create(['user_id' => $user->id]);
-    PhotoItem::create(['photo_id' => $oldPhoto->id, 'item_id' => $item->id, 'created_at' => '2025-01-01']);
-
-    $newPhoto = Photo::factory()->create(['user_id' => $user->id]);
-    PhotoItem::create(['photo_id' => $newPhoto->id, 'item_id' => $item->id, 'created_at' => '2026-02-10']);
-
-    $this->artisan('ml:generate-manifest', ['--since' => '2026-02-01'])->assertExitCode(0);
-
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
-
-    expect($lines)->toHaveCount(2); // header + 1 new photo only
-    expect($files[0])->toContain('manifest_delta_');
 });
 
 it('supports --limit for smaller end-to-end runs', function (): void {
@@ -142,42 +157,10 @@ it('supports --limit for smaller end-to-end runs', function (): void {
 
     $this->artisan('ml:generate-manifest', ['--limit' => 2])->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
-
-    expect($lines)->toHaveCount(3); // header + 2 rows
-});
-
-it('includes older photos from users who consented recently in delta exports', function (): void {
-    $recentlyConsentedUser = User::factory()->create([
-        'settings' => [
-            'consent_to_training_at' => '2026-02-10T00:00:00+00:00',
-        ],
-    ]);
-    $olderConsentedUser = User::factory()->create([
-        'settings' => [
-            'consent_to_training_at' => '2025-01-01T00:00:00+00:00',
-        ],
-    ]);
-    $item = Item::factory()->create(['name' => 'Can']);
-
-    $recentPhoto = Photo::factory()->create(['user_id' => $recentlyConsentedUser->id]);
-    PhotoItem::create(['photo_id' => $recentPhoto->id, 'item_id' => $item->id, 'created_at' => '2025-01-01']);
-
-    $olderPhoto = Photo::factory()->create(['user_id' => $olderConsentedUser->id]);
-    PhotoItem::create(['photo_id' => $olderPhoto->id, 'item_id' => $item->id, 'created_at' => '2025-01-01']);
-
-    $this->artisan('ml:generate-manifest', ['--since' => '2026-02-01'])->assertExitCode(0);
-
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
     $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
 
-    expect($lines)->toHaveCount(2); // header + recently consented user's older photo
-
-    $row = str_getcsv($lines[1]);
-    expect($row[0])->toBe((string) $recentPhoto->id);
+    expect($lines)->toHaveCount(3); // header + 2 rows
 });
 
 it('handles multiple brand and content tags with pipe separator', function (): void {
@@ -195,9 +178,8 @@ it('handles multiple brand and content tags with pipe separator', function (): v
 
     $this->artisan('ml:generate-manifest')->assertExitCode(0);
 
-    $files = Storage::disk('s3')->allFiles('ml/manifests');
-    $csv = Storage::disk('s3')->get($files[0]);
-    $lines = array_filter(explode("\n", trim((string) $csv)));
+    $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
+    $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
     $row = str_getcsv($lines[1]);
 
     $brandIds = explode('|', (string) $row[3]);
