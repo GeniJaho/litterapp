@@ -56,8 +56,11 @@ class MlGenerateLabelMaps extends Command
 
         $json = (string) json_encode($labelMaps, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
 
-        $s3Path = 'ml/manifests/label_maps.json';
-        Storage::disk('s3')->put($s3Path, $json);
+        $datedPath = 'ml/manifests/label_maps_'.now()->format('Y-m-d').'.json';
+        $latestPath = 'ml/manifests/label_maps.json';
+
+        Storage::disk('s3')->put($datedPath, $json);
+        Storage::disk('s3')->put($latestPath, $json);
 
         $this->table(
             ['Category', 'Count'],
@@ -68,7 +71,7 @@ class MlGenerateLabelMaps extends Command
             ]
         );
 
-        $this->components->success("Uploaded to S3: {$s3Path}");
+        $this->components->success("Uploaded to S3: {$datedPath} (and {$latestPath})");
 
         return 0;
     }
