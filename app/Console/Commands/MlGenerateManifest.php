@@ -10,7 +10,6 @@ use Illuminate\Console\Command;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Relations\Relation;
-use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 
@@ -19,14 +18,12 @@ class MlGenerateManifest extends Command
     use ExcludesNonVisualItems;
 
     protected $signature = 'ml:generate-manifest
-        {--since= : Only include photos tagged since this date (Y-m-d)}
         {--limit= : Limit exported rows (useful for small end-to-end runs)}';
 
-    protected $description = 'Generate a manifest CSV of photos for kNN embedding extraction and upload to S3';
+    protected $description = 'Generate a full-snapshot manifest CSV of photos for kNN embedding extraction and upload to S3';
 
     public function handle(): int
     {
-        $since = $this->option('since');
         $limitOption = $this->option('limit');
 
         $this->components->info('Generating kNN manifest...');
@@ -58,30 +55,14 @@ class MlGenerateManifest extends Command
         $brandTypeId = TagType::query()->where('slug', 'brand')->value('id');
         $contentTypeId = TagType::query()->where('slug', 'content')->value('id');
 
-        $sinceDate = $since ? Carbon::parse($since)->startOfDay() : null;
-        $recentlyConsentedUserIds = collect();
-
-        if ($sinceDate !== null) {
-            $recentlyConsentedUserIds = User::query()
-                ->whereIn('id', $consentingUserIds)
-                ->whereNotNull('settings->consent_to_training_at')
-                ->where('settings->consent_to_training_at', '>=', $sinceDate->toIso8601String())
-                ->pluck('id');
-        }
-
         $this->components->info("Found {$consentingUserIds->count()} consenting user(s), {$excludedItemIds->count()} excluded item(s).");
-
-        if ($sinceDate) {
-            $this->components->info("Filtering to photos tagged since {$sinceDate->toDateString()}.");
-            $this->components->info("Including all photos from {$recentlyConsentedUserIds->count()} recently consented user(s).");
-        }
 
         if ($rowLimit !== null) {
             $this->components->info("Limiting export to {$rowLimit} row(s).");
         }
 
         $this->components->info('Counting rows...');
-        $totalCount = $this->baseQuery($consentingUserIds, $excludedItemIds, $sinceDate, $recentlyConsentedUserIds)->count();
+        $totalCount = $this->baseQuery($consentingUserIds, $excludedItemIds)->count();
 
         $exportCount = $rowLimit !== null
             ? min($totalCount, $rowLimit)
@@ -95,9 +76,7 @@ class MlGenerateManifest extends Command
 
         $this->components->info("Exporting {$exportCount} rows...");
 
-        $filename = $since
-            ? 'manifest_delta_'.now()->format('Y-m-d').'.csv'
-            : 'manifest_'.now()->format('Y-m-d').'.csv';
+        $filename = 'manifest_'.now()->format('Y-m-d').'.csv';
 
         $localPath = Storage::disk('local')->path($filename);
 
@@ -113,7 +92,7 @@ class MlGenerateManifest extends Command
         $progress = $this->output->createProgressBar($exportCount);
         $progress->start();
 
-        $this->baseQuery($consentingUserIds, $excludedItemIds, $sinceDate, $recentlyConsentedUserIds)
+        $this->baseQuery($consentingUserIds, $excludedItemIds)
             ->with(['tags' => function (Relation $query) use ($excludedTagIds, $brandTypeId, $contentTypeId): void {
                 $query->whereIn('tag_type_id', [$brandTypeId, $contentTypeId]);
                 if ($excludedTagIds->isNotEmpty()) {
@@ -168,9 +147,11 @@ class MlGenerateManifest extends Command
         $this->newLine();
         $this->components->info('Uploading to S3...');
 
-        $s3Path = "ml/manifests/{$filename}";
+        $datedPath = "ml/manifests/{$filename}";
+        $latestPath = 'ml/manifests/manifest_latest.csv';
 
         Storage::disk('s3')->putFileAs('ml/manifests', $localPath, $filename);
+        Storage::disk('s3')->putFileAs('ml/manifests', $localPath, 'manifest_latest.csv');
         Storage::disk('local')->delete($filename);
 
         $this->newLine();
@@ -185,7 +166,7 @@ class MlGenerateManifest extends Command
             ]
         );
 
-        $this->components->success("Uploaded to S3: {$s3Path}");
+        $this->components->success("Uploaded to S3: {$datedPath} (and {$latestPath})");
 
         return 0;
     }
@@ -193,23 +174,13 @@ class MlGenerateManifest extends Command
     /**
      * @param  Collection<int|string, mixed>  $consentingUserIds
      * @param  Collection<int|string, mixed>  $excludedItemIds
-     * @param  Collection<int|string, mixed>  $recentlyConsentedUserIds
      * @return Builder<PhotoItem>
      */
-    private function baseQuery(Collection $consentingUserIds, Collection $excludedItemIds, ?Carbon $sinceDate, Collection $recentlyConsentedUserIds): Builder
+    private function baseQuery(Collection $consentingUserIds, Collection $excludedItemIds): Builder
     {
         return PhotoItem::query()
             ->join('photos', 'photos.id', '=', 'photo_items.photo_id')
             ->whereIn('photos.user_id', $consentingUserIds)
-            ->whereNotIn('photo_items.item_id', $excludedItemIds)
-            ->when($sinceDate, function (Builder $query) use ($sinceDate, $recentlyConsentedUserIds): void {
-                $query->where(function (Builder $deltaQuery) use ($sinceDate, $recentlyConsentedUserIds): void {
-                    $deltaQuery->where('photo_items.created_at', '>=', $sinceDate);
-
-                    if ($recentlyConsentedUserIds->isNotEmpty()) {
-                        $deltaQuery->orWhereIn('photos.user_id', $recentlyConsentedUserIds);
-                    }
-                });
-            });
+            ->whereNotIn('photo_items.item_id', $excludedItemIds);
     }
 }

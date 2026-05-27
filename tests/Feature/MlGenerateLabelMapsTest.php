@@ -30,6 +30,22 @@ it('generates label maps json and uploads to s3', function (): void {
     expect($json['content'][(string) $content->id])->toBe('Energy drink');
 });
 
+it('uploads both a dated archive and the stable label_maps.json pointer', function (): void {
+    TagType::factory()->create(['name' => 'Brand', 'slug' => 'brand']);
+    TagType::factory()->create(['name' => 'Content', 'slug' => 'content']);
+    Item::factory()->create(['name' => 'Can']);
+
+    $this->artisan('ml:generate-label-maps')->assertExitCode(0);
+
+    $datedKey = 'ml/manifests/label_maps_'.now()->format('Y-m-d').'.json';
+
+    Storage::disk('s3')->assertExists($datedKey);
+    Storage::disk('s3')->assertExists('ml/manifests/label_maps.json');
+
+    expect(Storage::disk('s3')->get('ml/manifests/label_maps.json'))
+        ->toBe(Storage::disk('s3')->get($datedKey));
+});
+
 it('excludes non-visual items from label maps', function (): void {
     $goodItem = Item::factory()->create(['name' => 'Bottle']);
     $excludedItem = Item::factory()->create(['name' => 'Piece of <add material>']);
