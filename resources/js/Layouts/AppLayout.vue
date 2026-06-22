@@ -62,11 +62,6 @@ const logout = () => {
 
                             <!-- Navigation Links -->
                             <div class="hidden sm:space-x-8 md:space-x-6 lg:space-x-12 sm:-my-px ml-12 lg:ml-14 md:flex">
-                                <NavLink :href="route('home')"
-                                         :active="route().current('home')"
-                                >
-                                    Home
-                                </NavLink>
                                 <NavLink v-if="$page.props.auth.user"
                                          :href="route('dashboard')"
                                          :active="route().current('dashboard')"
@@ -330,12 +325,6 @@ const logout = () => {
                 <div :class="{'block': showingNavigationDropdown, 'hidden': ! showingNavigationDropdown}"
                      class="sm:hidden">
                     <div class="pt-2 pb-3 space-y-1">
-
-                        <ResponsiveNavLink :href="route('home')"
-                                           :active="route().current('home')"
-                        >
-                            Home
-                        </ResponsiveNavLink>
 
                         <ResponsiveNavLink v-if="$page.props.auth.user"
                                            :href="route('dashboard')"
