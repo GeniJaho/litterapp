@@ -67,6 +67,12 @@ const logout = () => {
                                 >
                                     Home
                                 </NavLink>
+                                <NavLink v-if="$page.props.auth.user"
+                                         :href="route('dashboard')"
+                                         :active="route().current('dashboard')"
+                                >
+                                    Dashboard
+                                </NavLink>
                                 <NavLink :href="grafanaLink"
                                          :externalLink="true"
                                          target="_blank"
@@ -329,6 +335,13 @@ const logout = () => {
                                            :active="route().current('home')"
                         >
                             Home
+                        </ResponsiveNavLink>
+
+                        <ResponsiveNavLink v-if="$page.props.auth.user"
+                                           :href="route('dashboard')"
+                                           :active="route().current('dashboard')"
+                        >
+                            Dashboard
                         </ResponsiveNavLink>
 
                         <ResponsiveNavLink :href="grafanaLink"
