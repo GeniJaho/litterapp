@@ -17,7 +17,7 @@ class ApplyTagShortcutRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'suggestion_id' => ['nullable', 'exists:photo_item_suggestions,id'],
+            'suggestion_id' => ['nullable', 'exists:photo_suggestions,id'],
         ];
     }
 }

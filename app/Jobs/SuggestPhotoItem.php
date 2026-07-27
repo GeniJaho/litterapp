@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Actions\Photos\ClassifiesPhoto;
-use App\Actions\Photos\GetItemFromPredictionAction;
-use App\DTO\PhotoItemPrediction;
-use App\Models\Item;
+use App\Actions\Photos\SuggestsPhotoTags;
+use App\DTO\PhotoSuggestionResult;
 use App\Models\Photo;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use RuntimeException;
 
 class SuggestPhotoItem implements ShouldQueue
 {
@@ -29,29 +28,24 @@ class SuggestPhotoItem implements ShouldQueue
 
     public function __construct(public readonly Photo $photo) {}
 
-    public function handle(
-        ClassifiesPhoto $classifyPhotoAction,
-        GetItemFromPredictionAction $getItemFromPredictionAction,
-    ): int {
-        $prediction = $classifyPhotoAction->run($this->photo);
+    public function handle(SuggestsPhotoTags $action): void
+    {
+        $result = $action->run($this->photo);
 
-        if (! $prediction instanceof PhotoItemPrediction) {
-            return 1;
+        if (! $result instanceof PhotoSuggestionResult) {
+            throw new RuntimeException("Failed to get photo suggestions for photo {$this->photo->id}");
         }
 
-        $item = $getItemFromPredictionAction->run($prediction);
+        $attributes = $result->toSuggestionAttributes();
 
-        if (! $item instanceof Item) {
-            return 1;
+        if ($attributes === null) {
+            throw new RuntimeException("No items returned in photo suggestion result for photo {$this->photo->id}");
         }
 
-        if ($this->photo->items()->where('item_id', $item->id)->doesntExist()) {
-            $this->photo->photoItemSuggestions()->create([
-                'item_id' => $item->id,
-                'score' => $prediction->score,
-            ]);
+        if ($this->photo->items()->where('item_id', $attributes['item_id'])->exists()) {
+            return;
         }
 
-        return 0;
+        $this->photo->photoSuggestions()->create($attributes);
     }
 }

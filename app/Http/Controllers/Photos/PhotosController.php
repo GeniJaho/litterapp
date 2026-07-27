@@ -5,12 +5,10 @@ namespace App\Http\Controllers\Photos;
 use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetNextPhotoAction;
 use App\Actions\Photos\GetPreviousPhotoAction;
-use App\Actions\Photos\GetRelevantTagShortcutAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
-use App\Models\PhotoItemSuggestion;
 use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
@@ -78,7 +76,6 @@ class PhotosController extends Controller
         GetTagsAndItemsAction $getTagsAndItemsAction,
         GetNextPhotoAction $getNextPhotoAction,
         GetPreviousPhotoAction $getPreviousPhotoAction,
-        GetRelevantTagShortcutAction $getRelevantTagShortcutAction,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -103,7 +100,9 @@ class PhotosController extends Controller
                 ->with('item:id,name')
                 ->with('tags:id,name')
                 ->orderByDesc('id'),
-            'photoItemSuggestions.item:id,name',
+            'photoSuggestions.item:id,name',
+            'photoSuggestions.brandTag:id,name',
+            'photoSuggestions.contentTag:id,name',
         ];
 
         if ($user->is_admin && $user->id !== $photo->user_id) {
@@ -114,10 +113,7 @@ class PhotosController extends Controller
             ->append('full_path')
             ->load($eagerLoads);
 
-        $photo->photoItemSuggestions->each(fn (PhotoItemSuggestion $suggestion) => $suggestion->setAttribute(
-            'shortcut',
-            $getRelevantTagShortcutAction->run($user, $suggestion->item_id))
-        );
+        $photo->photoSuggestions->each->append('prediction_items');
 
         return response()->json([
             'photo' => $photo,
