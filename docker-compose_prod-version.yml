@@ -22,6 +22,10 @@ services:
     image: ${REGISTRY_USER}/${APP_NAME_DOCKER}/docs:${APP_VERSION}
     container_name: ${APP_NAME_DOCKER}-docs
     restart: unless-stopped
+    deploy:
+      resources:
+        limits:
+          memory: 64M
     environment:
       - ENVIRONMENT
   db:
@@ -39,6 +43,7 @@ services:
     #   - 3306:3306
     volumes:
       - ./data/mysql/db:/var/lib/mysql
+      - ./deployment/my.cnf:/etc/mysql/conf.d/tuning.cnf:ro
   backup:
     image: databack/mysql-backup
     container_name: ${APP_NAME_DOCKER}-backup
@@ -58,6 +63,10 @@ services:
       AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY}
       AWS_DEFAULT_REGION: eu-west-1
       AWS_CLI_S3_CP_OPTS: "--storage-class GLACIER"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     volumes:
       - ./data/mysql/backup:/db
       - ./data/mysql/scripts:/scripts.d/pre-backup
@@ -66,9 +75,13 @@ services:
     image: phpmyadmin/phpmyadmin:latest
     container_name: phpmyadmin
     environment:
-      PMA_ARBITRARY: 1
+      PMA_HOST: ${APP_NAME_DOCKER}-db
     ports:
-      - 8087:80
+      - 127.0.0.1:8087:80
+    deploy:
+      resources:
+        limits:
+          memory: 64M
     restart: unless-stopped
   nginx:
     image: nginx:stable-alpine-slim
@@ -81,7 +94,11 @@ services:
     volumes:
       - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
       - ./cert:/etc/nginx/cert
-      - /v1/letsencrypt/certbot/www/:/var/www/certbot/:rw 
+      - /v1/letsencrypt/certbot/www/:/var/www/certbot/:rw
+    deploy:
+      resources:
+        limits:
+          memory: 64M
     depends_on:
       - web
   grafana:
@@ -91,8 +108,15 @@ services:
     environment:
      - GF_SERVER_ROOT_URL=https://litterapp.net/grafana
      - GF_INSTALL_PLUGINS=grafana-clock-panel
+     - GF_DASHBOARDS_MIN_REFRESH_INTERVAL=30m
+     - GF_ANALYTICS_REPORTING_ENABLED=false
+     - GF_ANALYTICS_CHECK_FOR_UPDATES=false
     ports:
      - 3000:3000
+    deploy:
+      resources:
+        limits:
+          memory: 256M
     volumes:
       - ./data/grafana:/var/lib/grafana:rw
 
