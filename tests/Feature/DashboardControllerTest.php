@@ -15,7 +15,7 @@ test('guests are redirected to login from the dashboard', function (): void {
     $response->assertRedirect(route('login'));
 });
 
-test('an authenticated user can view the dashboard', function (): void {
+test('an authenticated user can view the dashboard before the stats arrive', function (): void {
     $this->actingAs(User::factory()->create());
 
     $response = $this->get('/dashboard');
@@ -23,7 +23,9 @@ test('an authenticated user can view the dashboard', function (): void {
     $response->assertOk();
     $response->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
         ->component('Dashboard')
-        ->has('stats')
+        ->where('period', 'all')
+        ->has('availablePeriods', 3)
+        ->missing('stats')
         ->etc()
     );
 });
@@ -82,21 +84,54 @@ test('the dashboard reports all-time stats scoped to the authenticated user', fu
 
     $this->get('/dashboard')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('Dashboard')
-            ->where('stats.period', 'all')
-            ->where('stats.totals.photos', 4)
-            ->where('stats.totals.items', 14)
-            ->where('stats.totals.tags', 2)
-            ->where('stats.needs_tagging', 1)
-            ->where('stats.charts.activity.labels', ['2024', '2025', '2026'])
-            ->where('stats.charts.activity.photos', [1, 0, 3])
-            ->where('stats.charts.activity.items', [10, 0, 4])
-            ->where('stats.charts.top_items.quantities', [10, 3, 1])
-            ->where('stats.charts.disposal.picked_up', 3)
-            ->where('stats.charts.disposal.recycled', 1)
-            ->where('stats.charts.disposal.deposit', 1)
-            ->etc()
+            ->where('period', 'all')
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.photos', 4)
+                ->where('stats.totals.items', 14)
+                ->where('stats.totals.tags', 2)
+                ->where('stats.needs_tagging', 1)
+                ->where('stats.charts.activity.labels', ['2024', '2025', '2026'])
+                ->where('stats.charts.activity.photos', [1, 0, 3])
+                ->where('stats.charts.activity.items', [10, 0, 4])
+                ->where('stats.charts.top_items.quantities', [10, 3, 1])
+                ->etc()
+            )
+        );
+});
+
+test('the dashboard weights the disposal split by quantity, not by row', function (): void {
+    $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
+
+    $user = User::factory()->create();
+    $photo = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+
+    PhotoItem::factory()->for($photo)->create([
+        'quantity' => 3,
+        'picked_up' => true,
+        'recycled' => true,
+        'deposit' => false,
+    ]);
+    PhotoItem::factory()->for($photo)->create([
+        'quantity' => 11,
+        'picked_up' => true,
+        'recycled' => false,
+        'deposit' => true,
+    ]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 14)
+                ->where('stats.charts.disposal.picked_up', 14)
+                ->where('stats.charts.disposal.recycled', 3)
+                ->where('stats.charts.disposal.deposit', 11)
+                ->etc()
+            )
         );
 });
 
@@ -125,15 +160,71 @@ test('the dashboard filters stats by the selected period', function (): void {
 
     $this->get('/dashboard?period=this_year')
         ->assertOk()
-        ->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->component('Dashboard')
-            ->where('stats.period', 'this_year')
-            ->where('stats.totals.photos', 1)
-            ->where('stats.totals.items', 4)
-            ->where('stats.charts.disposal.picked_up', 1)
-            ->where('stats.charts.disposal.recycled', 1)
-            ->where('stats.charts.disposal.deposit', 0)
+            ->where('period', 'this_year')
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.photos', 1)
+                ->where('stats.totals.items', 4)
+                ->where('stats.charts.disposal.picked_up', 4)
+                ->where('stats.charts.disposal.recycled', 4)
+                ->where('stats.charts.disposal.deposit', 0)
+                ->etc()
+            )
+        );
+});
+
+test('an unknown period falls back to all time', function (): void {
+    $this->actingAs(User::factory()->create());
+
+    $this->get('/dashboard?period=nope')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableJson => $page
+            ->where('period', 'all')
             ->etc()
+        );
+});
+
+test('a stray old photo date does not stretch the year axis', function (): void {
+    $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
+
+    $user = User::factory()->create();
+
+    // A broken EXIF date should not add decades of empty year buckets.
+    Photo::factory()->for($user)->create(['taken_at_local' => Carbon::parse('1970-10-19 10:56:13')]);
+    Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.photos', 2)
+                ->where('stats.charts.activity.labels', ['2026'])
+                ->where('stats.charts.activity.photos', [1])
+                ->etc()
+            )
+        );
+});
+
+test('the year axis still shows photos that all predate the capped span', function (): void {
+    $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
+
+    $user = User::factory()->create();
+
+    Photo::factory()->for($user)->create(['taken_at_local' => Carbon::parse('2010-04-01 09:00:00')]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.charts.activity.labels', ['2010'])
+                ->where('stats.charts.activity.photos', [1])
+                ->etc()
+            )
         );
 });
 

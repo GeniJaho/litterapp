@@ -21,14 +21,14 @@ class GetUserStatsAction
 
     private const TOP_ITEMS_LIMIT = 8;
 
+    private const MAX_YEAR_BUCKETS = 10;
+
     /**
      * Photos are attributed to a period by when they were taken (taken_at_local).
      * "All time" totals include photos without a taken date; the windowed periods
      * and the time-series charts only cover photos that have one.
      *
      * @return array{
-     *     period: string,
-     *     available_periods: list<array{key: string, label: string}>,
      *     totals: array{photos: int, items: int, tags: int},
      *     needs_tagging: int,
      *     charts: array{
@@ -38,31 +38,44 @@ class GetUserStatsAction
      *     }
      * }
      */
-    public function run(User $user, ?string $period = null): array
+    public function run(User $user, string $period): array
     {
-        $period = array_key_exists((string) $period, self::PERIODS) ? (string) $period : 'all';
+        $period = $this->resolvePeriod($period);
         $from = $this->periodStart($period);
 
+        $itemTotals = $this->itemTotals($user, $from);
+
         return [
-            'period' => $period,
-            'available_periods' => $this->availablePeriods(),
-            'totals' => $this->totals($user, $from),
+            'totals' => [
+                'photos' => $this->photoTotal($user, $from),
+                'items' => $itemTotals['items'],
+                'tags' => $this->tagTotal($user, $from),
+            ],
             'needs_tagging' => Photo::query()
                 ->where('user_id', $user->id)
-                ->whereDoesntHave('items')
+                ->whereDoesntHave('photoItems')
                 ->count(),
             'charts' => [
                 'activity' => $this->activity($user, $from, $this->granularity($period)),
                 'top_items' => $this->topItems($user, $from),
-                'disposal' => $this->disposal($user, $from),
+                'disposal' => [
+                    'picked_up' => $itemTotals['picked_up'],
+                    'recycled' => $itemTotals['recycled'],
+                    'deposit' => $itemTotals['deposit'],
+                ],
             ],
         ];
+    }
+
+    public function resolvePeriod(?string $period): string
+    {
+        return array_key_exists((string) $period, self::PERIODS) ? (string) $period : 'all';
     }
 
     /**
      * @return list<array{key: string, label: string}>
      */
-    private function availablePeriods(): array
+    public function availablePeriods(): array
     {
         $periods = [];
 
@@ -91,33 +104,50 @@ class GetUserStatsAction
         };
     }
 
-    /**
-     * @return array{photos: int, items: int, tags: int}
-     */
-    private function totals(User $user, ?Carbon $from): array
+    private function photoTotal(User $user, ?Carbon $from): int
     {
-        $photos = DB::table('photos')
+        return DB::table('photos')
             ->where('user_id', $user->id)
             ->when($from, fn (Builder $query): Builder => $query->where('taken_at_local', '>=', $from))
             ->count();
+    }
 
-        $items = DB::table('photo_items')
-            ->join('photos', 'photos.id', '=', 'photo_items.photo_id')
-            ->where('photos.user_id', $user->id)
-            ->when($from, fn (Builder $query): Builder => $query->where('photos.taken_at_local', '>=', $from))
-            ->sum('photo_items.quantity');
-
-        $tags = DB::table('photo_item_tag')
+    private function tagTotal(User $user, ?Carbon $from): int
+    {
+        return DB::table('photo_item_tag')
             ->join('photo_items', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
             ->join('photos', 'photos.id', '=', 'photo_items.photo_id')
             ->where('photos.user_id', $user->id)
             ->when($from, fn (Builder $query): Builder => $query->where('photos.taken_at_local', '>=', $from))
             ->count();
+    }
+
+    /**
+     * Every quantity aggregate over photo_items comes from this one scan. The
+     * disposal columns are booleans, so they are weighted by quantity to stay in
+     * the same unit as the items total.
+     *
+     * @return array{items: int, picked_up: int, recycled: int, deposit: int}
+     */
+    private function itemTotals(User $user, ?Carbon $from): array
+    {
+        $row = DB::table('photo_items')
+            ->join('photos', 'photos.id', '=', 'photo_items.photo_id')
+            ->where('photos.user_id', $user->id)
+            ->when($from, fn (Builder $query): Builder => $query->where('photos.taken_at_local', '>=', $from))
+            ->selectRaw(implode(', ', [
+                'coalesce(sum(photo_items.quantity), 0) as items',
+                'coalesce(sum(case when photo_items.picked_up = 1 then photo_items.quantity else 0 end), 0) as picked_up',
+                'coalesce(sum(case when photo_items.recycled = 1 then photo_items.quantity else 0 end), 0) as recycled',
+                'coalesce(sum(case when photo_items.deposit = 1 then photo_items.quantity else 0 end), 0) as deposit',
+            ]))
+            ->first();
 
         return [
-            'photos' => $photos,
-            'items' => $this->toInt($items),
-            'tags' => $tags,
+            'items' => $this->toInt($row->items ?? 0),
+            'picked_up' => $this->toInt($row->picked_up ?? 0),
+            'recycled' => $this->toInt($row->recycled ?? 0),
+            'deposit' => $this->toInt($row->deposit ?? 0),
         ];
     }
 
@@ -145,11 +175,14 @@ class GetUserStatsAction
             ->groupBy(DB::raw($bucket))
             ->pluck('aggregate', 'bucket');
 
+        /** @var list<string> $filledBuckets */
+        $filledBuckets = $photoCounts->keys()->map(fn (int|string $key): string => (string) $key)->all();
+
         $labels = [];
         $photos = [];
         $items = [];
 
-        foreach ($this->buckets($user, $from, $granularity) as $entry) {
+        foreach ($this->buckets($from, $granularity, $filledBuckets) as $entry) {
             $labels[] = $entry['label'];
             $photos[] = $this->toInt($photoCounts[$entry['key']] ?? 0);
             $items[] = $this->toInt($itemCounts[$entry['key']] ?? 0);
@@ -186,30 +219,12 @@ class GetUserStatsAction
     }
 
     /**
-     * @return array{picked_up: int, recycled: int, deposit: int}
-     */
-    private function disposal(User $user, ?Carbon $from): array
-    {
-        $row = DB::table('photo_items')
-            ->join('photos', 'photos.id', '=', 'photo_items.photo_id')
-            ->where('photos.user_id', $user->id)
-            ->when($from, fn (Builder $query): Builder => $query->where('photos.taken_at_local', '>=', $from))
-            ->selectRaw('coalesce(sum(photo_items.picked_up), 0) as picked_up, coalesce(sum(photo_items.recycled), 0) as recycled, coalesce(sum(photo_items.deposit), 0) as deposit')
-            ->first();
-
-        return [
-            'picked_up' => $this->toInt($row->picked_up ?? 0),
-            'recycled' => $this->toInt($row->recycled ?? 0),
-            'deposit' => $this->toInt($row->deposit ?? 0),
-        ];
-    }
-
-    /**
      * Ordered, gap-filled buckets for the period so the time series is continuous.
      *
+     * @param  list<string>  $filledBuckets  bucket keys that actually hold photos
      * @return list<array{key: string, label: string}>
      */
-    private function buckets(User $user, ?Carbon $from, string $granularity): array
+    private function buckets(?Carbon $from, string $granularity, array $filledBuckets): array
     {
         if ($granularity === 'day') {
             $cursor = ($from instanceof Carbon ? $from->copy() : now()->subDays(29))->startOfDay();
@@ -237,19 +252,41 @@ class GetUserStatsAction
             return $buckets;
         }
 
-        /** @var ?string $earliest */
-        $earliest = DB::table('photos')
-            ->where('user_id', $user->id)
-            ->whereNotNull('taken_at_local')
-            ->min('taken_at_local');
+        return $this->yearBuckets($filledBuckets);
+    }
 
-        if ($earliest === null) {
+    /**
+     * The year axis always starts on a year that holds photos and spans at most
+     * MAX_YEAR_BUCKETS years. A single stray EXIF date (some photos are dated
+     * 1970) would otherwise stretch the axis across decades of empty years.
+     *
+     * @param  list<string>  $years
+     * @return list<array{key: string, label: string}>
+     */
+    private function yearBuckets(array $years): array
+    {
+        $currentYear = now()->year;
+
+        $withPhotos = array_filter(
+            array_map(fn (string $year): int => (int) $year, $years),
+            fn (int $year): bool => $year <= $currentYear,
+        );
+
+        if ($withPhotos === []) {
             return [];
         }
 
+        $withinSpan = array_filter(
+            $withPhotos,
+            fn (int $year): bool => $year > $currentYear - self::MAX_YEAR_BUCKETS,
+        );
+
+        $start = $withinSpan === [] ? max($withPhotos) : min($withinSpan);
+        $end = min($currentYear, max($withPhotos));
+
         $buckets = [];
 
-        for ($year = Carbon::parse($earliest)->year; $year <= now()->year; $year++) {
+        for ($year = $start; $year <= $end; $year++) {
             $buckets[] = ['key' => (string) $year, 'label' => (string) $year];
         }
 
