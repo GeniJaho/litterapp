@@ -71,10 +71,16 @@ test('a user can see their shortcuts in the photo tagging page', function (): vo
         ->has('tagShortcuts', 1)
         ->where('tagShortcuts.0.id', $tagShortcut->id)
         ->where('tagShortcuts.0.shortcut', $tagShortcut->shortcut)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.quantity', 3)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.picked_up', false)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.recycled', false)
+        ->where('tagShortcuts.0.tag_shortcut_items.0.deposit', true)
         ->where('tagShortcuts.0.tag_shortcut_items.0.item.id', $item->id)
         ->where('tagShortcuts.0.tag_shortcut_items.0.item.name', $item->name)
         ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.id', $tag->id)
         ->where('tagShortcuts.0.tag_shortcut_items.0.tags.0.name', $tag->name)
+        ->missing('tagShortcuts.0.used_times')
+        ->missing('tagShortcuts.0.tag_shortcut_items.0.tags.0.pivot')
     );
 });
 
