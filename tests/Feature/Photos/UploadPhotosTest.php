@@ -4,6 +4,7 @@ use App\Actions\Photos\ExtractExifFromPhotoAction;
 use App\Actions\Photos\ExtractsExifFromPhoto;
 use App\DTO\UserSettings;
 use App\Jobs\SuggestPhotoItem;
+use App\Models\AppSetting;
 use App\Models\User;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Bus;
@@ -177,6 +178,19 @@ test('the SuggestPhotoItem job is not dispatched when litterBotEnabled is false'
     $file = UploadedFile::fake()->image('photo.jpg');
 
     $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
+
+    Bus::assertNotDispatched(SuggestPhotoItem::class);
+});
+
+test('the SuggestPhotoItem job is not dispatched when LitterBot is disabled app-wide', function (): void {
+    AppSetting::query()->create(['key' => 'litterbot_enabled', 'value' => '0']);
+
+    $user = User::factory()->create(['settings' => new UserSettings(litterbot_enabled: true)]);
+    $file = UploadedFile::fake()->image('photo.jpg');
+
+    $this->actingAs($user)->post('/upload', ['photo' => $file])->assertOk();
+
+    expect($user->photos()->count())->toBe(1);
 
     Bus::assertNotDispatched(SuggestPhotoItem::class);
 });

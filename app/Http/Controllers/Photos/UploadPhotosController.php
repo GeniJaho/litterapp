@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Photos;
 
+use App\Actions\AI\IsLitterBotEnabledAction;
 use App\Actions\Photos\StorePhotoAction;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Photos\StorePhotosRequest;
@@ -24,6 +25,7 @@ class UploadPhotosController extends Controller
         #[CurrentUser] User $user,
         StorePhotosRequest $request,
         StorePhotoAction $storePhoto,
+        IsLitterBotEnabledAction $isLitterBotEnabled,
     ): JsonResponse {
         /** @var UploadedFile $photo */
         $photo = $request->file('photo');
@@ -32,7 +34,7 @@ class UploadPhotosController extends Controller
 
         $photo = $storePhoto->run($photo, $user, $exif, $request->getContentHash());
 
-        if ($user->settings->litterbot_enabled) {
+        if ($isLitterBotEnabled->run() && $user->settings->litterbot_enabled) {
             SuggestPhotoItem::dispatch($photo);
         }
 
