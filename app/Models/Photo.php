@@ -139,12 +139,12 @@ class Photo extends Model
 
         $query
             ->when($filters->item_ids !== [], fn (Builder $query) => $query
-                ->whereHas('items', fn (Builder $query) => $query
+                ->whereHas('photoItems', fn (Builder $query) => $query
                     ->whereIn('item_id', $filters->item_ids)
                 )
             )
             ->when($filters->tag_ids !== [], fn (Builder $query) => $query
-                ->whereHas('items', fn (Builder $query) => $query
+                ->whereHas('photoItems', fn (Builder $query) => $query
                     ->join('photo_item_tag', 'photo_items.id', '=', 'photo_item_tag.photo_item_id')
                     ->whereIn('photo_item_tag.tag_id', $filters->tag_ids)
                 )
@@ -155,8 +155,8 @@ class Photo extends Model
             ->when($filters->taken_until_local, fn (Builder $query) => $query->where('taken_at_local', '<=', Carbon::parse($filters->taken_until_local)->toDateTimeString()))
             ->when($filters->has_gps === true, fn (Builder $query) => $query->whereNotNull('latitude')->whereNotNull('longitude'))
             ->when($filters->has_gps === false, fn (Builder $query) => $query->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude')))
-            ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('items'))
-            ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('items'))
+            ->when($filters->is_tagged === true, fn (Builder $query) => $query->whereHas('photoItems'))
+            ->when($filters->is_tagged === false, fn (Builder $query) => $query->whereDoesntHave('photoItems'))
             ->when($filters->has_item_suggestions === true, fn (Builder $query) => $query->whereHas('photoSuggestions', fn (Builder $query) => $query
                 ->whereNull('is_accepted')
                 ->whereNotNull('predictions')

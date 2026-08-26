@@ -21,6 +21,7 @@
     "dependencies": {
         "@headlessui/vue": "^1.7.17",
         "@websitebeaver/vue-magnifier": "^1.1.0",
+        "chart.js": "^4.5.1",
         "filepond": "^4.30.4",
         "filepond-plugin-file-validate-size": "^2.2.8",
         "filepond-plugin-file-validate-type": "^1.2.8",
@@ -29,6 +30,7 @@
         "filepond-plugin-image-resize": "^2.0.10",
         "filepond-plugin-image-transform": "^3.8.7",
         "lodash.debounce": "^4.0.8",
+        "vue-chartjs": "^5.3.3",
         "vue-filepond": "^7.0.4"
     }
 }

@@ -14,6 +14,7 @@ class GetNextPhotoAction
 
         /** @var \Illuminate\Database\Eloquent\Builder<Photo> $builder */
         $builder = Photo::query()
+            ->select('photos.id')
             ->forUser($user)
             ->filter($user->settings->photo_filters);
 

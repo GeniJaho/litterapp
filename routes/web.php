@@ -4,6 +4,7 @@ use App\Http\Controllers\AnnouncementsController;
 use App\Http\Controllers\Auth\GitHubController;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Http\Controllers\Auth\TwitterController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocsController;
 use App\Http\Controllers\EventsController;
 use App\Http\Controllers\HomeController;
@@ -62,6 +63,8 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function (): void {
+    Route::get('/dashboard', DashboardController::class)->name('dashboard');
+
     Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
     Route::post('/upload', [UploadPhotosController::class, 'store']);
 

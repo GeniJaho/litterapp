@@ -6,13 +6,12 @@ use App\Actions\Photos\FilterPhotosAction;
 use App\Actions\Photos\GetNextPhotoAction;
 use App\Actions\Photos\GetPreviousPhotoAction;
 use App\Actions\Photos\GetTagsAndItemsAction;
+use App\Actions\TagShortcuts\GetTagShortcutsForTaggingAction;
 use App\DTO\PhotoFilters;
 use App\Http\Controllers\Controller;
 use App\Models\Photo;
-use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Contracts\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -27,6 +26,7 @@ class PhotosController extends Controller
         PhotoFilters $photoFilters,
         GetTagsAndItemsAction $getTagsAndItemsAction,
         FilterPhotosAction $filterPhotosAction,
+        GetTagShortcutsForTaggingAction $getTagShortcutsForTaggingAction,
     ): Response {
         /** @var User $user */
         $user = auth()->user();
@@ -64,7 +64,7 @@ class PhotosController extends Controller
             'filters' => $user->settings->photo_filters,
             'items' => $tagsAndItems['items'],
             'tags' => $tagsAndItems['tags'],
-            'tagShortcuts' => $this->getTagShortcuts($user),
+            'tagShortcuts' => $getTagShortcutsForTaggingAction->run($user),
             'users' => $user->is_admin
                 ? User::query()->select(['id', 'name'])->orderBy('name')->get()->map->only(['id', 'name'])
                 : [],
@@ -76,6 +76,7 @@ class PhotosController extends Controller
         GetTagsAndItemsAction $getTagsAndItemsAction,
         GetNextPhotoAction $getNextPhotoAction,
         GetPreviousPhotoAction $getPreviousPhotoAction,
+        GetTagShortcutsForTaggingAction $getTagShortcutsForTaggingAction,
     ): Response|JsonResponse {
         /** @var User $user */
         $user = auth()->user();
@@ -91,7 +92,7 @@ class PhotosController extends Controller
                 'tags' => $tagsAndItems['tags'],
                 'nextPhotoUrl' => $getNextPhotoAction->run($user, $photo),
                 'previousPhotoUrl' => $getPreviousPhotoAction->run($user, $photo),
-                'tagShortcuts' => $this->getTagShortcuts($user),
+                'tagShortcuts' => $getTagShortcutsForTaggingAction->run($user),
             ]);
         }
 
@@ -129,18 +130,5 @@ class PhotosController extends Controller
         Storage::delete($photo->path);
 
         return to_route('my-photos');
-    }
-
-    /**
-     * @return Collection<int, TagShortcut>
-     */
-    public function getTagShortcuts(User $user): Collection
-    {
-        return $user
-            ->tagShortcuts()
-            ->whereHas('tagShortcutItems')
-            ->with(TagShortcut::commonEagerLoads())
-            ->orderBy('shortcut')
-            ->get();
     }
 }
