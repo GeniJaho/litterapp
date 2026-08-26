@@ -21,7 +21,7 @@ class GetUserStatsAction
 
     private const TOP_ITEMS_LIMIT = 8;
 
-    private const MAX_YEAR_BUCKETS = 10;
+    private const MAX_MONTH_BUCKETS = 120;
 
     /**
      * Photos are attributed to a period by when they were taken (taken_at_local).
@@ -97,11 +97,7 @@ class GetUserStatsAction
 
     private function granularity(string $period): string
     {
-        return match ($period) {
-            'last_30_days' => 'day',
-            'this_year' => 'month',
-            default => 'year',
-        };
+        return $period === 'last_30_days' ? 'day' : 'month';
     }
 
     private function photoTotal(User $user, ?Carbon $from): int
@@ -239,37 +235,23 @@ class GetUserStatsAction
             return $buckets;
         }
 
-        if ($granularity === 'month') {
-            $cursor = ($from instanceof Carbon ? $from->copy() : now()->startOfYear())->startOfMonth();
-            $end = now()->startOfMonth();
-            $buckets = [];
-
-            while ($cursor->lte($end)) {
-                $buckets[] = ['key' => $cursor->format('Y-m'), 'label' => $cursor->format('M')];
-                $cursor->addMonth();
-            }
-
-            return $buckets;
+        if ($from instanceof Carbon) {
+            return $this->monthRange($from->copy()->startOfMonth(), now()->startOfMonth(), 'M');
         }
 
-        return $this->yearBuckets($filledBuckets);
+        return $this->monthBuckets($filledBuckets);
     }
-
-    /**
-     * The year axis always starts on a year that holds photos and spans at most
-     * MAX_YEAR_BUCKETS years. A single stray EXIF date (some photos are dated
-     * 1970) would otherwise stretch the axis across decades of empty years.
-     *
-     * @param  list<string>  $years
+/**
+     * @param  list<string>  $months  bucket keys in Y-m form
      * @return list<array{key: string, label: string}>
      */
-    private function yearBuckets(array $years): array
+    private function monthBuckets(array $months): array
     {
-        $currentYear = now()->year;
+        $currentMonth = $this->monthIndex(now()->format('Y-m'));
 
         $withPhotos = array_filter(
-            array_map(fn (string $year): int => (int) $year, $years),
-            fn (int $year): bool => $year <= $currentYear,
+            array_map($this->monthIndex(...), $months),
+            fn (int $month): bool => $month <= $currentMonth,
         );
 
         if ($withPhotos === []) {
@@ -278,31 +260,48 @@ class GetUserStatsAction
 
         $withinSpan = array_filter(
             $withPhotos,
-            fn (int $year): bool => $year > $currentYear - self::MAX_YEAR_BUCKETS,
+            fn (int $month): bool => $month > $currentMonth - self::MAX_MONTH_BUCKETS,
         );
 
         $start = $withinSpan === [] ? max($withPhotos) : min($withinSpan);
-        $end = min($currentYear, max($withPhotos));
+        $end = min($currentMonth, max($withPhotos));
 
+        return $this->monthRange($this->monthFromIndex($start), $this->monthFromIndex($end), 'M Y');
+    }
+
+    /**
+     * @return list<array{key: string, label: string}>
+     */
+    private function monthRange(Carbon $start, Carbon $end, string $labelFormat): array
+    {
+        $cursor = $start->copy()->startOfMonth();
+        $last = $end->copy()->startOfMonth();
         $buckets = [];
 
-        for ($year = $start; $year <= $end; $year++) {
-            $buckets[] = ['key' => (string) $year, 'label' => (string) $year];
+        while ($cursor->lte($last)) {
+            $buckets[] = ['key' => $cursor->format('Y-m'), 'label' => $cursor->format($labelFormat)];
+            $cursor->addMonth();
         }
 
         return $buckets;
     }
 
-    /**
-     * Cross-database date bucketing: MySQL in production, SQLite under test.
-     */
+    private function monthIndex(string $key): int
+    {
+        $parts = explode('-', $key);
+        $month = count($parts) > 1 ? (int) $parts[1] : 1;
+
+        return (int) $parts[0] * 12 + $month - 1;
+    }
+
+    private function monthFromIndex(int $index): Carbon
+    {
+        return now()->startOfMonth()->setDate(intdiv($index, 12), $index % 12 + 1, 1);
+    }
+
     private function bucketExpression(string $column, string $granularity): string
     {
-        $format = match ($granularity) {
-            'day' => '%Y-%m-%d',
-            'month' => '%Y-%m',
-            default => '%Y',
-        };
+        $format = $granularity === 'day' ? '%Y-%m-%d' : '%Y-%m';
 
         return DB::connection()->getDriverName() === 'sqlite'
             ? "strftime('{$format}', {$column})"

@@ -92,9 +92,15 @@ test('the dashboard reports all-time stats scoped to the authenticated user', fu
                 ->where('stats.totals.items', 14)
                 ->where('stats.totals.tags', 2)
                 ->where('stats.needs_tagging', 1)
-                ->where('stats.charts.activity.labels', ['2024', '2025', '2026'])
-                ->where('stats.charts.activity.photos', [1, 0, 3])
-                ->where('stats.charts.activity.items', [10, 0, 4])
+                ->has('stats.charts.activity.labels', 25)
+                ->where('stats.charts.activity.labels.0', 'Jun 2024')
+                ->where('stats.charts.activity.labels.24', 'Jun 2026')
+                ->where('stats.charts.activity.photos.0', 1)
+                ->where('stats.charts.activity.photos.1', 0)
+                ->where('stats.charts.activity.photos.24', 3)
+                ->where('stats.charts.activity.items.0', 10)
+                ->where('stats.charts.activity.items.1', 0)
+                ->where('stats.charts.activity.items.24', 4)
                 ->where('stats.charts.top_items.quantities', [10, 3, 1])
                 ->etc()
             )
@@ -169,6 +175,8 @@ test('the dashboard filters stats by the selected period', function (): void {
                 ->where('stats.charts.disposal.picked_up', 4)
                 ->where('stats.charts.disposal.recycled', 4)
                 ->where('stats.charts.disposal.deposit', 0)
+                ->where('stats.charts.activity.labels', ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'])
+                ->where('stats.charts.activity.photos', [0, 0, 0, 0, 0, 1])
                 ->etc()
             )
         );
@@ -185,12 +193,12 @@ test('an unknown period falls back to all time', function (): void {
         );
 });
 
-test('a stray old photo date does not stretch the year axis', function (): void {
+test('a stray old photo date does not stretch the month axis', function (): void {
     $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
 
     $user = User::factory()->create();
 
-    // A broken EXIF date should not add decades of empty year buckets.
+    // A broken EXIF date should not add decades of empty month buckets.
     Photo::factory()->for($user)->create(['taken_at_local' => Carbon::parse('1970-10-19 10:56:13')]);
     Photo::factory()->for($user)->create(['taken_at_local' => now()]);
 
@@ -201,14 +209,14 @@ test('a stray old photo date does not stretch the year axis', function (): void 
         ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
                 ->where('stats.totals.photos', 2)
-                ->where('stats.charts.activity.labels', ['2026'])
+                ->where('stats.charts.activity.labels', ['Jun 2026'])
                 ->where('stats.charts.activity.photos', [1])
                 ->etc()
             )
         );
 });
 
-test('the year axis still shows photos that all predate the capped span', function (): void {
+test('the month axis still shows photos that all predate the capped span', function (): void {
     $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
 
     $user = User::factory()->create();
@@ -221,7 +229,7 @@ test('the year axis still shows photos that all predate the capped span', functi
         ->assertOk()
         ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
             ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
-                ->where('stats.charts.activity.labels', ['2010'])
+                ->where('stats.charts.activity.labels', ['Apr 2010'])
                 ->where('stats.charts.activity.photos', [1])
                 ->etc()
             )
