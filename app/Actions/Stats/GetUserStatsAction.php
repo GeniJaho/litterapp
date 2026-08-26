@@ -6,6 +6,7 @@ use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class GetUserStatsAction
@@ -22,6 +23,13 @@ class GetUserStatsAction
     private const TOP_ITEMS_LIMIT = 8;
 
     private const MAX_MONTH_BUCKETS = 120;
+
+    /**
+     * The aggregates are too slow to run on every dashboard load, so the result
+     * is cached per user and period. Nothing invalidates it on write, so a fresh
+     * photo or tag shows up on the dashboard within the hour rather than at once.
+     */
+    private const CACHE_TTL_MINUTES = 60;
 
     /**
      * Photos are attributed to a period by when they were taken (taken_at_local).
@@ -41,6 +49,27 @@ class GetUserStatsAction
     public function run(User $user, string $period): array
     {
         $period = $this->resolvePeriod($period);
+
+        return Cache::remember(
+            "user-stats:{$user->id}:{$period}",
+            now()->addMinutes(self::CACHE_TTL_MINUTES),
+            fn (): array => $this->compute($user, $period),
+        );
+    }
+
+    /**
+     * @return array{
+     *     totals: array{photos: int, items: int, tags: int},
+     *     needs_tagging: int,
+     *     charts: array{
+     *         activity: array{labels: list<string>, photos: list<int>, items: list<int>},
+     *         top_items: array{labels: list<string>, quantities: list<int>},
+     *         disposal: array{picked_up: int, recycled: int, deposit: int}
+     *     }
+     * }
+     */
+    private function compute(User $user, string $period): array
+    {
         $from = $this->periodStart($period);
 
         $itemTotals = $this->itemTotals($user, $from);
@@ -241,7 +270,8 @@ class GetUserStatsAction
 
         return $this->monthBuckets($filledBuckets);
     }
-/**
+
+    /**
      * @param  list<string>  $months  bucket keys in Y-m form
      * @return list<array{key: string, label: string}>
      */

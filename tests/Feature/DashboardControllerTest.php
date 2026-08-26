@@ -236,6 +236,76 @@ test('the month axis still shows photos that all predate the capped span', funct
         );
 });
 
+test('dashboard stats are cached per user and period', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    PhotoItem::factory()->for($photo)->create(['quantity' => 2]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 2)
+                ->etc()
+            )
+        );
+
+    PhotoItem::factory()->for($photo)->create(['quantity' => 5]);
+
+    // Still the cached figure - the cache is only dropped by its TTL.
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 2)
+                ->etc()
+            )
+        );
+
+    $this->travel(61)->minutes();
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 7)
+                ->etc()
+            )
+        );
+});
+
+test('the stats cache is scoped to one user', function (): void {
+    $user = User::factory()->create();
+    $other = User::factory()->create();
+
+    $photo = Photo::factory()->for($other)->create(['taken_at_local' => now()]);
+    PhotoItem::factory()->for($photo)->create(['quantity' => 9]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 0)
+                ->etc()
+            )
+        );
+
+    $this->actingAs($other);
+
+    $this->get('/dashboard')
+        ->assertOk()
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 9)
+                ->etc()
+            )
+        );
+});
+
 test('the home page stays public', function (): void {
     $response = $this->get('/');
 
