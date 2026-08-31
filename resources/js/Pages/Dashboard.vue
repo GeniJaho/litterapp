@@ -2,11 +2,12 @@
 import { computed, ref } from "vue";
 import { Deferred, Link, router } from "@inertiajs/vue3";
 import AppLayout from "@/Layouts/AppLayout.vue";
+import Tooltip from "@/Components/Tooltip.vue";
 import { Line, Bar } from "vue-chartjs";
 import {
     Chart as ChartJS,
     Title,
-    Tooltip,
+    Tooltip as ChartTooltip,
     Legend,
     CategoryScale,
     LinearScale,
@@ -18,7 +19,7 @@ import {
 
 ChartJS.register(
     Title,
-    Tooltip,
+    ChartTooltip,
     Legend,
     CategoryScale,
     LinearScale,
@@ -58,6 +59,14 @@ const selectPeriod = (key) => {
         onStart: () => (loading.value = true),
         onFinish: () => (loading.value = false),
     });
+};
+
+const refreshStats = () => {
+    router.post(
+        route("dashboard.refresh"),
+        { period: props.period },
+        { preserveScroll: true },
+    );
 };
 
 const formatNumber = (value) => Number(value ?? 0).toLocaleString();
@@ -198,25 +207,41 @@ const hasDisposal = computed(() => {
 
         <div class="py-12">
             <div class="max-w-9xl mx-auto sm:px-6 lg:px-8 space-y-6">
-                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                <div class="flex flex-col gap-4 px-4 sm:flex-row sm:items-center sm:justify-between sm:px-0">
                     <p class="text-gray-600 dark:text-gray-300">
                         Your litter-picking activity at a glance.
                     </p>
 
-                    <div class="inline-flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
+                    <div class="flex items-center gap-3">
                         <button
-                            v-for="option in availablePeriods"
-                            :key="option.key"
                             type="button"
-                            :disabled="loading || stats === null"
-                            class="rounded-md px-3 py-1.5 text-sm font-semibold transition focus:outline-none disabled:cursor-not-allowed"
-                            :class="option.key === period
-                                ? 'bg-darkBlue text-white shadow dark:bg-mainWhite dark:text-darkBlue'
-                                : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
-                            @click="selectPeriod(option.key)"
+                            class="group relative flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                            @click="refreshStats"
                         >
-                            {{ option.label }}
+                            <Tooltip>
+                                <span class="block w-48 text-center text-xs text-white">
+                                    These figures refresh on their own every hour. Click to update them now.
+                                </span>
+                            </Tooltip>
+                            <i class="fas fa-arrows-rotate"></i>
+                            <span class="sr-only">Refresh stats</span>
                         </button>
+
+                        <div class="inline-flex rounded-lg bg-gray-100 p-1 dark:bg-gray-700">
+                            <button
+                                v-for="option in availablePeriods"
+                                :key="option.key"
+                                type="button"
+                                :disabled="loading || stats === null"
+                                class="rounded-md px-3 py-1.5 text-sm font-semibold transition focus:outline-none disabled:cursor-not-allowed"
+                                :class="option.key === period
+                                    ? 'bg-darkBlue text-white shadow dark:bg-mainWhite dark:text-darkBlue'
+                                    : 'text-gray-600 hover:text-gray-900 dark:text-gray-300 dark:hover:text-white'"
+                                @click="selectPeriod(option.key)"
+                            >
+                                {{ option.label }}
+                            </button>
+                        </div>
                     </div>
                 </div>
 

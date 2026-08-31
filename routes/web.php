@@ -19,6 +19,7 @@ use App\Http\Controllers\Photos\RevokeSharePhotoController;
 use App\Http\Controllers\Photos\SharePhotoController;
 use App\Http\Controllers\Photos\UploadPhotosController;
 use App\Http\Controllers\PhotoSuggestionsController;
+use App\Http\Controllers\RefreshDashboardStatsController;
 use App\Http\Controllers\ShareController;
 use App\Http\Controllers\TagShortcuts\ApplyTagShortcutController;
 use App\Http\Controllers\TagShortcuts\CopyTagShortcutController;
@@ -64,6 +65,7 @@ Route::middleware([
     'verified',
 ])->group(function (): void {
     Route::get('/dashboard', DashboardController::class)->name('dashboard');
+    Route::post('/dashboard/refresh', RefreshDashboardStatsController::class)->name('dashboard.refresh');
 
     Route::get('/upload', [UploadPhotosController::class, 'show'])->name('upload');
     Route::post('/upload', [UploadPhotosController::class, 'store']);
