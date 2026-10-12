@@ -52,9 +52,57 @@ test('a user can apply a tag shortcut to a photo', function (): void {
         ->toHaveCount(1)
         ->first()->id->toBe($tag->id);
 
-    expect($photoItemSuggestion->fresh()->is_accepted)->toBeTrue();
+    expect($photoItemSuggestion->fresh())
+        ->is_accepted->toBeTrue()
+        ->accepted_item_rank->toBe(1);
 
     expect($tagShortcut->fresh()->used_times)->toBe(1);
+});
+
+test('a tag shortcut accepts a suggestion at the rank of its predicted item', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    [$topItem, $shortcutItem, $thirdItem] = Item::factory()->count(3)->create();
+    $suggestion = PhotoSuggestion::factory()
+        ->withPredictions([$topItem->id, $shortcutItem->id, $thirdItem->id])
+        ->create(['photo_id' => $photo->id]);
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($shortcutItem);
+
+    $this->actingAs($user)
+        ->postJson("/photos/$photo->id/tag-shortcuts/$tagShortcut->id", [
+            'suggestion_id' => $suggestion->id,
+        ])
+        ->assertOk();
+
+    expect($suggestion->fresh())
+        ->is_accepted->toBeTrue()
+        ->accepted_item_rank->toBe(2);
+});
+
+test('a tag shortcut does not accept a suggestion when none of its items were predicted', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    [$predictedItem, $otherPredictedItem, $shortcutItem] = Item::factory()->count(3)->create();
+    $suggestion = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id, $otherPredictedItem->id])
+        ->create(['photo_id' => $photo->id]);
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($shortcutItem);
+
+    $this->actingAs($user)
+        ->postJson("/photos/$photo->id/tag-shortcuts/$tagShortcut->id", [
+            'suggestion_id' => $suggestion->id,
+        ])
+        ->assertOk();
+
+    assertDatabaseHas('photo_items', [
+        'photo_id' => $photo->id,
+        'item_id' => $shortcutItem->id,
+    ]);
+    expect($suggestion->fresh())
+        ->is_accepted->toBeNull()
+        ->accepted_item_rank->toBeNull();
 });
 
 test('the request is validated', function (): void {
