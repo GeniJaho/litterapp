@@ -306,6 +306,58 @@ test('the stats cache is scoped to one user', function (): void {
         );
 });
 
+test('refreshing drops the cached stats for the period being viewed', function (): void {
+    $this->travelTo(Carbon::parse('2026-06-22 12:00:00'));
+
+    $user = User::factory()->create();
+    $photo = Photo::factory()->for($user)->create(['taken_at_local' => now()]);
+    PhotoItem::factory()->for($photo)->create(['quantity' => 2]);
+
+    $this->actingAs($user);
+
+    $this->get('/dashboard')
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 2)
+                ->etc()
+            )
+        );
+
+    $this->get('/dashboard?period=this_year')
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 2)
+                ->etc()
+            )
+        );
+
+    PhotoItem::factory()->for($photo)->create(['quantity' => 5]);
+
+    $this->from('/dashboard?period=this_year')
+        ->post(route('dashboard.refresh'), ['period' => 'this_year'])
+        ->assertRedirect('/dashboard?period=this_year');
+
+    $this->get('/dashboard?period=this_year')
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 7)
+                ->etc()
+            )
+        );
+
+    $this->get('/dashboard')
+        ->assertInertia(fn (AssertableInertia $page): AssertableInertia => $page
+            ->loadDeferredProps(fn (AssertableInertia $stats): AssertableJson => $stats
+                ->where('stats.totals.items', 2)
+                ->etc()
+            )
+        );
+});
+
+test('guests cannot refresh the dashboard stats', function (): void {
+    $this->post(route('dashboard.refresh'))->assertRedirect(route('login'));
+});
+
 test('the home page stays public', function (): void {
     $response = $this->get('/');
 

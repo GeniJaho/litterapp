@@ -2,40 +2,20 @@
 
 namespace App\Actions\Stats;
 
+use App\Enums\DashboardPeriod;
 use App\Models\Photo;
 use App\Models\User;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
 class GetUserStatsAction
 {
-    /**
-     * @var array<string, string>
-     */
-    private const PERIODS = [
-        'all' => 'All time',
-        'last_30_days' => 'Last 30 days',
-        'this_year' => 'This year',
-    ];
-
     private const TOP_ITEMS_LIMIT = 8;
 
     private const MAX_MONTH_BUCKETS = 120;
 
     /**
-     * The aggregates are too slow to run on every dashboard load, so the result
-     * is cached per user and period. Nothing invalidates it on write, so a fresh
-     * photo or tag shows up on the dashboard within the hour rather than at once.
-     */
-    private const CACHE_TTL_MINUTES = 60;
-
-    /**
-     * Photos are attributed to a period by when they were taken (taken_at_local).
-     * "All time" totals include photos without a taken date; the windowed periods
-     * and the time-series charts only cover photos that have one.
-     *
      * @return array{
      *     totals: array{photos: int, items: int, tags: int},
      *     needs_tagging: int,
@@ -46,31 +26,9 @@ class GetUserStatsAction
      *     }
      * }
      */
-    public function run(User $user, string $period): array
+    public function run(User $user, DashboardPeriod $period): array
     {
-        $period = $this->resolvePeriod($period);
-
-        return Cache::remember(
-            "user-stats:{$user->id}:{$period}",
-            now()->addMinutes(self::CACHE_TTL_MINUTES),
-            fn (): array => $this->compute($user, $period),
-        );
-    }
-
-    /**
-     * @return array{
-     *     totals: array{photos: int, items: int, tags: int},
-     *     needs_tagging: int,
-     *     charts: array{
-     *         activity: array{labels: list<string>, photos: list<int>, items: list<int>},
-     *         top_items: array{labels: list<string>, quantities: list<int>},
-     *         disposal: array{picked_up: int, recycled: int, deposit: int}
-     *     }
-     * }
-     */
-    private function compute(User $user, string $period): array
-    {
-        $from = $this->periodStart($period);
+        $from = $period->start();
 
         $itemTotals = $this->itemTotals($user, $from);
 
@@ -85,7 +43,7 @@ class GetUserStatsAction
                 ->whereDoesntHave('photoItems')
                 ->count(),
             'charts' => [
-                'activity' => $this->activity($user, $from, $this->granularity($period)),
+                'activity' => $this->activity($user, $from, $period->granularity()),
                 'top_items' => $this->topItems($user, $from),
                 'disposal' => [
                     'picked_up' => $itemTotals['picked_up'],
@@ -94,39 +52,6 @@ class GetUserStatsAction
                 ],
             ],
         ];
-    }
-
-    public function resolvePeriod(?string $period): string
-    {
-        return array_key_exists((string) $period, self::PERIODS) ? (string) $period : 'all';
-    }
-
-    /**
-     * @return list<array{key: string, label: string}>
-     */
-    public function availablePeriods(): array
-    {
-        $periods = [];
-
-        foreach (self::PERIODS as $key => $label) {
-            $periods[] = ['key' => $key, 'label' => $label];
-        }
-
-        return $periods;
-    }
-
-    private function periodStart(string $period): ?Carbon
-    {
-        return match ($period) {
-            'last_30_days' => now()->subDays(29)->startOfDay(),
-            'this_year' => now()->startOfYear(),
-            default => null,
-        };
-    }
-
-    private function granularity(string $period): string
-    {
-        return $period === 'last_30_days' ? 'day' : 'month';
     }
 
     private function photoTotal(User $user, ?Carbon $from): int
