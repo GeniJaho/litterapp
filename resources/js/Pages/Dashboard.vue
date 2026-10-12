@@ -62,10 +62,18 @@ const selectPeriod = (key) => {
 };
 
 const refreshStats = () => {
+    if (loading.value || props.stats === null) {
+        return;
+    }
+
     router.post(
         route("dashboard.refresh"),
         { period: props.period },
-        { preserveScroll: true },
+        {
+            preserveScroll: true,
+            onStart: () => (loading.value = true),
+            onFinish: () => (loading.value = false),
+        },
     );
 };
 
@@ -215,7 +223,8 @@ const hasDisposal = computed(() => {
                     <div class="flex items-center gap-3">
                         <button
                             type="button"
-                            class="group relative flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
+                            :disabled="loading || stats === null"
+                            class="group relative flex h-8 w-8 items-center justify-center rounded-md text-gray-500 transition hover:bg-gray-100 hover:text-gray-700 disabled:cursor-not-allowed disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-gray-200"
                             @click="refreshStats"
                         >
                             <Tooltip>

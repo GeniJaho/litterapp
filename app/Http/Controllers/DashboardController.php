@@ -20,7 +20,6 @@ class DashboardController extends Controller
         GetUserStatsAction $getUserStatsAction,
         #[CurrentUser] User $user,
     ): Response {
-
         $period = DashboardPeriod::fromKey($request->string('period')->toString());
 
         return Inertia::render('Dashboard', [
