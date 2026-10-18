@@ -7,6 +7,7 @@ use App\Filament\Resources\TagResource;
 use App\Models\Tag;
 use App\Models\TagType;
 use Filament\Actions\CreateAction;
+use Filament\Actions\StaticAction;
 use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
 use Illuminate\Database\Eloquent\Builder;
@@ -19,7 +20,20 @@ class ListTags extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
+            CreateAction::make()
+                ->modalSubmitAction(fn (StaticAction $action): StaticAction => $action->color('gray'))
+                ->extraModalFooterActions(fn (CreateAction $action): array => [
+                    $action->makeModalSubmitAction('createAnother', arguments: ['another' => true])
+                        ->label(__('filament-actions::create.single.modal.actions.create_another.label'))
+                        ->color('primary'),
+                ])
+                ->after(function (array $arguments, ListTags $livewire): void {
+                    Cache::forget(GetTagsAndItemsAction::CACHE_KEY);
+
+                    if ($arguments['another'] ?? false) {
+                        $livewire->dispatch('focus-tag-name');
+                    }
+                }),
         ];
     }
 
