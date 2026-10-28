@@ -7,7 +7,7 @@ ARG user=laravel
 ARG uid=1000
 
 # Install system dependencies
-RUN apt-get upgrade && apt-get update && apt-get install -y \
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     git \
     curl \
     libpng-dev \
@@ -32,8 +32,10 @@ RUN apt autoremove && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN apt-get update && apt-get install -y ca-certificates curl gnupg
 RUN mkdir -p /etc/apt/keyrings && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
 ENV NODE_MAJOR=24
+# Exact release so cached layers never keep an unpatched Node (24.22.1+ has the 2026-10-20 security fixes)
+ENV NODE_VERSION=24.22.2
 RUN echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list
-RUN apt-get update && apt-get install -y nodejs
+RUN apt-get update && apt-get install -y nodejs=$NODE_VERSION-1nodesource1
 
 # memcached
 #RUN pecl install memcached && docker-php-ext-enable memcached
@@ -88,7 +90,7 @@ RUN composer install --optimize-autoloader --no-dev
 RUN php artisan optimize && php artisan storage:link
 RUN php artisan filament:optimize
 
-RUN npm install && npm run build
+RUN npm ci && npm run build
 
 # Copy supervisor configuration
 COPY ./deployment/supervisord.conf /etc/supervisor/conf.d/supervisord.conf

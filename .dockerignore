@@ -2,3 +2,11 @@
 .*/
 
 !package-lock.json
+
+/node_modules
+/vendor
+/public/build
+/public/hot
+/public/storage
+*.sql
+*.sql.bak
