@@ -32,6 +32,15 @@ class TagResource extends Resource
     {
         return $form
             ->schema([
+                TextInput::make('name')
+                    ->required()
+                    ->unique(ignoreRecord: true)
+                    ->maxLength(191)
+                    ->autofocus()
+                    ->extraInputAttributes(fn (string $operation): array => $operation === 'create' ? [
+                        'x-on:keydown.enter.prevent' => '$wire.callMountedAction({ another: true })',
+                        'x-on:focus-tag-name.window' => '$nextTick(() => $el.focus())',
+                    ] : []),
                 Select::make('tag_type_id')
                     ->required()
                     ->default(function (ListTags $livewire): ?int {
@@ -45,11 +54,6 @@ class TagResource extends Resource
                         return null;
                     })
                     ->relationship(name: 'type', titleAttribute: 'name'),
-                TextInput::make('name')
-                    ->required()
-                    ->unique(ignoreRecord: true)
-                    ->maxLength(191)
-                    ->autofocus(),
             ]);
     }
 
