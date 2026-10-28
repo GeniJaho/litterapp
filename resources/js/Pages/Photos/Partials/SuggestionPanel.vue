@@ -78,17 +78,10 @@ const toggleContent = (id) => {
     }
 };
 
-const findOriginalRank = (itemId) => {
-    const items = props.suggestion?.prediction_items?.items || [];
-    const idx = items.findIndex(i => i.id === itemId);
-    return idx >= 0 ? idx + 1 : null;
-};
-
 const acceptSuggestion = () => {
     if (!selectedItem.value) return;
     emit('accept-suggestion', {
         itemId: selectedItem.value.id,
-        rank: findOriginalRank(selectedItem.value.id),
         brandTagIds: [...selectedBrandIds.value],
         contentTagIds: [...selectedContentIds.value],
     });

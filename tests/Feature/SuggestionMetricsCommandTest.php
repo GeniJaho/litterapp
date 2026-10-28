@@ -6,173 +6,8 @@ use App\Models\Item;
 use App\Models\Photo;
 use App\Models\PhotoItem;
 use App\Models\PhotoSuggestion;
-use App\Models\Tag;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
-
-it('displays suggestion metrics', function (): void {
-    $photo1 = Photo::factory()->create();
-    $photo2 = Photo::factory()->create();
-    $photo3 = Photo::factory()->create();
-    $item = Item::factory()->create();
-
-    // Accepted suggestion
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'photo_id' => $photo1->id,
-            'item_id' => $item->id,
-            'item_score' => 90,
-            'is_accepted' => true,
-        ]);
-
-    // Rejected suggestion
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'photo_id' => $photo2->id,
-            'item_id' => $item->id,
-            'item_score' => 40,
-            'is_accepted' => false,
-        ]);
-
-    // Pending suggestion
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'photo_id' => $photo3->id,
-            'item_id' => $item->id,
-            'item_score' => 70,
-            'is_accepted' => null,
-        ]);
-
-    $this->artisan('app:suggestion-metrics')
-        ->assertSuccessful()
-        ->expectsOutputToContain('3');
-});
-
-it('displays acceptance by score bucket', function (): void {
-    $item = Item::factory()->create();
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'item_id' => $item->id,
-            'item_score' => 95,
-            'is_accepted' => true,
-        ]);
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'item_id' => $item->id,
-            'item_score' => 30,
-            'is_accepted' => false,
-        ]);
-
-    $this->artisan('app:suggestion-metrics')
-        ->assertSuccessful()
-        ->expectsOutputToContain('Score Range');
-});
-
-it('filters by minimum score', function (): void {
-    $item = Item::factory()->create();
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'item_id' => $item->id,
-            'item_score' => 90,
-            'is_accepted' => true,
-        ]);
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'item_id' => $item->id,
-            'item_score' => 20,
-            'is_accepted' => false,
-        ]);
-
-    $this->artisan('app:suggestion-metrics --min-score=50')
-        ->assertSuccessful()
-        ->expectsOutputToContain('min score: 50')
-        ->expectsOutputToContain('1 / 1 (100%)');
-});
-
-it('shows brand acceptance when brand tags exist', function (): void {
-    $item = Item::factory()->create();
-    $brand = Tag::factory()->create();
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id], [$brand->id])
-        ->create([
-            'item_id' => $item->id,
-            'item_score' => 90,
-            'is_accepted' => true,
-            'brand_accepted' => true,
-        ]);
-
-    $this->artisan('app:suggestion-metrics')
-        ->assertSuccessful()
-        ->expectsOutputToContain('Brand Suggestion Acceptance (multi-item)');
-});
-
-it('displays rank distribution for multi-item suggestions', function (): void {
-    $item1 = Item::factory()->create();
-    $item2 = Item::factory()->create();
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item1->id, $item2->id])
-        ->create([
-            'is_accepted' => true,
-            'accepted_item_rank' => 1,
-        ]);
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item1->id, $item2->id])
-        ->create([
-            'is_accepted' => true,
-            'accepted_item_rank' => 2,
-        ]);
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item1->id, $item2->id])
-        ->create([
-            'is_accepted' => true,
-            'accepted_item_rank' => 2,
-        ]);
-
-    $this->artisan('app:suggestion-metrics')
-        ->assertSuccessful()
-        ->expectsOutputToContain('Accepted Item Rank Distribution (multi-item)')
-        ->expectsOutputToContain('Multi-suggestion uplift');
-});
-
-it('applies min-score filtering to rank distribution', function (): void {
-    $item1 = Item::factory()->create();
-    $item2 = Item::factory()->create();
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item1->id, $item2->id])
-        ->create([
-            'is_accepted' => true,
-            'item_score' => 95,
-            'accepted_item_rank' => 1,
-        ]);
-
-    PhotoSuggestion::factory()
-        ->withPredictions([$item1->id, $item2->id])
-        ->create([
-            'is_accepted' => true,
-            'item_score' => 20,
-            'accepted_item_rank' => 2,
-        ]);
-
-    $this->artisan('app:suggestion-metrics --min-score=50')
-        ->assertSuccessful()
-        ->expectsOutputToContain('Multi-suggestion uplift (accepted with rank data): 0% were NOT rank 1');
-});
 
 it('measures model accuracy against the items users tagged', function (): void {
     [$item1, $item2, $item3] = Item::factory()->count(3)->create();
@@ -199,40 +34,61 @@ it('measures model accuracy against the items users tagged', function (): void {
     $this->artisan('app:suggestion-metrics')
         ->assertSuccessful()
         ->expectsTable(
-            ['Score Range', 'Tagged Photos', 'Top-1 Hit', 'Top-3 Hit', 'Accepted', 'Rejected', 'Ignored'],
+            ['Score Range', 'Tagged Photos', 'Top-1 Hit', 'Top-3 Hit'],
             [
-                ['40-59', 3, '33.3%', '66.7%', 1, 1, 1],
-                ['All', 3, '33.3%', '66.7%', 1, 1, 1],
+                ['40-59', 3, '33.3%', '66.7%'],
+                ['All', 3, '33.3%', '66.7%'],
+            ],
+        );
+});
+
+it('filters by minimum score', function (): void {
+    [$predictedItem, $otherItem] = Item::factory()->count(2)->create();
+
+    $hit = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id])
+        ->create(['item_score' => 90]);
+    PhotoItem::factory()->create(['photo_id' => $hit->photo_id, 'item_id' => $predictedItem->id]);
+
+    $lowScoreMiss = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id])
+        ->create(['item_score' => 20]);
+    PhotoItem::factory()->create(['photo_id' => $lowScoreMiss->photo_id, 'item_id' => $otherItem->id]);
+
+    $this->artisan('app:suggestion-metrics --min-score=50')
+        ->assertSuccessful()
+        ->expectsOutputToContain('min score: 50')
+        ->expectsTable(
+            ['Score Range', 'Tagged Photos', 'Top-1 Hit', 'Top-3 Hit'],
+            [
+                ['80-100', 1, '100%', '100%'],
+                ['All', 1, '100%', '100%'],
             ],
         );
 });
 
 it('only counts photos uploaded since the given date', function (): void {
     $this->travelTo('2026-10-12 12:00:00');
-    $item = Item::factory()->create();
+    [$predictedItem, $otherItem] = Item::factory()->count(2)->create();
 
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
-        ->create([
-            'photo_id' => Photo::factory()->create(['created_at' => '2026-09-01 10:00:00']),
-            'is_accepted' => true,
-        ]);
+    $oldHit = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id])
+        ->create(['photo_id' => Photo::factory()->create(['created_at' => '2026-09-01 10:00:00'])]);
+    PhotoItem::factory()->create(['photo_id' => $oldHit->photo_id, 'item_id' => $predictedItem->id]);
 
-    PhotoSuggestion::factory()
-        ->withPredictions([$item->id])
+    $recentMiss = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id])
         ->create(['photo_id' => Photo::factory()->create(['created_at' => '2026-10-01 10:00:00'])]);
+    PhotoItem::factory()->create(['photo_id' => $recentMiss->photo_id, 'item_id' => $otherItem->id]);
 
     $this->artisan('app:suggestion-metrics --since=2026-09-28')
         ->assertSuccessful()
         ->expectsOutputToContain('(since 2026-09-28)')
         ->expectsTable(
-            ['Metric', 'Value'],
+            ['Score Range', 'Tagged Photos', 'Top-1 Hit', 'Top-3 Hit'],
             [
-                ['Total suggestions', 1],
-                ['Photos with suggestions', 1],
-                ['Accepted', 0],
-                ['Rejected', 0],
-                ['Pending', 1],
+                ['40-59', 1, '0%', '0%'],
+                ['All', 1, '0%', '0%'],
             ],
         );
 });
@@ -287,17 +143,24 @@ it('reports suggestion coverage and failed jobs grouped by error', function (): 
 it('labels the lowest score bucket from the minimum score', function (): void {
     $item = Item::factory()->create();
 
-    PhotoSuggestion::factory()
+    $suggestion = PhotoSuggestion::factory()
         ->withPredictions([$item->id])
-        ->create(['item_score' => 35, 'is_accepted' => true]);
+        ->create(['item_score' => 35]);
+    PhotoItem::factory()->create(['photo_id' => $suggestion->photo_id, 'item_id' => $item->id]);
 
     $this->artisan('app:suggestion-metrics')
         ->assertSuccessful()
-        ->expectsOutputToContain('30-39');
+        ->expectsTable(
+            ['Score Range', 'Tagged Photos', 'Top-1 Hit', 'Top-3 Hit'],
+            [
+                ['30-39', 1, '100%', '100%'],
+                ['All', 1, '100%', '100%'],
+            ],
+        );
 });
 
 it('handles no suggestions gracefully', function (): void {
     $this->artisan('app:suggestion-metrics')
         ->assertSuccessful()
-        ->expectsOutputToContain('Overview');
+        ->expectsOutputToContain('No tagged photos with multi-item suggestions yet');
 });

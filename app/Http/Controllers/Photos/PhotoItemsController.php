@@ -39,12 +39,7 @@ class PhotoItemsController extends Controller
                     /** @var array<int, int> $contentTagIds */
                     $contentTagIds = $request->input('content_tag_ids', []);
 
-                    $suggestion->update([
-                        'is_accepted' => true,
-                        'accepted_item_rank' => $request->integer('accepted_item_rank') ?: null,
-                        'brand_accepted' => $brandTagIds !== [],
-                        'content_accepted' => $contentTagIds !== [],
-                    ]);
+                    $suggestion->update(['is_accepted' => true]);
 
                     $tagIds = array_merge($brandTagIds, $contentTagIds);
 

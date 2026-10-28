@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Photos\ApplyTagShortcutRequest;
 use App\Models\Photo;
 use App\Models\PhotoItem;
-use App\Models\PhotoSuggestion;
 use App\Models\TagShortcut;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -46,22 +45,9 @@ class ApplyTagShortcutController extends Controller
             }
 
             if ($request->suggestion_id) {
-                $suggestion = $photo->photoSuggestions()
+                $photo->photoSuggestions()
                     ->where('id', $request->suggestion_id)
-                    ->first();
-
-                if ($suggestion instanceof PhotoSuggestion) {
-                    /** @var array<int, int> $shortcutItemIds */
-                    $shortcutItemIds = $tagShortcut->tagShortcutItems->pluck('item_id')->all();
-                    $acceptedItemRank = $suggestion->predictedItemRank($shortcutItemIds);
-
-                    if ($acceptedItemRank !== null) {
-                        $suggestion->update([
-                            'is_accepted' => true,
-                            'accepted_item_rank' => $acceptedItemRank,
-                        ]);
-                    }
-                }
+                    ->update(['is_accepted' => true]);
             }
 
             $tagShortcut->increment('used_times');
