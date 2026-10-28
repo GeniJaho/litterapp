@@ -24,7 +24,6 @@ it('accepts suggestion at rank 2 with correct item attached', function (): void 
     $this->postJson("/photos/{$this->photo->id}/items", [
         'item_ids' => [$item2->id],
         'suggestion_id' => $suggestion->id,
-        'accepted_item_rank' => 2,
         'brand_tag_ids' => [],
         'content_tag_ids' => [],
     ])->assertSuccessful();
@@ -32,11 +31,10 @@ it('accepts suggestion at rank 2 with correct item attached', function (): void 
     $suggestion->refresh();
 
     expect($suggestion->is_accepted)->toBeTrue()
-        ->and($suggestion->accepted_item_rank)->toBe(2)
         ->and($this->photo->items()->where('item_id', $item2->id)->exists())->toBeTrue();
 });
 
-it('applies brand tags and sets brand_accepted to true', function (): void {
+it('applies brand tags from an accepted suggestion', function (): void {
     $item = Item::factory()->create();
     $brand = Tag::factory()->create();
 
@@ -48,21 +46,15 @@ it('applies brand tags and sets brand_accepted to true', function (): void {
     $this->postJson("/photos/{$this->photo->id}/items", [
         'item_ids' => [$item->id],
         'suggestion_id' => $suggestion->id,
-        'accepted_item_rank' => 1,
         'brand_tag_ids' => [$brand->id],
         'content_tag_ids' => [],
     ])->assertSuccessful();
-
-    $suggestion->refresh();
-
-    expect($suggestion->brand_accepted)->toBeTrue()
-        ->and($suggestion->content_accepted)->toBeFalse();
 
     $photoItem = $this->photo->photoItems()->where('item_id', $item->id)->first();
     expect($photoItem->tags()->where('tag_id', $brand->id)->exists())->toBeTrue();
 });
 
-it('sets brand_accepted to false when brand_tag_ids is empty', function (): void {
+it('does not apply brand tags when none are selected', function (): void {
     $item = Item::factory()->create();
     $brand = Tag::factory()->create();
 
@@ -74,15 +66,15 @@ it('sets brand_accepted to false when brand_tag_ids is empty', function (): void
     $this->postJson("/photos/{$this->photo->id}/items", [
         'item_ids' => [$item->id],
         'suggestion_id' => $suggestion->id,
-        'accepted_item_rank' => 1,
         'brand_tag_ids' => [],
         'content_tag_ids' => [],
     ])->assertSuccessful();
 
-    expect($suggestion->refresh()->brand_accepted)->toBeFalse();
+    $photoItem = $this->photo->photoItems()->where('item_id', $item->id)->first();
+    expect($photoItem->tags()->exists())->toBeFalse();
 });
 
-it('applies content tags and sets content_accepted to true', function (): void {
+it('applies content tags from an accepted suggestion', function (): void {
     $item = Item::factory()->create();
     $contentTag = Tag::factory()->create();
 
@@ -94,14 +86,9 @@ it('applies content tags and sets content_accepted to true', function (): void {
     $this->postJson("/photos/{$this->photo->id}/items", [
         'item_ids' => [$item->id],
         'suggestion_id' => $suggestion->id,
-        'accepted_item_rank' => 1,
         'brand_tag_ids' => [],
         'content_tag_ids' => [$contentTag->id],
     ])->assertSuccessful();
-
-    $suggestion->refresh();
-
-    expect($suggestion->content_accepted)->toBeTrue();
 
     $photoItem = $this->photo->photoItems()->where('item_id', $item->id)->first();
     expect($photoItem->tags()->where('tag_id', $contentTag->id)->exists())->toBeTrue();
@@ -121,16 +108,13 @@ it('accepts a different item than top-1 correctly', function (): void {
     $this->postJson("/photos/{$this->photo->id}/items", [
         'item_ids' => [$item3->id],
         'suggestion_id' => $suggestion->id,
-        'accepted_item_rank' => 3,
         'brand_tag_ids' => [$brand->id],
         'content_tag_ids' => [],
     ])->assertSuccessful();
 
     $suggestion->refresh();
 
-    expect($suggestion->is_accepted)->toBeTrue()
-        ->and($suggestion->accepted_item_rank)->toBe(3)
-        ->and($suggestion->brand_accepted)->toBeTrue();
+    expect($suggestion->is_accepted)->toBeTrue();
 
     // Brand tag should be on item3's photo_item, not item1
     $photoItem = $this->photo->photoItems()->where('item_id', $item3->id)->first();

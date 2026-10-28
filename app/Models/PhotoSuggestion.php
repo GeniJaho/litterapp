@@ -103,6 +103,26 @@ class PhotoSuggestion extends Model
     }
 
     /**
+     * The 1-based rank of the best-ranked given item among the predicted items, or null when none of them was predicted.
+     * Suggestions without a predictions JSON only predicted their top-1 `item_id`.
+     *
+     * @param  array<int, int>  $itemIds
+     */
+    public function predictedItemRank(array $itemIds): ?int
+    {
+        /** @var array<int, array{id: int}> $predictedItems */
+        $predictedItems = $this->predictions['items'] ?? [['id' => $this->item_id]];
+
+        foreach (array_values($predictedItems) as $index => $predictedItem) {
+            if (in_array($predictedItem['id'], $itemIds, true)) {
+                return $index + 1;
+            }
+        }
+
+        return null;
+    }
+
+    /**
      * @return BelongsTo<Item, $this>
      */
     public function item(): BelongsTo

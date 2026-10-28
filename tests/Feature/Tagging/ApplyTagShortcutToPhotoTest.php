@@ -57,6 +57,25 @@ test('a user can apply a tag shortcut to a photo', function (): void {
     expect($tagShortcut->fresh()->used_times)->toBe(1);
 });
 
+test('a tag shortcut resolves the suggestion even when none of its items were predicted', function (): void {
+    $user = User::factory()->create();
+    $photo = Photo::factory()->create(['user_id' => $user->id]);
+    [$predictedItem, $shortcutItem] = Item::factory()->count(2)->create();
+    $suggestion = PhotoSuggestion::factory()
+        ->withPredictions([$predictedItem->id])
+        ->create(['photo_id' => $photo->id]);
+    $tagShortcut = TagShortcut::factory()->create(['user_id' => $user->id]);
+    $tagShortcut->items()->attach($shortcutItem);
+
+    $this->actingAs($user)
+        ->postJson("/photos/$photo->id/tag-shortcuts/$tagShortcut->id", [
+            'suggestion_id' => $suggestion->id,
+        ])
+        ->assertOk();
+
+    expect($suggestion->fresh()->is_accepted)->toBeTrue();
+});
+
 test('the request is validated', function (): void {
     $user = User::factory()->create();
     $photo = Photo::factory()->create(['user_id' => $user->id]);

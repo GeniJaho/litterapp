@@ -146,14 +146,8 @@ const addItems = () => {
     };
 
     // If manual search matches a prediction item, link to suggestion
-    if (suggestion.value?.prediction_items?.items) {
-        const matchIndex = suggestion.value.prediction_items.items.findIndex(
-            i => i.id === selectedItem.value.id
-        );
-        if (matchIndex >= 0) {
-            payload.suggestion_id = suggestion.value.id;
-            payload.accepted_item_rank = matchIndex + 1;
-        }
+    if (suggestion.value?.prediction_items?.items?.some(i => i.id === selectedItem.value.id)) {
+        payload.suggestion_id = suggestion.value.id;
     }
 
     axios.post(`/photos/${photo.value.id}/items`, payload).then(() => {
@@ -166,7 +160,6 @@ const addSuggestedItem = (payload) => {
     axios.post(`/photos/${photo.value.id}/items`, {
         item_ids: [payload.itemId],
         suggestion_id: suggestion.value.id,
-        accepted_item_rank: payload.rank,
         brand_tag_ids: payload.brandTagIds,
         content_tag_ids: payload.contentTagIds,
     }).then(() => {
