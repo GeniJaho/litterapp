@@ -22,9 +22,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property ?int $content_count
  * @property ?bool $is_accepted
  * @property ?array<string, array<int, array<string, mixed>>> $predictions
- * @property ?int $accepted_item_rank
- * @property ?bool $brand_accepted
- * @property ?bool $content_accepted
  * @property Item $item
  * @property Photo $photo
  * @property ?Tag $brandTag
@@ -51,9 +48,6 @@ class PhotoSuggestion extends Model
             'content_count' => 'integer',
             'is_accepted' => 'boolean',
             'predictions' => 'array',
-            'accepted_item_rank' => 'integer',
-            'brand_accepted' => 'boolean',
-            'content_accepted' => 'boolean',
         ];
     }
 
