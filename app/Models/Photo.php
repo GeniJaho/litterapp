@@ -102,7 +102,7 @@ class Photo extends Model
     protected function scopeForUser(Builder $query, User $user): void
     {
         $filters = $user->settings->photo_filters;
-        $userIds = $filters !== null ? $filters->user_ids : [];
+        $userIds = $filters->user_ids ?? [];
         $allUsers = $filters !== null && $filters->all_users;
 
         if ($user->is_admin && $allUsers) {

@@ -21,13 +21,9 @@ class GetOrCreateUserFromSocialProviderAction
             'profile_photo_path' => $socialUser->getAvatar(),
         ]);
 
-        if ($user->email_verified_at === null) {
-            $user->email_verified_at = now();
-        }
+        $user->email_verified_at ??= now();
 
-        if ($user->profile_photo_path === null) {
-            $user->profile_photo_path = $socialUser->getAvatar();
-        }
+        $user->profile_photo_path ??= $socialUser->getAvatar();
 
         if ($user->password === '') {
             $user->password = Hash::make(Str::random(20));
