@@ -6,6 +6,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
   phpstan:
     runs-on: ubuntu-latest
@@ -13,11 +16,11 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Cache Vendor
         id: cache-vendor
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
@@ -26,7 +29,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Cache PHPStan
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./storage/phpstan
           key: "result-cache-${{ github.run_id }}" # always unique key - always writes a new cache
@@ -42,11 +45,11 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: 8.2
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Cache Vendor
         id: cache-vendor
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: vendor
           key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
@@ -55,7 +58,7 @@ jobs:
         run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
 
       - name: Cache Rector
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./storage/rector/cache
           key: ${{ runner.os }}-rector-${{ hashFiles('**/composer.lock') }}
@@ -64,7 +67,7 @@ jobs:
         run: vendor/bin/rector --ansi --dry-run
 
       - name: Cache Pint
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: ./storage/pint.cache
           key: ${{ runner.os }}-pint-${{ hashFiles('**/composer.lock') }}
@@ -78,13 +81,13 @@ jobs:
     - uses: shivammathur/setup-php@v2
       with:
         php-version: '8.2'
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Cache Vendor
       id: cache-vendor
-      uses: actions/cache@v4
+      uses: actions/cache@v6
       with:
         path: vendor
         key: ${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}
