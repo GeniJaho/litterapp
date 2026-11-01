@@ -4,6 +4,7 @@ namespace App\Actions\Photos;
 
 use Illuminate\Http\UploadedFile;
 use Intervention\Image\Collection;
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\ImageManager;
 
 class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
@@ -15,9 +16,9 @@ class ExtractExifFromPhotoAction implements ExtractsExifFromPhoto
 
     public function run(UploadedFile $photo): array
     {
-        $image = ImageManager::gd()->read($photo);
+        $image = ImageManager::usingDriver(Driver::class)->decode($photo);
 
-        /** @var Collection<mixed> $exif */
+        /** @var Collection $exif */
         $exif = $image->exif();
 
         $location = $this->extractLocation->run($exif);

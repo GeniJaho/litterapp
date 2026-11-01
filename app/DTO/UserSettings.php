@@ -26,4 +26,12 @@ class UserSettings extends Data
             ? $this->per_page
             : 25;
     }
+
+    /**
+     * @return 'asc'|'desc'
+     */
+    public function getValidSortDirection(): string
+    {
+        return $this->sort_direction === 'asc' ? 'asc' : 'desc';
+    }
 }

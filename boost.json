@@ -5,6 +5,7 @@
         "cursor",
         "opencode"
     ],
+    "cloud": false,
     "guidelines": true,
     "herd_mcp": true,
     "mcp": true,
@@ -13,7 +14,12 @@
     ],
     "sail": false,
     "skills": [
-        "pest-testing",
+        "infer-conventions",
+        "fortify-development",
+        "laravel-best-practices",
+        "testing-best-practices",
+        "configure-nightwatch",
+        "socialite-development",
         "inertia-vue-development",
         "tailwindcss-development"
     ]

@@ -254,6 +254,10 @@ class GetUserStatsAction
         return now()->startOfMonth()->setDate(intdiv($index, 12), $index % 12 + 1, 1);
     }
 
+    /**
+     * @param  literal-string  $column
+     * @return literal-string
+     */
     private function bucketExpression(string $column, string $granularity): string
     {
         $format = $granularity === 'day' ? '%Y-%m-%d' : '%Y-%m';

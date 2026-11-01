@@ -21,7 +21,7 @@ class GetNextPhotoAction
         if ($attribute) {
             $nextPhoto = $builder->clone()
                 ->where($user->settings->sort_column, $user->settings->sort_direction === 'desc' ? '<' : '>', $attribute)
-                ->orderBy($user->settings->sort_column, $user->settings->sort_direction)
+                ->orderBy($user->settings->sort_column, $user->settings->getValidSortDirection())
                 ->when($user->settings->sort_column !== 'id', fn (Builder $query) => $query->orderBy('id'))
                 ->first();
 
@@ -41,7 +41,7 @@ class GetNextPhotoAction
             if (! $nextPhoto && $user->settings->sort_direction === 'asc') {
                 $nextPhoto = $builder->clone()
                     ->whereNotNull($user->settings->sort_column)
-                    ->orderBy($user->settings->sort_column, $user->settings->sort_direction)
+                    ->orderBy($user->settings->sort_column, $user->settings->getValidSortDirection())
                     ->when($user->settings->sort_column !== 'id', fn (Builder $query) => $query->orderBy('id'))
                     ->first();
             }
