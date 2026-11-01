@@ -4,12 +4,13 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PhotoResource\Pages\ListPhotos;
 use App\Models\Photo;
+use BackedEnum;
+use Filament\Actions\Action;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Forms\Components\DatePicker;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\TextInputColumn;
@@ -23,7 +24,7 @@ class PhotoResource extends Resource
 {
     protected static ?string $model = Photo::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-photo';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-photo';
 
     protected static ?int $navigationSort = 2;
 
@@ -104,7 +105,7 @@ class PhotoResource extends Resource
                         blank: fn (Builder $query): Builder => $query
                     ),
                 Filter::make('taken_at_local')
-                    ->form([
+                    ->schema([
                         DatePicker::make('local_date_taken_from')->label('Date taken from (Local time)'),
                         DatePicker::make('local_date_taken_until')->label('Date taken until (Local time)'),
                     ])
@@ -118,7 +119,7 @@ class PhotoResource extends Resource
                             fn (Builder $query, string $date): Builder => $query->whereDate('taken_at_local', '<=', $date),
                         )),
                 Filter::make('created_at')
-                    ->form([
+                    ->schema([
                         DateTimePicker::make('created_at_from')->label('Uploaded from'),
                         DateTimePicker::make('created_at_until')->label('Uploaded until'),
                     ])
@@ -132,7 +133,7 @@ class PhotoResource extends Resource
                             fn (Builder $query, string $date): Builder => $query->where('created_at', '<=', $date),
                         )),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make(),
                 ]),

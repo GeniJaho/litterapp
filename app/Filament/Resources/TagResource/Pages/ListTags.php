@@ -6,10 +6,10 @@ use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Filament\Resources\TagResource;
 use App\Models\Tag;
 use App\Models\TagType;
+use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Filament\Actions\StaticAction;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\Cache;
 
@@ -21,7 +21,7 @@ class ListTags extends ListRecords
     {
         return [
             CreateAction::make()
-                ->modalSubmitAction(fn (StaticAction $action): StaticAction => $action->color('gray'))
+                ->modalSubmitAction(fn (Action $action): Action => $action->color('gray'))
                 ->extraModalFooterActions(fn (CreateAction $action): array => [
                     $action->makeModalSubmitAction('createAnother', arguments: ['another' => true])
                         ->label(__('filament-actions::create.single.modal.actions.create_another.label'))

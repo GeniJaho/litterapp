@@ -3,31 +3,31 @@
 namespace App\Filament\Pages;
 
 use App\Models\Item;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Facades\DB;
+use UnitEnum;
 
 /**
- * @property Form $form
+ * @property-read Schema $form
  */
-class ReplaceItems extends Page implements HasForms
+class ReplaceItems extends Page
 {
-    use InteractsWithForms;
-
-    protected static ?string $navigationIcon = 'heroicon-o-arrow-path';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-arrow-path';
 
     protected static ?string $navigationLabel = 'Replace Items';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static ?int $navigationSort = 101;
 
-    protected static string $view = 'filament.pages.replace-items';
+    protected string $view = 'filament.pages.replace-items';
 
     /** @var array<string, mixed> */
     public ?array $data = [];
@@ -37,25 +37,35 @@ class ReplaceItems extends Page implements HasForms
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Select::make('fromItemId')
-                    ->label('Item to Replace')
-                    ->searchable()
-                    ->getSearchResultsUsing(fn (string $search): array => $this->searchItems($search))
-                    ->getOptionLabelUsing(fn (int $value): string => $this->getItemLabel($value))
-                    ->required()
-                    ->helperText('Select the item that should be replaced'),
-                Select::make('toItemId')
-                    ->label('Replace With')
-                    ->searchable()
-                    ->getSearchResultsUsing(fn (string $search): array => $this->searchItems($search))
-                    ->getOptionLabelUsing(fn (int $value): string => $this->getItemLabel($value))
-                    ->required()
-                    ->different('fromItemId')
-                    ->helperText('Select the new item that should be used instead'),
+        return $schema
+            ->components([
+                Form::make([
+                    Select::make('fromItemId')
+                        ->label('Item to Replace')
+                        ->searchable()
+                        ->getSearchResultsUsing(fn (string $search): array => $this->searchItems($search))
+                        ->getOptionLabelUsing(fn (int $value): string => $this->getItemLabel($value))
+                        ->required()
+                        ->helperText('Select the item that should be replaced'),
+                    Select::make('toItemId')
+                        ->label('Replace With')
+                        ->searchable()
+                        ->getSearchResultsUsing(fn (string $search): array => $this->searchItems($search))
+                        ->getOptionLabelUsing(fn (int $value): string => $this->getItemLabel($value))
+                        ->required()
+                        ->different('fromItemId')
+                        ->helperText('Select the new item that should be used instead'),
+                ])
+                    ->livewireSubmitHandler('replace')
+                    ->footer([
+                        Actions::make([
+                            Action::make('replace')
+                                ->label('Replace Items')
+                                ->submit('replace'),
+                        ]),
+                    ]),
             ])
             ->statePath('data');
     }
@@ -82,18 +92,6 @@ class ReplaceItems extends Page implements HasForms
                 $item->id => "{$item->name} ({$item->photo_items_count}x)",
             ])
             ->toArray();
-    }
-
-    /**
-     * @return array<Action>
-     */
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('replace')
-                ->label('Replace Items')
-                ->submit('replace'),
-        ];
     }
 
     public function replace(): void

@@ -21,6 +21,7 @@
         "configure-nightwatch",
         "socialite-development",
         "inertia-vue-development",
-        "tailwindcss-development"
+        "tailwindcss-development",
+        "filament-development"
     ]
 }

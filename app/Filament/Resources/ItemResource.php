@@ -7,14 +7,15 @@ namespace App\Filament\Resources;
 use App\Actions\Photos\GetTagsAndItemsAction;
 use App\Filament\Resources\ItemResource\Pages\ListItems;
 use App\Models\Item;
+use BackedEnum;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Filament\Tables\Actions\EditAction;
+use Filament\Schemas\Schema;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Support\Facades\Cache;
@@ -23,14 +24,14 @@ class ItemResource extends Resource
 {
     protected static ?string $model = Item::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-rectangle-stack';
 
     protected static ?int $navigationSort = 3;
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema
+            ->components([
                 Select::make('item_type_id')
                     ->nullable()
                     ->relationship(name: 'type', titleAttribute: 'name'),
@@ -73,11 +74,11 @@ class ItemResource extends Resource
             ->filters([
                 //
             ])
-            ->actions([
+            ->recordActions([
                 EditAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
                 DeleteAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
             ])
-            ->bulkActions([
+            ->toolbarActions([
                 BulkActionGroup::make([
                     DeleteBulkAction::make()->after(fn () => Cache::forget(GetTagsAndItemsAction::CACHE_KEY)),
                 ]),
