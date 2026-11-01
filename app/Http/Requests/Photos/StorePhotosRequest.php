@@ -41,6 +41,17 @@ class StorePhotosRequest extends FormRequest
     }
 
     /**
+     * FilePond posts a metadata string under the same name as the file,
+     * and Laravel 13 lets regular input take precedence over files.
+     *
+     * @return array<string, mixed>
+     */
+    public function validationData(): array
+    {
+        return [...$this->all(), ...$this->allFiles()];
+    }
+
+    /**
      * @return array<int, callable>
      */
     public function after(#[CurrentUser] User $user): array
