@@ -4,8 +4,8 @@ namespace App\Filament\Resources\PhotoResource\Pages;
 
 use App\Filament\Resources\PhotoResource;
 use App\Models\Photo;
-use Filament\Resources\Components\Tab;
 use Filament\Resources\Pages\ListRecords;
+use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
 
 class ListPhotos extends ListRecords

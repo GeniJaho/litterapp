@@ -4,30 +4,30 @@ namespace App\Filament\Pages;
 
 use App\Actions\TagShortcuts\CopyUserTagShortcutsAction;
 use App\Models\User;
+use BackedEnum;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
-use Filament\Forms\Concerns\InteractsWithForms;
-use Filament\Forms\Contracts\HasForms;
-use Filament\Forms\Form;
 use Filament\Notifications\Notification;
 use Filament\Pages\Page;
+use Filament\Schemas\Components\Actions;
+use Filament\Schemas\Components\Form;
+use Filament\Schemas\Schema;
+use UnitEnum;
 
 /**
- * @property Form $form
+ * @property-read Schema $form
  */
-class CopyUserTagShortcuts extends Page implements HasForms
+class CopyUserTagShortcuts extends Page
 {
-    use InteractsWithForms;
-
-    protected static ?string $navigationIcon = 'heroicon-o-clipboard-document-list';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-clipboard-document-list';
 
     protected static ?string $navigationLabel = 'Copy Tag Shortcuts';
 
-    protected static ?string $navigationGroup = 'System';
+    protected static string|UnitEnum|null $navigationGroup = 'System';
 
     protected static ?int $navigationSort = 100;
 
-    protected static string $view = 'filament.pages.copy-user-tag-shortcuts';
+    protected string $view = 'filament.pages.copy-user-tag-shortcuts';
 
     /** @var array<string, mixed> */
     public ?array $data = [];
@@ -37,35 +37,33 @@ class CopyUserTagShortcuts extends Page implements HasForms
         $this->form->fill();
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
-                Select::make('fromUserId')
-                    ->label('From User')
-                    ->options(User::pluck('name', 'id'))
-                    ->searchable()
-                    ->required(),
-                Select::make('toUserId')
-                    ->label('To User')
-                    ->options(User::pluck('name', 'id'))
-                    ->searchable()
-                    ->required()
-                    ->different('fromUserId'),
+        return $schema
+            ->components([
+                Form::make([
+                    Select::make('fromUserId')
+                        ->label('From User')
+                        ->options(User::pluck('name', 'id'))
+                        ->searchable()
+                        ->required(),
+                    Select::make('toUserId')
+                        ->label('To User')
+                        ->options(User::pluck('name', 'id'))
+                        ->searchable()
+                        ->required()
+                        ->different('fromUserId'),
+                ])
+                    ->livewireSubmitHandler('copy')
+                    ->footer([
+                        Actions::make([
+                            Action::make('copy')
+                                ->label('Copy Tag Shortcuts')
+                                ->submit('copy'),
+                        ]),
+                    ]),
             ])
             ->statePath('data');
-    }
-
-    /**
-     * @return array<Action>
-     */
-    protected function getFormActions(): array
-    {
-        return [
-            Action::make('copy')
-                ->label('Copy Tag Shortcuts')
-                ->submit('copy'),
-        ];
     }
 
     public function copy(): void

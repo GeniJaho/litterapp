@@ -4,6 +4,7 @@ namespace App\Filament\Resources;
 
 use App\Filament\Resources\PhotoSuggestionResource\Pages\ListPhotoSuggestions;
 use App\Models\PhotoSuggestion;
+use BackedEnum;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Tables\Columns\IconColumn;
@@ -20,7 +21,7 @@ class PhotoSuggestionResource extends Resource
 {
     protected static ?string $model = PhotoSuggestion::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-sparkles';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-sparkles';
 
     protected static ?string $modelLabel = 'Suggestions';
 
@@ -68,7 +69,7 @@ class PhotoSuggestionResource extends Resource
                     ->multiple()
                     ->preload(),
                 Filter::make('item_score')
-                    ->form([
+                    ->schema([
                         TextInput::make('min_score')
                             ->label('Minimum item score')
                             ->numeric()
