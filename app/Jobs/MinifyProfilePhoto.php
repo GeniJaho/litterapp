@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Storage;
+use Intervention\Image\Drivers\Gd\Driver;
 use Intervention\Image\Encoders\AutoEncoder;
 use Intervention\Image\ImageManager;
 
@@ -23,8 +24,9 @@ class MinifyProfilePhoto implements ShouldQueue
 
         $photo = Storage::get($this->user->profile_photo_path);
 
-        $image = ImageManager::gd()->read($photo);
-        $image->scaleDown(height: 500);
+        $image = ImageManager::usingDriver(Driver::class)
+            ->decode($photo)
+            ->scaleDown(height: 500);
 
         $minified = $image->encode(new AutoEncoder(quality: 50));
 

@@ -10,14 +10,14 @@ use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\FromGenerator;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 
-readonly class PhotosCsvExport implements FromGenerator, WithHeadings
+class PhotosCsvExport implements FromGenerator, WithHeadings
 {
     use Exportable;
 
     /**
      * @param  Generator<PhotoExport>  $photos
      */
-    public function __construct(private Generator $photos) {}
+    public function __construct(private readonly Generator $photos) {}
 
     public function generator(): Generator
     {

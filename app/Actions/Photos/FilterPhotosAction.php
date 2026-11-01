@@ -52,7 +52,7 @@ class FilterPhotosAction
         $query = Photo::query()
             ->forUser($user)
             ->filter($filters)
-            ->orderBy($user->settings->sort_column, $user->settings->sort_direction);
+            ->orderBy($user->settings->sort_column, $user->settings->getValidSortDirection());
 
         if ($user->settings->sort_column !== 'id') {
             $query->orderBy('id');
