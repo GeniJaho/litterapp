@@ -24,3 +24,6 @@ yarn-error.log
 /.vscode
 /data/
 /.junie/
+/.cursor/
+/.mcp.json
+/opencode.json
