@@ -5,7 +5,7 @@
         "cursor",
         "opencode"
     ],
-    "cloud": true,
+    "cloud": false,
     "guidelines": true,
     "herd_mcp": true,
     "mcp": true,
@@ -15,7 +15,6 @@
     "sail": false,
     "skills": [
         "infer-conventions",
-        "deploying-to-cloud",
         "fortify-development",
         "laravel-best-practices",
         "testing-best-practices",
