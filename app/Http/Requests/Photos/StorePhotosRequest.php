@@ -47,8 +47,11 @@ class StorePhotosRequest extends FormRequest
     {
         return [
             function (Validator $validator) use ($user): void {
-                /** @var UploadedFile $photo */
-                $photo = $this->photo;
+                $photo = $this->file('photo');
+
+                if ($validator->errors()->isNotEmpty() || ! $photo instanceof UploadedFile) {
+                    return;
+                }
 
                 $this->exifData = app(ExtractsExifFromPhoto::class)->run($photo);
 
