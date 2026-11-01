@@ -202,3 +202,13 @@ test('a photo that is not a file is rejected with a validation error', function 
 
     expect($user->photos()->count())->toBeZero();
 });
+
+test('a photo can be uploaded alongside a metadata field with the same name', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $this->call('POST', '/upload', ['photo' => '{"color":null}'], [], [
+        'photo' => UploadedFile::fake()->image('photo.jpg'),
+    ])->assertOk();
+
+    expect($user->photos()->count())->toBe(1);
+});
