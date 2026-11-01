@@ -194,3 +194,11 @@ test('the SuggestPhotoItem job is not dispatched when LitterBot is disabled app-
 
     Bus::assertNotDispatched(SuggestPhotoItem::class);
 });
+
+test('a photo that is not a file is rejected with a validation error', function (): void {
+    $this->actingAs($user = User::factory()->create());
+
+    $this->post('/upload', ['photo' => '{}'])->assertSessionHasErrors('photo');
+
+    expect($user->photos()->count())->toBeZero();
+});
