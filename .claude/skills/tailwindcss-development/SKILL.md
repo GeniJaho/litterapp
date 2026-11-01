@@ -1,37 +1,28 @@
 ---
 name: tailwindcss-development
-description: "Styles applications using Tailwind CSS v3 utilities. Activates when adding styles, restyling components, working with gradients, spacing, layout, flex, grid, responsive design, dark mode, colors, typography, or borders; or when the user mentions CSS, styling, classes, Tailwind, restyle, hero section, cards, buttons, or any visual/UI changes."
+description: "Always invoke when the user's message includes 'tailwind' in any form. Also invoke for: building responsive grid layouts (multi-column card grids, product grids), flex/grid page structures (dashboards with sidebars, fixed topbars, mobile-toggle navs), styling UI components (cards, tables, navbars, pricing sections, forms, inputs, badges), adding dark mode variants, fixing spacing or typography, and Tailwind v3/v4 work. The core use case: writing or fixing Tailwind utility classes in HTML templates (Blade, JSX, Vue). Skip for backend PHP logic, database queries, API routes, JavaScript with no HTML/CSS component, CSS file audits, build tool configuration, and vanilla CSS."
 license: MIT
 metadata:
   author: laravel
 ---
 
-# Tailwind CSS Development
-
-## When to Apply
-
-Activate this skill when:
-- Adding styles to components or pages
-- Working with responsive design
-- Implementing dark mode
-- Extracting repeated patterns into components
-- Debugging spacing or layout issues
+# Tailwind CSS development
 
 ## Documentation
 
 Use `search-docs` for detailed Tailwind CSS v3 patterns and documentation.
 
-## Basic Usage
+## Basic usage
 
-- Use Tailwind CSS classes to style HTML. Check and follow existing Tailwind conventions in the project before introducing new patterns.
-- Offer to extract repeated patterns into components that match the project's conventions (e.g., Blade, JSX, Vue).
+- Use Tailwind CSS classes to style HTML. Before introducing new patterns, check and follow the project's existing Tailwind conventions.
+- Offer to extract repeated patterns into components that match the project's conventions, such as Blade, JSX, or Vue components.
 - Consider class placement, order, priority, and defaults. Remove redundant classes, add classes to parent or child elements carefully to reduce repetition, and group elements logically.
 
-## Tailwind CSS v3 Specifics
+## Tailwind CSS v3 specifics
 
-- Always use Tailwind CSS v3 and verify you're using only classes it supports.
-- Configuration is done in the `tailwind.config.js` file.
-- Import using `@tailwind` directives:
+- Always use Tailwind CSS v3 and verify that you use only classes it supports.
+- Configure Tailwind in the `tailwind.config.js` file.
+- Import Tailwind with the `@tailwind` directives:
 
 <!-- v3 Import Syntax -->
 ```css
@@ -42,7 +33,7 @@ Use `search-docs` for detailed Tailwind CSS v3 patterns and documentation.
 
 ## Spacing
 
-When listing items, use gap utilities for spacing; don't use margins.
+When listing items, use gap utilities for spacing. Don't use margins.
 
 <!-- Gap Utilities -->
 ```html
@@ -52,7 +43,7 @@ When listing items, use gap utilities for spacing; don't use margins.
 </div>
 ```
 
-## Dark Mode
+## Dark mode
 
 If existing pages and components support dark mode, new pages and components must support it the same way, typically using the `dark:` variant:
 
@@ -63,9 +54,9 @@ If existing pages and components support dark mode, new pages and components mus
 </div>
 ```
 
-## Common Patterns
+## Common patterns
 
-### Flexbox Layout
+### Flexbox layout
 
 <!-- Flexbox Layout -->
 ```html
@@ -75,7 +66,7 @@ If existing pages and components support dark mode, new pages and components mus
 </div>
 ```
 
-### Grid Layout
+### Grid layout
 
 <!-- Grid Layout -->
 ```html
@@ -88,11 +79,11 @@ If existing pages and components support dark mode, new pages and components mus
 
 ## Verification
 
-1. Check browser for visual rendering
+1. Check the visual rendering in the browser
 2. Test responsive breakpoints
-3. Verify dark mode if project uses it
+3. If the project uses dark mode, verify it
 
-## Common Pitfalls
+## Common pitfalls
 
 - Using margins for spacing between siblings instead of gap utilities
 - Forgetting to add dark mode variants when the project uses dark mode
