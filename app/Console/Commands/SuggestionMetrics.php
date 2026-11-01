@@ -16,7 +16,7 @@ class SuggestionMetrics extends Command
     /**
      * Suggestions scoring below this are hidden in the UI (see Photo filters, FilterPhotosAction and Photos/Show.vue).
      */
-    private const DISPLAY_MIN_SCORE = 30;
+    private const int DISPLAY_MIN_SCORE = 30;
 
     protected $signature = 'app:suggestion-metrics
         {--min-score=30 : Only count multi-item suggestions with item_score >= this value}

@@ -15,7 +15,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: '8.4'
       - uses: actions/checkout@v7
 
       - name: Cache Vendor
@@ -36,7 +36,7 @@ jobs:
           restore-keys: result-cache-
       - uses: php-actions/phpstan@v3
         with:
-          php_version: 8.2
+          php_version: '8.4'
           path: 'app'
 
   code-quality:
@@ -44,7 +44,7 @@ jobs:
     steps:
       - uses: shivammathur/setup-php@v2
         with:
-          php-version: 8.2
+          php-version: '8.4'
       - uses: actions/checkout@v7
 
       - name: Cache Vendor
@@ -80,7 +80,7 @@ jobs:
     steps:
     - uses: shivammathur/setup-php@v2
       with:
-        php-version: '8.2'
+        php-version: '8.4'
     - uses: actions/checkout@v7
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"

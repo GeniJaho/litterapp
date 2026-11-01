@@ -13,7 +13,7 @@ use Inertia\Response;
 
 class DashboardController extends Controller
 {
-    private const CACHE_TTL_MINUTES = 60;
+    private const int CACHE_TTL_MINUTES = 60;
 
     public function __invoke(
         Request $request,

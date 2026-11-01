@@ -3,9 +3,9 @@
 declare(strict_types=1);
 
 use Rector\Caching\ValueObject\Storage\FileCacheStorage;
-use Rector\CodingStyle\Rector\Encapsed\EncapsedStringsToSprintfRector;
 use Rector\Config\RectorConfig;
 use RectorLaravel\Rector\ClassMethod\AddGenericReturnTypeToRelationsRector;
+use RectorLaravel\Rector\ClassMethod\RelationTableStringToPivotClassRector;
 use RectorLaravel\Rector\FuncCall\AppToResolveRector;
 use RectorLaravel\Rector\MethodCall\WhereToWhereLikeRector;
 use RectorLaravel\Rector\PropertyFetch\ReplaceFakerInstanceWithHelperRector;
@@ -22,7 +22,7 @@ return RectorConfig::configure()
         __DIR__.'/tests',
     ])
     ->withImportNames()
-    ->withPhpSets(php82: true)
+    ->withPhpSets(php84: true)
     ->withPreparedSets(
         deadCode: true,
         codeQuality: true,
@@ -43,11 +43,11 @@ return RectorConfig::configure()
         WhereToWhereLikeRector::class,
     ])
     ->withSkip([
-        EncapsedStringsToSprintfRector::class,
         ReplaceFakerInstanceWithHelperRector::class,
         AppToResolveRector::class,
         CarbonToDateFacadeRector::class,
         DispatchToHelperFunctionsRector::class,
+        RelationTableStringToPivotClassRector::class,
         __DIR__.'/app/Http/Middleware/RedirectIfAuthenticated.php',
     ])
     ->withCache(

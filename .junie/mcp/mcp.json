@@ -1,14 +1,14 @@
 {
     "mcpServers": {
         "laravel-boost": {
-            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php82",
+            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php84",
             "args": [
                 "/Users/fabjo/Sites/litterapp/artisan",
                 "boost:mcp"
             ]
         },
         "herd": {
-            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php82",
+            "command": "/Users/fabjo/Library/Application Support/Herd/bin/php84",
             "args": [
                 "/Applications/Herd.app/Contents/Resources/herd-mcp.phar"
             ],

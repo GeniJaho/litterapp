@@ -21,7 +21,7 @@ class ExportPhotosController extends Controller
         $photos = $action->run($user);
 
         if (request()->input('format') === 'csv') {
-            return (new PhotosCsvExport($photos))->download('photos.csv', Excel::CSV);
+            return new PhotosCsvExport($photos)->download('photos.csv', Excel::CSV);
         }
 
         return response()->streamJson(['photos' => $photos], 200, [

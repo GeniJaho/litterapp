@@ -35,10 +35,10 @@ it('generates a manifest csv and uploads to s3', function (): void {
     $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
     expect($lines)->toHaveCount(2); // header + 1 row
 
-    $header = str_getcsv($lines[0]);
+    $header = str_getcsv($lines[0], escape: '\\');
     expect($header)->toBe(['photo_id', 's3_key', 'item_id', 'brand_tag_ids', 'content_tag_ids']);
 
-    $row = str_getcsv($lines[1]);
+    $row = str_getcsv($lines[1], escape: '\\');
     expect($row[0])->toBe((string) $photo->id);
     expect($row[1])->toBe('photos/2024/01/abc.jpg');
     expect($row[2])->toBe((string) $item->id);
@@ -80,8 +80,8 @@ it('emits one row per photo-item so a photo with multiple items appears multiple
 
     expect($rows)->toHaveCount(2); // both items for the same photo
 
-    $photoIds = collect($rows)->map(fn (string $line): string => str_getcsv($line)[0])->unique()->values()->all();
-    $itemIds = collect($rows)->map(fn (string $line): string => str_getcsv($line)[2])->all();
+    $photoIds = collect($rows)->map(fn (string $line): string => str_getcsv($line, escape: '\\')[0])->unique()->values()->all();
+    $itemIds = collect($rows)->map(fn (string $line): string => str_getcsv($line, escape: '\\')[2])->all();
 
     expect($photoIds)->toBe([(string) $photo->id]);
     expect($itemIds)->toContain((string) $itemA->id, (string) $itemB->id);
@@ -141,7 +141,7 @@ it('excludes placeholder brand and content tags from output', function (): void 
 
     $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
     $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
-    $row = str_getcsv($lines[1]);
+    $row = str_getcsv($lines[1], escape: '\\');
 
     expect($row[3])->toBe((string) $goodBrand->id); // Only good brand, not excluded
 });
@@ -180,7 +180,7 @@ it('handles multiple brand and content tags with pipe separator', function (): v
 
     $csv = Storage::disk('s3')->get('ml/manifests/manifest_latest.csv');
     $lines = array_values(array_filter(explode("\n", trim((string) $csv))));
-    $row = str_getcsv($lines[1]);
+    $row = str_getcsv($lines[1], escape: '\\');
 
     $brandIds = explode('|', (string) $row[3]);
     expect($brandIds)->toHaveCount(2);
