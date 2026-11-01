@@ -67,6 +67,27 @@ it('filters by minimum score', function (): void {
         );
 });
 
+it('counts suggestions shown to users at the display threshold regardless of the minimum score', function (): void {
+    $this->travelTo('2026-10-12 12:00:00');
+    $item = Item::factory()->create();
+
+    PhotoSuggestion::factory()->withPredictions([$item->id])->create(['item_score' => 20]);
+    PhotoSuggestion::factory()->withPredictions([$item->id])->create(['item_score' => 50]);
+
+    $this->artisan('app:suggestion-metrics --since=2026-10-12 --min-score=0')
+        ->assertSuccessful()
+        ->expectsTable(
+            ['Metric', 'Value', 'Target'],
+            [
+                ['Uploaded photos', '2', '-'],
+                ['Got a suggestion', '2 (100%)', '~100%'],
+                ['Shown to user (score >= 30)', '1 (50%)', '-'],
+                ['Failed suggestion jobs', '0', '0'],
+                ['Queued or retrying now', '0', '-'],
+            ],
+        );
+});
+
 it('only counts photos uploaded since the given date', function (): void {
     $this->travelTo('2026-10-12 12:00:00');
     [$predictedItem, $otherItem] = Item::factory()->count(2)->create();

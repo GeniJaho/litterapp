@@ -13,9 +13,10 @@ use Illuminate\Support\Str;
 
 class SuggestionMetrics extends Command
 {
-    private const OFFLINE_TOP1_ACCURACY = 68.7;
-
-    private const OFFLINE_TOP3_ACCURACY = 86.2;
+    /**
+     * Suggestions scoring below this are hidden in the UI (see Photo filters, FilterPhotosAction and Photos/Show.vue).
+     */
+    private const DISPLAY_MIN_SCORE = 30;
 
     protected $signature = 'app:suggestion-metrics
         {--min-score=30 : Only count multi-item suggestions with item_score >= this value}
@@ -42,7 +43,7 @@ class SuggestionMetrics extends Command
         $healthSince = $since ?? $this->firstSuggestedUploadAt();
 
         if ($healthSince instanceof Carbon) {
-            $this->displayServiceHealth($minScore, $healthSince);
+            $this->displayServiceHealth($healthSince);
             $this->displayFailedJobs($healthSince);
         }
 
@@ -81,7 +82,7 @@ class SuggestionMetrics extends Command
         return $firstUploadAt !== null ? Carbon::parse($firstUploadAt) : null;
     }
 
-    private function displayServiceHealth(int $minScore, Carbon $since): void
+    private function displayServiceHealth(Carbon $since): void
     {
         $uploadsQuery = DB::table('photos')
             ->where('created_at', '>=', $since)
@@ -109,7 +110,7 @@ class SuggestionMetrics extends Command
                 ->from('photo_suggestions')
                 ->whereColumn('photo_suggestions.photo_id', 'photos.id')
                 ->whereNotNull('predictions')
-                ->where('item_score', '>=', $minScore))
+                ->where('item_score', '>=', self::DISPLAY_MIN_SCORE))
             ->count();
 
         $failedJobs = DB::table('failed_jobs')
@@ -131,7 +132,7 @@ class SuggestionMetrics extends Command
             [
                 ['Uploaded photos', (string) $uploaded, '-'],
                 ['Got a suggestion', "{$withSuggestion} ({$coverageRate}%)", '~100%'],
-                ["Shown to user (score >= {$minScore})", "{$shownToUser} ({$shownRate}%)", '-'],
+                ['Shown to user (score >= '.self::DISPLAY_MIN_SCORE.')', "{$shownToUser} ({$shownRate}%)", '-'],
                 ['Failed suggestion jobs', (string) $failedJobs, '0'],
                 ['Queued or retrying now', (string) $queuedJobs, '-'],
             ],
@@ -238,12 +239,6 @@ class SuggestionMetrics extends Command
                 round(100 * $group->whereStrict('top3', true)->count() / $group->count(), 1).'%',
             ])->values()->all(),
         );
-
-        $this->components->info(sprintf(
-            'Offline baseline: top-1 %s%%, top-3 %s%%.',
-            self::OFFLINE_TOP1_ACCURACY,
-            self::OFFLINE_TOP3_ACCURACY,
-        ));
     }
 
     private function scoreBucket(int $score, int $minScore): string
