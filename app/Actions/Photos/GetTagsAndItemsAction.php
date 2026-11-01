@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Cache;
 
 class GetTagsAndItemsAction
 {
-    public const CACHE_KEY = 'photos.tags_and_items';
+    public const string CACHE_KEY = 'photos.tags_and_items';
 
     /**
      * @return array<string, mixed>

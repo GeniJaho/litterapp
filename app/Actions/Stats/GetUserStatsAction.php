@@ -11,9 +11,9 @@ use Illuminate\Support\Facades\DB;
 
 class GetUserStatsAction
 {
-    private const TOP_ITEMS_LIMIT = 8;
+    private const int TOP_ITEMS_LIMIT = 8;
 
-    private const MAX_MONTH_BUCKETS = 120;
+    private const int MAX_MONTH_BUCKETS = 120;
 
     /**
      * @return array{

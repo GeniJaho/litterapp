@@ -7,7 +7,7 @@ use Illuminate\Container\Attributes\Config;
 
 class GetLitterBotUrlAction
 {
-    public const CACHE_KEY = 'suggest_photo_tags_action_litterbot_url';
+    public const string CACHE_KEY = 'suggest_photo_tags_action_litterbot_url';
 
     public function __construct(
         #[Config('services.litterbot.url')] protected string $defaultUrl,

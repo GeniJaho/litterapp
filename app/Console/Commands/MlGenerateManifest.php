@@ -82,7 +82,7 @@ class MlGenerateManifest extends Command
 
         /** @var resource $handle */
         $handle = fopen($localPath, 'w');
-        fputcsv($handle, ['photo_id', 's3_key', 'item_id', 'brand_tag_ids', 'content_tag_ids']);
+        fputcsv($handle, ['photo_id', 's3_key', 'item_id', 'brand_tag_ids', 'content_tag_ids'], escape: '\\');
 
         $totalRows = 0;
         $brandCount = 0;
@@ -121,7 +121,7 @@ class MlGenerateManifest extends Command
                         $photoItem->item_id,
                         $brandTagIds,
                         $contentTagIds,
-                    ]);
+                    ], escape: '\\');
 
                     $totalRows++;
                     $processedInChunk++;

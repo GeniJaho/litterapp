@@ -1,4 +1,4 @@
-FROM php:8.2.35-fpm-bookworm
+FROM php:8.4.27-fpm
 
 WORKDIR /app
 
@@ -18,6 +18,7 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     libjpeg62-turbo-dev \
     libxpm-dev \
     libfreetype6-dev \
+    libicu-dev \
     zip \
     unzip \
     redis-tools \

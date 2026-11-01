@@ -8,7 +8,7 @@ use App\Models\AppSetting;
 
 class IsLitterBotEnabledAction
 {
-    public const CACHE_KEY = 'litterbot_enabled_setting';
+    public const string CACHE_KEY = 'litterbot_enabled_setting';
 
     /**
      * LitterBot is enabled unless the `litterbot_enabled` app setting explicitly says otherwise.
