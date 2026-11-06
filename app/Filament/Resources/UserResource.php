@@ -12,6 +12,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
@@ -44,6 +45,12 @@ class UserResource extends Resource
                 DateTimePicker::make('email_verified_at')
                     ->nullable()
                     ->displayFormat('MMMM D, YYYY'),
+                Textarea::make('admin_notes')
+                    ->label('Notes')
+                    ->helperText('Only visible to admins.')
+                    ->rows(5)
+                    ->maxLength(10000)
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -74,9 +81,27 @@ class UserResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->numeric(),
+                TextColumn::make('tagged_photos_count')
+                    ->counts(['photos as tagged_photos_count' => fn (Builder $query) => $query->whereHas('photoItems')])
+                    ->label('Photos Tagged')
+                    ->sortable()
+                    ->toggleable()
+                    ->numeric(),
+                TextColumn::make('photos_without_gps_count')
+                    ->counts(['photos as photos_without_gps_count' => fn (Builder $query) => $query
+                        ->where(fn (Builder $query) => $query->whereNull('latitude')->orWhereNull('longitude'))])
+                    ->label('Photos Without GPS')
+                    ->sortable()
+                    ->toggleable()
+                    ->numeric(),
                 TextColumn::make('currentTeam.name')
                     ->searchable()
                     ->sortable(),
+                TextColumn::make('admin_notes')
+                    ->label('Notes')
+                    ->limit(50)
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable()
