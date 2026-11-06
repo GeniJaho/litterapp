@@ -318,6 +318,7 @@ test('a user can see a photo', function (): void {
         ->has('photo.photo_items.0.tags', 1)
         ->where('photo.photo_items.0.tags.0.id', $tag->id)
         ->where('photo.photo_items.0.tags.0.name', $tag->name)
+        ->where('photo.photo_items.0.tags.0.tag_type_id', $tag->tag_type_id)
         ->has('photo.photo_items.0.picked_up')
         ->has('photo.photo_items.0.recycled')
         ->has('photo.photo_items.0.deposit')
