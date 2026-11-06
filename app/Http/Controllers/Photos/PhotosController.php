@@ -99,7 +99,7 @@ class PhotosController extends Controller
         $eagerLoads = [
             'photoItems' => fn (Builder $q) => $q
                 ->with('item:id,name')
-                ->with('tags:id,name')
+                ->with('tags:id,name,tag_type_id')
                 ->orderByDesc('id'),
             'photoSuggestions.item:id,name',
             'photoSuggestions.brandTag:id,name',

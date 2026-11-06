@@ -1,18 +1,16 @@
 <script setup>
-import {computed, ref} from "vue";
-import PrimaryButton from "@/Components/PrimaryButton.vue";
 import IconPrimaryButton from "@/Components/IconPrimaryButton.vue";
 import ToggleInput from "@/Components/ToggleInput.vue";
 import IconDangerButton from "@/Components/IconDangerButton.vue";
 import TextInput from "@/Components/TextInput.vue";
-import TagBox from "@/Components/TagBox.vue";
+import ItemTagFields from "@/Pages/Photos/Partials/ItemTagFields.vue";
 
-const props = defineProps({
+defineProps({
     pivotItem: Object,
     tags: Object,
 });
 
-const emit = defineEmits([
+defineEmits([
     'add-tags-to-item',
     'remove-item',
     'remove-tag-from-item',
@@ -22,36 +20,6 @@ const emit = defineEmits([
     'toggle-deposit',
     'copy-item',
 ]);
-
-const selectedMaterialTag = ref(null);
-const selectedBrandTag = ref(null);
-const selectedEventTag = ref(null);
-const selectedStateTag = ref(null);
-const selectedContentTag = ref(null);
-const selectedSizeTag = ref(null);
-
-const selectedTagIds = computed(() => {
-    return [
-        selectedMaterialTag.value?.id,
-        selectedBrandTag.value?.id,
-        selectedEventTag.value?.id,
-        selectedStateTag.value?.id,
-        selectedContentTag.value?.id,
-        selectedSizeTag.value?.id,
-    ].filter(tag => tag);
-});
-
-const addTagsToItem = () => {
-    emit("add-tags-to-item", props.pivotItem, selectedTagIds.value);
-
-    selectedMaterialTag.value = null;
-    selectedBrandTag.value = null;
-    selectedEventTag.value = null;
-    selectedStateTag.value = null;
-    selectedContentTag.value = null;
-    selectedSizeTag.value = null;
-};
-
 </script>
 
 <template>
@@ -62,79 +30,13 @@ const addTagsToItem = () => {
                 {{ pivotItem.item.name }}
             </h3>
 
-            <div class="mt-6">
-                <div class="space-y-2">
-                    <TagBox
-                        :items="tags.material"
-                        :nullable="true"
-                        placeholder="Material"
-                        v-model="selectedMaterialTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.brand"
-                        :nullable="true"
-                        placeholder="Brand"
-                        v-model="selectedBrandTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.content"
-                        :nullable="true"
-                        placeholder="Content"
-                        v-model="selectedContentTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.size"
-                        :nullable="true"
-                        placeholder="Size"
-                        v-model="selectedSizeTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.state"
-                        :nullable="true"
-                        placeholder="State"
-                        v-model="selectedStateTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-
-                    <TagBox
-                        :items="tags.event"
-                        :nullable="true"
-                        placeholder="Event"
-                        v-model="selectedEventTag"
-                        @change="addTagsToItem"
-                    ></TagBox>
-                </div>
-
-                <div v-if="pivotItem.tags?.length" class="mt-4 text-sm text-gray-500 flex flex-wrap gap-1">
-                    <span
-                        v-for="tag in pivotItem.tags"
-                        :key="tag.id"
-                        @click="$emit('remove-tag-from-item', pivotItem, tag.id)"
-                        class="inline-flex cursor-pointer items-center gap-x-1.5 rounded-full px-2 py-1 text-xs font-medium text-gray-900 dark:text-gray-100 ring-1 ring-inset ring-gray-200"
-                    >
-                        <svg class="h-1.5 w-1.5 fill-green-500" viewBox="0 0 6 6"
-                             aria-hidden="true"><circle cx="3" cy="3" r="3"/></svg>
-                        {{ tag.name }}
-                    </span>
-                </div>
-
-                <div v-if="selectedTagIds.length" class="mt-4 flex justify-center">
-                    <PrimaryButton
-                        class="whitespace-nowrap"
-                        @click="addTagsToItem"
-                    >
-                        Add Selected Tags
-                    </PrimaryButton>
-                </div>
-            </div>
+            <ItemTagFields
+                class="mt-6"
+                :tags="tags"
+                :item-tags="pivotItem.tags"
+                @add-tags="$emit('add-tags-to-item', pivotItem, $event)"
+                @remove-tag="$emit('remove-tag-from-item', pivotItem, $event)"
+            />
         </div>
         <div class="px-4 py-5 sm:p-6 flex flex-row justify-between">
             <div class="flex flex-col justify-center space-y-3">
