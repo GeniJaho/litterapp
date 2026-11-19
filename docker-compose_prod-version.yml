@@ -92,7 +92,8 @@ services:
       - 80:80
       - 443:443
     volumes:
-      - ./deployment/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/nginx-server.conf:/etc/nginx/nginx.conf:ro
+      - ./deployment/local:/etc/nginx/local:ro
       - ./cert:/etc/nginx/cert
       - /v1/letsencrypt/certbot/www/:/var/www/certbot/:rw
     deploy:
@@ -116,7 +117,7 @@ services:
     deploy:
       resources:
         limits:
-          memory: 256M
+          memory: 512M
     volumes:
       - ./data/grafana:/var/lib/grafana:rw
 
