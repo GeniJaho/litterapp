@@ -7,6 +7,6 @@ docker run --rm --name temp_certbot \
     --text --email ${CORRECT_MAIL_ADDRES}@gmail.com \
     -w /var/www/certbot -d litterapp.net
 
-cp ./certbot/conf/live/litterapp.net/cert.pem /v1/littertagger/cert/server.crt
+cp ./certbot/conf/live/litterapp.net/fullchain.pem /v1/littertagger/cert/server.crt
 cp ./certbot/conf/live/litterapp.net/privkey.pem /v1/littertagger/cert/server.key
 cp ./certbot/conf/live/litterapp.net/fullchain.pem /v1/littertagger/cert/server-ca.crt
