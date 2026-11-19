@@ -1,3 +1,5 @@
+set -e
+
 SubDomain=${1:-docs}
 
 docker run --rm --name temp_certbot \
@@ -12,3 +14,6 @@ docker run --rm --name temp_certbot \
 cp ./certbot/conf/live/${SubDomain}.litterapp.net/cert.pem /v1/littertagger/cert/server-${SubDomain}.crt
 cp ./certbot/conf/live/${SubDomain}.litterapp.net/privkey.pem /v1/littertagger/cert/server-${SubDomain}.key
 cat ./certbot/conf/live/${SubDomain}.litterapp.net/fullchain.pem >> /v1/littertagger/cert/server-${SubDomain}.crt
+
+docker exec hero-proxy nginx -t
+docker exec hero-proxy nginx -s reload

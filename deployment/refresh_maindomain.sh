@@ -1,3 +1,5 @@
+set -e
+
 docker run --rm --name temp_certbot \
     -v /v1/letsencrypt/certbot/conf/:/etc/letsencrypt/:rw \
     -v /v1/letsencrypt/certbot/www/:/var/www/certbot/:rw \
@@ -10,3 +12,6 @@ docker run --rm --name temp_certbot \
 cp ./certbot/conf/live/litterapp.net/fullchain.pem /v1/littertagger/cert/server.crt
 cp ./certbot/conf/live/litterapp.net/privkey.pem /v1/littertagger/cert/server.key
 cp ./certbot/conf/live/litterapp.net/fullchain.pem /v1/littertagger/cert/server-ca.crt
+
+docker exec hero-proxy nginx -t
+docker exec hero-proxy nginx -s reload
